@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {CUSTOM_BLOCKS_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+function clearSearch() {
+		document.search_blocks.search_block.value = "";
+		document.search_blocks.submit();
+
+	}
+</script>
+</head>
+
+<body class="bodySbuilder">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+<td valign="top" width="75%" class="paddingRight">
+
+<div class="Block">
+<div class="BlockTitle">Sent Form</div>
+<div class="BlockContent">
+
+<table width="100%" border="0" >
+<!-- begin no_records -->
+<tr align="center" class="usual"><td align="center">
+No Records
+</td></tr>
+<!-- end no_records -->
+<!-- begin form_name_block -->
+<tr align="center" class="usual">
+	<td colspan="2" class="header"><h2>{form_title}</h2></td>
+</tr>
+<!-- end form_name_block -->
+<!-- begin records -->
+<tr align="center" class="usual">
+	<td class="usual" align="left" width="10%"><b>{field_name}:</b></td>
+	<td class="usual" align="left">{field_value}</td>
+</tr>
+<!-- end records -->
+
+</table>
+</div>
+</div>
+
+</td>
+</tr>
+</table>	
+
+{admin_footer}
+</body>
+</html>

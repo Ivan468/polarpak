@@ -1,0 +1,19 @@
+	<svg width="{svg_width}" height="{svg_height}" onmousemove="chartOver(evt);" 
+		data-step-x="{data_step_x}" data-chart-x="{chart_start_x}" data-chart-y="{chart_start_y}" 
+		data-chart-width="{chart_width}" data-chart-height="{chart_height}" 
+		data-chart="{data_chart}" viewBox="0 0 {svg_width} {svg_height}">
+    <rect class="chart-area" width="{chart_width}" height="{chart_height}" x="{chart_start_x}" y="{chart_start_y}" />
+		<!-- begin svg_paths -->
+		<path d="{path_d}" class="{path_class}" /><!-- end svg_paths -->
+		<!-- begin svg_texts -->
+		<text x="{text_x}" y="{text_y}" class="{text_class}" style="{text_style}">{svg_text}</text><!-- end svg_texts -->
+		<line class="pointer-x" stroke-width="1" stroke="#FFCC00" y2="0" x2="0" y1="0" x1="0"></line>
+		<line class="pointer-y" stroke-width="1" stroke="#FFCC00" y2="0" x2="0" y1="0" x1="0"></line>
+		<circle class="pointer-c" cx="0" cy="0" r="0" />
+    <rect class="data-shadow" width="82" height="32" />
+    <rect class="data-box" width="82" height="32" />
+		<text class="data-y" style="{text_style}"></text>
+		<text class="data-x" style="{text_style}"></text>
+	</svg>
+
+

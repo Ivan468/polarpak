@@ -1,0 +1,20 @@
+	<form action="{current_url}#friend_form" name="friend" method="post">
+	<input type="hidden" name="pb_id" value="{pb_id}" />
+	<input type="hidden" name="operation" value="apply" />
+	{hidden_parameters}
+	
+
+	<!-- BEGIN errors_block -->
+	<div class="errorbg">{errors}</div>
+	<!-- END errors_block -->
+	<!-- BEGIN message_block -->
+	<div class="message">{message}</div>
+	<!-- END message_block -->
+
+	<div>{FRIEND_AFFILIATE_FORM_DESC}</div>
+	<br />
+
+	<input class="field" size="24" type="text" name="friend_code" value="{friend_code}" /> 
+	<span class="submit"><input class="submit" type="submit" value="{APPLY_BUTTON}" /></span></td>
+
+	</form>

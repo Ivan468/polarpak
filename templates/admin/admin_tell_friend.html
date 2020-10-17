@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{section_name} {TELL_FRIEND_SETTINGS_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+<script type="text/javascript" src="../js/admin.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/editor.js"></script>
+<script language="JavaScript">
+<!--
+	function openWindow(pagename)
+	{
+		var popupWin = window.open (pagename, 'popup', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		popupWin.focus();
+	}
+//-->
+</script>
+{CKEditor_tag}
+</head>
+<body class="bodySettings">
+{admin_header}
+<form action="{admin_tell_friend_href}" name="record" method="POST" onsubmit="submit_editor(Array('editor_em'));">
+<div class="sitelist"><!-- begin sitelist -->
+	{SELECT_SITE_MSG}&nbsp;
+	<select name="param_site_id" onchange="reloadSite(this.form)"><!-- begin param_site_id -->
+		<option {param_site_id_selected} value="{param_site_id_value}">{param_site_id_description}<!-- end param_site_id -->
+	</select><!-- end sitelist -->
+</div>
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{TELL_FRIEND_SETTINGS_MSG}</div>
+<div class="BlockContent">
+
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="type" value="{type}">
+<input type="hidden" name="art_cat_id" value="{art_cat_id}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2">{DEFAULT_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{DEFAULT_COMMENT_MSG}</b>
+		<div class="small"><br>(<a href="javascript:openWindow('{admin_help_url}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_AND_SEE_NOTE})</div>
+	</td>
+	<td><textarea name="default_comment" cols="80" rows="10">{default_comment}</textarea></td>
+</tr>
+<tr class="usual">
+	<td>{RANDOM_IMAGE_VALIDATION_MSG}</td>
+	<td><!-- begin use_random_image -->
+		<input type="radio" name="use_random_image" id="use_random_image{use_random_image_value}" {use_random_image_checked} value="{use_random_image_value}">
+		<label for="use_random_image{use_random_image_value}">{use_random_image_description}</label><!-- end use_random_image -->
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="tell_friend_param">{TELL_FRIEND_PARAM_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="tell_friend_param" id="tell_friend_param" {tell_friend_param} value="1">
+		<span class="small">({TELL_FRIEND_PARAM_DESC})</span>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{USER_EMAIL_NOTIFICATION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_FROM_MSG}</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="user_mail_from" value="{user_mail_from}" size="60" maxlength="255">
+		<div class="small">({LIVE_BLANK_MSG})</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="user_mail_cc" value="{user_mail_cc}" size="60" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="user_mail_bcc" value="{user_mail_bcc}" size="60" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="user_mail_reply_to" value="{user_mail_reply_to}" size="60" maxlength="255"></td>                  
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="user_mail_return_path" value="{user_mail_return_path}" size="60" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="user_subject" value="{user_subject}" size="60" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin user_message_type -->
+		<input type="radio" name="user_message_type" id="user_message_type{user_message_type_value}" {user_message_type_checked} value="{user_message_type_value}">
+		<label for="user_message_type{user_message_type_value}">{user_message_type_description}</label><!-- end user_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{MESSAGE_MSG}</b>
+		<div class="small">
+		<br>(<a href="javascript:openWindow('{admin_help_url}?type=tell_friend')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_SETTINGS_NOTE} 
+		<br>&nbsp;{LEARN_MORE_AND_SEE_NOTE})
+		</div>
+	</td>
+	<td>{editor_error}
+		<textarea name="user_message" id="em" cols="80" rows="10">{user_message}</textarea>
+		<!-- begin em_ext_editor -->
+		<script type="text/javascript">
+			CKEDITOR.replace('em');
+		</script><!-- end em_ext_editor -->
+		<!-- begin em_int_editor -->
+		<script type= "text/javascript">
+			var editor_em = new VA_HTMLeditor('content_em','../','{html_editor}');
+			editor_em.text_field_name = 'user_message';
+			editor_em.formname = 'record';
+			editor_em.css_file = '{css_file}';
+			editor_em.editor_type = 'email_editor';
+			editor_em.displayEditor('editor_em', 560, 170);
+		</script><!-- end em_int_editor -->
+	</td>
+</tr>
+
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+</div>
+</form>
+
+{admin_footer}
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<div class="Block">
+<div class="BlockTitle">{ORDERS_MSG} <!-- begin s_title --> matching the term(s) '<b>{s}</b>'<!-- end s_title -->:</div>
+<div class="BlockContent">
+		<table border="0" cellspacing="1" cellpadding="6" width="99%">
+		<tr class="middle" align="center">
+			<td align="left">{ORDER_NUMBER_COLUMN}</td>
+			<td align="left"><b>{CUSTOMER_NAME_MSG}</b></td>
+			<td>{STATUS_MSG}</td>
+			<td>{DATE_ADDED_MSG}</td>
+			<td>{ADMIN_ORDER_TOTAL_MSG}</td>
+		</tr><!-- BEGIN items_list -->
+		<tr class="{row_style}" align="center" valign="top" id="tr_product_{item_index}">
+			<td align="left">{order_id}</td>
+			<td align="left">
+				<a class="title" href="{admin_order_href}?order_id={order_id}">{title}</a> &nbsp; &nbsp; 
+				<a class="small" href="{admin_order_href}?order_id={order_id}">{EDIT_MSG}</a>
+				<div class="small">
+					<a class="small" href="{admin_invoice_html_href}?order_id={order_id}" target="_blank"><img src="../images/html_icon.gif" border="0"></a> |
+					<a class="small" href="{admin_invoice_pdf_href}?order_id={order_id}"><img src="../images/pdf_icon.gif" border="0"></a>
+				</div>
+			</td>
+			<td align="right">{status_name}</td>
+			<td>{order_placed_date}</td>
+			<td>{order_total}</td>
+		</tr><!-- END items_list -->
+		<tr class="middle" align="center">
+			<td align="left" colspan="5">
+				<a href="{admin_orders_url}">{SHOW_ALL_MSG} ({total_records})</a>
+			</td>
+		</tr>
+		</table>
+</div>
+</div>

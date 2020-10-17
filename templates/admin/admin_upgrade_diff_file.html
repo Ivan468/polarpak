@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {FILES_DIFFERENCES_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header}
+<div class="BlockTitle">{FILES_DIFFERENCES_MSG}</div>
+
+<!-- begin connection_error --><div class="errorbg">{NO_XML_CONNECTION}</div><!-- end connection_error -->
+<!-- begin errors --><div class="errorbg">{errors_list}</div><!-- end errors -->
+
+<!-- begin results -->
+<table  border="0" cellpadding="6" cellspacing="1" width="100%">
+	<tr class="middle">
+		<td align="center" width="50%" colspan="2">
+			{local}
+		</td>
+		<td align="center" width="50%" colspan="2">
+			{remote}
+		</td>
+	</tr>
+	<!-- begin line_block -->
+	<tr class="usual">
+		<td align="left" width="5px">
+			{local_index}
+		</td>
+		<td align="left" width="50%" valign="top" {style}>
+			{local_line}
+		</td>
+		<td align="left" width="5px">
+			{remote_index}
+		</td>
+		<td align="left" width="50%" valign="top" {style}>
+			{remote_line}
+		</td>
+	</tr>
+	<!-- end line_block -->
+</table>
+<!-- end results -->
+		
+			
+{admin_footer}
+</body>
+</html> 

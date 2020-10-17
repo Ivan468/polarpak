@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {EDIT_MESSAGE_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_MESSAGE_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_support_message_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="message_id" value="{message_id}">
+<input type="hidden" name="support_id" value="{support_id}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="usual">
+	<td><label for="internal">{INTERNAL_MESSAGE_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="internal" id="internal" {internal} value="1"> 
+		<span class="small">({INTERNAL_MESSAGE_NOTE})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{STATUS_MSG} *</td>
+	<td>
+		<select name="support_status_id"><!-- begin support_status_id -->
+			<option {support_status_id_selected} value="{support_status_id_value}">{support_status_id_description}<!-- end support_status_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{MESSAGE_MSG} *</td>
+	<td><textarea name="message_text" cols="60" rows="10">{message_text}</textarea></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onclick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}')"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

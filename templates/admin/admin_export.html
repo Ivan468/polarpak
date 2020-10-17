@@ -1,0 +1,343 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{EXPORT_MSG} {table_title}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+
+var uploadedImages = [];
+var editImageId = "";
+var dragObj, overObj;
+var dragActive = false;
+var mousePosX, mousePosY;
+var objLeft, objTop, objWidth, objHeight;
+var layoutWidth, layoutHeight, layoutBottom, layoutRight;
+var resize = "";
+
+	function useAll()
+	{
+		var totalColumns = document.record.total_columns.value;
+		var useAll = document.record.use_all.checked;
+		for(var i = 1; i <= totalColumns ; i++) {
+			var objectControl = eval("document.record.db_column_" + i);
+			if(objectControl) {
+				objectControl.checked = useAll;
+			}
+		}
+
+		return true;
+	}
+
+	var clickNumber = 0;
+
+	function checkErrors()
+	{
+		var totalColumns = document.record.total_columns.value;
+		var columnsSelected = 0;
+		for(var i = 1; i <= totalColumns; i++) {
+			var columnObject = eval("document.record.db_column_" + i);
+			if (columnObject) {
+				if (columnObject.checked) {
+					columnsSelected++;
+				}
+			}
+		}
+		if (columnsSelected== 0) {
+			alert("No columns were selected. Please select at least one column.");
+			return false;
+		}
+
+		return true;
+	}
+
+	function delimiterChange(controlPosition)
+	{
+		if (controlPosition == "top") {
+			document.record.csv_delimiter_bottom.selectedIndex = document.record.csv_delimiter.selectedIndex;
+		} else if (controlPosition == "bottom") {
+			document.record.csv_delimiter.selectedIndex = document.record.csv_delimiter_bottom.selectedIndex;
+		} else if (controlPosition == "related_top") {
+			document.record.related_delimiter_bottom.selectedIndex = document.record.related_delimiter.selectedIndex;
+		} else if (controlPosition == "related_bottom") {
+			document.record.related_delimiter.selectedIndex = document.record.related_delimiter_bottom.selectedIndex;
+		}
+	}
+
+	function moveField(movePosition)
+	{
+		var selectedField = parseInt(document.record.selected_field.value);
+		if (!selectedField) {
+			alert('{SELECT_FIELD_FIRST_MSG}');
+			return;
+		}
+		var totalColumns = parseInt(document.record.total_columns.value);
+		if ((movePosition == -1 && selectedField == 1) || (movePosition == 1 && selectedField == totalColumns)) {
+			return;
+		}
+		var newPosition = selectedField + movePosition;
+		var titleNewObj = document.getElementById("field_title_" + newPosition);
+		var titleObj = document.getElementById("field_title_" + selectedField);
+		var titleObjHTML = titleObj.innerHTML;
+		var fieldTitle = document.record.elements["column_title_" + selectedField].value;
+		var fieldSource = document.record.elements["field_source_" + selectedField].value;
+		var fieldChecked = document.record.elements["db_column_" + selectedField].checked;
+		// edit data
+		var editNewObj = document.getElementById("edit_block_" + newPosition);
+		var editObj = document.getElementById("edit_block_" + selectedField);
+
+		// move data from new position to current position
+		titleObj.innerHTML = titleNewObj.innerHTML;
+		document.record.elements["column_title_" + selectedField].value = document.record.elements["column_title_" + newPosition].value;
+		document.record.elements["field_source_" + selectedField].value = document.record.elements["field_source_" + newPosition].value;;
+		document.record.elements["db_column_" + selectedField].checked = document.record.elements["db_column_" + newPosition].checked;
+		// move selected field to new position
+		titleNewObj.innerHTML = titleObjHTML;
+		document.record.elements["column_title_" + newPosition].value = fieldTitle;
+		document.record.elements["field_source_" + newPosition].value = fieldSource;
+		document.record.elements["db_column_" + newPosition].checked = fieldChecked;
+		// move edit link
+		var editValue = editNewObj.innerHTML;
+		editNewObj.innerHTML = editObj.innerHTML;
+		editObj.innerHTML = editValue;
+
+		// select field on new position
+		selectField(newPosition);
+	}
+
+	function selectField(fieldNumber)
+	{
+		var selectedField = document.record.selected_field.value;
+		if (selectedField == fieldNumber) {
+			unselectField();
+		} else {
+			unselectField();
+			document.record.selected_field.value = fieldNumber;
+			var blockObj = document.getElementById("field_block_" + fieldNumber);
+			if (blockObj) {
+				blockObj.style.backgroundColor = "#D0FFD0";
+				blockObj.style.color = "blue";
+				blockObj.style.fontWeight = "bold";
+			}
+			blockObj = document.getElementById("checkbox_block_" + fieldNumber);
+			if (blockObj) {
+				blockObj.style.backgroundColor = "#D0FFD0";
+			}
+			blockObj = document.getElementById("edit_block_" + fieldNumber);
+			if (blockObj) {
+				blockObj.style.backgroundColor = "#D0FFD0";
+			}
+		}
+		
+	}
+
+	function unselectField() 
+	{
+		var selectedField = document.record.selected_field.value;
+		if (selectedField != "") {
+			document.record.selected_field.value = "";
+			var blockObj = document.getElementById("field_block_" + selectedField);
+			if (blockObj) {
+				blockObj.style.backgroundColor = "transparent";
+				blockObj.style.color = "black";
+				blockObj.style.fontWeight = "normal";
+			}
+			blockObj = document.getElementById("checkbox_block_" + selectedField);
+			if (blockObj) {
+				blockObj.style.backgroundColor = "transparent";
+			}
+			blockObj = document.getElementById("edit_block_" + selectedField);
+			if (blockObj) {
+				blockObj.style.backgroundColor = "transparent";
+			}
+		}
+	}
+
+	function checkTemplateName()
+	{
+		var templateName = document.record.template_name.value;
+		if (templateName == "") {
+			alert("{TEMPLATE_NAME_ERROR}");
+			document.record.template_name.focus();
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+//window.addEventListener("mousedown", function(e) { return checkDrag(e); }, false);
+//window.addEventListener("mouseup", disableDrag, false);
+//window.addEventListener("mousemove", function(e) { return mouseMove(e); }, false);
+
+//-->
+</script>
+</head>
+
+<body class="commonbg">
+{admin_header}
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EXPORT_MSG} {table_title}
+	<!--begin products_other_links-->
+	<div class="BlockTitleRight">
+		{EXPORT_MSG}:
+
+		<a class="recsLink" href="{admin_items_properties_values_export_url}"><b>{OPTIONS_VALUES_MSG}</b></a> |
+		<a class="recsLink" href="{admin_items_prices_export_url}"><b>{QUANTITY_PRICES_MSG}</b></a> |
+		<a class="recsLink" href="{admin_items_files_import_url}"><b>{ADMIN_DOWNLOADABLE_MSG}</b></a> |
+		<a class="recsLink" href="{admin_items_serials_export_url}"><b>{ADMIN_SERIAL_NUMBERS_MSG}</b></a>
+	</div><!--end products_other_links-->
+</div>
+<div class="BlockContent">
+
+	<form name="record" action="{admin_export_href}" method="post" onSubmit="return checkErrors();">
+	<input type="hidden" name="table" value="{table}">
+	<input type="hidden" name="total_columns" value="{total_columns}">
+	<input type="hidden" name="operation" value="export">
+	<input type="hidden" name="category_id" value="{category_id}">
+	<input type="hidden" name="newsletter_id" value="{newsletter_id}">
+	<input type="hidden" name="id" value="{id}">
+	<input type="hidden" name="ids" value="{ids}">
+	<input type="hidden" name="selected_field" value="">
+	<input type="hidden" name="s_on" value="{s_on}">
+	<input type="hidden" name="s_ne" value="{s_ne}">
+	<input type="hidden" name="s_kw" value="{s_kw}">
+	<input type="hidden" name="s_sd" value="{s_sd}">
+	<input type="hidden" name="s_ed" value="{s_ed}">
+	<input type="hidden" name="a_sd" value="{a_sd}">
+	<input type="hidden" name="a_ed" value="{a_ed}">
+	<input type="hidden" name="s_os" value="{s_os}">
+	<input type="hidden" name="s_ad" value="{s_ad}">
+	<input type="hidden" name="s_ut" value="{s_ut}">
+	<input type="hidden" name="s_ap" value="{s_ap}">
+	<input type="hidden" name="s_ci" value="{s_ci}">
+	<input type="hidden" name="s_si" value="{s_si}">
+	<input type="hidden" name="s_ex" value="{s_ex}">
+	<input type="hidden" name="s_pd" value="{s_pd}">
+	<input type="hidden" name="s_ps" value="{s_ps}">
+	<input type="hidden" name="s_cct" value="{s_cct}">
+	<input type="hidden" name="s" value="{s}">
+	<input type="hidden" name="type" value="{type}">
+	<input type="hidden" name="sc" value="{sc}">
+	<input type="hidden" name="sit" value="{sit}">
+	<input type="hidden" name="sl" value="{sl}">
+	<input type="hidden" name="ss" value="{ss}">
+	<input type="hidden" name="ap" value="{ap}">
+	<input type="hidden" name="s_sti" value="{s_sti}">
+
+	<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+		<table cellspacing="1" cellpadding="4" border="0" >
+		<tr>
+			<td colspan="2">
+				<div class="floatRight">
+					<!-- BEGIN template_errors --><div class="errorbg">{errors_list}</div><br><!-- END template_errors -->
+					<!-- BEGIN template_success --><div class="messagebg">{success_message}</div><br><!-- END template_success -->
+
+					{SAVE_EXPORT_TEMPLATE_MSG} 
+					<input type="text" name="template_name" size="30" maxlength="64">
+					<input type="submit" value="{ADD_BUTTON}" onClick="document.record.operation.value='save_template';return checkTemplateName();">
+				</div>
+
+				{SELECT_EXPORT_TEMPLATE_MSG}
+				<select name="template_id" onChange="document.record.operation.value='';document.record.submit();"><!-- begin template_id -->
+					<option {template_id_selected} value="{template_id_value}">{template_id_description}<!-- end template_id -->
+				</select>
+				
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">&nbsp;</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+
+				{DELIMITED_BY_MSG}
+				<select name="csv_delimiter" onChange="delimiterChange('top');"><!-- begin delimiter -->
+					<option {delimiter_selected} value="{delimiter_value}">{delimiter_description}<!-- end delimiter -->
+				</select>
+
+				<!-- begin related_delimiter_block -->
+				{PRODUCTS_DELIMITED_BY_MSG}
+				<select name="related_delimiter" onChange="delimiterChange('related_top');"><!-- begin related_delimiter -->
+					<option {related_delimiter_selected} value="{related_delimiter_value}">{related_delimiter_description}<!-- end related_delimiter -->
+				</select>
+				<!-- end related_delimiter_block -->
+
+				<span class="button"><input type="submit" class="submit" value="{EXPORT_MSG}" onClick="document.record.operation.value='export';"></span>
+
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>
+				<input type="checkbox" name="use_all" id="use_all" value="1" onClick="useAll();">
+				<label for="use_all">{SELECT_MSG}/{UNSELECT_ALL_MSG}</label>
+				&nbsp;&nbsp;
+
+				<div class="floatRight">
+					{USE_CHECKBOXES_TO_SELECT_MSG}
+				</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr class="usual">
+			<td>
+				<table cellspacing="1" cellpadding="2" border="0"><!-- BEGIN rows -->
+				<tr class="usual">
+					<td id="edit_block_{col}">{column_link}</td>
+					<td align="center" id="checkbox_block_{col}" style="width: 50px;">
+						<label for="db_column_{col}">&nbsp;<input type="checkbox" name="db_column_{col}" id="db_column_{col}" {column_checked} value="1">&nbsp;</label>
+					</td>
+					<td id="field_block_{col}" style="width: 500px; cursor:pointer;"  onClick="selectField({col});return false;">
+						<div id="field_title_{col}"><b><span>{column_title}</span></b> <!-- BEGIN read_only --><span class="read-only">{READONLY_MSG}</span><!-- END read_only --></div>
+						<input type="hidden" name="column_title_{col}" value="{column_title}">
+						<input type="hidden" name="field_source_{col}" value="{field_source}">
+
+					</td>
+				</tr><!-- END rows -->
+				</table>
+			</td>
+			<td valign="top">
+				<a href="#" onClick="moveField(-1);return false;" onDblClick="moveField(-1);return false;" class="ico-big-move"><i class="ico-move-up" title="Up"></i></a><br>
+				<a href="#" onClick="moveField(1);return false;" onDblClick="moveField(1);return false;" class="ico-big-move"><i class="ico-move-down" title="Down"></i></a>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<!-- begin custom_link -->
+				<a href="{admin_export_custom_url}">{ADD_CUTOM_FIELD_MSG}</a>
+				<!-- end custom_link -->
+				<!-- begin custom_related -->
+				| <a href="{admin_export_custom_related_url}">{ADD_PRODUCT_CUSTOM_FIELD_MSG}</a>
+				<!-- end custom_related -->
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">&nbsp;</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+
+				{DELIMITED_BY_MSG}
+				<select name="csv_delimiter_bottom" onChange="delimiterChange('bottom');"><!-- begin delimiter_bottom -->
+					<option {delimiter_bottom_selected} value="{delimiter_bottom_value}">{delimiter_bottom_description}<!-- end delimiter_bottom -->
+				</select>
+
+				<!-- begin related_delimiter_bottom_block -->
+				{PRODUCTS_DELIMITED_BY_MSG}
+				<select name="related_delimiter_bottom" onChange="delimiterChange('related_bottom');"><!-- begin related_delimiter_bottom -->
+					<option {related_delimiter_bottom_selected} value="{related_delimiter_bottom_value}">{related_delimiter_bottom_description}<!-- end related_delimiter_bottom -->
+				</select>
+				<!-- end related_delimiter_bottom_block -->
+
+				<span class="button"><input type="submit" class="submit" value="{EXPORT_MSG}" onClick="document.record.operation.value='export';"></span>
+			</td>
+		</tr>
+		</table>
+
+	</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

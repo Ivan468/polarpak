@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{TAG_MSG} :: {EDIT_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/win_select.js"></script>
+
+</head>
+<body class="bodySettings pg-tag">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_tag_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="tag_id" value="{tag_id}">
+<input type="hidden" name="sw" value="{sw}">
+<input type="hidden" name="form_name" value="{form_name}">
+<input type="hidden" name="items_field" value="{items_field}">
+<input type="hidden" name="items_object" value="{items_object}">
+<input type="hidden" name="item_template" value="{item_template}">
+<input type="hidden" name="selection_type" value="{selection_type}">
+<input type="hidden" name="win_type" value="{win_type}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="page" value="{page}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+	<table border="0" cellspacing="1" cellpadding="6" width="100%">
+	<tr class="usual">
+		<td>{NAME_MSG}	*</td>
+		<td><input class="field" type="text" size="80" name="tag_name" value="{tag_name}"></td>
+	</tr>
+
+<!-- BEGIN friendly_url_block -->
+<tr class="usual">
+	<td>{FRIENDLY_URL_MSG}</td>
+	<td><input class="field" type="text" name="friendly_url" value="{friendly_url}" size="80" maxlength="255"></td>
+</tr>
+<!-- END friendly_url_block -->
+<tr class="middle">
+	<td>
+	</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="Delete" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="Cancel" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

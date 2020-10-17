@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{WIDGETS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<link rel="stylesheet" href="../styles/widgets.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/win_select.js"></script>
+<script language="JavaScript" type="text/javascript" src="../js/init.js"></script>
+<script language="JavaScript" type="text/javascript" src="../js/blocks.js"></script>
+<script language="JavaScript" type="text/javascript" src="../js/ajax.js"></script>
+<script language="JavaScript" type="text/javascript" src="../js/shopping.js"></script>
+<script language="JavaScript">
+var confirmAdd = 0;
+var requiredProperty = "";
+
+function generateWidget()
+{
+	var formObj = document.record;
+	var siteUrl = formObj.site_url.value;
+	var itemsString = document.record.items.value;
+	var previewHTML = "";
+
+	var widgetFormName = formObj.widget_form_name.value;
+	if (widgetFormName == "") { widgetFormName = "widget"; }
+
+	previewHTML  = "<!-- widget for adding products -->";
+	previewHTML += "\n<script language=\"JavaScript\">";
+	previewHTML += '\nvar confirmAdd = 0;var requiredProperty = "";';
+	previewHTML += '\nfunction widgetScriptLoad(url) { var script = document.createElement("script"); script.type = "text/javascript"; script.src = url; document.getElementsByTagName("head")[0].appendChild(script); }';
+	previewHTML += '\nvar lObj = document.createElement("link");';
+	previewHTML += 'lObj.rel = "stylesheet";';
+	previewHTML += 'lObj.href = "{site_url}styles/widgets.css";';
+	previewHTML += 'document.getElementsByTagName("head")[0].appendChild(lObj);';
+	previewHTML += '\nwidgetScriptLoad("{site_url}js/init.js");widgetScriptLoad("{site_url}js/blocks.js");widgetScriptLoad("{site_url}js/shopping.js");';
+	previewHTML += "\n</"+"script>";
+	previewHTML += "\n<div class=\"ViArtWidgets\">";
+	//previewHTML += '\n<form name="'+widgetFormName+'">';
+	previewHTML += '\n<input type="hidden" id="'+widgetFormName+'site_url" value="{site_url}" />';
+
+	if (itemsString != "") {
+		var items = JSON.parse(itemsString);
+
+		// check options
+		var imageType = formObj.image_type.options[formObj.image_type.selectedIndex].value;
+		var quantityControl = formObj.quantity_control.options[formObj.quantity_control.selectedIndex].value;
+		var addToCart = formObj.add_to_cart.checked;
+		var viewCart = formObj.view_cart.checked;
+		var gotoCheckout = formObj.goto_checkout.checked;
+		var clearCart = formObj.clear_cart.checked;
+		var columns = parseInt(formObj.columns.value);
+		if (isNaN(columns)) { columns = 3; } 
+		var productWidth = Math.floor(((100 - columns) / columns) * 100) / 100;
+		var productIndex = 0;
+
+		var productsRow = "";
+		var productsTotal = items.length;
+		for (id in items) {
+			productIndex++;
+			var itemData = items[id];
+			var itemId = itemData.id;
+			productsRow += "\n<div class=\"product\"";
+			// if there are more than 5th columns specify style for column width
+			if (columns > 5) {
+				productsRow += " style=\"width:"+productWidth+"%\"";
+			}
+			productsRow += ">";
+			productsRow += "<div class=\"title\">"+itemData.item_name+"</div>\n";
+			// add image
+			if (imageType == "tiny" || imageType == "small" || imageType == "large") {
+				var imageSrc = "";
+				if (imageType == "tiny") {
+					imageSrc = itemData.tiny_image;
+				} else if (imageType == "small") {
+					imageSrc = itemData.small_image;
+				} else {
+					imageSrc = itemData.large_image;
+				}	
+				productsRow += "<div class=\"image\">";
+				productsRow += "<img src=\""+imageSrc+"\" />";
+				productsRow += "</div>";
+			}
+
+			var minQty = itemData.min_quantity;
+			if (!minQty || isNaN(minQty)) { minQty = 1; }
+			var maxQty = itemData.max_quantity;
+			if (!maxQty || isNaN(maxQty)) { maxQty = minQty+9; }
+
+			if (quantityControl == "LABEL" || quantityControl == "TEXTBOX" || quantityControl == "LISTBOX") {
+				var controlName = "quantity"+widgetFormName+"_"+productIndex;
+				productsRow += "<div class=\"quantity\">";
+				productsRow += "<span class=\"caption\">{QTY_MSG}</span> ";
+				if (quantityControl == "LABEL") {
+					productsRow += "<span class=\"control\">" + minQty + "</span>";
+				} else if (quantityControl == "TEXTBOX") {
+					productsRow += "<input id=\""+controlName+"\" class=\"control\" type=\"text\" value=\"" + minQty + "\">";
+				} else if (quantityControl == "LISTBOX") {
+					productsRow += "<select id=\""+controlName+"\" class=\"control\">";
+					for (var q = minQty; q <= maxQty; q++) {
+						productsRow += "<option value=\""+q+"\">"+q+"</option>";
+					}
+					productsRow += "</select>";
+				}
+				productsRow += "</div>";
+			}
+			
+			// add buttons
+			if (addToCart || viewCart || gotoCheckout || clearCart) {
+				productsRow += "<div class=\"buttons\">";
+				if (addToCart) {
+					var addOnclick = "widgetCall('ADD', '"+itemId+"', 'add"+widgetFormName+"_"+productIndex+"','"+widgetFormName+"', '"+productIndex+"');";
+					productsRow += "<a id=\"add"+widgetFormName+"_"+productIndex+"\" class=\"addToCart\" onclick=\""+addOnclick+"\">{ADD_TO_CART_MSG}</a>";
+				}
+				if (viewCart) {
+					productsRow += "<a href=\"{site_url}basket.php\" class=\"viewCart\">{VIEW_CART_MSG}</a>";
+				}
+				if (gotoCheckout) {
+					productsRow += "<a href=\"{site_url}checkout.php\" class=\"gotoCheckout\">{GOTO_CHECKOUT_MSG}</a>";
+				}
+				if (clearCart) {
+					var clearOnclick = "widgetCall('CLR', '"+itemId+"', 'clear"+widgetFormName+"_"+productIndex+"','"+widgetFormName+"', '"+productIndex+"');";
+					productsRow += "<a id=\"clear"+widgetFormName+"_"+productIndex+"\" class=\"clearCart\" onclick=\""+clearOnclick+"\">{CLEAR_CART_MSG}</a>";
+				}
+				productsRow += "</div>";
+			}
+
+
+			productsRow += "</div>";
+			if (productIndex % columns == 0) {
+				previewHTML += "\n<div class=\"productsRow\">" + productsRow + "\n</div>";
+				previewHTML += "\n<div class=\"delimiter\"></div>";
+				productsRow = "";
+			}
+		}
+		var leftColumns = (productIndex % columns);
+		if (leftColumns > 0) {
+			for (var c = 0; c < (columns - leftColumns); c++) {
+				productsRow += "\n<div class=\"product\"";
+				// if there are more than 5th columns specify style for column width
+				if (columns > 5) {
+					productsRow += " style=\"width:"+productWidth+"%\"";
+				}
+				productsRow += ">";
+				productsRow += "</div>";
+			}
+			previewHTML += "\n<div class=\"productsRow\">" + productsRow + "\n</div>";
+			previewHTML += "\n<div class=\"delimiter\"></div>";
+		}
+
+
+	}
+	//previewHTML += "\n</form>";
+	previewHTML += "\n</div>";
+	previewHTML += "<!-- widget for adding products end -->";
+
+	var widgetObj = document.getElementById("widgetPreview");
+	widgetObj.innerHTML = previewHTML;
+	formObj.widget_code.value = previewHTML; 
+	formObj.widget_code.select();
+	
+}
+
+</script>
+</head>
+
+
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<div class="Form">
+<div class="FormTitle">{WIDGETS_MSG}</div>
+<div class="FormContent">
+
+<form action="{admin_products_widgets_href}" name="record" onsubmit="generateWidget();return false;" method="POST">
+<input type="hidden" name="site_url" value="{site_url}" />
+<input type="hidden" name="items" value='{items}' />
+
+	<div class="middle padding10px">{PRODUCTS_TITLE}</div>
+
+		<div class="padding10px">
+			<div id="selectedProducts" class="selectedItems"><!-- BEGIN selected_items --><!-- END selected_items --></div>
+			<a class="title" href="#" onClick='jsonWindow({"url": "{admin_product_select_href}", "params": {"form_name": "record", "items_field": "items", "items_object": "selectedProducts", "item_template": "item_template", "selection_type": "multiple"}}); return false;'>{ADD_PRODUCT}</a>
+		</div>
+
+	<div id="item_template" style="display: none;">
+		<!-- begin item_template -->
+		<div id="item{item_id}" class="product">
+			<div class="image"><img src="{image_src}" /></div>
+			<div class="name">{item_name} (<span class="price">{item_price}</span>)</div>
+			<div class="remove" onclick='jsonRemoveItem({"form_name": "record", "items_field": "items", "items_object": "selectedProducts", "item_object": "item{item_id}", "id": "{item_id}"});'></div>
+			<div class="clearboth"></div>
+		</div>
+		<!-- end item_template -->
+	</div>
+
+	<div class="middle padding10px">{OPTIONS_MSG}</div>
+		<div class="widgetOptions">
+		  <br/>{FORM_NAME_MSG}: 
+				<input type="text" name="widget_form_name" value="{widget_form_name}" size="20" /> ({WIDGET_FORM_NAME_DESC})
+
+		  <br/><br/>{IMAGE_TYPE_MSG}: 
+			<select name="image_type"><!-- begin image_type -->
+				<option {image_type_selected} value="{image_type_value}">{image_type_description}<!-- end image_type -->
+			</select>
+
+		  <br/><br/>{QUANTITY_CONTROL_MSG}: 
+			<select name="quantity_control"><!-- begin quantity_control -->
+				<option {quantity_control_selected} value="{quantity_control_value}">{quantity_control_description}<!-- end quantity_control -->
+			</select>
+
+		  <br/><br/>{BUTTONS_MSG}: 
+				<input id="add_to_cart" type="checkbox" name="add_to_cart" {add_to_cart} value="1" /><label for="add_to_cart">{ADD_TO_CART_MSG}</label>
+				<input id="view_cart" type="checkbox" name="view_cart" {view_cart} value="1" /><label for="view_cart">{VIEW_CART_MSG}</label>
+				<input id="goto_checkout" type="checkbox" name="goto_checkout" {goto_checkout} value="1" /><label for="goto_checkout">{GOTO_CHECKOUT_MSG}</label>
+				<input id="clear_cart" type="checkbox" name="clear_cart" {clear_cart} value="1" /><label for="clear_cart">{CLEAR_CART_MSG}</label>
+
+		  <br/><br/>{NUMBER_OF_COLUMNS_MSG}: 
+				<input type="text" name="columns" value="{columns}" size="2" />
+
+      <br/><br/>
+			<div><span class="button"><input class="submit" type="button" value="{GENERATE_BUTTON}" onclick="generateWidget();"><span></div>
+		</div>
+	</div>
+
+
+	<div class="middle padding10px">{PREVIEW_TITLE}</div>
+		<div id="widgetPreview" class="widgetPreview" style="min-height: 200px; overflow: hidden;">
+
+		</div>
+	</div>
+
+	<div class="middle padding10px">{CODE_MSG}</div>
+
+		<textarea name="widget_code" style="width: 99%; height: 100px;"></textarea>
+	</div>
+
+
+</form>
+
+
+	
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

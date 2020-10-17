@@ -1,0 +1,45 @@
+<div class="block-cookie-control">
+	<div class="cookieControl" style="{dsblClass}" id="cControl"></div>
+	<div class="cookieInfo" id="cInfo">
+		<div class="cookieInfoClose" id="cookieInfoClose"></div>
+		<p style="text-align:justify;text-indent:7px;">{COOKIE_INFO_MSG}</p>
+		<div class="button bn-green" onclick="VACookCtrl(false); return false;">Yes</div>
+		<div class="button bn-red" onclick="VACookCtrl(true); return false;">No</div>
+	</div>
+	<script type="text/javascript">
+		(function(){
+			document.getElementById('cControl').onclick = showCookieInfo;
+			document.getElementById('cookieInfoClose').onclick = closeCookieInfo;
+			document.getElementById('cInfo').style.display = 'none';
+			function showCookieInfo(){
+				var cCtrlElem = document.getElementById('cInfo');
+				if(cCtrlElem.style.display == 'none'){
+					cCtrlElem.style.display = '';
+				}
+				else{
+					cCtrlElem.style.display = 'none';
+				}
+			}
+			function closeCookieInfo(){
+				document.getElementById('cInfo').style.display = 'none'
+			}
+		})();
+		function VACookCtrl(state) {
+			if(state == false){
+				var params = '&cookies_control=0';
+			}else if((state == true)){
+				var params = '&cookies_control=1';
+			}
+			callAjax('block.php?pb_id={pb_id}&is_ajax=1' + params, cookieStateParser);
+			return false;
+		}
+		function cookieStateParser(text) {
+			if (text == "CTRL") {
+				document.getElementById('cControl').style.backgroundPosition = "0 0";
+			} else {
+				document.getElementById('cControl').style.backgroundPosition = "0 -32px";
+			}
+			document.getElementById('cInfo').style.display = 'none';
+		}
+	</script>
+</div>

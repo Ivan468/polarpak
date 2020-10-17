@@ -1,0 +1,40 @@
+<!-- begin sent_form_errors -->
+	<div class="errorbg" align="center">
+		{errors_list}
+	</div><br />
+<!-- end sent_form_errors -->
+
+<!-- begin sent_form_thanks -->
+<div class="messagebg" align="center">{form_success_message}</div><br />
+<!-- end sent_form_thanks -->
+
+<form action="" method="post">
+<input type="hidden" name="operation" value="save" />
+<table width="100%" cellspacing="0" cellpadding="0" class="block">
+	<!-- begin block_form_notes -->
+	<tr>
+		<td class="blockTD">{form_notes}</td>
+	</tr>
+	<!-- end block_form_notes -->
+	<tr> 
+		<td class="blockTD">
+			<table cellpadding="0" cellspacing="0">
+			<!-- begin form_fields -->
+			<tr id="ff_block_{field_id}" class="usualbg">
+				<td class="normal">
+					{field_name} <span class="required">{field_required}</span>
+				</td>
+				<td class="normal">
+					{field_control} 
+				</td>
+			</tr>
+			<!-- end form_fields -->
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td class="blockTD"><input type="submit" value="{submit_name}" /></td>
+	</tr>
+</table>
+</form>
+

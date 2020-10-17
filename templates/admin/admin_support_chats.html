@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{CHATS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/calendar.js"></script>
+<script language="JavaScript" type="text/javascript" src="../js/select.js"></script>
+<script language="JavaScript"> 
+<!--
+
+	function clearSearch() {
+		document.frmSearch.s_id.value = "";
+		document.frmSearch.s_ne.value = "";
+		document.frmSearch.keyword_search.value = "";
+		document.frmSearch.s_sd.value = "";
+		document.frmSearch.s_ed.value = "";
+		document.frmSearch.submit();
+	}
+
+	function closeTicket()
+	{
+		return confirm("{CLOSE_CONFIRM_QST}?");
+	} 
+	
+	function allItems()
+	{
+		var checkedStatus = document.items.all_items.checked;
+		var itemsNumber = document.items.items_number.value;
+		for (var i = 1; i <= itemsNumber; i++) {
+			document.items.elements["id_" + i].checked = checkedStatus;
+		}
+		checkItems();
+	}
+
+	function updateItems(operation)
+	{
+		var itemId = "";
+		var itemsIds = "";
+		var itemsNumber = document.items.items_number.value;
+		var totalitems = 0;
+		for (var i = 1; i <= itemsNumber; i++) {
+			if (document.items.elements["id_" + i].checked) {
+				totalitems++;
+				itemId = document.items.elements["id_" + i].value;
+				if(totalitems > 1) { itemsIds += ","; }
+				itemsIds += itemId;
+			}
+		}
+
+		if (totalitems == 0) {
+			alert("Please select tickets first.");
+			window.event.returnValue=false;
+		} else if (operation == "delete_items") {
+			if (confirm("{DELETE_CONFIRM_QST} " + totalitems + " {CHATS_MSG}?")) {
+				document.items.items_ids.value = itemsIds;
+				document.items.operation.value = "delete_items";
+				document.items.submit();
+			}
+		}
+	}
+	
+	function checkItems()
+	{
+		var itemId = "";
+		var itemsIds = "";
+		var itemsNumber = document.items.items_number.value;
+		var totalSelected = 0;
+		for (var i = 1; i <= itemsNumber; i++) {
+			if (document.items.elements["id_" + i].checked) {
+				document.getElementById("tr_ticket_" + i).className = "SelectedRow";
+				totalSelected++;
+				itemId = document.items.elements["id_" + i].value;
+				if(itemsIds != "") { itemsIds += ","; }
+				itemsIds += itemId;
+			} else {
+				document.getElementById("tr_ticket_" + i).className = mas[i];
+			}
+		}
+		var deleteLink = document.getElementById("delete_items");
+		if (deleteLink) {
+			if (itemsIds == "") {
+				deleteLink.innerHTML = "{DELETE_SELECTED_MSG}";
+				deleteLink.href = "admin_support.php";
+			} else {
+				deleteLink.innerHTML = "{DELETE_SELECTED_MSG} (" + totalSelected + ")";
+				deleteLink.href = "admin_support.php?operation=delete&items_ids=" + itemsIds;
+			}
+		}
+	} 
+
+	var select_form = new select();
+	select_form.object_name = 'select_form';
+	select_form.name_prefix = 'id_';
+	select_form.formname = 'items';
+	select_form.final_action = 'checkItems();';
+	select_form.create_event_click();
+
+	function start_event_select(){
+		if (document.items) {
+			create_event_listener(select_form);
+			var itemsNumber = document.items.items_number.value;
+			mas = new Array();
+			for (var i = 1; i <= itemsNumber; i++) {
+				mas[i] = document.getElementById("tr_ticket_" + i).className;
+			}
+		}
+	}
+
+//-->
+</script>
+</head>
+
+<body class="commonbg" onload="start_event_select();">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<table border="0" cellspacing="0" cellpadding="0" align="center" width="100%">
+<tr>
+	<td>
+		<!-- filter -->
+	<div class="Block floatLeft">
+	<div class="BlockTitle">{SEARCH_MESSAGES_MSG}</div>
+	<div class="BlockContent">
+		<form action="{admin_support_chats_href}" name="frmSearch">
+		<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+		<table cellpadding="4" cellspacing="1" border="0">
+		<tr class="usual">
+			<td>{ID_MSG}:</td>
+			<td><input type="text" name="s_id" value="{s_id}" class="search"></td>
+		</tr>
+		<tr class="usual">
+			<td>{BY_NAME_EMAIL_MSG}:</td>
+			<td><input type="text" name="s_ne" value="{s_ne}" class="search"></td>
+		</tr>
+		<tr class="usual">
+			<td>{BY_KEYWORD_MSG}:</td>
+			<td><input type="text" name="keyword_search" value="{keyword_search}" class="search"></td>
+		</tr>
+		<tr class="usual">
+			<td>{FROM_DATE_MSG} ({date_edit_format}):</td>
+			<td>
+				<input type="text" name="s_sd" value="{s_sd}" class="search">
+				<a href="#"
+					onClick="setDateField(document.frmSearch.s_sd, '{date_edit_format}');
+					top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+				<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>{TO_DATE_MSG} ({date_edit_format}):</td>
+			<td>
+				<input type="text" name="s_ed" value="{s_ed}" class="search">
+				<a href="#"
+					onClick="setDateField(document.frmSearch.s_ed, '{date_edit_format}');
+					top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+				<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+			</td>
+		</tr>
+		<tr class="buttons">
+			<td>&nbsp;</td>
+			<td>
+				<span class="button"><input type="submit" value="{SEARCH_BUTTON}" class="submit"></span>
+				<span class="button"><input type="button" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch()"></span>
+			</td>
+		</tr>
+		</table>
+		</form>
+	</div>
+	</div>
+
+		<!-- end of filter -->
+	</td>
+	<td valign="top">
+
+	</td>
+	<td valign="top">
+
+
+	</td>
+</tr>
+</table>
+
+<br>
+
+<!-- BEGIN search_results --><div class="supportMessage">{SEARCH_RESULTS_IN_MSG} {search}</div><!-- END search_results -->
+
+<form name="items" action="admin_support_chats.php" method="POST">
+<input type="hidden" name="items_number" value="{items_number}">
+<input type="hidden" name="items_ids" value="{items_ids}">
+<input type="hidden" name="operation" value="delete">
+
+<p align="center">{error_delete}</p>
+
+<div class="Block">
+<div class="BlockTitle">{CHATS_MSG}</div>
+<div class="BlockContent">
+
+	<table border="0" cellpadding="4" cellspacing="1" width="100%">
+	<!-- begin sorters -->
+	<tr class="middle" align="center">
+		<td><input type="checkbox" name="all_items" value="1" onClick="allItems();"></td>
+		<td nowrap>{sorter_id}</td>
+		<td nowrap>{sorter_name}</td>
+		<td nowrap>{sorter_email}</td>
+		<td nowrap>{sorter_question}</td>
+		<td nowrap>{sorter_added}</td>
+		<td nowrap>{STATUS_MSG}</td>
+		<td nowrap></td>
+	</tr>
+	<!-- end sorters -->
+	<!-- BEGIN records -->
+	<tr class="{style}" valign="top" align="center" id="tr_ticket_{item_index}">
+		<td><input type="checkbox" name="id_{item_index}" value="{chat_id}" onClick="checkItems();"></td>
+		<td>{chat_id}</td>
+		<td align="left">{user_name}</td>
+		<td align="left">{user_email}</td>
+		<td align="left">{user_message}</td>
+		<td align="center" style="white-space:nowrap;">{chat_added}</td>
+		<td align="center">{chat_status}</td>
+		<td align="center" style="white-space:nowrap;">
+			<a href="#" onclick="openChatWindow('{admin_support_chat_href}', '{chat_id}', 'view');return false;"><img src="../images/icons/chat_view.png" width="16" height="16" alt="{VIEW_MSG}" title="{VIEW_MSG}"></a>
+			<!-- begin start_chat_link -->
+			<a href="#" onclick="openChatWindow('{admin_support_chat_href}', '{chat_id}', 'start');return false;"><img src="../images/icons/chat.png" width="16" height="16" alt="{START_CHATTING_MSG}" title="{START_CHATTING_MSG}"></a><!-- end start_chat_link -->
+		</td>
+	</tr><!-- END records -->
+	<tr class="middle">
+		<td colspan="8">
+			&nbsp;
+			<!-- BEGIN delete_chats_link -->
+			<a id="delete_items" href="admin_support_chats.php" onClick="updateItems('delete_items');return false;">{DELETE_SELECTED_MSG}</a><!-- END delete_chats_link -->
+			<!-- BEGIN navigator_block -->
+			<div align="right">{navigator}</div><!-- END navigator_block -->
+		</td>
+	</tr>
+	</table>	
+
+</div>
+</div>
+
+</form>
+
+	
+{admin_footer}
+</body>
+</html>

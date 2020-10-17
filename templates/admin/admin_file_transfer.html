@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{FILE_TRANSFER_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="bodyTools">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{FILE_TRANSFER_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_file_transfer_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="transfer_id" value="{transfer_id}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="usual">
+	<td>{TYPE_MSG}</td>
+	<td><!-- BEGIN transfer_type -->
+		<input type="radio" name="transfer_type" id="transfer_type{transfer_type_value}" {transfer_type_disabled} {transfer_type_checked} value="{transfer_type_value}">
+		<label for="transfer_type{transfer_type_value}">{transfer_type_description}</label><!-- END transfer_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{TRANSFER_DATE_MSG}</td>
+	<td>
+		<input type="text" name="transfer_date" size="20" value="{transfer_date}"> 
+		({datetime_format_msg})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FILE_PATH_MSG}</td>
+	<td>
+		<input type="text" name="file_path" size="60" value="{file_path}"> 
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{FTP_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{FTP_PASSIVE_MODE_MSG}</td>
+	<td><input type="checkbox" name="ftp_passive_mode" id="ftp_passive_mode" value="1" {ftp_passive_mode}></td>
+</tr>
+<tr>
+	<td>{FTP_TRANSFER_MODE_MSG}</td>
+	<td><!-- BEGIN ftp_transfer_mode -->
+		<input type="radio" name="ftp_transfer_mode" id="ftp_transfer_mode{ftp_transfer_mode_value}" {ftp_transfer_mode_checked} value="{ftp_transfer_mode_value}">
+		<label for="ftp_transfer_mode{ftp_transfer_mode_value}">{ftp_transfer_mode_description}</label><!-- END ftp_transfer_mode -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FTP_HOST_MSG}</td>
+	<td>
+		<table border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td><input type="text" name="ftp_host" size="60" value="{ftp_host}"></td>
+			<td>&nbsp;{ADMIN_PORT_MSG}:&nbsp;</td>
+			<td><input type="text" name="ftp_port" size="10" value="{ftp_port}"></td>
+		</tr>
+		<tr>
+			<td>&nbsp;({EG_MSG}: <b>ftp.example.com</b>)</td>
+			<td></td>
+			<td>&nbsp;({DEFAULT_MSG}: <b>21</b>)</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FTP_LOGIN_MSG}</td>
+	<td>
+		<input type="text" name="ftp_login" size="60" value="{ftp_login}" autocomplete="off" /> 
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FTP_PASSWORD_MSG}</td>
+	<td>
+		<input type="password" name="ftp_password" size="60" value="{ftp_password}" autocomplete="off" /> 
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FTP_PATH_MSG}</td>
+	<td>
+		<input type="text" name="ftp_path" size="60" value="{ftp_path}"> 
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

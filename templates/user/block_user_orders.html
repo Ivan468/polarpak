@@ -1,0 +1,99 @@
+<script type="text/javascript">
+
+	function showOrderPopup(event, orderID)	{
+
+		var mousePos = getMousePos(event);
+
+		var popupOrder = document.getElementById("popupOrder" + orderID);
+		if (popupOrder) {
+			popupOrder.style.left     = (mousePos[0]+20)+"px";
+			popupOrder.style.top      = (mousePos[1]-5) + "px";
+			popupOrder.style.display  = "block";
+		} else {
+			//findPosX(obj, addWidth)
+			var orderBlock = document.getElementById("order_" + orderID);
+			popupOrder = document.createElement('div');			
+			popupOrder.id      = "popupOrder"+orderID;
+			popupOrder.className = "orderPopup";
+			popupOrder.style.position = "absolute";
+			popupOrder.style.zIndex   = "100";
+			popupOrder.style.left     = (mousePos[0]+20)+"px";
+			popupOrder.style.top      = (mousePos[1]-5)+"px";
+			popupOrder.style.display  = "block";
+			popupOrder.innerHTML = orderBlock.innerHTML;
+			document.body.appendChild(popupOrder);
+		}
+	}
+
+	function hideOrderPopup(orderID)	{
+		var popupObj= document.getElementById("popupOrder" + orderID);
+		if (popupObj) {
+			popupObj.style.display = 'none';
+		}
+	}
+
+</script>
+
+	<table cellspacing="0" width="100%" class="table-data"><!-- begin sorters -->
+	<tr class="middlebg" align="center">
+		<td>{sorter_id}</td>
+		<td>{sorter_status}</td>
+		<td>{sorter_date}</td>
+		<td>{sorter_total}</td>
+		<td class="titleText">{INVOICE_MSG}</td>
+		<!-- begin reorder_header -->
+		<td class="titleText">{REORDER_MSG}</td><!-- end reorder_header -->
+		<td>&nbsp;</td>
+	</tr><!-- end sorters --><!-- begin records -->
+	<tr class="usualbg" valign="top" align="center">
+		<td style="cursor: default;" onmouseover="showOrderPopup(event, {order_id})" onmousemove="showOrderPopup(event, {order_id})"	onmouseout="hideOrderPopup({order_id})">
+			{order_id}       
+				<div class="orderPopup" id="order_{order_id}">
+					<table width="100%" cellspacing="1" cellpadding="2">
+					<tr class="middle">
+						<td align="left"><b>{PROD_TITLE_COLUMN}</b></td>
+						<td align="left"><b>{STATUS_MSG}</b></td>
+						<td align="center"><b>{PROD_QTY_COLUMN}</b></td>
+						<td align="right"><b>{PROD_PRICE_COLUMN}</b></td>
+					</tr><!-- BEGIN order_items -->
+					<tr class="usual">
+						<td align="left" nowrap>{item_name}</td>
+						<td align="center" nowrap>{item_status}</td>
+						<td align=center>{quantity}</td>
+						<td align=right>{price}</td>
+					</tr><!-- END order_items -->
+					<tr class="middle">
+						<td align="right"><b>{GOODS_TOTAL_MSG}</b></td>
+						<td>&nbsp;</td>
+						<td align=center>{total_quantity}</td>
+						<td align=right>{total_price}</td>
+					</tr>
+					</table>
+				</div>
+		</td>
+		<td>
+				{order_status}
+		</td>
+		<td>{order_placed_date}</td>
+		<td align="right">{order_total}</td>
+		<td><!-- begin invoice_links -->
+			<a href="{user_invoice_html_href}?order_id={order_id}" target="_blank"><img src="images/html_icon.gif" /></a>&nbsp;
+			<a href="{user_invoice_pdf_href}?order_id={order_id}"><img src="images/pdf_icon.gif" /></a><!-- end invoice_links -->
+		</td>
+		<!-- begin reorder_body -->
+		<td>
+			<a href="{user_orders_href}?operation=restore&order_id={order_id}&rp={user_orders_href}"><img src="./images/icons/user_cart.png" width="16" height="16" /></a>
+		</td><!-- end reorder_body -->
+		<td id="butTd">
+			<a href="{user_order_href}?order_id={order_id}">{VIEW_DETAILS_MSG}</a><!-- begin pay_link -->
+			<span> | </span>
+			<a href="{user_order_payment_href}?order_id={order_id}&vc={vc}">{PAY_FOR_YOUR_ORDER_MSG}</a><!-- end pay_link -->
+		</td>
+	</tr><!-- end records --><!-- begin no_records -->
+	<tr class="usualbg">
+		<td colspan="6">{NO_ORDERS_MSG}</td>
+	</tr><!-- end no_records --><!-- begin navigator_block -->
+	<tr class="middlebg">
+		<td colspan="6" align="right">{navigator}</td>
+	</tr><!-- end navigator_block -->
+	</table>	

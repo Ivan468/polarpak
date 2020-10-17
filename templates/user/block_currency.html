@@ -1,0 +1,12 @@
+	<form action="{current_href}" name="currency" method="get">
+	{hidden_parameters}
+	<div class="padding10px">
+		<!-- begin select_currencies -->
+		<select class="field" name="currency_code">
+		<!-- begin currencies --><option {currency_selected} value="{currency_code}">{currency_title}</option><!-- end currencies -->
+		</select>
+		<span class="submit"><input class="submit" type="submit" value="{APPLY_BUTTON}" /></span>
+		<!-- end select_currencies -->
+		<!-- begin currencies_images --><a href="{currency_url}"><img src="{src}" alt="{currency_title}" title="{currency_title}" /></a> <!-- end currencies_images -->
+	</div>
+	</form>

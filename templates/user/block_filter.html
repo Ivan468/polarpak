@@ -1,0 +1,30 @@
+	<table cellpadding="0" cellspacing="0"><!-- begin filter_properties_rows -->
+	<tr><!-- begin filter_properties_cols -->
+		<td valign="top" class="padding10px">
+			<div class="filter-name">{property_name}</div>
+
+			<!-- begin filter_values -->
+			<div class="filter-value"><!-- begin filter_image -->
+				<a class="filter-image" href="{filter_url}"><img src="{src}"/></a><!-- end filter_image -->
+				<a class="filter-desc" href="{filter_url}"><span class="filter-title">{value_title}</span> <span class="filter-total">({value_total})</span></a>
+			</div><!-- end filter_values -->
+
+			<!-- begin filter_more_link -->
+			<div>
+				<a id="fp_link_{property_id}" href="#" onclick="popupBlock('fp_link_{property_id}', 'fp_more_{property_id}', 'fp_image_{property_id}'); return false;">
+				<img id="fp_image_{property_id}" src="images/icons/plus_small.gif" width="9" height="9" alt="" />
+				{MORE_MSG}
+				</a>
+			</div><!-- end filter_more_link -->
+
+			<div id="fp_more_{property_id}" class="filterPopup"><!-- begin filter_more_values -->
+				<!-- begin filter_image -->
+				<a class="filter-image" href="{filter_url}"><img src="{src}"/></a><!-- end filter_image -->
+				<span class="nobr"><a href="{filter_url}">{value_title} ({value_total})</a></span><br /><!-- end filter_more_values -->
+			</div>
+
+			<!-- begin filter_selected -->
+			<b>{value_title}</b> - <a href="{filter_url}">{REMOVE_FILTER_MSG}</a><!-- end filter_selected -->
+		</td><!-- end filter_properties_cols -->
+	</tr><!-- end filter_properties_rows -->
+	</table>

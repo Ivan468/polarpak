@@ -1,0 +1,71 @@
+<script type="text/javascript" src="js/calendar.js"></script>
+
+	<form action="{user_reminder_href}" name="reminder" method="post">
+	<input type="hidden" name="operation" value="save" />
+	<input type="hidden" name="reminder_id" value="{reminder_id}" />
+	<table width="100%" cellspacing="1" align="center" class="table-data">
+	<tr class="usualbg">
+		<td colspan="2" class="smallText" align="right">{ASTERISK_MSG}</td>
+	</tr><!-- BEGIN errors -->
+	<tr class="usualbg">
+		<td colspan="2" align="center">
+			<div class="errorbg">{errors_list}</div>
+		</td>
+	</tr><!-- END errors -->
+	<tr class="usualbg">
+		<td>Reminder Title <span class="required">*</span></td>
+		<td><input class="text" type="text" name="reminder_title" value="{reminder_title}" size="50" maxlength="255" /></td>
+	</tr>
+	<tr class="usualbg">
+		<td>Reminder Notes</td>
+		<td><textarea name="reminder_notes" cols="60" rows="5">{reminder_notes}</textarea></td>
+	</tr>
+	<tr class="usualbg">
+		<td>Reminder Date </td>
+		<td><!-- begin reminder_month_block -->
+			<select name="reminder_month"><!-- begin reminder_month -->
+				<option {reminder_month_selected} value="{reminder_month_value}">{reminder_month_description}</option><!-- end reminder_month -->
+			</select><!-- end reminder_month_block -->
+			<input class="text" type="text" name="reminder_day" value="{reminder_day}" size="2" maxlength="2" placeholder="{DAY_MSG}"/>&nbsp;
+			<input class="text" type="text" name="reminder_year" value="{reminder_year}" size="4" maxlength="4" placeholder="{YEAR_MSG}"/>
+		</td>
+	</tr>
+	<tr class="usualbg">
+		<td>Start Date</td>
+		<td>
+			<input class="text" type="text" name="start_date" value="{start_date}" size="20" maxlength="20" />
+			<a HREF="#"
+				onclick="setDateField(document.reminder.start_date, '{date_edit_format}');
+				top.newWin = window.open('js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+			<img src="images/icons/calendar.gif" alt="{CALENDAR_MSG}" align="top" /></a>
+			({date_format_msg})
+		</td>
+	</tr>
+	<tr class="usualbg">
+		<td>End Date</td>
+		<td>
+			<input class="text" type="text" name="end_date" value="{end_date}" size="20" maxlength="20" />
+			<a HREF="#"
+				onclick="setDateField(document.reminder.end_date, '{date_edit_format}');
+				top.newWin = window.open('js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+			<img src="images/icons/calendar.gif" alt="{CALENDAR_MSG}" align="top" /></a>
+			({date_format_msg})
+		</td>
+	</tr>
+	<tr class="usualbg">
+		<td>Reminder Weekdays</td>
+		<td>
+			<!-- begin weekdays--><input type="checkbox" {weekdays_checked} name="weekdays_{weekdays_index}" value="{weekdays_value}" />{weekdays_description}<br /><!-- end weekdays-->
+			<input type="hidden" name="weekdays" value="7" />
+		</td>
+	</tr>
+	<tr class="middlebg">
+		<td>&nbsp;</td>
+		<td><!-- begin save_button -->
+			<span class="submit"><input class="submit" type="submit" value="{save_button_title}" onclick="document.reminder.operation.value='save';" /></span><!-- end save_button --><!-- BEGIN delete -->
+			<span class="submit"><input class="submit" id="delete" type="submit" value="{DELETE_BUTTON}" onclick="document.reminder.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');" /></span><!-- END delete -->
+			<span class="submit"><input class="submit" id="cancel" type="submit" value="{CANCEL_BUTTON}" onclick="document.reminder.operation.value='cancel';" /></span>
+		</td>
+	</tr>
+	</table>
+	</form>

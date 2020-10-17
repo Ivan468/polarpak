@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {EDIT_TAX_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_TAX_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_tax_rate_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="tax_id" value="{tax_id}">
+<input type="hidden" name="page" value="{page}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="usual">
+	<td width="20%"><label for="is_default">{DEFAULT_MSG}</label></td>
+	<td><input type="checkbox" name="is_default" id="is_default" {is_default} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{TAX_TYPE_MSG} *</td>
+	<td><!-- BEGIN tax_type -->
+		<input type="radio" name="tax_type" id="tax_type{tax_type_value}" {tax_type_checked} value="{tax_type_value}">
+		<label for="tax_type{tax_type_value}">{tax_type_description}</label><!-- END tax_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{TAX_NAME_MSG} *</td>
+	<td><input class="field" type="text" size="60" name="tax_name" value="{tax_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{ADVANCED_PHP_LIBRARY_MSG}</td>
+	<td>
+		<input type="text" class="field" name="tax_php_lib" value="{tax_php_lib}" size="60"> 
+</tr>
+<tr class="usual">
+	<td>{SHOW_TAX_MSG}</td>
+	<td>
+		<input type="checkbox" name="show_tax_in_column" id="show_tax_in_column" {show_tax_in_column} value="1"> <label for="show_tax_in_column">{IN_COLUMN_MSG}</label>
+		<input type="checkbox" name="show_tax_below_product" id="show_tax_below_product" {show_tax_below_product} value="1"> <label for="show_tax_below_product">{BELOW_PRODUCT_MSG}</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{COUNTRY_FIELD} *</td>
+	<td>
+		<select name="country_id"><!-- begin country_id -->
+			<option {country_id_selected} value="{country_id_value}">{country_id_description}<!-- end country_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{STATE_FIELD}</td>
+	<td>
+		<select name="state_id"><!-- begin state_id -->
+			<option {state_id_selected} value="{state_id_value}">{state_id_description}<!-- end state_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ZIP_FIELD}</td>
+	<td>
+		<textarea class="field" cols="60" rows="3" name="postal_code">{postal_code}</textarea>
+		({EG_MSG} 500; 501; 502)
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{BASIC_TAX_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{PERCENTAGE_MSG} *</td>
+	<td><input class="field" type="text" size="10" name="tax_percent" value="{tax_percent}" maxlength="10"></td>
+</tr>
+<tr class="usual">
+	<td>{FIXED_AMOUNT_MSG} ({PER_PRODUCT_MSG})</td>
+	<td><input class="field" type="text" size="10" name="fixed_amount" value="{fixed_amount}" maxlength="10"></td>
+</tr>
+<tr class="usual">
+	<td>{FIXED_AMOUNT_MSG} ({PER_ORDER_MSG})</td>
+	<td><input class="field" type="text" size="10" name="order_fixed_amount" value="{order_fixed_amount}" maxlength="10"></td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{INDIVIDUAL_TAX_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>
+		<br/><br/><span class="comment">{INDIVIDUAL_TAX_DESC}</span>
+	</td>
+	<td>
+		<table cellpadding="4" cellspacing="1" border="0">
+		<tr align="center" valign="top">
+			<td>&nbsp;</td>
+			<th>{PERCENTAGE_MSG}</th>
+			<th>{FIXED_AMOUNT_MSG}<br/>({PER_PRODUCT_MSG})</th>
+		</tr>
+		<tr>
+			<td>{SHIPPING_TAX_MSG}</td>
+			<td><input class="field" type="text" size="10" name="shipping_tax_percent" value="{shipping_tax_percent}" maxlength="10"></td>
+			<td><input class="field" type="text" size="10" name="shipping_fixed_amount" value="{shipping_fixed_amount}" maxlength="10"></td>
+		</tr><!-- begin tax_rates_items -->
+		<tr>
+			<td>{item_type_name}</td>
+			<td><input class="field" type="text" size="10" name="item_tax_percent_{item_type_id}" value="{item_tax_percent}" maxlength="10"></td>
+			<td><input class="field" type="text" size="10" name="item_fixed_amount_{item_type_id}" value="{item_fixed_amount}" maxlength="10"></td>
+		</tr><!-- end tax_rates_items -->
+		</table>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

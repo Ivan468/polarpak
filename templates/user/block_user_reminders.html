@@ -1,0 +1,35 @@
+	<table cellspacing="1" width="100%" class="table-data"><!-- begin sorters -->
+	<tr class="middlebg" align="center">
+		<td>{sorter_id}</td>
+		<td>{sorter_title}</td>
+		<td>{sorter_start}</td>
+		<td>{sorter_end}</td>
+		<!--td>{sorter_year}</td>
+		<td>{sorter_month}</td>
+		<td>{sorter_day}</td-->
+		<td>{sorter_reminder_date}</td>
+		<td>{sorter_weekdays}</td>
+		<td>&nbsp;</td>
+	</tr><!-- end sorters --><!-- BEGIN records -->
+	<tr class="usualbg" valign="top" align="center">
+		<td>{reminder_id}</td>
+		<td>{reminder_title}</td>
+		<td>{start_date}</td>
+		<td>{end_date}</td>
+		<!--td>{reminder_year}</td>
+		<td>{reminder_month}</td>
+		<td>{reminder_day}</td-->
+		<td>{reminder_date}</td>
+		<td>{reminder_weekdays}</td>
+		<td><a href="{user_reminder_href}?reminder_id={reminder_id}">{EDIT_MSG}</a></td>
+	</tr><!-- END records --><!-- BEGIN no_records -->
+	<tr class="usualbg">
+		<td>{NO_REMINDERS_MSG}</td>
+	</tr><!-- END no_records -->
+	</table>	
+	<table cellspacing="1" width="100%" class="table-data">
+	<tr class="middlebg">
+		<td><a href="{user_reminder_href}">{ADD_NEW_MSG}</a></td><!-- begin navigator_block -->
+		<td align="right">{navigator}</td><!-- end navigator_block -->
+	</tr>
+	</table>

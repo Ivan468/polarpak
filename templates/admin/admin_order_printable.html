@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{PRINTABLE_PAGE_SETTINGS_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="../js/admin.js"></script>
+</head>
+<body class="mainbg">
+{admin_header}
+<form action="{admin_order_printable_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="rp" value="{rp}">
+<input type="hidden" name="tab" value="{tab}">
+
+<div class="sitelist"><!-- begin sitelist -->
+	{SELECT_SITE_MSG}&nbsp;
+	<select name="param_site_id" onchange="reloadSite(this.form)"><!-- begin param_site_id -->
+		<option {param_site_id_selected} value="{param_site_id_value}">{param_site_id_description}<!-- end param_site_id -->
+	</select>		
+<!-- end sitelist --></div>
+{block_leftside_breadcrumbs}
+
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<div id="tabs"><!-- BEGIN tabs_rows -->
+	<ul id="{row_id}" class="tabRow"><!-- BEGIN tabs -->
+		<li id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+	</ul><!-- END tabs_rows -->
+</div>
+
+<div class="Block clearBoth">
+<div class="BlockContent">
+
+<div id="data_general" style="{general_style}">
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2">{PDF_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td width="20%">{LIBARARY_FOR_GENERATING_PDF_MSG}</td>
+	<td><!-- Begin pdf_lib -->
+		<input type="radio" name="pdf_lib" id="pdf_lib{pdf_lib_value}" {pdf_lib_checked} value="{pdf_lib_value}">
+		<label for="pdf_lib{pdf_lib_value}">{pdf_lib_description}</label><!-- end pdf_lib -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{PAGE_TYPE_PDF_MSG}</td>
+	<td><!-- Begin pdf_page_type -->
+		<input type="radio" name="pdf_page_type" id="pdf_page_type{pdf_page_type_value}" {pdf_page_type_checked} value="{pdf_page_type_value}">
+		<label for="pdf_page_type{pdf_page_type_value}">{pdf_page_type_description}</label><!-- end pdf_page_type -->
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="data_invoice" style="{invoice_style}">
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2">{INVOICE_PAGE_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual" valign="top">
+	<td>
+		{IMAGE_LOGO_MSG}<br>
+	</td>
+	<td>
+		<input class="field" type="text" size="80" maxlength="255" name="invoice_logo" value="{invoice_logo}">
+		({INVOICE_IMAGE_LOGO_NOTE})
+	</td>
+</tr>
+<tr class="usual" valign="top">
+	<td>
+		{IMAGE_LOGO_DPI_MSG}<br>
+	</td>
+	<td>
+		<input class="field" type="text" size="10" maxlength="5" name="invoice_logo_dpi" value="{invoice_logo_dpi}">
+		({IMAGE_LOGO_DPI_NOTE})
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">{INVOICE_NUMBER_MSG}</td>
+	<td><!-- begin invoice_number_show -->
+		<input type="radio" name="invoice_number_show" id="invoice_number_show{invoice_number_show_value}" {invoice_number_show_checked} value="{invoice_number_show_value}">
+		<label for="invoice_number_show{invoice_number_show_value}">{invoice_number_show_description}</label><!-- end invoice_number_show -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		{HEADER_MSG}<br><br>
+		({INVOICE_HEADER_NOTE})
+	</td>
+	<td>
+		<textarea name="invoice_header" cols="47" rows="8">{invoice_header}</textarea>
+		<textarea name="invoice_side_header" cols="46" rows="8">{invoice_side_header}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		{FOOTER_MSG}<br><br>
+		({INVOICE_FOOTER_NOTE})
+	</td>
+	<td><textarea name="invoice_footer" cols="100" rows="5">{invoice_footer}</textarea></td>
+</tr>
+<tr class="usual">
+	<td valign="top"><label for="item_code_invoice">{PROD_CODE_MSG}</label></td>
+	<td>
+		<input type="checkbox" {item_code_invoice} name="item_code_invoice" id="item_code_invoice" value="1">
+		<label for="item_code_invoice">{SHOW_PRODUCT_CODE_MSG}</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="manufacturer_code_invoice">{MANUFACTURER_CODE_MSG}</label></td>
+	<td>
+		<input type="checkbox" {manufacturer_code_invoice} name="manufacturer_code_invoice" id="manufacturer_code_invoice" value="1">
+		<label for="manufacturer_code_invoice">{SHOW_MANUFACTURER_CODE_MSG}</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_MSG}</td>
+	<td>
+		<select name="invoice_item_image"><!-- begin invoice_item_image -->
+			<option {invoice_item_image_selected} value="{invoice_item_image_value}">{invoice_item_image_description}<!-- end invoice_item_image -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{WEIGHT_MSG}</td>
+	<td>
+		<input type="checkbox" {item_weight_invoice} name="item_weight_invoice" id="item_weight_invoice" value="1">
+		<label for="item_weight_invoice">{ITEM_WEIGHT_MSG}</label>
+		<input type="checkbox" {actual_weight_invoice} name="actual_weight_invoice" id="actual_weight_invoice" value="1">
+		<label for="actual_weight_invoice">{ACTUAL_WEIGHT_MSG}</label>
+		<input type="checkbox" {total_weight_invoice} name="total_weight_invoice" id="total_weight_invoice" value="1">
+		<label for="total_weight_invoice">{WEIGHT_TOTAL_MSG}</label>
+		<input type="checkbox" {total_actual_weight_invoice} name="total_actual_weight_invoice" id="total_actual_weight_invoice" value="1">
+		<label for="total_actual_weight_invoice">{WEIGHT_TOTAL_MSG} ({ACTUAL_WEIGHT_MSG})</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CART_COLUMNS_MSG}</td>
+	<td>
+		<div class="floatLeft half25"><input type="checkbox" {invoice_ordinal_number} name="invoice_ordinal_number" id="invoice_ordinal_number" value="1">
+		<label for="invoice_ordinal_number">{ORDINAL_NUMBER_MSG}</label></div>
+		<div class="floatLeft half25"><input type="checkbox" {invoice_item_name} name="invoice_item_name" id="invoice_item_name" value="1">
+		<label for="invoice_item_name">{PROD_NAME_MSG}</label></div>
+		<div class="floatLeft half25"><input type="checkbox" {invoice_item_price} name="invoice_item_price" id="invoice_item_price" value="1">
+		<label for="invoice_item_price">{PRICE_EXCL_TAX_MSG}</label></div>
+		<div class="floatLeft half25"><input type="checkbox" {invoice_item_tax_percent} name="invoice_item_tax_percent" id="invoice_item_tax_percent" value="1">
+		<label for="invoice_item_tax_percent">{TAX_PERCENTAGE_MSG}</label></div>
+		<div class="floatLeft half25"><input type="checkbox" {invoice_item_tax} name="invoice_item_tax" id="invoice_item_tax" value="1">
+		<label for="invoice_item_tax">{TAX_MSG}</label></div>
+		<div class="floatLeft half25"><input type="checkbox" {invoice_item_price_incl_tax} name="invoice_item_price_incl_tax" id="invoice_item_price_incl_tax" value="1">
+		<label for="invoice_item_price_incl_tax">{PRICE_INCL_TAX_MSG}</label></div>
+		<div class="floatLeft half25"><input type="checkbox" {invoice_item_quantity} name="invoice_item_quantity" id="invoice_item_quantity" value="1">
+		<label for="invoice_item_quantity">{QUANTITY_MSG}</label></div>
+		<div class="floatLeft half50"><input type="checkbox" {invoice_item_price_total} name="invoice_item_price_total" id="invoice_item_price_total" value="1">
+		<label for="invoice_item_price_total">{TOTAL_PRICE_EXCL_TAX_MSG} ({PRICE_MSG} x {QUANTITY_MSG})</label></div>
+		<div class="floatLeft half25"><input type="checkbox" {invoice_item_tax_total} name="invoice_item_tax_total" id="invoice_item_tax_total" value="1">
+		<label for="invoice_item_tax_total">{TOTAL_TAX_MSG} ({TAX_MSG} x {QUANTITY_MSG})</label></div>
+		<div class="floatLeft half50"><input type="checkbox" {invoice_item_price_incl_tax_total} name="invoice_item_price_incl_tax_total" id="invoice_item_price_incl_tax_total" value="1">
+		<label for="invoice_item_price_incl_tax_total">{TOTAL_PRICE_INCL_TAX_MSG} ({PRICE_INCL_TAX_MSG} x {QUANTITY_MSG})</label></div>
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="invoice_copy_number">{INVOICE_COPY_NUMBER_MSG}</label></td>
+	<td>
+		<input type="checkbox" {invoice_copy_number} name="invoice_copy_number" id="invoice_copy_number" value="1">
+		<label for="invoice_copy_number">{SHOW_PRINT_COPY_NUMBER_MSG}</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="invoice_page_number">{INVOICE_PAGE_NUMBER_MSG}</label></td>
+	<td>
+		<input type="checkbox" {invoice_page_number} name="invoice_page_number" id="invoice_page_number" value="1">
+		<label for="invoice_page_number">{SHOW_PAGE_NUMBER_MSG}</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top"><label for="invoice_packing_slip">{ADMIN_PACKING_SLIP_MSG}</label></td>
+	<td>
+		<input type="checkbox" {invoice_packing_slip} name="invoice_packing_slip" id="invoice_packing_slip" value="1">
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">
+		{PAYMENT_DETAILS_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td colspan="2"> 
+		<input type="checkbox" {invoice_payment_gateway} name="invoice_payment_gateway" id="invoice_payment_gateway" value="1">
+		<label for="invoice_payment_gateway">{PAYMENT_GATEWAY_MSG}</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td colspan="2">
+		<input type="checkbox" {invoice_payment_info} name="invoice_payment_info" id="invoice_payment_info" value="1">
+		<label for="invoice_payment_info">{PAYMENT_INFO_MSG} ({SHOWN_FOR_USERS_MSG})</label>
+	</td>
+</tr>
+
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="data_packing" style="{packing_style}">
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2">{PACKING_SLIP_PAGE_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		{IMAGE_LOGO_MSG}<br>
+	</td>
+	<td>
+		<input class="field" type="text" size="80" maxlength="255" name="packing_logo" value="{packing_logo}">
+		({INVOICE_IMAGE_LOGO_NOTE})
+	</td>
+</tr>
+<tr class="usual" valign="top">
+	<td>
+		{IMAGE_LOGO_DPI_MSG}<br>
+	</td>
+	<td>
+		<input class="field" type="text" size="10" maxlength="5" name="packing_logo_dpi" value="{packing_logo_dpi}">
+		({IMAGE_LOGO_DPI_NOTE})
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">{INVOICE_NUMBER_MSG}</td>
+	<td><!-- begin packing_number_show -->
+		<input type="radio" name="packing_number_show" id="packing_number_show{packing_number_show_value}" {packing_number_show_checked} value="{packing_number_show_value}">
+		<label for="packing_number_show{packing_number_show_value}">{packing_number_show_description}</label><!-- end packing_number_show -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_MSG}</td>
+	<td>
+		<select name="packing_image"><!-- begin packing_image -->
+			<option {packing_image_selected} value="{packing_image_value}">{packing_image_description}<!-- end packing_image -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">{PROD_CODE_MSG}</td>
+	<td><!-- begin item_code_packing -->
+		<input type="radio" name="item_code_packing" id="item_code_packing{item_code_packing_value}" {item_code_packing_checked} value="{item_code_packing_value}">
+		<label for="item_code_packing{item_code_packing_value}">{item_code_packing_description}</label><!-- end item_code_packing -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">{MANUFACTURER_CODE_MSG}</td>
+	<td><!-- begin manufacturer_code_packing -->
+		<input type="radio" name="manufacturer_code_packing" id="manufacturer_code_packing{manufacturer_code_packing_value}" {manufacturer_code_packing_checked} value="{manufacturer_code_packing_value}">
+		<label for="manufacturer_code_packing{manufacturer_code_packing_value}">{manufacturer_code_packing_description}</label><!-- end manufacturer_code_packing -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{WEIGHT_MSG}</td>
+	<td>
+		<input type="checkbox" {item_weight_packing} name="item_weight_packing" id="item_weight_packing" value="1">
+		<label for="item_weight_packing">{ITEM_WEIGHT_MSG}</label>
+		<input type="checkbox" {actual_weight_packing} name="actual_weight_packing" id="actual_weight_packing" value="1">
+		<label for="actual_weight_packing">{ACTUAL_WEIGHT_MSG}</label>
+		<input type="checkbox" {total_weight_packing} name="total_weight_packing" id="total_weight_packing" value="1">
+		<label for="total_weight_packing">{WEIGHT_TOTAL_MSG}</label>
+		<input type="checkbox" {total_actual_weight_packing} name="total_actual_weight_packing" id="total_actual_weight_packing" value="1">
+		<label for="total_actual_weight_packing">{WEIGHT_TOTAL_MSG} ({ACTUAL_WEIGHT_MSG})</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top"><label for="sc_properties_packing">{SHOW_SC_CUSTOM_PROPERTIES_MSG}</label></td>
+	<td>
+		<input type="checkbox" {sc_properties_packing} name="sc_properties_packing" id="sc_properties_packing" value="1">
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top"><label for="shipping_method_packing">{SHOW_SHIPPING_METHOD_MSG}</label></td>
+	<td>
+		<input type="checkbox" {shipping_method_packing} name="shipping_method_packing" id="shipping_method_packing" value="1">
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top"><label for="sw_orders_coupons_ps">Show order coupons</label></td>
+	<td>
+		<input type="checkbox" {sw_orders_coupons_ps} name="sw_orders_coupons_ps" id="sw_orders_coupons_ps" value="1">
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		{HEADER_MSG}<br><br>
+		({INVOICE_HEADER_NOTE})
+	</td>
+	<td><textarea name="packing_header" cols="80" rows="8">{packing_header}</textarea></td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		{FOOTER_MSG}<br><br>
+		({INVOICE_FOOTER_NOTE})
+	</td>
+	<td><textarea name="packing_footer" cols="80" rows="8">{packing_footer}</textarea></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+</div>
+</div>
+</form>
+
+{admin_footer}
+
+</body>
+</html>

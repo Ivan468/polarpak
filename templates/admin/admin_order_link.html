@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{ADMINISTRATION_MSG} :: {ADMIN_EDIT_LINK_MSG}</title>
+<script language="JavaScript" type= "text/javascript" src="../js/calendar.js"></script>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{ADMIN_EDIT_LINK_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_order_link_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="download_id" value="{download_id}">
+<input type="hidden" name="order_id" value="{order_id}">
+<input type="hidden" name="user_id" value="{user_id}">
+<input type="hidden" name="item_id" value="{item_id}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table width="100%" border="0" cellspacing="1" cellpadding="6" align="center">
+<tr class="usual">
+	<td><label for="activated">{ADMIN_ACTIVATED_MSG}</label></td>
+	<td><input type="checkbox" name="activated" id="activated" {activated} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{ADMIN_PRODUCT_MSG} *</td>
+	<td>
+		<select name="order_item_id"><!-- begin order_item_id -->
+			<option {order_item_id_selected} value="{order_item_id_value}">{order_item_id_description}<!-- end order_item_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{NOTES_MSG}</td>
+	<td><input class="field" type="text" size="80" name="download_notes" value="{download_notes}"></td>
+</tr>
+<tr class="usual">
+	<td>{ADMIN_DOWNLOAD_PATH_MSG}</td>
+	<td>
+		<div class="small">
+		<input class="field" type="text" size="80" name="download_path" value="{download_path}">
+		({LEAVE_BLANK_PRODUCT_PATH_MSG})</div>		
+	</td>
+</tr>
+<!-- begin download_added_block -->
+<tr class="usual">
+	<td>{DATE_ADDED_MSG} *</td>
+	<td>
+		<div class="small">
+		<input class="field" type="text" name="download_added" value="{download_added}">
+	</td>
+</tr>
+<!-- end download_added_block -->
+<tr class="usual">
+	<td>{EXPIRY_DATE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="download_expiry" value="{download_expiry}">
+		<a href="#"
+			onClick="setDateField(document.record.download_expiry, '{date_edit_format}');
+			top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+		({date_format_msg})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{MAXIMUM_DOWNLOADS_MSG}</td>
+	<td class="small">
+		<input class="field" type="text" name="max_downloads" size="10" value="{max_downloads}">
+		({MAXIMUM_DOWNLOADS_NOTE})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{DOWNLOAD_LIMIT_MSG}</td>
+	<td class="small">
+		<input class="field" type="text" name="download_limit" size="10" value="{download_limit}">
+		({DOWNLOAD_LIMIT_DESC})
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+</div>
+</div>
+
+<div class="Block">
+<div class="BlockTitle">{DOWNLOADS_STATISTICS_MSG}</div>
+<div class="BlockContent">
+
+
+<table border="0" cellpadding="6" cellspacing="1" width="100%"><!-- begin sorters -->
+<tr class="middle"align="center">
+	<td>{sorter_downloaded_date}</td>
+	<td>{sorter_remote_address}</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="usual" align="center">
+	<td>{downloaded_date}</td>
+	<td>{remote_address}</td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="2">{NO_DOWNLOADS_MSG}</td>
+</tr><!-- END no_records --><!-- begin navigator_block -->
+<tr class="middle">
+	<td colspan="2" align="right">{navigator}</td>
+</tr><!-- end navigator_block -->
+</table>	
+
+</div>
+</div>
+
+{admin_footer}
+
+</body>
+</html>

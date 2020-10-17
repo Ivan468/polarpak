@@ -1,0 +1,52 @@
+		<div class="profilePhotos" id="photo_block">
+			<!-- begin profile_photo --><a class="largePhoto" onclick="popupImage(this); return false;" href="{super_photo_src}"><img src="{photo_src}" alt="" {photo_size} /></a><!-- end profile_photo -->
+			<div style="clear:both;"></div>
+			<!-- begin profile_photos -->
+			<a class="smallPhoto" onclick="popupImage(this); return false;" href="{super_photo_src}"><img src="{small_photo_src}" alt="" {small_photo_size} /></a><!-- end profile_photos -->
+		</div>
+
+	<!-- 
+	<div class="smallPreview" id="smallPreview{image_id}"
+		onmouseover="highlightImage('{image_id}');" onmouseout="unhighlightImage('{image_id}');"><img id="smallImage{image_id}" src="{admin_image_small}" {image_size} alt="{image_alt}" /></div>-->
+
+		<div class="dProfile">
+			<div>
+				<span class="dName">{name}</span>,
+				<span class="dAge">{age}</span>
+			</div>
+
+			<div class="dAddress">
+				{country_name}<!-- begin 
+				state_block -->, {state_name}<!-- end state_block --><!-- begin 
+				city_block -->, {city}<!-- end city_block -->
+			</div>
+
+			<!-- begin personal_info_block -->
+			<div class="dPersonalInfo">
+				<b>{PERSONAL_INFO_FIELD}</b>: {personal_info}
+			</div><!-- end personal_info_block -->
+
+			<!-- begin ethnicity_block -->
+			<div>
+				<b>{ETHNICITY_MSG}</b>:
+				<span class="dEthnicity">{ethnicity_name}</span>
+			</div>
+			<!-- end ethnicity_block -->
+
+			<!-- begin height_block -->
+			<div>
+				<b>{HEIGHT_MSG}</b>:
+				<span class="dHeight">{height}</span>
+			</div>
+			<!-- end height_block -->
+
+			<br />
+			<!-- begin looking_info_block -->
+			<div class="dLookingInfo">
+				<b>{LOOKING_INFO_FIELD}</b>: {looking_info}
+			</div><!-- end looking_info_block -->
+
+
+			<br />
+			<a class="button" href="{send_message_url}"><span>{SEND_ME_MESSAGE_MSG}</span></a>
+		</div>

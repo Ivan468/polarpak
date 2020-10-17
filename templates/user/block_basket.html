@@ -1,0 +1,396 @@
+	<!-- begin before_block -->
+	<!-- begin call_center_mode --><div class="area bk-message">{CALL_CENTER_MODE_MSG}</div><!-- end call_center_mode -->
+	<!-- begin sc_errors --><div class="area bk-error">{errors_list}</div><!-- end sc_errors -->
+	<!-- end before_block -->
+
+
+	<div data-type="cart" data-pb-id="{pb_id}" data-id="pb_{pb_id}"></div>
+<script type="text/javascript">
+//<![CDATA[
+	var removeFromCart = "{REMOVE_FROM_CART_JS}";
+	var cartQtyZero = "{CART_QTY_ZERO_JS}";
+	var alterCartQty = "{ALTER_CART_QTY_JS}";
+	var requiredProperty = "{REQUIRED_PROPERTY_MSG}";
+	var requiredMessage = "{REQUIRED_MESSAGE}";
+	var msgMinMax = "{MIN_MAX_VALUE_MSG}";
+	var addProduct = "{CONFIRM_ADD_PRODUCT_MSG}";
+	var confirmAdd = "{confirm_add}";
+
+	var selectCountryFirst = "[{SELECT_COUNTRY_FIRST_MSG}]";
+	var noStatesForCountry = "[{NO_STATES_FOR_COUNTRY_MSG}]";
+	var site_url = "{site_url}";// <!-- begin states_json_block -->
+	var states = {states_json};// <!-- end states_json_block -->
+//]]>
+</script>
+
+		<!-- begin empty --><div class="bk-message">{EMPTY_CART_MSG}</div><!-- end empty -->
+
+		<!-- begin basket -->
+		<form name="basket" action="{basket_href}">
+		<input type="hidden" name="cart" value="QTY" />
+		<input type="hidden" name="rnd" value="{random_value}" />
+		<input type="hidden" name="cart_id" value="" />
+		<input type="hidden" name="new_quantity" value="" />
+		<table cellspacing="0" width="100%" class="shopping-cart">
+		<tr class="cart-title bg-title br-solid">
+			<!-- begin ordinal_number_header -->
+			<th class="ordinal-number">{ordinal_number_col_name}</th><!-- end ordinal_number_header -->
+			<!-- begin item_image_header -->
+			<th>{image_col_name}</th><!-- end item_image_header -->
+			<!-- begin item_name_header -->
+			<th>{name_col_name}</th><!-- end item_name_header -->
+			<!-- begin item_price_header -->
+			<th align="right">{price_excl_col_name}</th><!-- end item_price_header -->
+			<!-- begin item_tax_percent_header -->
+			<th align="right">{tax_percent_col_name}</th><!-- end item_tax_percent_header -->
+			<!-- begin item_tax_header -->
+			<th align="right">{tax_col_name}</th><!-- end item_tax_header -->
+			<!-- begin item_price_incl_tax_header -->
+			<th align="right">{price_incl_col_name}</th><!-- end item_price_incl_tax_header -->
+			<!-- begin item_quantity_header -->
+			<th align="center">{quantity_col_name}</th><!-- end item_quantity_header -->
+			<!-- begin item_price_total_header -->
+			<th align="right">{total_excl_col_name}</th><!-- end item_price_total_header -->
+			<!-- begin item_tax_total_header -->
+			<th align="right">{tax_total_col_name}</th><!-- end item_tax_total_header -->
+			<!-- BEGIN item_price_incl_tax_total_header -->
+			<th align="right">{total_incl_col_name}</th><!-- END item_price_incl_tax_total_header -->
+			<th>&nbsp;</th>
+		</tr><!-- begin items -->
+		<tr class="cart-item br-solid" valign="top">
+			<!-- begin ordinal_number_column -->
+			<td class="ordinal-number">
+				{ordinal_number}
+			</td><!-- end ordinal_number_column -->
+			<!-- begin item_image_column -->
+			<td class="item-image">
+				<!-- begin image_preview -->
+				<img src="{src}" alt="{alt}" />
+				<!-- end image_preview -->
+			</td>
+			<!-- end item_image_column -->
+			<!-- begin item_name_column -->
+			<td class="product-name">
+				<a href="{product_url}">{item_name}</a>
+				<!-- begin item_code_block -->
+				<div class="product-code"><span class="caption">{PROD_CODE_MSG}</span><span class="code">{item_code}</span></div><!-- end item_code_block -->	
+				<!-- begin manufacturer_code_block -->
+				<div class="manf-code"><span class="caption">{MANUFACTURER_CODE_MSG}</span><span class="code">{manufacturer_code}</span></div><!-- end manufacturer_code_block -->	
+
+				<div class="properties">{properties_values}</div>
+				<!-- begin components_block -->
+				<div class="subcomponents">{PROD_SUBCOMPONENTS_MSG}:</div>
+				<!-- begin components -->
+				<div>{selection_name} {component_quantity} x {component_name} {component_price} {component_icon}</div>
+				<!-- end components -->
+				<!-- end components_block -->
+				<!-- begin edit_options_link -->
+				<div class="editOptions"><a class="editOptions" href="{product_options_href}?cart_id={cart_id}">{EDIT_OPTIONS_MSG}</a></div>
+				<!-- end edit_options_link -->
+				<!-- begin choose_options_link -->
+				<div class="chooseOptions"><a class="chooseOptions" href="{product_options_href}?cart_id={cart_id}">{CHOOSE_OPTIONS_MSG}</a></div>
+				<!-- end choose_options_link -->
+
+				<!-- begin specification_block -->
+					<!-- begin spec_groups -->
+					<div><b><u>{group_name}</u></b></div><!-- begin spec_features -->
+					<div>{feature_name}: {feature_value}</div><!-- end spec_features --><!-- end spec_groups -->
+				<!-- end specification_block -->
+				<!-- begin item_taxes -->
+				<div>{tax_name}:&nbsp;{tax_amount_total}</div><!-- end item_taxes -->
+				<!-- begin points_price_block -->
+				<div class="points_price">{POINTS_PRICE_MSG}:&nbsp;{points_price}</div><!-- end points_price_block -->
+				<!-- begin reward_points_block -->
+				<div class="reward_points">{REWARD_POINTS_MSG}:&nbsp;{reward_points}</div><!-- end reward_points_block -->
+				<!-- begin reward_credits_block -->
+				<div class="reward_credits">{REWARD_CREDITS_MSG}:&nbsp;{reward_credits}</div><!-- end reward_credits_block -->
+				<!-- begin item_error -->
+				<div class="error">{errors_list}</div>
+				<!-- end item_error -->
+				<!-- begin item_notice --><div class="comment">{notice_list}</div><!-- end item_notice -->
+			</td>
+			<!-- end item_name_column -->
+			<!-- begin item_price_column -->
+			<td class="price-excl-tax" align="right">{price_excl_tax}</td><!-- end item_price_column -->
+			<!-- begin item_tax_percent_column -->
+			<td class="tax-percent" align="right">{tax_percent}</td><!-- end item_tax_percent_column -->
+			<!-- begin item_tax_column -->
+			<td class="tax-amount" align="right">{tax}&nbsp;</td><!-- end item_tax_column -->
+			<!-- begin item_price_incl_tax_column -->
+			<td class="price-incl-tax" align="right">{price_incl_tax}</td><!-- end item_price_incl_tax_column -->
+			<!-- begin item_quantity_column -->
+			<td class="qty-control" align="center">
+					<!-- begin quantity_select -->
+					<select class="quantity-select" onchange="changeCartQty(this);" data-cart-id="{cart_id}" data-product-name="{item_name}" data-quantity="{quantity}"><!-- begin quantity_options -->
+						<option {quantity_selected} value="{quantity_value}">{quantity_description}</option><!-- end quantity_options -->
+					</select>
+					<!-- end quantity_select -->
+					<!-- begin quantity_textbox -->
+					<input type="text" class="field quantity-textbox"  value="{quantity}" size="4" maxlength="6" data-cart-id="{cart_id}" data-product-name="{item_name}" data-quantity="{quantity}" onchange="changeCartQty(this);"  onkeypress="return checkChanges(event, this);">
+					<!-- end quantity_textbox -->
+
+					<!-- begin quantity_label -->
+					<div class="quantity-label">{quantity}</div>
+					<!-- end quantity_label -->
+
+			</td><!-- end item_quantity_column -->
+			<!-- begin item_price_excl_tax_total_column -->
+			<td class="price-excl-tax-total" align="right">{price_excl_tax_total}</td><!-- end item_price_excl_tax_total_column -->
+			<!-- begin item_tax_total_column -->
+			<td class="tax-total" align="right">{tax_total}</td><!-- end item_tax_total_column -->
+			<!-- begin item_price_incl_tax_total_column -->
+			<td class="price-incl-tax-total" align="right">{price_incl_tax_total}</td><!-- end item_price_incl_tax_total_column -->
+			<td class="item-remove" align="center"><a href="{remove_href}" onclick="return confirmDelete('{item_type}');"><span>{REMOVE_FROM_CART_MSG}</span></a></td>
+		</tr><!-- end items -->
+		<tr class="cart-total bg-title br-solid">
+			<td colspan="{goods_colspan}">
+				<table width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td><!-- begin reward_points_total_block -->
+						<div>{REWARD_POINTS_MSG}: {reward_points_total}</div><!-- end reward_points_total_block --><!-- begin reward_credits_total_block -->
+						<div>{REWARD_CREDITS_MSG}: {reward_credits_total}</div><!-- end reward_credits_total_block -->
+					</td>
+					<td align="right"><b>{GOODS_TOTAL_MSG}</b></td>
+				</tr>
+				</table>
+			</td>
+			<!-- begin goods_total_quantity_column -->
+			<td align="center">
+				<b>{total_quantity}&nbsp;</b>
+			</td>
+			<!-- end goods_total_quantity_column -->
+			<!-- BEGIN goods_total_excl_tax_column -->
+			<td align="right"><b>{goods_total_excl_tax}</b></td><!-- END goods_total_excl_tax_column -->
+			<!-- BEGIN goods_tax_total_column -->
+			<td align="right"><b>{goods_tax_total}</b></td><!-- END goods_tax_total_column -->
+			<!-- BEGIN goods_total_incl_tax_column -->
+			<td align="right"><b>{goods_total_incl_tax}</b></td><!-- END goods_total_incl_tax_column -->
+			<td><b>&nbsp;</b></td>
+		</tr><!-- begin coupons -->
+		<tr class="usualbg" valign="top">
+			<td class="usualbg" colspan="{columns_colspan}">{coupon_title}</td>
+			<!-- BEGIN discount_amount_excl_tax_column -->
+			<td align="right">{discount_amount_excl_tax}</td><!-- END discount_amount_excl_tax_column -->
+			<!-- BEGIN discount_tax_column -->
+			<td align="right">{discount_tax_amount}</td><!-- END discount_tax_column -->
+			<!-- BEGIN discount_amount_incl_tax_column -->
+			<td align="right">{discount_amount_incl_tax}</td><!-- END discount_amount_incl_tax_column -->
+			<td align="center"><a href="{remove_href}" onclick="return confirmDelete('{item_type}');">{COUPON_REMOVE_MSG}</a></td>
+		</tr><!-- end coupons --><!-- begin discount -->
+		<tr class="middlebg">
+			<td colspan="{columns_colspan}" align="right"><b>{TOTAL_DISCOUNT_MSG}</b></td>
+			<!-- BEGIN total_discount_amount_excl_tax_column -->
+			<td align="right"><b>{total_discount_excl_tax}</b></td><!-- END total_discount_amount_excl_tax_column -->
+			<!-- BEGIN total_discount_tax_column -->
+			<td align="right"><b>{total_tax_discount_amount}</b></td><!-- END total_discount_tax_column -->
+			<!-- BEGIN total_discount_amount_incl_tax_column -->
+			<td align="right"><b>{total_discount_incl_tax}</b></td><!-- END total_discount_amount_incl_tax_column -->
+			<td><b>&nbsp;</b></td>
+		</tr><!-- end discount -->
+		<!-- begin vouchers -->
+		<tr class="usualbg" valign="top">
+			<td class="usualbg" colspan="{columns_colspan}">{voucher_title} ({voucher_max_amount})</td>
+			<!-- BEGIN voucher_excl_tax_column -->
+			<td align="right">{voucher_amount_excl_tax}</td><!-- END voucher_excl_tax_column -->
+			<!-- BEGIN voucher_tax_column -->
+			<td align="right">{voucher_tax_amount}</td><!-- END voucher_tax_column -->
+			<!-- BEGIN voucher_incl_tax_column -->
+			<td align="right">{voucher_amount_incl_tax}</td><!-- END voucher_incl_tax_column -->
+			<td align="center"><a href="{remove_href}" onclick="return confirmDelete('{item_type}');">{COUPON_REMOVE_MSG}</a></td>
+		</tr><!-- end vouchers --><!-- begin discounted -->
+		<tr class="middlebg">
+			<td colspan="{columns_colspan}" align="right"><b>{GOODS_WITH_DISCOUNT_MSG}</b></td>
+			<!-- BEGIN discounted_amount_excl_tax_column -->
+			<td align="right"><b>{discounted_amount_excl_tax}</b></td><!-- END discounted_amount_excl_tax_column -->
+			<!-- BEGIN discounted_tax_column -->
+			<td align="right"><b>{discounted_tax_amount}</b></td><!-- END discounted_tax_column -->
+			<!-- BEGIN discounted_amount_incl_tax_column -->
+			<td align="right"><b>{discounted_amount_incl_tax}</b></td><!-- END discounted_amount_incl_tax_column -->
+			<td><b>&nbsp;</b></td>
+		</tr><!-- end discounted -->
+		</table>
+		</form><!-- end basket -->
+		
+		<table width="100%" cellspacing="0" cellpadding="0" class="padding6px" align="center"><!-- begin coupon_errors -->
+		<tr>
+			<td><div class="errorbg">{errors_list}</div></td>
+			<td></td>
+		</tr><!-- end coupon_errors -->
+		<tr>
+			<td>
+				<!-- begin coupon_form -->
+				<div class="left coupon-form">
+					<form name="coupon" action="{basket_href}">
+					<input type="hidden" name="operation" value="add" />
+					{hidden_parameters}
+					<table cellspacing="1"><tr>
+					<td>{COUPON_CODE_FIELD}:</td>
+					<td><input class="field fd-coupon" size="16" type="text" name="coupon_code" value="{coupon_code}" /></td>
+					<td><input class="button bn-coupon" type="submit" value="{APPLY_BUTTON}" /></td>
+					</tr></table>
+					</form>
+				</div><!-- end coupon_form -->
+				<div class="cart-buttons right">
+					<!-- begin products_button -->
+					<a class="button bn-products" href="#" onclick="productsWin('{call_center_products_href}'); return false;"><b><span>{PRODUCTS_TITLE}</span></b></a>
+					<span class="spacer">&nbsp;|&nbsp;</span><!-- end products_button -->
+					<a class="button bn-shopping" id="shopping" href="{rp_href}"><b><span>{CONTINUE_SHOPPING_MSG}</span></b></a>
+					<span class="spacer">&nbsp;|&nbsp;</span>
+					<a class="button bn-retrieve" href="{cart_retrieve_href}"><span>{RETRIEVE_CART_BUTTON}</span></a><!-- begin basket_links -->
+					<span class="spacer">&nbsp;|&nbsp;</span>
+					<a class="button bn-save" href="{cart_save_href}"><span>{SAVE_CART_BUTTON}</span></a>
+					<span class="spacer">&nbsp;|&nbsp;</span>
+					<a class="button bn-clear" href="{remove_all_href}" onclick=" return confirm('{CLEAR_CART_JS}');"><span>{CLEAR_CART_MSG}</span></a>
+					<span class="spacer">&nbsp;|&nbsp;</span>
+					<!-- begin shipping_button -->
+					<a class="button bn-shipping" href="{shipping_calculator_href}" onclick="popupShippingWin('{shipping_calculator_href}'); return false;"><span>{SHIPPING_CALCULATOR_MSG}</span></a>
+					<span class="spacer">&nbsp;|&nbsp;</span>
+					<!-- end shipping_button -->
+					<a class="button bn-checkout" href="{checkout_href}"><b><span>{GOTO_CHECKOUT_MSG}</span></b></a><!-- end basket_links -->
+				</div>
+			</td>
+		</tr><!-- begin fast_checkout_form -->
+		<tr>
+			<td align="right">
+
+				<div class="fast-checkout-use">
+					&ndash;&ndash; or use &ndash;&ndash;
+				</div>
+
+				<form name="fast_checkout" action="{order_info_url}" method="post" onsubmit="return checkFastCheckoutDetails('{pb_id}');">
+				<input type="hidden" name="operation" value="fast_checkout" />
+				<input type="hidden" name="fast_payment_id" value="{fast_payment_id}" />
+				<input type="hidden" name="postcode_required" value="{fast_checkout_postcode_required}" />
+				<input type="hidden" name="state_required" value="{fast_checkout_state_id_required}" />
+				<input type="hidden" name="country_required" value="{fast_checkout_country_id_required}" />
+
+					<div class="fast-checkout-address">
+						<!-- begin fast_checkout_country_id_block -->
+						<div class="fast-checkout-country">
+						<span id="fast_checkout_country_name"><b>{COUNTRY_FIELD}</b>:</span> <span class="required">{fast_checkout_country_id_required}</span> 
+						<select id="fast_checkout_country_id_{pb_id}"  name="fast_checkout_country_id" onchange="updateStates('{pb_id}', 'fast_checkout');"><!-- begin fast_checkout_country_id -->
+							<option {fast_checkout_country_id_selected} value="{fast_checkout_country_id_value}">{fast_checkout_country_id_description}</option><!-- end fast_checkout_country_id -->
+						</select>
+						</div><!-- end fast_checkout_country_id_block -->&nbsp;&nbsp;&nbsp;
+
+						<!-- begin fast_checkout_country_hidden_block -->
+						<input type="hidden" name="fast_checkout_country_id" value="{fast_checkout_country_hidden}" />
+						<!-- end fast_checkout_country_hidden_block -->
+			    
+						<!-- begin fast_checkout_state_id_block -->
+						<div class="fast-checkout-state">
+						<span id="fast_checkout_state_name"><b>{STATE_FIELD}</b>:</span> <span id="fast_checkout_state_id_required_{pb_id}" style="{fast_checkout_state_id_required_style}" class="required">{fast_checkout_state_id_required}</span>
+						<select id="fast_checkout_state_id_{pb_id}" style="{fast_checkout_state_id_control_style}" name="fast_checkout_state_id"><!-- begin fast_checkout_state_id -->
+							<option {fast_checkout_state_id_selected} value="{fast_checkout_state_id_value}">{fast_checkout_state_id_description}</option><!-- end fast_checkout_state_id -->
+						</select>
+						<span id="fast_checkout_state_id_comments_{pb_id}" style="{fast_checkout_state_id_comments_style}">{fast_checkout_state_id_comments}</span>
+						</div>
+						<!-- end fast_checkout_state_id_block -->&nbsp;&nbsp;&nbsp;
+
+						<!-- begin fast_checkout_state_hidden_block -->
+						<input type="hidden" name="fast_checkout_state_id" value="{fast_checkout_state_hidden}" />
+						<!-- end fast_checkout_state_hidden_block -->
+			    
+						<!-- begin fast_checkout_postcode_block -->
+						<div class="fast-checkout-zip">
+						<span id="fast_checkout_postcode_name"><b>{ZIP_FIELD}</b>:</span> <span class="required">{fast_checkout_postcode_required}</span>
+						<input  class="text" type="text" name="fast_checkout_postcode" value="{fast_checkout_postcode}" size="8" maxlength="16" />
+						</div>
+						<!-- end fast_checkout_postcode_block -->
+
+						<!-- begin fast_checkout_postcode_hidden_block -->
+						<input type="hidden" name="fast_checkout_postcode" value="{fast_checkout_postcode_hidden}" />
+						<!-- end fast_checkout_postcode_hidden_block -->
+					</div>
+		
+					<div class="fast-checkout-payments">
+						<!-- begin fast_checkout_payments -->
+						<div class="fast-checkout-payment">
+							<!-- begin fast_checkout_image -->
+							<input type="image" name="fast_checkout_ps_id_{fast_payment_id}" alt="{fast_checkout_alt}" {fast_checkout_width} {fast_checkout_height}
+								src="{fast_checkout_src}" onclick="document.fast_checkout.fast_payment_id.value={fast_payment_id};" />
+							<!-- end fast_checkout_image -->
+							<!-- begin fast_checkout_button -->
+							<span class="submit"><input class="submit" type="submit" 
+								value="{fast_checkout_alt}" onclick="document.fast_checkout.fast_payment_id.value={fast_payment_id};" /></span>
+							<!-- end fast_checkout_button -->
+						</div><!-- end fast_checkout_payments -->
+					</div>
+				</form>
+			</td>
+		</tr>
+		
+		<script type="text/javascript">
+			var allowedCountiesPid = [
+				<!-- begin countriesTypes -->
+				<!-- begin psCountriesList -->
+				{ 
+					systemId:{systemId},
+					allowedCountries: [{ctnsIds}]
+				}{separator}
+				<!-- end psCountriesList -->
+				<!-- end countriesTypes -->
+			];
+			Array.prototype.in_array = function(p_val) {
+				for(var i = 0, l = this.length; i < l; i++)	{
+					if(this[i] == p_val) {
+						return true;
+					}
+				}
+				return false;
+			}
+			
+			var CountriesChecker = {
+				operationRequire: false,
+				restrictedSysyemsLength: 0,
+				existedPS: {existed_ps},
+				init: function(){
+					var psLength = this.restrictedSysyemsLength = allowedCountiesPid.length;
+					if (psLength == 0) return false;
+					this.operationRequire = true;
+					this.checkSelectedCountry();
+				},
+				checkSelectedCountry: function(){
+					var userCountry = document.fast_checkout.fast_checkout_country_id.selectedIndex;
+					if(CountriesChecker.operationRequire === false) return false;
+					else if(userCountry == 0) CountriesChecker.getAllowedPS(0);
+					else{
+						CountriesChecker.getAllowedPS(document.fast_checkout.fast_checkout_country_id[userCountry].value);
+					}
+				},
+				getAllowedPS: function(_uC){
+					var i, cForm = document.fast_checkout, currentPS, cElem;
+					_uC = parseInt(_uC),_disabled = 0;
+					for (i = 0; i < CountriesChecker.restrictedSysyemsLength; i += 1){
+						currentPS = 'fast_checkout_ps_id_' + allowedCountiesPid[i].systemId;
+						cElem = document.getElementsByName(currentPS)[0];
+						if(allowedCountiesPid[i].allowedCountries.in_array(_uC) === false){
+							cElem.style.display = "none";
+							_disabled +=1;
+						}
+						else{
+							cElem.style.display = "block";
+						}
+					}
+					this.checkDelimiterVisibility(_disabled);					
+				},
+				checkDelimiterVisibility: function(bannedElems){
+					var _topDelimiter = document.getElementById('topDelimiter');
+					if (CountriesChecker.existedPS == bannedElems){
+						_topDelimiter.style.display = 'none';
+					}
+					else{
+						_topDelimiter.style.display = '';
+					}
+				}
+			}
+			CountriesChecker.init();
+			var _countryChecker = document.fast_checkout.fast_checkout_country_id;
+			if (!_countryChecker.addEventListener) {
+				_countryChecker.attachEvent("onchange", CountriesChecker.checkSelectedCountry);
+			}
+			else {
+				_countryChecker.addEventListener("change", CountriesChecker.checkSelectedCountry, false);
+			}
+		</script><!-- end fast_checkout_form -->
+		</table>

@@ -1,0 +1,92 @@
+
+	body			{
+		font: 12px Arial, Helvetica, sans-serif; color: black; margin: 0px; padding: 0px;
+	}
+	body.popup { 
+		background-color: #EEE;	
+		font: 12px Arial, Helvetica, sans-serif; color: black; margin: 0px; padding: 0px;
+	}
+
+	tr.formRow td { padding: 5px 0 5px 0; }
+	td.fieldName { width: 100px; }
+	td.fieldText { width: 300px; }
+	td.fieldWide { width: 400px; }
+	input.submitWide { height: 30px; width: 400px; font-size: 14px; } 
+	.errorbg { width: 400px; margin: auto; }
+
+	div.adminStatus { 
+		height: 16px; padding: 5px 1px 1px 12px;  
+	}
+	span.onlineStatus { 
+		color: green;
+		font-weight: bold;
+	}
+
+	div.closeChat { 
+		height: 16px; padding: 1px 12px 1px 1px; text-align: right; 
+	}
+
+	.chatMessages { 
+		height: 258px; padding: 10px; overflow: auto; overflow-x: hidden; 
+		margin: 0 10px 0 10px;
+		border: 1px solid #777; 
+		background-color: #FFFFFF;	
+	}
+	.chatForm { 
+		height: 60px; border: 1px solid #777; padding: 10px; 
+		margin: 10px 10px 0 10px;
+		background-color: #FFFEEE;	
+	}
+	.chatForm .newMessage { width: 430px; height: 50px; padding: 5px; margin-right: 10px; }
+	.chatForm .sendMessage { width: 100px; height: 60px; font-size: 16px; font-weight: bold; }
+
+	.chatMessages .start { clear: both; height: 3px; }
+	.chatMessages .time { float: right; width: 60px; text-align: right; color: gray; font-style: italic; } 
+	.chatMessages .name { float: left; width: 110px; font-weight: bold; text-align: right; overflow: hidden; white-space: nowrap;} 
+	.chatMessages .text { float: left; width: 65%; 360px; padding-left: 10px; word-wrap: break-word; } 
+	.chatMessages .end { clear: both; height: 3px; }
+	.chatMessages .templateMessage { display: none;  }
+	.chatMessages .userMessage { color: navy; background-color: #F0F0FF; }
+	.chatMessages .adminMessage { color: black; background-color: #FFFEEE; }
+	.chatMessages .systemMessage { color: gray; font-style: italic; 5px; }
+	.chatMessages .systemMessage .name { display: none; }
+	.chatMessages .systemMessage .text { margin-left: 110px; }
+	
+
+	.chatsWaiting {
+		margin: 0px 10px 0px 10px;
+	}
+
+	.noChats {
+		margin: 5px 0 5px 0;
+		padding: 10px; 
+		color: blue;
+		border: 1px solid navy; 
+		background-color: #FFFFFF;	
+	}
+
+	table.chats { 
+		width: 100%;
+		margin: 5px 0 5px 0;
+		border-right: 1px solid gray;
+	}
+
+	table.chats th { 
+		border-top: 3px double gray;
+		padding: 2px;
+		background-color: #DDDDFF;
+		border-bottom: 3px double gray;
+		border-left: 1px solid gray;
+	}
+
+	table.chats td { 
+		padding: 2px;
+		border-bottom: 1px solid gray;
+		border-left: 1px solid gray;
+	}
+	table.chats tr.row1 td { 
+		vertical-align:top; background-color: #FFFEEE;
+	}
+	table.chats tr.row2 td { 
+		vertical-align:top; background-color: #EEFFFF;
+	}

@@ -1,0 +1,36 @@
+	<!-- BEGIN errors_block --><div class="errorbg" align="center"><b>{errors}</b></div><!-- END errors_block -->
+	<!-- BEGIN message_block --><div class="messagebg" align="center">{message}</div><!-- END message_block -->
+
+	<form action="{current_href}#block_{pb_id}" method="post" name="products_{pb_id}" />
+	{hidden_parameters}
+	<input type="hidden" name="rnd" value="{rnd}" />
+	<input type="hidden" name="cart" value="ADD" />
+	<input type="hidden" name="type" value="fast" />
+	<input type="hidden" name="pb_id" value="{pb_id}" />
+	<input type="hidden" name="redirect_to_cart" value="{redirect_to_cart}" />
+
+	<table cellpadding="3" cellspacing="3">		
+	<tr>
+		<td>
+			{CODE_MSG}
+		</td>
+		<td>
+			<input class="search" type="text" name="cart_code" value="{cart_code}" />
+		</td>			
+	</tr>
+	<tr>
+		<td>
+			{QUANTITY_MSG}
+		</td>
+		<td>
+			<input class="search" type="text" name="quantity" value="{quantity}" />
+		</td>
+	</tr>		
+	<tr>
+		<td></td>
+		<td>
+			<a class="button bn-add" id="add{pb_id}" href="#" onclick="return fastAdd('products_{pb_id}', 'add{pb_id}');"><span>{ADD_TO_CART_MSG}</span><img src="images/tr.gif" alt="{ADD_TO_CART_MSG}" /></a> 
+		</td>
+	</tr>
+	</table>				
+	</form>

@@ -1,0 +1,72 @@
+
+		<!-- begin no_item --><div class="no-product"><div class="errorbg">{NO_PRODUCT_MSG}</div></div><!-- end no_item -->
+
+		<!-- BEGIN item -->
+		<!-- BEGIN item_added --><div class="messagebg" align="center">{added_message}</div><!-- END item_added -->
+		<!-- BEGIN sc_errors --><div class="errorbg" align="center">{errors_list}</div><!-- END sc_errors -->
+
+
+		<form name="products_{pb_id}" action="{product_details_href}" method="post">
+		<input type="hidden" name="pb_id" value="{pb_id}" />
+		<input type="hidden" name="type" value="options" />
+		<input type="hidden" name="rp" value="{rp}" />
+		<input type="hidden" name="rnd" value="{rnd}" />
+		<input type="hidden" name="cart" value="ADD" />
+		<input type="hidden" name="redirect_to_cart" value="1" />
+		<input type="hidden" name="cart_id" value="{cart_id}" />
+		<input type="hidden" name="add_id" value="{item_id}" />
+		<input type="hidden" name="saved_type_id" value="" />
+		<input type="hidden" name="properties_discount" value="{properties_discount}" />
+		<input type="hidden" name="quantity" value="{quantity}" />
+		<input type="hidden" name="item_index" value="" />
+		<input type="hidden" name="sc_params" value="{sc_params}" />
+
+		<input type="hidden" name="item_id{form_id}" value="{item_id}" />
+		<input type="hidden" name="tax_percent{form_id}" value="{tax_percent}" />
+		<input type="hidden" name="product_params{form_id}" value="{product_params}" />
+		<input type="hidden" name="product_data{form_id}" value="{product_data}" />
+
+
+		<div class="image-block">
+			<!-- begin big_image --><img class="main-image" name="image_{item_id}" src="{src}" {width} {height} hspace="0" alt="{alt}" /><!-- end big_image -->
+		</div>
+
+
+		<div class="buy-block">
+			<!-- begin highlights_block -->
+			<div class="highlights">
+				<div class="highlights-title">{PROD_HIGHLIGHT_MSG}</div>
+				<div class="highlights-desc">{highlights}</div>
+			</div><!-- end highlights_block -->
+
+			<div class="prices">
+				<!-- begin price_block -->
+				<div id="price_block{form_id}" class="{price_block_class}"><span class="caption">{PRICE_MSG}</span><span id="price{form_id}" class="price">{price}</span><span class="price-note">{price_note}</span> <span class="tax">{tax_price}</span></div><!-- end price_block -->
+
+				<!-- begin item_code_block -->
+				<div class="product-code"><span class="caption">{PROD_CODE_MSG}</span><span class="code">{item_code}</span></div><!-- end item_code_block -->	
+				<!-- begin manufacturer_code_block -->
+				<div class="manf-code"><span class="caption">{MANUFACTURER_CODE_MSG}</span><span class="code">{manufacturer_code}</span></div><!-- end manufacturer_code_block -->	
+
+				<!-- begin properties_block -->
+				<div id="properties{form_id}" class="properties"><!-- begin properties -->
+					<div id="{property_block_id}" class="property {property_class}" style="{property_style}"><span class="name">{property_name}</span> <span class="control">{property_control}</span></div><!-- end properties -->
+				</div><!-- end properties_block -->
+
+			</div>
+
+			<div class="buttons">
+				<!-- begin cart_add_button -->
+				<a class="button bn-add" id="add{form_id}" href="{buy_href}" onclick="{buy_onclick}"><span>{UPDATE_OPTIONS_MSG}</span></a> 
+				<!-- end cart_add_button -->
+				<!-- begin cart_add_disabled -->
+				<a class="button bn-disabled" title="{PRODUCT_OUT_STOCK_MSG}" onclick="alert('{out_stock_alert}');">{ADD_TO_CART_MSG}</a> 
+				<!-- end cart_add_disabled -->
+			</div>
+
+		</div>
+		</form>
+
+		<!-- END item -->
+
+		<div class="clear"></div>

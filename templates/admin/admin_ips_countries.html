@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {BLACK_IPS_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+function clearSearch() {
+		document.search_form.s_ip.value = "";
+		document.search_form.submit();
+	}
+</script>
+</head>
+<body class="bodyTools">
+
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{COUNTRIES_IPS_MSG}</div>
+<div class="BlockContent">
+
+<br>
+<div align="center">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<form name="search_form" action="{admin_ips_countries_href}" method="GET">
+{IP_ADDRESS_MSG}
+<input class="field" type="text" name="s_ip" value="{s_ip}">
+<span class="button"><input class="submit" type="submit" name="search" value="{SEARCH_BUTTON}"></span>
+<span class="button"><input class="submit" type="submit" name="clear" value="{CLEAR_BUTTON}" onClick="clearSearch();"></span>
+</form>
+</div>
+<br>
+
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr align="center" class="middle">
+	<td>{IP_START_MSG}</td>
+	<td>{IP_END_MSG}</td>
+	<td>{COUNTRY_CODE_MSG}</td>
+</tr><!-- BEGIN records -->
+<tr class="usual" align="center">
+	<td>{ip_start}</td>
+	<td>{ip_end}</td>
+	<td>{country_code}</td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="3">&nbsp;{NO_RECORDS_MSG}&nbsp;</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="3">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_ips_countries_href}?operation=import&rnd={rnd}">{IMPORT_IPS_MSG}</a>
+	</td>
+</tr>
+</table>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

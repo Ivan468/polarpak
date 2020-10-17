@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {EDIT_SITE_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+function changeOperation()
+{
+	var formObj = document.record;
+	var operation = formObj.operation.options[formObj.operation.selectedIndex].value;
+	var cfRowObj = document.getElementById("copy_from_row");
+	var ctRowObj = document.getElementById("copy_to_row");
+	var ssRowObj = document.getElementById("source_site_row");
+	var tsRowObj = document.getElementById("target_site_row");
+	var psAllObj = document.getElementById("pages_all_row");
+	var pagesObj = document.getElementById("pages_list");
+	var msgObj = document.getElementById("message_block");
+
+	activateMainSite();
+	// hide message block
+	if (msgObj) {
+		msgObj.style.display = "none";
+	}
+	if (operation == "") {
+		cfRowObj.style.display = "none";
+		ctRowObj.style.display = "none";
+		ssRowObj.style.display = "none";
+		tsRowObj.style.display = "none";
+		psAllObj.style.display = "none";
+		pagesObj.style.display = "none";
+	} else if (operation == "copy_block") {
+		cfRowObj.style.display = "none";
+		ctRowObj.style.display = "none";
+		ssRowObj.style.display = "table-row";
+		tsRowObj.style.display = "table-row";
+		psAllObj.style.display = "table-row";
+		checkAll(false);
+	} else if (operation == "copy_page") {
+		cfRowObj.style.display = "table-row";
+		ctRowObj.style.display = "table-row";
+		ssRowObj.style.display = "table-row";
+		tsRowObj.style.display = "table-row";
+		psAllObj.style.display = "table-row";
+		checkAll(false);
+	} else if (operation == "clear_block") {
+	} else if (operation == "clear_page") {
+		cfRowObj.style.display = "none";
+		ctRowObj.style.display = "none";
+		ssRowObj.style.display = "none";
+		tsRowObj.style.display = "table-row";
+		psAllObj.style.display = "table-row";
+		checkAll(false);
+		disableMainSite();
+	}
+}
+
+
+function disableMainSite()
+{
+	var formObj = document.record;
+	var tsObj = formObj.target_site_id;
+	for (var i = 0; i < tsObj.options.length; i++) {
+		if (tsObj.options[i].value == 1) {
+			tsObj.options[i].disabled = true;
+			if (tsObj.options[i].selected) {
+				tsObj.selectedIndex = 0;
+			}
+		}
+	}
+}
+
+function activateMainSite()
+{
+	var formObj = document.record;
+	var tsObj = formObj.target_site_id;
+	for (var i = 0; i < tsObj.options.length; i++) {
+		if (tsObj.options[i].value == 1) {
+			tsObj.options[i].disabled = false;
+		}
+	}
+}
+
+
+function checkAll(checkPages)
+{
+	var formObj = document.record;
+	var pagesAll = formObj.pages_all.checked;
+	var pagesObj = document.getElementById("pages_list");
+	var operation = formObj.operation.options[formObj.operation.selectedIndex].value;
+	var checkOption = true;
+	if (pagesAll) {
+		checkOption = true;
+		pagesObj.style.display = "none";
+	} else {
+		checkOption = false;
+		pagesObj.style.display = "table-row";
+	}
+	// check / uncheck pages
+	if (checkPages) {
+		var pagesNumber = formObj.pages_number.value;
+		for (var i = 1; i <= pagesNumber; i++) {
+			var optionName = "page_" + i;
+			formObj.elements[optionName].checked = checkOption;
+		}
+	}
+}
+
+function checkModule(moduleId, startIndex, endIndex)
+{
+	var checkOption = true;
+	var imageObj = document.getElementById("module_image_" + moduleId);
+	if (imageObj.src) {
+		var imageSrc = imageObj.src;
+		var re = new RegExp("minus_small\.gif"); 
+	  if (re.exec(imageObj.src)) {
+			checkOption = false;
+			imageObj.src = "../images/icons/plus_small.gif";
+		} else {
+			imageObj.src = "../images/icons/minus_small.gif";
+
+		}
+	}
+
+	var formObj = document.record;
+	// check module pages
+	for (var i = startIndex; i <= endIndex; i++) {
+		var optionName = "page_" + i;
+		formObj.elements[optionName].checked = checkOption;
+	}
+}
+
+function confirmOperation()
+{
+	var formObj = document.record;
+	var clearPageWarn = "{CLEAR_PAGE_WARN_MSG}";
+	var operation = formObj.operation.options[formObj.operation.selectedIndex].value;
+	var confirmed = true;
+	if (operation == "clear_page") {
+		confirmed = confirm(clearPageWarn);
+	}
+	return confirmed;
+}
+//-->
+</script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{SETTINGS_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_site_settings_href}" name="record" method="POST">
+<input type="hidden" name="pages_number" value="{pages_number}">
+<!-- BEGIN success --><div id="message_block" class="messagebg">{success_message}</div><!-- END success -->
+<!-- BEGIN errors --><div id="error_block" class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellspacing="0" cellpadding="0" class="padd6" width="100%">
+<tr class="usual">
+	<td width="20%">{OPERATION_MSG} *</td>
+	<td width="80%">
+		<select name="operation" onchange="changeOperation();"> <!-- begin operation -->
+			<option {operation_selected} value="{operation_value}">{operation_description}<!-- end operation -->
+		</select>	
+	</td>
+</tr>
+<tr class="middle" id="copy_from_row" style="{copy_from_style}">
+	<td colspan="2">{COPY_FROM_MSG}</td>
+</tr>
+<tr class="usual" id="source_site_row" style="{source_site_style}">
+	<td>{ADMIN_SITE_MSG} *</td>
+	<td>
+		<select name="source_site_id" onchange=""> <!-- begin source_site_id -->
+			<option {source_site_id_selected} value="{source_site_id_value}">{source_site_id_description}<!-- end source_site_id -->
+		</select>	
+	</td>
+</tr>
+<tr class="middle" id="copy_to_row" style="{copy_to_style}">
+	<td colspan="2">{COPY_TO_MSG}</td>
+</tr>
+<tr class="usual" id="target_site_row" style="{target_site_style}">
+	<td>{ADMIN_SITE_MSG} *</td>
+	<td>
+		<select name="target_site_id" onchange=""> <!-- begin target_site_id -->
+			<option {target_site_id_selected} value="{target_site_id_value}">{target_site_id_description}<!-- end target_site_id -->
+		</select>	
+	</td>
+</tr>
+<tr class="usual" id="pages_all_row" style="{pages_all_style}">
+	<td>{PAGES_MSG}</td>
+	<td><input type="checkbox" name="pages_all" {pages_all} onclick="checkAll(true);" value="1">{ALL_MSG}</td>
+</tr>
+<tr id="pages_list" style="{pages_list_style}">
+	<td class="padd0" colspan="2">
+
+		<table cellspacing="0" cellpadding="0" border="0" class="padd6">
+		<!-- begin cms_modules -->
+		<tr class="middle">
+			<td colspan="8"><a href="#" class="small" onclick="checkModule('{module_id}', '{start_index}','{end_index}');return false;">{module_name}</a> <a href="#" class="small" onclick="checkModule('{module_id}', '{start_index}','{end_index}');return false;"><img id="module_image_{module_id}" src="../images/icons/plus_small.gif"></a></td>
+		</tr><!-- begin cms_pages_rows -->
+		<tr class="padd-l-r-3"><!-- begin cms_pages_cols -->
+			<td width="1%">
+				<input type="checkbox" name="page_{page_number}" {page_checked} value="{page_id}">
+				<input type="hidden" name="key_code_{page_number}" value="{key_code}">
+				<input type="hidden" name="key_type_{page_number}" value="{key_type}">
+			</td>
+			<td width="24%">{page_name}</td><!-- end cms_pages_cols -->
+		</tr><!-- end cms_pages_rows --><!-- end cms_modules -->
+		</table>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{GO_BUTTON}" onclick="return confirmOperation();"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+</body></html>

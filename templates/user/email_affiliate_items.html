@@ -1,0 +1,33 @@
+<table cellpadding="3" cellspacing="1" width="100%">
+<tr style="background-color: #E9E9E9;" align="center">
+	<th>{PROD_TITLE_COLUMN}</th>
+	<th>{PROD_PRICE_COLUMN}</th>
+	<th>{COMMISSION_AMOUNT_COLUMN}</th>
+	<th>{PROD_QTY_COLUMN}</th>
+	<th>{TOTAL_MSG}</th>
+</tr><!-- begin html_affiliate_items -->
+<tr valign="top">
+	<td>
+		{item_name}
+		<!-- begin html_affiliate_items_item_code -->
+		<br />{PROD_CODE_MSG}: <b>{item_code}</b><!-- end html_affiliate_items_item_code -->	
+		<!-- begin html_affiliate_items_manufacturer_code -->
+		<br />{MANUFACTURER_CODE_MSG}: <b>{manufacturer_code}</b><!-- end html_affiliate_items_manufacturer_code -->	
+		<span>{item_properties}</span>
+	</td>
+	<td align="right">
+		{price}&nbsp;
+	</td>
+	<td align="right">{affiliate_commission}&nbsp;</td>
+	<td align="center">{quantity}</td>
+	<td align="right">{affiliate_commission_total}&nbsp;</td>
+</tr><!-- end html_affiliate_items -->
+<tr style="background-color: #E9E9E9;">
+	<td colspan="4" align="right">
+		<b>{TOTAL_MSG}&nbsp;</b>
+	</td>
+	<td align="right">
+		<b>{affiliate_commission_sum}&nbsp;</b>
+	</td>
+</tr>
+</table>

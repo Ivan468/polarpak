@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {SELECT_FILE_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+
+function selectImagesDir(imagesDir)
+{
+	window.opener.setImagesDir(imagesDir, document.dirs.fieldname.value);
+	window.opener.focus();
+	window.close();
+}
+
+function closeWindow()
+{
+	window.opener.focus();
+	window.close();
+}
+
+//-->
+</script>
+
+</head>
+<body class="popup">
+
+<form action="{admin_images_dir_href}" name="dirs">
+<input type="hidden" name="fieldname" value="{fieldname}">
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle" align="center">
+	<td colspan="2">
+		<a href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+<tr class="usual">
+	<td>
+		{CURRENT_DIR_MSG}: <b>{current_dir}</b>
+	</td>
+	<td align="center">
+		<!-- begin current_select_link -->
+		<a href="javascript:selectImagesDir('{dir_param}');">{SELECT_MSG}</a>
+		<!-- end current_select_link -->
+	</td>
+</tr><!-- begin no_images_dirs -->
+<tr class="middle" align="center">
+	<td colspan="2">{NO_FILES_MSG}</td>
+</tr><!-- end no_images_dirs -->
+<tr class="middle">
+	<td align="center">{sorter_filename}</td>
+	<td width="10%">&nbsp;</td>
+</tr><!-- begin images_dirs -->
+<tr class="usual" align="center">
+	<td align="left"><a href="{dir_url}">{dir_name}</a></td>
+	<td>
+		<!-- begin select_link -->
+		<a href="javascript:selectImagesDir('{dir_param}');">{SELECT_MSG}</a>
+		<!-- end select_link -->
+	</td>
+</tr><!-- end images_dirs --><!-- begin navigator_block -->
+<tr class="middle">
+	<td colspan="2" align="right">{navigator}</td>
+</tr><!-- end navigator_block -->
+</table>
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle" align="center">
+	<td><a href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+</table>
+
+</form>
+
+</body>
+</html>

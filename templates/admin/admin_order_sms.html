@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {SEND_SMS_MESSAGE_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header}
+{block_leftside_breadcrumbs}
+<!-- begin message_sent --><div class="messagebg">{MESSAGE_SENT_MSG} ({ID_MSG}: {message_id})</div><!-- end message_sent -->
+<div class="Block">
+<div class="BlockTitle">{SMS_MESSAGE_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_order_sms_href}" name="admin_order_sms" method="POST">
+<input type="hidden" name="operation" value="send">
+<input type="hidden" name="order_id" value="{order_id}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table align="center" cellspacing="1" cellpadding="6" border="0" width=100%>
+<tr class="usual">
+	<td>{SMS_RECIPIENT_MSG} *</td>
+	<td>
+		<input class="field" type="text" name="sms_recipient" value="{sms_recipient}" size="80" maxlength="255">
+		<a href="#" onClick="document.admin_order_sms.sms_recipient.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td width="20%">{SMS_ORIGINATOR_MSG}</td>
+	<td>
+		<input class="field" type="text" name="sms_originator" value="{sms_originator}" size="80" maxlength="255">
+		<a href="#" onClick="document.admin_order_sms.sms_originator.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td width="20%">{SMS_MESSAGE_MSG}</td>
+	<td>
+		<textarea name="sms_message" rows="3" cols="80">{sms_message}</textarea>
+		<a href="#" onClick="document.admin_order_sms.sms_message.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{SEND_BUTTON}"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}"></span>
+	</td>
+</tr>
+</table>
+
+</form>
+</div>
+</div>       
+
+{admin_footer}
+</body>
+</html>

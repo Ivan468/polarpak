@@ -1,0 +1,634 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{CMS_MSG} :: {MULTI_EDIT_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="../js/ajax.js"></script>
+<script type="text/javascript" src="../js/admin.js"></script>
+<script language="JavaScript">
+<!--
+var allMsg = "{ALL_MSG}";
+var blockMsg = "{SELECT_BLOCK_DESC}";
+
+var addImage = new Image(); 
+addImage.src = "../images/icons/cms_add.png"; 
+addImage.title = "{ADD_BUTTON}"; 
+addImage.alt = "{ADD_BUTTON}"; 
+
+var yesImage = new Image(); 
+yesImage.src = "../images/icons/yes.png"; 
+yesImage.title = "{YES_MSG}";
+yesImage.alt = "{YES_MSG}"; 
+
+function changeSite()
+{
+	var formObj = document.cms;
+	formObj.operation.value = "";
+	formObj.submit();
+}
+
+
+function changeFrame(selectObj, blockIndex)
+{
+	var blocks = getSettings(); 
+	var frameTag = selectObj.options[selectObj.selectedIndex].value;
+	blocks[blockIndex]["frame_tag"] = frameTag;
+	document.cms.sts.value = JSON.stringify(blocks); 
+}
+
+function changePosType(selectObj, blockIndex)
+{
+	var blocks = getSettings(); 
+	var posType = selectObj.options[selectObj.selectedIndex].value;
+	blocks[blockIndex]["pos_type"] = posType;
+	document.cms.sts.value = JSON.stringify(blocks); 
+	// hide/show pos-number block
+	var blockObj = document.getElementById("block_"+blockIndex);
+	var posNumberDiv = blockObj.getElementsByClassName("pos-number")[0];
+	var posNumberInput = posNumberDiv.getElementsByTagName("input")[0];
+	if (posType == "pos") {
+		if (posNumberDiv) { posNumberDiv.style.display = "inline"; }
+	} else {
+		if (posNumberDiv) { posNumberDiv.style.display = "none"; }
+	}
+}
+
+function changePosNumber(inputObj, blockIndex)
+{
+	var blocks = getSettings(); 
+	var posNumber = inputObj.value;
+	blocks[blockIndex]["pos_number"] = posNumber;
+	document.cms.sts.value = JSON.stringify(blocks); 
+}
+
+function addBlock(blockId, blockKey)
+{
+	var blocks = getSettings(); 
+
+	var blockObj = document.getElementById("block_" + blockId + "_" + blockKey);
+	var blockName = blockObj.innerHTML;
+
+	// add to settings
+	var totalBlocks = parseInt(blocks.length);
+	blocks[totalBlocks] = {}; //new Array();
+	blocks[totalBlocks]["id"] = blockId;
+	blocks[totalBlocks]["name"] = blockName;
+	blocks[totalBlocks]["key"] = blockKey;
+	blocks[totalBlocks]["tag_name"] = "";
+	blocks[totalBlocks]["layout_type"] = "";
+	blocks[totalBlocks]["layout_template"] = "";
+	blocks[totalBlocks]["html_template"] = "";
+	blocks[totalBlocks]["css_class"] = "";
+	blocks[totalBlocks]["block_style"] = "";
+	blocks[totalBlocks]["block_title"] = "";
+	blocks[totalBlocks]["operation"] = "add";
+	blocks[totalBlocks]["properties"] = new Array();
+
+	document.cms.sts.value = JSON.stringify(blocks); // save new settings
+	populateBlocks(); // show new block
+}
+
+	function deleteBlock(blockId, blockPos)
+	{
+		var blocks = getSettings(); 
+		blocks.splice(blockPos, 1);
+		document.cms.sts.value = JSON.stringify(blocks); // save new settings
+		populateBlocks(); // show new blocks list
+	}
+
+	function blockOperation(blockId, blockPos)
+	{
+		var blocks = getSettings(); 
+		var blockOperation = blocks[blockPos]["operation"];
+		if (blockOperation == "add") {
+			blocks[blockPos]["operation"] = "update";
+		} else if (blockOperation == "update") {
+			blocks[blockPos]["operation"] = "delete";
+		} else {
+			blocks[blockPos]["operation"] = "add";
+		}
+		document.cms.sts.value = JSON.stringify(blocks); // save new settings
+		populateBlocks(); // show new blocks list
+	}
+
+function populateBlocks()
+{
+	var blocks = getSettings(); 
+	var blocksObj = document.getElementById("blocks");
+	blocksObj.innerHTML = "";
+
+	var blockTemplate = document.getElementById("block_template").innerHTML;
+	var totalBlocks = blocks.length;
+	var blocksNumber = 0;
+	for (var b = 0; b < totalBlocks; b++) {
+		var block = blocks[b];
+		if (block) {
+			blocksNumber++;
+			var blockHTML = "";
+			var blockId = block["id"];
+			var blockKey = block["key"];
+			var blockOperation = block["operation"];
+			var blockObj = document.getElementById("block_" + blockId + "_" + blockKey);
+			var blockName = blockObj.innerHTML;
+			var moduleId = document.cms_blocks.elements["block_module_" + blockId + "_" + blockKey].value;
+			var moduleName = document.cms_blocks.elements["module_" + moduleId].value;
+			var frameTag = (block.hasOwnProperty("frame_tag")) ? block["frame_tag"] : "";
+			var posNumber = (block.hasOwnProperty("pos_number")) ? block["pos_number"] : "";
+			var posType = (block.hasOwnProperty("pos_type")) ? block["pos_type"] : "";
+
+			var idTag = "block_" + blockId + "_" + b;
+			blockHTML = blockTemplate.replace(/\{id_tag\}/g, "id=\""+idTag+"\"");
+			blockHTML = blockHTML.replace(/\{module_name\}/g, moduleName);
+			blockHTML = blockHTML.replace(/\{block_id\}/g, blockId);
+			blockHTML = blockHTML.replace(/\{block_position\}/g, b);
+			blockHTML = blockHTML.replace(/\{block_name\}/g, blockName);
+			blockHTML = blockHTML.replace(/\{block_key\}/g, blockKey);
+			blockHTML = blockHTML.replace(/\{operation_class\}/g, blockOperation);
+			if (blockOperation == "update" || blockOperation == "edit") {
+				blockHTML = blockHTML.replace(/\{operation\}/g, "{UPDATE_BUTTON}");
+			} else if (blockOperation == "delete" || blockOperation == "remove") {
+				blockHTML = blockHTML.replace(/\{operation\}/g, "{DELETE_BUTTON}");
+			} else {
+				blockHTML = blockHTML.replace(/\{operation\}/g, "{ADD_BUTTON}");
+			}
+
+			blocksObj.insertAdjacentHTML('beforeend', blockHTML);
+			// hide or show positioning elements and select appropriate values
+			var blockObj = document.getElementById("block_"+b);
+			var frameTagDiv = blockObj.getElementsByClassName("frame-tag")[0];
+			var frameTagSelect = frameTagDiv.getElementsByTagName("select")[0];
+			frameTagSelect.value = frameTag;
+			var posTypeDiv = blockObj.getElementsByClassName("pos-type")[0];
+			var posTypeSelect = posTypeDiv.getElementsByTagName("select")[0];
+			posTypeSelect.value = posType;
+			var posNumberDiv = blockObj.getElementsByClassName("pos-number")[0];
+			var posNumberInput = posNumberDiv.getElementsByTagName("input")[0];
+			posNumberInput.value = posNumber;
+			if (blockOperation == "update" || blockOperation == "edit" || blockOperation == "delete" || blockOperation == "remove") {
+				if (posTypeDiv) { posTypeDiv.style.display = "none"; }
+				if (posNumberDiv) { posNumberDiv.style.display = "none"; }
+			} else {
+				if (posTypeDiv) { posTypeDiv.style.display = "inline"; }
+				if (posType == "pos") {
+					if (posNumberDiv) { posNumberDiv.style.display = "inline"; }
+				} else {
+					if (posNumberDiv) { posNumberDiv.style.display = "none"; }
+				}
+			}
+		}
+	}
+
+	if (blocksNumber == 0) {
+		blocksObj.innerHTML = "<li>"+blockMsg+"</li>";
+	}
+
+}
+
+function addPage(pageData)
+{
+	var pages = getPagesSettings();
+	var psId = pageData["ps_id"];
+	var pageName = pageData["name"];
+	if (!pages.hasOwnProperty(psId)) {
+		pages[psId] = pageName;
+		document.cms.pages_sts.value = JSON.stringify(pages); // save new settings
+
+		var imgObj = document.getElementById("page_image_" + psId);
+		imgObj.src = yesImage.src;
+		imgObj.alt = yesImage.alt;
+		imgObj.title = yesImage.title;
+		populatePages();
+	}
+}
+
+function populatePages()
+{
+	var pages = getPagesSettings(); 
+	var pagesObj = document.getElementById("pages");
+	pagesObj.innerHTML = "";
+
+	var pageTemplate = document.getElementById("page_template").innerHTML;
+	var pagesNumber = 0;
+	for (psId in pages) {
+		pagesNumber++;
+		var pageName = pages[psId];
+		var pageHTML = "";
+		pageHTML = pageTemplate.replace(/\[ps_id\]/g, psId);
+		pageHTML = pageHTML.replace(/\[page_name\]/g, pageName);
+
+		// update image icon 'add' to 'yes'
+		var imgObj = document.getElementById("page_image_" + psId);
+		imgObj.src = yesImage.src;
+		imgObj.title = yesImage.title;
+		imgObj.alt = yesImage.alt;
+
+		pagesObj.insertAdjacentHTML('beforeend', pageHTML);
+	}
+
+	if (pagesNumber == 0) {	
+		pagesObj.innerHTML = "<li><b>"+allMsg+"</b></li>";
+	}
+}
+
+function deletePage(psId)
+{
+	var pages = getPagesSettings();
+	if (pages.hasOwnProperty(psId)) {
+		delete pages[psId];
+		document.cms.pages_sts.value = JSON.stringify(pages); 
+		populatePages();
+
+		var imgObj = document.getElementById("page_image_" + psId);
+		imgObj.src = addImage.src;
+		imgObj.title = addImage.title;
+		imgObj.alt = addImage.alt;
+		populatePages();
+	}
+}
+
+function generateSettings(settings)
+{
+	document.cms.sts.value = JSON.stringify(settings); // save new settings
+}
+
+function getSettings()
+{
+	var settingsString = document.cms.sts.value;
+	var blocks = new Array();
+	if (settingsString != "") {
+		try {
+			blocks = JSON.parse(settingsString);
+		} catch (e) {
+			alert ("Blocks settings error");
+		}
+	}	
+	return blocks;
+}
+
+function getPagesSettings()
+{
+	var settingsString = document.cms.pages_sts.value;
+	var pages = {};
+	if (settingsString != "") {
+		try {
+			pages = JSON.parse(settingsString);
+		} catch (e) {
+			alert ("Pages settings error");
+		}
+	}	
+	return pages;
+}
+
+function hideSettingsPopup()
+{                              	
+	var settingsOpacity = document.getElementById("settings_opacity");
+	var settingsShadow = document.getElementById("settings_shadow");
+	var settingsPage = document.getElementById("settings_page");
+
+	settingsOpacity.style.display = "none";			
+	settingsShadow.style.display = "none";			
+	settingsPage.src = "";
+}
+
+function blockSettings(blockId, blockPosition)
+{
+	var blocks = getSettings();
+	var blockParams = blocks[blockPosition];
+	var paramsString = JSON.stringify(blockParams);
+
+	document.settings_form.frame_id.value = "";
+	document.settings_form.block_id.value = blockId;
+	document.settings_form.block_position.value = blockPosition;
+	document.settings_form.block_params.value = paramsString;
+
+	popupSettingsFrame();
+	document.settings_form.submit();
+}
+
+function showPages()
+{
+	var pagesOpacity = document.getElementById("pagesOpacity");
+	var pagesShadow = document.getElementById("pagesShadow");
+
+	var pageSize = getPageSize();
+	var pageScroll = getScroll();
+	var arrayPageSizeWithScroll = getPageSizeWithScroll();
+
+	var winLeft = 5; var winTop = 5;
+	if (pageSize[0] > 620) {
+		winLeft = pageScroll[0] + (pageSize[0]-600) / 2;
+	}
+	if (pageSize[1] > 420) {
+		winTop = pageScroll[1] + (pageSize[1]-400) / 2;
+	}
+	pagesShadow.style.left = winLeft + "px";
+	pagesShadow.style.top = winTop + "px";
+
+	var opacityWidth = pageSize[0];	var opacityHeight = pageSize[1];
+	if (arrayPageSizeWithScroll[0] > opacityWidth) {
+		opacityWidth = arrayPageSizeWithScroll[0];
+	}
+	if (arrayPageSizeWithScroll[1] > opacityHeight) {
+		opacityHeight = arrayPageSizeWithScroll[1];
+	}
+	pagesOpacity.style.width = opacityWidth + "px";
+	pagesOpacity.style.height = opacityHeight + "px";
+
+	pagesShadow.style.display = "block";			
+	pagesOpacity.style.display = "block";			
+
+}
+
+
+function hidePages()
+{                              	
+	var pagesOpacity = document.getElementById("pagesOpacity");
+	var pagesShadow = document.getElementById("pagesShadow");
+
+	pagesOpacity.style.display = "none";			
+	pagesShadow.style.display = "none";			
+}
+
+
+function updateBlockSettings(blockId, blockPosition, strSettings)
+{
+	var settings = getSettings();
+	var jsonSettings = JSON.parse(strSettings);
+
+	var blockSettings = jsonSettings.settings;
+	settings[blockPosition]["tag_name"] = blockSettings["tag_name"];
+	settings[blockPosition]["layout_type"] = blockSettings["layout_type"];
+	settings[blockPosition]["layout_template"] = blockSettings["layout_template"];
+	settings[blockPosition]["html_template"] = blockSettings["html_template"];
+	settings[blockPosition]["css_class"] = blockSettings["css_class"];
+	settings[blockPosition]["block_style"] = blockSettings["block_style"];
+	settings[blockPosition]["block_title"] = blockSettings["block_title"];
+
+	settings[blockPosition]["properties"] = jsonSettings.properties;
+	settings[blockPosition]["periods"] = jsonSettings.periods;
+
+	//document.cms.sts.value = JSON.stringify(settings); // save new settings
+	generateSettings(settings);
+}
+
+function popupSettingsFrame()
+{ 
+	var settingsOpacity = document.getElementById("settings_opacity");
+	var settingsShadow = document.getElementById("settings_shadow");
+
+	var pageSize = getPageSize();
+	var pageScroll = getScroll();
+	var arrayPageSizeWithScroll = getPageSizeWithScroll();
+
+	var winLeft = 5; var winTop = 5;
+	if (pageSize[0] > 620) {
+		winLeft = pageScroll[0] + (pageSize[0]-600) / 2;
+	}
+	if (pageSize[1] > 420) {
+		winTop = pageScroll[1] + (pageSize[1]-400) / 2;
+	}
+	settingsShadow.style.left = winLeft + "px";
+	settingsShadow.style.top = winTop + "px";
+
+	var opacityWidth = pageSize[0];	var opacityHeight = pageSize[1];
+	if (arrayPageSizeWithScroll[0] > opacityWidth) {
+		opacityWidth = arrayPageSizeWithScroll[0];
+	}
+	if (arrayPageSizeWithScroll[1] > opacityHeight) {
+		opacityHeight = arrayPageSizeWithScroll[1];
+	}
+	settingsOpacity.style.width = opacityWidth + "px";
+	settingsOpacity.style.height = opacityHeight + "px";
+
+	settingsShadow.style.display = "block";			
+	settingsOpacity.style.display = "block";			
+
+}
+
+
+function hideFrameSettings()
+{
+	var settingsOpacity = document.getElementById("frameSettings_opacity");
+	var settingsShadow = document.getElementById("frameSettings_shadow");
+
+	settingsOpacity.style.display = "none";			
+	settingsShadow.style.display = "none";			
+}
+
+function disableButton() 
+{
+	if (!document.cms.save_button.disabled) {
+		document.cms.save_button.disabled = true;
+		document.cms.save_button.className = "disabledSubmit";
+		document.cms.submit();
+	}
+}
+
+function keyUpHandler(event) {
+	if (!event) var event = window.event;
+
+	if (event.keyCode) code = event.keyCode;
+	else if (event.which) code = event.which;
+
+	if (code == 27) {
+		hidePages();
+	}
+}
+
+//document.onkeyup = keyUpHandler;
+document.addEventListener("keyup", keyUpHandler, false);
+window.addEventListener("load", populateBlocks, false);
+window.addEventListener("load", populatePages, false);
+
+//-->
+</script>
+</head>
+
+<body class="bodySbuilder">
+
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+
+<div class="CategoriesNav">
+
+<form name="cms_blocks">
+<div class="Block cmsBlocks">
+	<div class="BlockTitle">{CMS_BLOCKS_MSG}</div>
+	<div class="BlockContent scroller"><!-- begin cms_blocks_modules -->
+		<div id="module_{module_id}" class="{module_class}">
+				<a href="#" class="leftNavTitle" onclick="overhid('module_{module_id}'); return false;">{module_name}</a>
+				<a href="#" class="leftNavArr" onclick="overhid('module_{module_id}'); return false;"><img src="images/tr.gif" alt=""></a>
+				<input type="hidden" name="module_{module_id}" value="{module_name}">
+				<ul><!-- begin cms_blocks -->
+					<input type="hidden" name="block_module_{block_id}_{block_key}" value="{module_id}">
+					<li><a class="leftNavSub" id="block_{block_id}_{block_key}" href="#" onClick="addBlock({block_id}, '{block_key}'); return false;">{block_name}</a></li><!-- end cms_blocks -->
+				</ul>
+		</div><!-- end cms_blocks_modules -->
+	</div>
+</div>
+</form>
+
+</div>
+<div class="ItemsList">
+
+<form name="cms" action="{admin_cms_multi_edit_href}" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="selected_frame" value="">
+<input type="hidden" name="selected_block" value="">
+<input type="hidden" name="selected_key" value="">
+<input type="hidden" name="block_position" value="">
+<input type="hidden" name="ps_id" value="{ps_id}">
+<input type="hidden" name="key_code" value="{key_code}">
+<input type="hidden" name="key_type" value="{key_type}">
+<input type="hidden" name="current_layout_id" value="{current_layout_id}">
+<input type="hidden" name="sts" value="{sts}">
+<input type="hidden" name="pages_sts" value="{pages_sts}">
+<input type="hidden" name="rp" value="{rp}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><br><!-- END errors -->
+<!-- BEGIN success_block --><div class="messagebg">{CHANGES_SAVED_MSG}</div><!-- END success_block -->
+
+<div class="BlockTitle">
+	<div class="LayoutSite"><!-- begin sitelist -->
+		{SELECT_SITE_MSG}&nbsp;
+		<select name="param_site_id" onchange="changeSite()"><!-- begin param_site_id -->
+			<option {param_site_id_selected} value="{param_site_id_value}">{param_site_id_description}<!-- end param_site_id -->
+		</select><!-- end sitelist -->		
+	</div>
+
+	{MULTI_EDIT_MSG}
+
+</div>
+
+
+<br/>
+	<!--<div class="LayoutHeader">-->
+<div class="MultiEdit">
+
+	<div class="Form">
+		<div class="FormTitle">{BLOCKS_MSG}</div>
+		<ul id="blocks" class="BlocksList">
+			
+		</ul>
+	</div>
+
+	<br/>
+	<div class="Form">
+		<div class="FormTitle">{PAGES_MSG}
+			<img class="addPage" src="../images/icons/cms_add.png" alt="{ADD_BUTTON}" title="{ADD_BUTTON}" onclick="showPages();" />
+		</div>
+		<ul id="pages" class="PagesList">
+			<li><b>{ALL_MSG}</b></li>
+		</ul>
+	</div>
+
+</div><br>
+
+
+<span class="button"><input name="save_button" class="submit" type="submit" value="{SAVE_BUTTON}" onClick="disableButton();"></span><br><br>
+
+
+<div class="Block BlockNotes">
+<div class="BlockTitle">{ADMIN_NOTE_MSG}</div>
+<div class="BlockContent">
+	<table width="100%" border="0">
+	<tr valign="top"><td width="50%">
+		<ul>
+			<li class="nob" style="line-height: 16px;">
+				<img src="images/cms_settings.gif" align="left" alt="settings" title="settings" hspace="5"> - {SPECIFY_BLOCK_SETTINGS_MSG}<br><br>
+			</li>
+		</ul>
+	</td><td width="50%">
+		<ul>
+			<li class="nob" style="line-height: 16px;">
+				<img src="images/cms_remove.gif" align="left" alt="remove" title="remove" hspace="5"> - {REMOVE_BLOCK_MSG}<br><br>
+			</li>
+		</ul>
+	</td></tr></table>
+</div>
+</div>
+
+
+</form>
+</div>
+
+{admin_footer}
+
+<div id="block_template" style="display: none;"><!-- begin block_template -->
+	<li id="block_{block_position}">
+		<a class="{operation_class}" href="#" onClick="blockOperation('{block_id}', '{block_position}'); return false;">{operation}</a>
+		<a href="#" onClick="deleteBlock('{block_id}', '{block_position}'); return false;"><img src="images/cms_remove.gif" alt="remove" title="remove"></a>
+		<a href="#" onClick="blockSettings('{block_id}', '{block_position}'); return false;"><img src="images/cms_settings.gif" alt="settings" title="settings"></a>
+		<a {id_tag} href="#">{module_name}&nbsp;> {block_name}</a>
+
+		<div class="frame-pos">
+			<span class="frame-tag">
+				{LAYOUT_FRAME_MSG} 
+				<select name="frame_tag" onchange="changeFrame(this, '{block_position}');"><!-- begin frame_tag -->
+					<option {frame_tag_selected} value="{frame_tag_value}">{frame_tag_description}<!-- end frame_tag -->
+				</select>
+			</span>
+
+			<span class="pos-type">  
+				{BLOCK_POSITION_MSG} 
+				<select name="pos_type" onchange="changePosType(this, '{block_position}');"><!-- begin pos_type -->
+					<option {pos_type_selected} value="{pos_type_value}">{pos_type_description}<!-- end pos_type -->
+				</select>
+			</span>
+
+			<span class="pos-number">  
+				{POSITION_MSG} 
+				<input type="text" size="5" onchange="changePosNumber(this, '{block_position}');">
+			</span>
+		</div>
+	</li>
+<!-- end block_template -->
+</div>
+
+<div id="page_template" style="display: none;">
+<li id="page_[ps_id]">
+	<a href="#" onClick="deletePage('[ps_id]'); return false;"><img src="images/cms_remove.gif" alt="{REMOVE_BUTTON}" title="{REMOVE_BUTTON}"></a>
+	<span>[page_name]</span>
+</li>
+</div>
+
+
+<form name="settings_form" action="admin_cms_block_settings.php" target="block_settings_frame" method="POST">
+<input type="hidden" name="frame_id" value="">
+<input type="hidden" name="block_id" value="">
+<input type="hidden" name="block_position" value="">
+<input type="hidden" name="block_params" value="">
+<input type="hidden" name="block_properties" value="">
+</form>
+
+<div id="settings_opacity" class="settings-opacity" style="display: none;" onClick="hideSettingsPopup();return false;"></div>
+<div id="settings_shadow" class="settings-shadow" style="display: none;">
+	<div class="settings-block">
+		<div class="settings-img-close" align="right"><a href="#" onClick="hideSettingsPopup();return false;"><img src="../images/icons/close.gif" border="0" alt=""></a></div>
+		<div id="settings_win" class="settings-descr">
+			<iframe id="settings_page" name="block_settings_frame" width="560" height="500" frameborder="no"></iframe>
+		</div>
+	</div>
+</div>
+
+
+<div id="pagesOpacity" class="settings-opacity" style="display: none;" onClick="hidePages();return false;"></div>
+<div id="pagesShadow" class="settings-shadow" style="display: none;">
+	<div class="settings-popup">
+		<div class="settings-img-close" align="right"><a href="#" onClick="hidePages();return false;"><img src="../images/icons/close.gif" border="0" alt=""></a></div>
+		<div id="settings_win" class="settings-descr">
+
+			<!-- begin cms_modules -->
+			<div class="cms-module">{module_name}</div>
+			<!-- begin cms_pages -->
+			<div class="cms-page" onclick="addPage({json_page_data})"><img id="page_image_{ps_id}" src="../images/icons/cms_add.png" alt="{ADD_BUTTON}" title="{ADD_BUTTON}"><a>{page_name}</a></div><!-- end cms_pages -->
+			<!-- end cms_modules -->
+
+		</div>
+	</div>
+</div>
+
+
+
+</body>
+</html>

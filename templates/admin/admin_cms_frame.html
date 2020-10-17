@@ -1,0 +1,13 @@
+<!-- begin frame_top --><div class="cms-frame">
+<div class="cms-title">
+	<i class="ico-settings" title="{SETTINGS_MSG}" onClick="frameSettings('{tag_name}');"></i>
+	<i class="ico-new-pos" title="{MOVE_MSG}" onClick="moveBlock('{tag_name}', '');"></i>
+	<i class="ico-plus" title="{ADD_BUTTON}" onClick="addBlock('{tag_name}');"></i>
+	<span id="frame_title_{tag_name}">{frame_name}</span>
+</div><!-- end frame_top --><!-- begin frame_bottom -->
+<div id="frame_updown_{tag_name}" class="cms-up-down" style="display: none;">
+	<i onClick="moveBlock('', -1);return false;" onDblClick="moveBlock('', -1);" title="{UP_MSG}" class="ico-arrow-up"></i><br/>
+	<i onClick="moveBlock('', 1);return false;" onDblClick="moveBlock('', 1);" title="{DOWN_MSG}" class="ico-arrow-down"></i>
+</div>
+<div id="frame_{tag_name}" class="cms-blocks"></div>
+</div><!-- end frame_bottom -->

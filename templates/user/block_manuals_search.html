@@ -1,0 +1,45 @@
+<script type="text/javascript">
+//<![CDATA[
+	function toggleManualAdvancedSearch() {
+		if (document.manuals_search.manuals_advanced_search.value == 1) {
+			document.manuals_search.manuals_advanced_search.value = 0;
+			document.getElementById("manuals_advanced_search_block").style.display="none";
+		} else {
+			document.manuals_search.manuals_advanced_search.value = 1;
+			document.getElementById("manuals_advanced_search_block").style.display="block";
+		}
+		return false;
+	}
+//]]>
+</script>
+
+		<form name="manuals_search" id="manuals_search" method="post" action="manuals_search.php">
+		<input name="manuals_advanced_search" value="{manuals_advanced_search}" type="hidden" />
+			<table cellspacing="0" width="100%" class="padding6px">
+			<tr>
+				<td>{MANUALS_SEARCH_IN_MSG}:</td>
+				<td align="left">
+					<select class="text" name="manual_id" id="manual_id">
+						<!-- BEGIN manual_id --><option {manual_id_selected} value="{manual_id_value}">{manual_id_description}</option>
+						<!-- END manual_id -->
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>{MANUALS_SEARCH_FOR_MSG}:</td>
+				<td align="left"><input type="text" class="text" name="manuals_search" id="manuals_search" size="20" value="{manuals_search}" /></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<a href="#" onclick="toggleManualAdvancedSearch(); return false;">{ADVANCED_SEARCH_TITLE}</a>
+					<div id="manuals_advanced_search_block" {manuals_advanced_search_style}>
+						<!-- begin search_type --><input type="radio" name="manuals_search_type" {search_type_checked} value="{search_type_value}" />&nbsp;{search_type_description}&nbsp;<br /><!-- end search_type-->
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><span class="submit"><input class="submit" type="submit" value="Search" name="search" /></span></td>
+			</tr>
+			</table>
+		</form>

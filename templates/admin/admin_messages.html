@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html><head><title>{MESSAGES_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" src="../js/calendar.js"></script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<div class="Block">
+<form action="{admin_messages_href}" name="search">
+<input type="hidden" name="language_code" value="{current_language_code}">
+
+	<div>
+			{ACTIVE_LANGUAGE_MSG}:&nbsp;{current_language_image}&nbsp; <b>{current_language}</b>
+	</div>
+	<br>
+	<div>
+			<b>{LANGUAGE_TITLE}:</b><!-- begin languages_images -->
+			&nbsp;<a href="{admin_messages_href}{language_href}">{language_image}</a><!-- end languages_images -->
+	</div>
+
+	<br>
+	<div>
+			<b>{language_messages}:</b><!-- BEGIN sections -->
+			<div style="padding: 2px 0px;"><a href="{admin_messages_href}{section_href}">{language_filename}{is_readonly}</a></div><!-- END sections -->
+	</div>
+
+	<!-- begin search_results --><br><div class="search-results">{found_message}</div><!-- end search_results -->
+	<br>
+	<div>
+			<input type="text" name="sw" value="{sw}" size="40" class="search"></b> 
+			<input type="submit" value="{SEARCH_BUTTON}" class="submit">
+			<input type="submit" value="{CLEAR_BUTTON}" class="submit" onclick="document.search.sw.value='';">
+	</div>
+
+	<div class="clear"></div>
+
+	<br>
+	
+</form>
+</div>
+
+<!-- BEGIN message_block -->
+<div class="Block">
+<div class="BlockTitle">{language_file}</div>
+<div class="BlockContent">
+<table width="100%" border="0" cellspacing="1" cellpadding="4">
+<tr align="center" class="middle" valign="top">
+	<td width="30%">{CODE_MSG}</td>
+	<td width="60%">{MESSAGE_MSG}</td>
+	<td width="10%">
+		<!-- BEGIN add_new_block -->
+		<a href='admin_message.php?language_code={active_language_code}&section={section_name}&sw={sw}'>{ADD_NEW_MSG}</a>
+		<!-- END add_new_block -->
+	</td>
+</tr>
+<!-- BEGIN message_details -->
+<tr class="{row_style}"> 
+	<td>{constant_name}</td>
+	<td>{message_string}</td>
+	<td align="center">
+		<!-- begin message_edit -->
+		<a href="admin_message.php?language_code={language_code}&section={file_section}&msg_key={message_name}&sw={sw}">{EDIT_MSG}</a>
+		<!-- end message_edit -->
+		<!-- begin message_readonly -->
+		<div class="readonly">{READONLY_MSG}</div>
+		<!-- end message_readonly -->
+	</td>
+</tr>
+<!-- END message_details -->
+</table>
+</div>
+</div>
+<!-- END message_block -->
+
+<!-- begin navigator_block -->
+<div>
+{navigator}
+</div><!-- end navigator_block -->
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<br>
+
+{admin_footer}
+</body>
+</html>

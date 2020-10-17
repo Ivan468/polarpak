@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+<title>..:: {ADMINISTRATION_MSG} :: {MANUALS_ARTICLES_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<style type="text/css">
+.level-1 {padding: 2px 2px 2px 15px;}
+.level-2 {padding: 2px 2px 2px 25px;}
+.level-3 {padding: 2px 2px 2px 35px;}
+.level-4 {padding: 2px 2px 2px 40px;}
+.level-5 {padding: 2px 2px 2px 45px;}
+.level-6 {padding: 2px 2px 2px 50px;}
+</style>
+<script type="text/javascript">
+function toggle_visibility(div_id) {
+	element = document.getElementById(div_id);
+	
+	if (element != null) {
+		if (element.style.display == "none") {
+			element.style.display = "block";
+		} else {
+			element.style.display = "none";
+		}
+	}
+}
+
+function put_and_close(article_id, article_title, manual_title, section_number) {
+	element = window.opener.document.getElementById("alias_article_id");
+	info_element = window.opener.document.getElementById("alias_article_title");
+	
+	if (element != null && info_element != null) {
+		element.value = article_id;
+		info_element.value = section_number + " " + article_title + "(" + manual_title + ")";
+	}
+	window.close();
+}
+</script>
+<body class="popup">
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle" align="center">
+	<td>
+		Select alias article in list below. 
+		<div class="small">Click on the manual name to open manual articles list.</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td><!-- begin manual_block -->
+		<div style="padding: 6px 0;" class="middle"><a href="#" onclick="toggle_visibility('manual_articles_{manual_id}'); return false;">{manual_title}</a></div>
+	
+		<div id="manual_articles_{manual_id}" style="display: none;"><!-- begin no_articles -->
+		<div style="padding: 4px 15px;">No articles</div><!-- end no_articles --><!-- begin article_block -->
+		<div class="level-{article_level}">
+			<a href="#" onclick="put_and_close('{article_id}', '{article_title_param}', '{manual_title}', '{alias_section_number}');">{section_number}&nbsp;{article_title}</a>
+		</div><!-- end article_block -->
+		</div><!-- end manual_block -->
+	</td>
+</tr>
+<tr class="middle" align="center">
+	<td><a href="javascript: window.close();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+</table>
+
+</body>
+</html>

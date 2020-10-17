@@ -1,0 +1,37 @@
+	<table width="100%" cellspacing="0" cellpadding="0">
+	<!-- BEGIN pr_rows -->
+	<tr>
+		<!-- BEGIN pr_cols -->
+		<td align="left" valign="top" width="{pr_column}" class="padding10px">
+			<table cellspacing="0" cellpadding="2">
+			<tr>
+				<td colspan="2"><a class="title {product_new_class} {restricted_class}" href="{product_details_url}" title="{a_title}">{item_name}</a></td>
+			</tr>
+			<tr valign="top">
+				<td>
+					<!-- begin pr_small_image --><a href="{product_details_url}" title="{a_title}"><img src="{src}" {width} {height} align="left" hspace="0" alt="{alt}" /></a><!-- end pr_small_image -->
+				</td>
+				<td width="100%">
+					<!-- begin pr_price_block -->
+					<div class="{price_block_class}"><span class="caption">{PRICE_MSG}</span><span class="price">{pr_price}</span> <span class="tax">{pr_tax_price}</span></div><!-- end pr_price_block -->
+					<!-- begin pr_sales -->
+					<div class="price-sale"><span class="caption">{SALE_PRICE_MSG}</span><span class="price">{pr_sales_price}</span> <span class="tax">{pr_tax_sales}</span></div><!-- end pr_sales -->
+					<!-- begin pr_availability -->
+					{PROD_AVAILABILITY_MSG}: {shipping_time_desc}
+					<!-- end pr_availability -->
+					<div align="justify">
+						{short_description} <a class="button bn-more" href="{product_details_url}" title="{a_title}"><span><b>{READ_MORE_MSG}</b>.</span><img src="images/tr.gif" alt="{READ_MORE_MSG}" /></a>
+					</div>
+				</td>
+			</tr></table>
+		</td>
+		<!-- END pr_cols -->
+	</tr>
+	<!-- END pr_rows -->
+	</table>
+
+	<!-- begin pr_navigator_block -->
+	<table width="100%" cellspacing="0" cellpadding="0">
+	<tr><td align="right" class="padding10px">&nbsp;{pr_navigator}&nbsp;</td></tr>
+	</table>
+	<!-- end pr_navigator_block -->

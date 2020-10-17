@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>FedEx Settings</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="../js/admin.js"></script>
+</head>
+<body class="mainbg">
+{admin_header}
+{admin_breadcrumb}
+
+<!-- BEGIN success_block --><div class="messagebg">{CHANGES_SAVED_MSG}</div><br/><!-- END success_block -->
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+	<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+		<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+	</ul>
+
+<div class="Form clearBoth">
+<div class="FormContent">
+
+<form action="{settings_fedex_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="rp" value="{rp}">
+<input type="hidden" name="tab" value="{tab}">
+
+<div id="general_data" class="tab-data {general_class}">
+<table border="0" cellpadding="4" cellspacing="1" width="100%">
+<!-- begin sitelist -->
+<tr class="middle">
+	<td colspan="2">{SITE_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{ACTIVE_SITE_MSG}</td>
+	<td>
+		<select name="param_site_id" onchange="reloadSite(this.form);"><!-- begin param_site_id -->
+			<option {param_site_id_selected} value="{param_site_id_value}">{param_site_id_description}<!-- end param_site_id -->
+		</select>
+		<span class="comment">({SELECT_SITE_DESC})</span>
+</tr><!-- end sitelist -->
+<tr class="middle">
+	<td colspan="2">Web Services Data</td>
+</tr>
+<tr class="usual">
+	<td></td>
+	<td>
+		<div class="cols-2">
+			<div class="col">Live Data</div>
+			<div class="col">Test Data</div>
+		</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>Web Services Key</td>
+	<td>
+		<div class="cols-2">
+			<div class="col">
+				<input class="field" type="text" name="live_key" value="{live_key}" size="40"> 
+			</div>
+			<div class="col">
+				<input class="field" type="text" name="test_key" value="{test_key}" size="40"> 
+			</div>
+		</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>Web Services Password</td>
+	<td>
+		<div class="cols-2">
+			<div class="col">
+				<input class="field" type="text" name="live_password" value="{live_password}" size="40">
+			</div>
+			<div class="col">
+				<input class="field" type="text" name="test_password" value="{test_password}" size="40">
+			</div>
+		</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>Shipping Account Number</td>
+	<td>
+		<div class="cols-2">
+			<div class="col">
+				<input class="field" type="text" name="live_account_no" value="{live_account_no}" size="40">
+			</div>
+			<div class="col">
+				<input class="field" type="text" name="test_account_no" value="{test_account_no}" size="40">
+			</div>
+		</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>Meter Number</td>
+	<td>
+		<div class="cols-2">
+			<div class="col">
+				<input class="field" type="text" name="live_meter_no" value="{live_meter_no}" size="40">
+			</div>
+			<div class="col">
+				<input class="field" type="text" name="test_meter_no" value="{test_meter_no}" size="40">
+			</div>
+		</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>Use Web Services Data</td>
+	<td class="cols-2"><!-- begin account_type -->
+		<div class="col">
+			<input type="radio" name="account_type" id="account_type{account_type_value}" {account_type_checked} value="{account_type_value}">
+			<label for="account_type{account_type_value}">{account_type_description}</label>
+		</div><!-- end account_type -->
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="address_validation_data" class="tab-data {address_validation_class}">
+<table border="0" cellpadding="4" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2">Activation</td>
+</tr>
+<tr class="usual">
+	<td class="half20">Use Address Validation Service</td>
+	<td><!-- begin address_validation -->
+			<input type="radio" name="address_validation" id="address_validation{address_validation_value}" {address_validation_checked} value="{address_validation_value}">
+			<label for="address_validation{address_validation_value}">{address_validation_description}</label>
+		<!-- end address_validation -->
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">Action when different errors happen</td>
+</tr>
+<tr class="usual">
+	<td>System errors</td>
+	<td class="cols-1"><!-- begin address_system_errors -->
+		<div class="col">
+			<input type="radio" name="address_system_errors" id="address_system_errors{address_system_errors_value}" {address_system_errors_checked} value="{address_system_errors_value}">
+			<label for="address_system_errors{address_system_errors_value}">{address_system_errors_description}</label>
+		</div><!-- end address_system_errors -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>Address validation errors</td>
+	<td class="cols-1"><!-- begin address_validation_errors -->
+		<div class="col">
+			<input type="radio" name="address_validation_errors" id="address_validation_errors{address_validation_errors_value}" {address_validation_errors_checked} value="{address_validation_errors_value}">
+			<label for="address_validation_errors{address_validation_errors_value}">{address_validation_errors_description}</label>
+		</div>
+		<!-- end address_validation_errors -->
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">Additional Address Suggestions</td>
+</tr>
+<tr class="usual">
+	<td class="half20">
+		<label for="address_suggest_zip9">Suggest ZIP+4 Code</label>
+	</td>
+	<td>
+		<label>
+		<input type="checkbox" id="address_suggest_zip9" name="address_suggest_zip9" {address_suggest_zip9} value="1">
+		if user use 5-digit ZIP code (#####) suggest him to use ZIP+4 code (#####-####)
+		</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td class="half20">
+		<label for="address_suggest_street">Suggest Street</label>
+	</td>
+	<td>
+		<label>
+		<input type="checkbox" id="address_suggest_street" name="address_suggest_street" {address_suggest_street} value="1">
+		suggest FedEx street address if it isn't fully matched with validated user street address
+		</label>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">Address Validation Restrictions</td>
+</tr>
+<tr class="usual">
+	<td class="half20">
+		<label for="address_validation_sites_all">Use for all sites</label>
+	</td>
+	<td>
+		<label>
+		<input type="checkbox" id="address_validation_sites_all" name="address_validation_sites_all" {address_validation_sites_all} value="1">
+		use for all sites or specified site IDs in the text box below
+		</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td class="half20">Site IDs</td>
+	<td>
+		<input class="field" type="text" name="address_validation_sites_ids" value="{address_validation_sites_ids}" size="40">
+	</td>
+</tr>
+<tr class="usual">
+	<td>Use for all users</td>
+	<td>
+		<label>
+		<input type="checkbox" name="address_validation_users_all" {address_validation_users_all} value="1">
+		use for all users or specified user type IDs in the text box below
+		</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>User Type IDs</td>
+	<td>
+		<input class="field" type="text" name="address_validation_user_types_ids" value="{address_validation_user_types_ids}" size="40">
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td colspan="8">
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+
+
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

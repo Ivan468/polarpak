@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html><head><title>{RUN_SQL_QUERY_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+var queries = new Array();<!-- begin queries -->
+queries[{query_id}] = "{recent_query}";<!-- end queries -->
+var maxQueryId = queries.length - 1;
+var queryId = {current_query_id};
+
+function moveQuery(step)
+{
+	if (queries.length == 0) {
+		// there is no data for recent queries
+		document.query.next.disabled = true;
+		document.query.prev.disabled = true;
+		return;
+	}
+	queryId += step;
+	if (queryId < 0) {
+		queryId = 0;
+	} else if (isNaN(queryId) || queryId > maxQueryId) {
+		queryId = maxQueryId;
+	}
+	var sqlQuery = queries[queryId];
+	document.query.sql_query.value = sqlQuery;
+	document.query.prev.disabled = false;
+	document.query.next.disabled = false;
+	if (queryId == maxQueryId) {
+		document.query.next.disabled = true;
+	} else if (queryId == 0) {
+		document.query.prev.disabled = true;
+	}
+}
+
+function queryResultsHeight()
+{
+	var queryDivObj = document.getElementById("queryDiv");
+	var queryTableObj = document.getElementById("queryTable");
+	if (queryDivObj && queryTableObj) {
+		var tableHeight = queryTableObj.offsetHeight;
+		if (tableHeight < 300) {
+			queryDivObj.style.height = tableHeight + 25;
+		}
+	}
+}
+
+function winSave()
+{
+	var winSave = document.querySelector(".win-save");
+	var regExp = /expand-open/g;
+	winSave.className = winSave.className.replace(/sql-new/gi, "").trim();
+	winSave.className = winSave.className.replace(/sql-exists/gi, "").trim();
+	if (regExp.test(winSave.className)) {
+		winSave.className = winSave.className.replace(/expand-open/gi, "").trim();
+	} else {
+		var sqlId = document.query.sql_id.value;
+		var formClass = "";
+		if (sqlId == "") {
+			formClass = "sql-new";
+		} else {
+			formClass = "sql-exists";
+		}
+		winSave.className = (winSave.className + " expand-open " + formClass).trim();
+	}
+}
+
+function clearData() 
+{
+	var winSave = document.querySelector(".win-save");
+	document.query.sql_id.value='';
+	document.query.sql_name.value='';
+	winSave.className = winSave.className.replace(/sql-new/gi, "").trim();
+	winSave.className = winSave.className.replace(/sql-exists/gi, "").trim();
+	winSave.className = (winSave.className + " expand-open sql-new").trim();
+
+}
+
+function queryLoad(queryId, queryData)
+{
+	document.query.sql_id.value=queryId;
+	document.query.sql_name.value=queryData["name"];
+	document.query.sql_query.value=queryData["query"];
+	var linkLoad = document.querySelector(".link-load");
+	vaExpand(linkLoad, "hide");
+}
+
+//-->
+</script>
+</head>
+
+<body onLoad="queryResultsHeight();">
+{admin_header}
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">
+	{RUN_SQL_QUERY_MSG}
+	<div class="right">
+		<a class="link-save ico-save" onclick="winSave();"> {SAVE_BUTTON}</a>
+		&nbsp;
+		<a class="link-load ico-load" data-js="expand" data-js-type="click" data-class="win-load"> Load</a>
+	</div>
+</div>
+<div class="BlockContent">
+<div class="win-load">
+	<!-- begin saved_queries -->
+	<div id="sql_{list_id}" class="query-load" onclick="queryLoad('{list_id}', {list_data});"> {list_name} </div>
+	<!-- end saved_queries -->
+	<!-- begin no_saved_queries -->
+	<div>{NO_RECORDS_MSG}</div>
+	<!-- end no_saved_queries -->
+
+</div>
+
+<!-- BEGIN success --><div class="messagebg">{success_message}</div><!-- END success -->
+<!-- begin errors --><div class="errorbg">{errors_list}</div><!-- end errors -->
+
+<form action="{admin_db_query_href}" name="query" method="POST">
+<input type="hidden" name="operation" value="run">
+	<table width="100%" border="0" cellspacing="1" cellpadding="6">
+	<tr class="win-save {win_save_expand}">
+		<td colspan="2">
+			<input type="hidden" name="sql_id" value="{sql_id}">
+			<input type="text" name="sql_name" value="{sql_name}" placeholder="{NAME_MSG}">
+			<input class="submit" type="submit" name="save" value="{SAVE_BUTTON}" onclick="document.query.operation.value='save';">
+			<input class="submit" type="submit" name="update" value="{UPDATE_BUTTON}" onclick="document.query.operation.value='save';">
+			<input class="submit" type="button" name="clear" value="{CLEAR_BUTTON}" onclick="clearData();">
+			<input class="submit" type="button" name="cancel" value="{CANCEL_BUTTON}" onclick="winSave();">
+			<input class="submit" type="submit" name="delete" value="{DELETE_BUTTON}" onclick="document.query.operation.value='delete';">
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2"><textarea rows="10" cols="140" name="sql_query" style="width: 100%">{sql_query}</textarea></td>
+	</tr>
+	<tr class="middle">
+		<td align="right" colspan="2">
+			<div class="floatLeft"><span class="button"><input class="submit" type="submit" name="run" value="{RUN_SQL_QUERY_MSG}" onclick="document.query.operation.value='run';"></span></div>
+			<span class="button"><input class="submit" type="button" name="prev" value="{PREV_PAGE_MSG}" {prev_disabled} onClick="moveQuery(-1);" onDblClick="moveQuery(-1);"></span>
+			<span class="button"><input class="submit" type="button" name="next" value="{NEXT_PAGE_MSG}" disabled onClick="moveQuery(1);" onDblClick="moveQuery(1);"></span>
+		</td>
+	</tr>
+	</table>
+</form>
+
+<!-- begin query_result -->
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr>
+	<td>
+		<div class="messagebg">{PROCESSING_TIME_MSG}: {execution_time}</div>
+		<!-- begin query_info_block --><div class="messagebg">{query_info}</div><!-- end query_info_block -->
+
+		<!-- begin query_data -->
+		<div id="queryDiv" class="query">
+		<table id="queryTable" cellspacing="0" cellpadding="0" class="query">
+		<tr><!-- begin titles -->
+			<th>{column_title}</th><!-- end titles -->
+		</tr><!-- begin rows -->
+		<tr><!-- begin cols -->
+			<td>{column_value}</td><!-- end cols -->
+		</tr><!-- end rows -->
+		</table>
+		</div>
+		<!-- end query_data -->
+	</td>
+</tr>
+</table>
+<!-- end query_result -->
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

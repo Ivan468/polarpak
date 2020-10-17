@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {DELETE_PRODUCTS_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+ 
+ 
+<script language="JavaScript">
+<!--
+	function checkOptions()
+	{
+		var operation = document.record.operation.value;
+		var isSubmit = true;
+		if (operation == "delete") {
+			isSubmit = document.record.is_delete.checked;
+			if(!isSubmit) {
+				alert("You need tick the checkbox first to procced.");
+			} else {
+				isSubmit = confirm('Now all of your products will be deleted - do you want to proceed?');
+			}
+		}
+		return isSubmit;
+	}				
+//-->
+</script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{DELETE_PRODUCTS_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_product_href}" name="record" method="POST" onSubmit="return checkOptions();">
+<input type="hidden" name="operation" value="">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr>
+	<td colspan="2" class="usual">
+		<input type="checkbox" {is_delete} name="is_delete" id="is_delete" value="1">
+		<label for="is_delete">{DELETE_PRODUCTS_NOTE}</label>
+	</td>
+</tr>
+<tr class="middle">
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onClick="document.record.operation.value='delete';"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel';"></span>
+	</td>
+</tr>
+</table>
+</form>
+
+</div>
+</div>
+
+	
+{admin_footer}
+</body>
+</html>

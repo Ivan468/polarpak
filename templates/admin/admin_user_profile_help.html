@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html><head><title>{CUSTOMER_PROFILE_MSG} :: {HOW_TO_SETUP_EMAIL_MESSAGE}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="popup">
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle" align="center">
+	<td>{HOW_TO_SETUP_EMAIL_MESSAGE}</td>
+</tr>
+<tr> 
+	<td>
+		<br>
+		<div align="center">
+		{DYNAMIC_CONTENT_HELP_NOTE}
+		</div>
+		<br>
+	</td>
+</tr>
+</table>
+
+<!-- begin reset_info -->
+<div class="title" align="center">{RESET_PASSWORD_INFO_MSG}</div>
+<br>
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle" align="center">
+	<td>{TAG_NAME_MSG}</td>                               	
+	<td>{TAG_DESCRIPTION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{reset_password_code}</td>
+	<td>{CODE_TO_RESET_THE_PASSWORD_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{reset_password_date}</td>
+	<td>{RESET_PASSWORD_DATE_MSG} </td>
+</tr>
+<tr class="usual">
+	<td>{reset_password_url}</td>
+	<td>{RESET_PASSWORD_URL_MSG}</td>
+</tr>
+</table>
+<!-- end reset_info -->
+	
+<div class="title" align="center">User Profile Information</div>
+<br>
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle" align="center">
+	<td colspan="2">{TAG_NAME_MSG}</td>                               	
+	<td>{TAG_DESCRIPTION_MSG}</td>
+</tr><!-- begin reminder_info -->
+<tr class="usual">
+	<td colspan="2">{reminder_title}</td>
+	<td>Reminder Title</td>
+</tr>
+<tr class="usual">
+	<td colspan="2">{reminder_notes}</td>
+	<td>Reminder Note</td>
+</tr><!-- end reminder_info -->
+<tr class="usual">
+	<td colspan="2">{user_id}</td>
+	<td>{USER_UNIQUE_IDENTIFICATOR_MSG}</td>
+</tr>
+<tr class="usual">
+	<td colspan="2">{registration_date}</td>
+	<td>{DATE_OF_REGISTRATION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td colspan="2">{referrer}</td>
+	<td>{HTTP_REFERRER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{login}</td>
+	<td>{password}</td>
+	<td>{LOGIN_PARAMETERS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{name}</td>
+	<td>{delivery_name}</td>
+	<td>{FULL_NAME_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{first_name}</td>
+	<td>{delivery_first_name}</td>
+	<td>{FIRST_NAME_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{middle_name}</td>
+	<td>{delivery_middle_name}</td>
+	<td>{MIDDLE_NAME_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{last_name}</td>
+	<td>{delivery_last_name}</td>
+	<td>{LAST_NAME_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{company_name}</td>
+	<td>{delivery_company_name}</td>
+	<td>{COMPANY_NAME_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{email}</td>
+	<td>{delivery_email}</td>
+	<td>{EMAIL_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{address1}</td>
+	<td>{delivery_address1}</td>
+	<td>{STREET_FIRST_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{address2}</td>
+	<td>{delivery_address2}</td>
+	<td>{STREET_SECOND_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{address3}</td>
+	<td>{delivery_address3}</td>
+	<td>{STREET_THIRD_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{city}</td>
+	<td>{delivery_city}</td>
+	<td>{CITY_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{province}</td>
+	<td>{delivery_province}</td>
+	<td>{PROVINCE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{state}</td>
+	<td>{delivery_state}</td>
+	<td>{STATE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{zip}</td>
+	<td>{delivery_zip}</td>
+	<td>{ZIP_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{country}</td>
+	<td>{delivery_country}</td>
+	<td>{COUNTRY_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{phone}</td>
+	<td>{delivery_phone}</td>
+	<td>{PHONE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{daytime_phone}</td>
+	<td>{delivery_daytime_phone}</td>
+	<td>{DAYTIME_PHONE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{evening_phone}</td>
+	<td>{delivery_evening_phone}</td>
+	<td>{EVENING_PHONE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{cell_phone}</td>
+	<td>{delivery_cell_phone}</td>
+	<td>{CELL_PHONE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{fax}</td>
+	<td>{delivery_fax}</td>
+	<td>{FAX_FIELD}</td>
+</tr><!-- BEGIN fields_title -->
+<tr class="middle">
+	<td colspan="3">{CUSTOM_FIELDS_MSG}</td>
+</tr><!-- END fields_title --><!-- BEGIN fields -->
+<tr class="usual">
+	<td>{field_{field_id}}</td>
+	<td colspan="2">{field_name}</td>
+</tr><!-- END fields -->
+</table>
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle">
+	<td align="center"><a href="javascript:window.close();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+</table>
+
+
+</body>
+</html>

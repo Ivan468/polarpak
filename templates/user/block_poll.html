@@ -1,0 +1,26 @@
+		<form action="{poll_vote_href}" onsubmit="window.open('{poll_vote_href}','vote','toolbar=no,scrollbars=yes,resizable=no,width=400,height=300');" target="vote" method="post">
+		<input type="hidden" name="operation" value="vote" />
+		<input type="hidden" name="poll_id" value="{poll_id}" />
+
+			<table width="100%" cellpadding="0" cellspacing="4">
+			<tr>
+				<td colspan="2"><b>{question}</b></td>
+			</tr>
+			<!-- begin poll_options -->
+			<tr>
+				<td valign="top" width="5%"><input type="{poll_control}" name="{option_name}" {option_checked} value="{poll_option_id}" id="p{poll_option_id}" /></td>
+				<td width="95%"><label for="p{poll_option_id}">{option_description}</label></td>
+			</tr>
+			<!-- end poll_options -->
+			<tr>
+				<td colspan="2">
+					<span class="submit"><input class="submit" type="submit" value="{VOTE_BUTTON}" /></span>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<br /><a href="{poll_vote_href}?poll_id={poll_id}" onclick="window.open('{poll_vote_href}?poll_id={poll_id}','vote','toolbar=no,scrollbars=yes,resizable=no,width=400,height=300'); return false;" target="vote">{VIEW_RESULTS_MSG}</a> | <a href="{polls_href}">{PREVIOUS_POLLS_MSG}</a>
+				</td>
+			</tr>
+			</table>
+		</form>

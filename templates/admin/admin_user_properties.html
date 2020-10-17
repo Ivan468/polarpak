@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html><head><title>{ACCOUNT_PROFILE_MSG} :: {CUSTOM_FIELDS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+{head_tags}
+</head>
+<body class="commonbg">
+{admin_header}
+{admin_breadcrumb}
+
+<div class="Block">
+<div class="BlockTitle">{ACCOUNT_PROFILE_MSG} :: {CUSTOM_FIELDS_MSG}</div>
+<div class="BlockContent">
+
+<!-- custom fields -->
+<table border="0" cellpadding="6" cellspacing="1" width="100%"><!-- begin name_properties -->
+<tr class="middle" align="center">
+	<td>{ID_MSG}</td>
+	<td>{FIELD_NAME_MSG}</td>
+	<td>{SECTION_NAME_MSG}</td>
+	<td>{REQUIRED_MSG}</td>
+	<td>{SHOW_FIELD_MSG}</td>
+	<td>{USERS_TYPES_MSG}</td>
+	<td>{SITES_MSG}</td>
+	<td>{FIELD_CONTROL_MSG}</td>
+	<td align="center">&nbsp;</td>
+</tr><!-- end name_properties --><!-- begin properties -->
+<tr class="usual" align="center">
+	<td>{property_id}</td>
+	<td align="left">{property_name}</td>
+	<td align="center">{section_name}</td>
+	<td><a class="{property_required_class}" href="{property_required_url}">{property_required_desc}</a></td>
+	<td>{property_show}</td>
+	<td class="extra-cell">
+		<!-- BEGIN user_type_single -->
+		{user_type_name}
+		<!-- END user_type_single -->
+		<!-- BEGIN user_type_list -->
+		<div class="extra-summary" data-class="extra-data" data-js="expand">
+			{user_type_summary} <i class="ico-extra"></i>
+		</div>
+		<div class="extra-data"><!-- BEGIN extra_user_types -->
+			<div>{user_type_name}</div><!-- end extra_user_types -->
+		</div>
+		<!-- END user_type_list -->
+	</td>
+	<td class="extra-cell">
+		<!-- BEGIN site_single -->
+		{site_name}
+		<!-- END site_single -->
+		<!-- BEGIN site_list -->
+		<div class="extra-summary" data-class="extra-data" data-js="expand">
+			{site_summary} <i class="ico-extra"></i>
+		</div>
+		<div class="extra-data"><!-- BEGIN extra_sites -->
+			<div>{site_name}</div><!-- end extra_sites -->
+		</div>
+		<!-- END site_list -->
+	</td>
+	<td>{control_type}</td>
+	<td><a href="{admin_user_property_url}">{EDIT_MSG}</a></td>
+</tr><!-- end properties --><!-- begin no_properties -->
+<tr class="usual">
+	<td colspan="9">{NO_CUSTOM_FIELDS_MSG}</td>
+</tr><!-- end no_properties -->
+<tr class="middle">
+	<td colspan="9"><a href="{admin_user_property_new_url}">{ADD_NEW_MSG}</a></td>
+</tr>
+</table>
+</div>
+
+
+
+</div>
+</div>
+
+</form>
+
+{admin_footer}
+
+</body>
+</html>

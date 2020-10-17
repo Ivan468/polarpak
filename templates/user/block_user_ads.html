@@ -1,0 +1,34 @@
+		<!-- BEGIN errors --><div align="center" class="errorbg">{errors_list}</div><!-- END errors -->
+
+		<table cellspacing="1" width="100%" class="table-data"><!-- begin sorters -->
+		<tr class="middlebg" align="center">
+			<td>{sorter_id}</td>
+			<td>{sorter_title}</td>
+			<td>{sorter_price}</td>
+			<td>{STATUS_MSG}</td>
+			<td>{ADS_PUBLISH_PRICE_MSG}</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr><!-- end sorters --><!-- BEGIN records -->
+		<tr class="usualbg" valign="top" align="center">
+			<td>{item_id}</td>
+			<td align="left">{item_title}</td>
+			<td align="right">{price}</td>
+			<td>{status}</td>
+			<td>{publish_price}</td>
+			<td><!-- begin pay_link -->
+				<a href="{ad_pay_url}">{PAY_FOR_AD_MSG}</a><!-- end pay_link -->
+			</td>
+			<td><a href="{user_ad_href}?item_id={item_id}">{EDIT_MSG}</a></td>
+		</tr><!-- END records --><!-- BEGIN no_records -->
+		<tr class="usualbg">
+			<td colspan="7">{NO_ADS_MSG}</td>
+		</tr><!-- END no_records -->
+		<tr class="middlebg">
+			<td colspan="5"><!-- BEGIN ads_types -->
+				{delimiter}<a href="{user_ad_href}?type_id={type_id}">{ADD_NEW_MSG} ({type_name})</a><!-- END ads_types -->
+			</td>
+			<td colspan="2" align="right">&nbsp;<!-- begin navigator_block -->{navigator}<!-- end navigator_block --></td>
+		</tr>
+		</table>	
+

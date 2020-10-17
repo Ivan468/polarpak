@@ -1,0 +1,39 @@
+	<form name="record" action="{cart_save_href}">
+	<input type="hidden" name="operation" value="save" />
+	<input type="hidden" name="rnd" value="{random_value}" />
+	<input type="hidden" name="rp" value="{rp}" />
+	<br />
+	{SAVE_CART_INFO_MSG}<br />
+	<!-- begin user_email_note -->{SAVE_CART_EMAIL_NOTE}<br /><!-- end user_email_note -->
+	<br />
+	<!-- begin success_block -->
+		<div class="messagebg">{success_message}</div>
+	<!-- end success_block -->
+	<!-- begin errors -->
+	<div class="errorbg">{errors_list}</div>
+	<!-- end errors -->
+
+	<table cellspacing="0" class="padding6px" align="center">
+	<tr>
+		<td>{CART_NAME_FIELD}&nbsp;{cart_name_required}&nbsp;</td>
+		<td><input type="text" class="text" name="cart_name" value="{cart_name}" size="40" /></td>
+	</tr><!-- begin cart_email_block -->
+	<tr>
+		<td>{EMAIL_FIELD}&nbsp;{cart_email_required}&nbsp;</td>
+		<td><input type="text" class="text" name="cart_email" value="{cart_email}" size="40" /></td>
+	</tr><!-- end cart_email_block -->
+	<tr>
+		<td>{CLEAR_CART_MSG}&nbsp;</td>
+		<td><input type="checkbox" name="cart_clear" {cart_clear} value="1"  /></td>
+	</tr>
+
+	<tr>
+		<td>&nbsp;</td>
+		<td>
+			<input class="submit" type="submit" value="{SAVE_CART_BUTTON}" onclick="document.record.operation.value='save'" />
+			<input class="cancel" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'" />
+		</td>
+	</tr>
+	</table>
+	<br />
+	</form>

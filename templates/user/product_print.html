@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{meta_language}" lang="{meta_language}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{product_title}</title>
+<meta name="description" content="{meta_description}" />
+<meta name="keywords" content="{meta_keywords}" /><!-- begin head_tags -->
+{head_tag}<!-- end head_tags -->
+<base href="{absolute_url}" />
+<link rel="stylesheet" href="{css_file}" type="text/css" />
+<script type="text/javascript">
+//<![CDATA[
+	var imageUp = new Image();
+	imageUp.src = "{site_url}images/but-up.gif";
+	var imageDown = new Image();
+	imageDown.src = "{site_url}images/but-down.gif";
+
+	function changeBlockStatus(blockName)
+	{
+		var sectionBlock = document.getElementById(blockName);
+		var sectionImage = document.getElementById(blockName + "_img");
+		if (sectionBlock.style.display == "none") {
+			sectionBlock.style.display = "block";
+			sectionImage.src = imageUp.src;
+		} else {
+			sectionBlock.style.display = "none";
+			sectionImage.src = imageDown.src;
+		}
+	}
+
+//]]>
+</script>
+
+</head>
+
+<body class="commonbg">
+<table width="100%" cellspacing="0" cellpadding="0">
+<tr class="usualWhite">
+	<td valign="top">
+
+			<!-- BEGIN item -->
+			<table width="100%" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+					<br />
+					</td>
+				</tr>
+				<tr>
+					<td class="usualWhite">
+						<table width="100%" cellspacing="0" cellpadding="6">
+							<tr>
+								<td class="usualWhite">
+									<span class="h5" style="text-decoration: underline;">{item_name}</span>
+								</td>
+								<td class="usualWhite" align="right">
+									<a href="javascript:print()"><img src="{site_url}images/ico-print.gif" alt="{PRINT_PAGE_MSG}" width="20" height="20" align="middlebg" hspace="5" /><b>{PRINT_PAGE_MSG}</b></a>
+								</td>
+							<tr>
+						</table>
+					</td>
+				<tr>
+			</table>
+			<table width="100%" cellspacing="0" cellpadding="10">
+			<tr>
+				<td class="padding10px">
+				<!-- start item table -->
+				<table width="100%" cellspacing="0" cellpadding="3">
+				<tr>
+				  <td align="left" width="20%">
+						<!-- begin big_image -->
+						<img name="image_{form_id}" src="{src}" {width} {height} hspace="0" alt="{alt}" /><!-- end big_image -->
+					</td>
+					<td align="left" valign="top">
+						<div>
+						<!-- begin price_block -->
+						{PRICE_MSG}: 
+						<font class="{price_class}">{price}</font> 
+						<span class="taxprice">{tax_price}</span>
+						<br />
+						<!-- end price_block -->
+						<!-- begin sales -->
+						{SALE_PRICE_MSG}: 
+						<font class="ourprice">{sales_price}</font> 
+						<span class="taxprice">{tax_sales}</span>
+						<br />
+						<!-- end sales -->
+						<!-- begin save -->
+						{YOU_SAVE_MSG}: {you_save} ({discount_percent}%)<br /><!-- end save -->
+						<br />
+						<!-- begin properties_block -->
+						<div id="properties{form_id}" class="properties"><!-- begin properties -->
+							{property_name} {property_control}<br /><!-- end properties -->
+						</div><!-- end properties_block -->
+						</div>
+					</td>
+					<td align="left" valign="top" width="30%">
+						<!-- begin features_list_block -->
+						<b>{PROD_HIGHLIGHT_MSG}:</b><br />
+						{features_list}<br /><!-- end features_list_block -->
+					</td>
+				</tr>
+				</table>
+
+				</td>
+			</tr>
+			</table><!-- END item -->
+
+				<!-- begin description_block -->
+				<table width="100%" cellspacing="0" cellpadding="10">
+				<tr>
+					<td>
+						<font class="smallText"><!-- BEGIN notes_block -->
+						<br /><b>{PROD_NOTE_MSG}:</b> {notes}<!-- END notes_block --><!-- begin availability -->
+						<br /><b>{PROD_AVAILABILITY_MSG}:</b> {shipping_time_desc}<!-- end availability --><!-- BEGIN shipping_block -->
+						<br /><b>{PROD_SHIPPING_MSG}:</b> {shipping_rule_desc}<!-- END shipping_block --><!-- BEGIN weight_block -->
+						<br /><b>{PROD_WEIGHT_MSG}:</b> {weight}<!-- END weight_block -->
+						</font>
+					</td>
+				</tr>
+
+				<!-- begin title_desc -->
+				<table width="100%" cellspacing="0" cellpadding="6">
+				<tr>
+					<td class="usualWhite">
+						<div class="h5" style="text-decoration: underline;">{PROD_DESCRIPTION_MSG}<a href="#" onclick="changeBlockStatus('desc'); return false;"><img align="" id="desc_img" src="{site_url}images/but-up.gif" width="13" height="12" /></a></div>
+					</td>
+				</tr>
+				</table>
+				<!-- end title_desc -->
+
+				<table width="100%" cellspacing="0" cellpadding="10">
+				<tr>
+					<td>
+						<!-- begin description -->
+					  <div id="desc" style="display: block;">{full_description}</div><!-- end description -->
+					</td>
+				</tr>
+				</table>
+				<!-- end description_block -->
+
+
+				<!-- begin specification -->
+				<!-- begin title_spec -->
+				<br />
+				<table width="100%" cellspacing="0" cellpadding="6">
+				<tr>
+					<td class="usualWhite">
+						<div class="h5" style="text-decoration: underline;">{PROD_SPECIFICATION_MSG}<a href="#" onclick="changeBlockStatus('spec'); return false;"><img align="" id="spec_img" src="{site_url}images/but-up.gif" width="13" height="12" /></a></div>
+					</td>
+				</tr>
+				</table>
+				<!-- end title_spec -->
+				<div id="spec" style="display: block;">
+				<table width="100%" cellspacing="0" cellpadding="10">
+				<tr><td>
+				<!-- BEGIN groups -->
+				<TABLE cellspacing=0 cellpadding=0 width="100%" align="center" class=headerbg>
+					<tr>
+						<td>
+							<TABLE cellspacing=1 cellpadding=4 width="100%" align="center" border="1">
+								<tr >
+									<td class="usualbg" colspan=2><b>{group_name}</b></td>
+								</tr><!-- BEGIN features -->
+								<tr>
+									<td class="usualbg" valign="top" width="35%">{feature_name}</td>
+									<td class="usualbg" valign="top">{feature_value}</td>
+								</tr><!-- END features -->
+							</table>
+						</td>
+					</tr>
+				</table>
+				<!-- END groups -->
+				</td></tr></table>
+				</div>
+				<!-- end specification -->
+
+
+				<!-- begin images -->
+				<!-- begin title_images -->
+				<br />
+				<table width="100%" cellspacing="0" cellpadding="6">
+				<tr>
+					<td class="usualWhite">
+						<div class="h5" style="text-decoration: underline;">{PROD_IMAGES_MSG}<a href="#" onclick="changeBlockStatus('imeg'); return false;"><img align="" id="imeg_img" src="{site_url}images/but-up.gif" width="13" height="12" /></a></div>
+					</td>
+				</tr>
+				</table>
+				<!-- end title_images -->
+				<br />
+				<div id="imeg" style="display: block;">
+				<table cellspacing=0 cellpadding=5 width="100%" align="center">
+				<!-- begin images_rows -->
+				<tr valign="top" align="center"><!-- begin images_cols -->
+	  <td>
+						<div class="title">{image_title}</div>
+						<a href="{image_large}" target="_blank"><img src="{image_small}" {image_width} {image_height} alt="{image_title}" /></a>
+						<div class="smallText">{image_description}</div>
+					</td><!-- end images_cols -->
+				</tr>
+				<tr><td colspan="2">&nbsp;</td></tr>
+				<!-- end images_rows -->
+				</table>
+				<br />
+				</div>
+				<!-- end images -->
+
+				<!-- begin accessories_block -->
+				<!-- begin title_accessories -->
+				<table width="100%" cellspacing="0" cellpadding="6">
+				<tr>
+					<td class="usualWhite">
+						<div class="h5" style="text-decoration: underline;">{PROD_ACCESSORIES_MSG}<a href="#" onclick="changeBlockStatus('acces'); return false;"><img align="" id="acces_img" src="{site_url}images/but-up.gif" width="13" height="12" /></a></div>
+					</td>
+				</tr>
+				</table>
+				<!-- end title_accessories -->
+
+				<div id="acces" style="display: block;">
+				<table cellspacing=0 cellpadding=10 width="100%" align="center">
+				<!-- begin accessories_rows -->
+				<tr valign="top"><!-- begin accessories_cols -->
+				  <td width="50%">
+						<a href="{product_print_href}?item_id={accessory_id}" class="title {restricted_class}">{accessory_name}</a> 
+						<!-- begin accessory_price_block -->
+						- <span class="ourprice">{accessory_price}</span>
+							<span class="taxprice">{accessory_tax_price}</span>
+						<!-- end accessory_price_block -->
+					</td>
+					<!-- end accessories_cols -->
+				</tr>
+				<!-- end accessories_rows -->
+				</table>
+				</div>
+				<!-- end accessories_block -->
+				<br />
+
+
+
+
+	</td>
+</tr>
+</table>
+<br />
+
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{CMS_MSG} :: {CMS_BLOCK_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/win_select.js"></script>
+<script language="JavaScript" type="text/javascript">
+<!--
+	var removeButton = "{REMOVE_BUTTON}";
+	var items = new Array(); // global array for all selected items
+
+	var pages = new Array(); // <!-- BEGIN selected_pages_js -->
+	pages["{page_id}"] = new Array("{page_name_js}");// <!-- END selected_pages_js -->
+	items["pages_ids"] = pages;
+
+	function changeLayoutType()
+	{
+		var formObj = document.record;
+		var typeObj = formObj.layout_type;
+		var typeValue = typeObj.options[typeObj.selectedIndex].value;
+		var typeTemplate = formObj.layout_template;
+		if (typeValue == "cm" || typeValue == "custom") {
+			typeTemplate.style.display = "inline";
+		} else {
+			typeTemplate.style.display = "none";
+		}
+	}
+//-->
+</script>
+
+</head>
+
+<body class="bodySbuilder">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<form action="{admin_cms_block_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="block_id" value="{block_id}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="page" value="{page}">
+<input type="hidden" name="tab" value="{tab}">
+
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<div id="tabs"><!-- BEGIN tabs_rows -->
+	<ul id="{row_id}" class="tabRow"><!-- BEGIN tabs -->
+		<li id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+	</ul><!-- END tabs_rows -->
+</div>
+
+<div class="Form clearBoth">
+<div class="FormContent">
+
+<div id="data_general" style="{general_style}"> 
+<table width="100%" border="0" cellspacing="1" cellpadding="6" align="center">
+<tr class="usual">
+	<td>{MODULE_MSG} *</td>
+	<td>
+		<select name="module_id"><!-- begin module_id -->
+			<option {module_id_selected} value="{module_id_value}">{module_id_description}<!-- end module_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{SORT_ORDER_MSG} *</td>
+	<td><input class="field" type="text" name="block_order" size="8" maxlength="8" value="{block_order}"/></td>
+</tr>
+<tr class="usual">
+	<td>{CODE_MSG} *</td>
+	<td><input class="field" type="text" name="block_code" size="32" maxlength="32" value="{block_code}"/></td>
+</tr>
+<tr class="usual">
+	<td>{NAME_MSG} *</td>
+	<td><input class="field" type="text" name="block_name" size="64" maxlength="255" value="{block_name}"/></td>
+</tr>
+<tr class="usual">
+	<td>{SCRIPT_NAME_MSG} *</td>
+	<td><input class="field" type="text" name="php_script" size="64" maxlength="255" value="{php_script}"/></td>
+</tr>
+<tr class="usual">
+	<td>{BLOCK_LAYOUT_MSG}</td>
+	<td>
+		<select name="layout_type" onchange="changeLayoutType();"><!-- begin layout_type -->
+			<option {layout_type_selected} value="{layout_type_value}">{layout_type_description}<!-- end layout_type -->
+		</select>
+		<input class="field" style="{layout_template_style}" type="text" name="layout_template" size="46" maxlength="128" value="{layout_template}"/>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{HTML_TEMPLATE_MSG}</td>
+	<td><input class="field" type="text" name="html_template" size="64" maxlength="255" value="{html_template}"/></td>
+</tr>
+<tr class="usual">
+	<td>{BLOCK_CSS_CLASS_MSG}</td>
+	<td><input class="field" type="text" name="css_class" size="64" maxlength="255" value="{css_class}"/></td>
+</tr>
+<tr class="usual">
+	<td>{BLOCK_TITLE_MSG}</td>
+	<td><textarea class="field" name="block_title" cols="64" rows="2">{block_title}</textarea></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<!-- select products -->
+<div id="data_pages" style="{pages_style}">
+	<table cellspacing="1" cellpadding="4" border="0" width="100%">
+	<tr class="usual">
+		<td colspan="2">
+			<input type="hidden" name="pages_ids" value="{pages_ids}">
+			<input type="checkbox" name="pages_all" id="pages_all" {pages_all} value="1">
+			<label for="pages_all">{USE_FOR_ALL_PAGES_MSG}</label>
+		</td>
+	</tr>	
+	<tr class="usual">
+		<td colspan="2">
+			<ul id="selectedPages"><!-- BEGIN selected_pages -->
+				<li class="selectedCategory">{page_name} - <a href="#" onClick="removeItem('{page_id}', 'record', 'pages_ids', 'selectedPages'); return false;">{REMOVE_BUTTON}</a></li><!-- END selected_pages -->
+			</ul>
+			<a class=title href="#" onClick="openWindowSelect('{admin_cms_pages_select_href}', 'record', 'pages_ids', 'selectedPages', 'multiple'); return false;">{SELECT_PAGE_MSG}</a>
+		</td>
+	</tr>
+	<tr class="middle">
+		<td colspan="2">
+			<span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+</div>
+</div>
+
+</form>	
+
+
+{admin_footer}
+
+</body>
+</html>

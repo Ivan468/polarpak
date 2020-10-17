@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html><head><title>{ADMINISTRATION_MSG} :: {EDIT_BLOCK_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+<script language= "JavaScript" type= "text/javascript" src= "../js/editor.js"></script>
+{CKEditor_tag}
+</head>
+
+<body class="bodySbuilder">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_BLOCK_MSG}</div>
+<div class="BlockContent">
+<form action="{admin_custom_block_href}" name="record" method="POST" onSubmit="submit_editor(Array('editor_bd'));">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="block_id" value="{block_id}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="page" value="{page}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table width="100%" border="0" cellspacing="1" cellpadding="6" align="center">
+<tr class="middle">
+	<td colspan="2">{ADMINISTRATIVE_INFO_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{BLOCK_NAME} *</td>
+	<td><input class="field" type="text" name="block_name" size="100" value="{block_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{BLOCK_NOTES_MSG}</td>
+	<td><textarea name="block_notes" cols="100" rows="5">{block_notes}</textarea></td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{APPEARANCE_ON_PAGE_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{BLOCK_CSS_CLASS_MSG}</td>
+	<td><input class="field" type="text" name="block_class" size="100" value="{block_class}"></td>
+</tr>
+<tr class="usual">
+	<td>{BLOCK_TITLE_MSG}</td>
+	<td><input class="field" type="text" name="block_title" size="100" value="{block_title}"></td>
+</tr>
+<tr class="usual">
+	<td>{GET_CONTENT_FROM_FILE_MSG}</td>
+	<td><input class="field" type="text" name="block_path" size="100" value="{block_path}"></td>
+</tr>
+<tr class="usual">
+	<td>{BLOCK_CONTENT_MSG}</td>
+	<td>{editor_error}
+		<textarea class="text" id="bd" name="block_desc" cols="100" rows="25">{block_desc}</textarea>
+		<!-- begin bd_ext_editor -->
+		<script type="text/javascript">
+			var bdEditor = CKEDITOR.replace('bd');{ckfinder}
+		</script><!-- end bd_ext_editor -->
+		<!-- begin bd_int_editor -->
+		<script language= "JavaScript" type= "text/javascript">
+		<!--
+			var editor_bd = new VA_HTMLeditor('content_bd','../','{html_editor}');
+			editor_bd.text_field_name = 'block_desc';
+			editor_bd.formname = 'record';
+			editor_bd.css_file = '{css_file}';
+			editor_bd.displayEditor('editor_bd', 565, 300);
+		//-->
+		</script><!-- end bd_int_editor -->
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+
+</body>
+</html>

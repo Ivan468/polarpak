@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {CUSTOM_BLOCKS_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+function clearSearch() {
+		document.search_blocks.search_block.value = "";
+		document.search_blocks.submit();
+
+	}
+</script>
+</head>
+
+<body class="bodySbuilder">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+<td valign="top" width="75%" class="paddingRight">
+
+<div class="Block">
+<div class="BlockTitle">Sent Forms</div>
+<div class="BlockContent">
+
+<table border="0" cellpadding="6" cellspacing="1" width="100%"><!-- begin sorters -->
+<tr class="middle"align="center">
+	<td>
+		ID
+	</td>
+	<td>
+		{sorter_form_name}
+	</td>
+	<td>
+		{sorter_remote_address}
+	</td>
+	<td>
+		{sorter_date_sent}
+	</td>
+	<td>
+		&nbsp;
+	</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="usual" align="center">
+	<td>
+		{sent_form_id}
+	</td>
+	<td>
+		{form_name}
+	</td>
+	<td align="left">
+		{remote_address}
+	</td>
+	<td align="left">
+		{dete_sent}
+	</td>
+	<td>
+		<a href="{admin_custom_form_sent_url}">See details</a>
+	</td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="4">
+		{NO_RECORDS_MSG}
+	</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="6">
+		<table cellspacing="0" cellpadding="0" border="0">
+		<tr>
+			<!-- begin navigator_block -->
+			<td>&nbsp;{navigator}&nbsp;</td><!-- end navigator_block -->
+		</tr>
+		</table>
+	</td>
+</tr>
+</table>	
+
+</div>
+</div>
+
+</td>
+</tr>
+</table>	
+
+{admin_footer}
+</body>
+</html>

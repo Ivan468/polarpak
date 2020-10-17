@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{meta_language}" lang="{meta_language}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{ADDRESS_MSG}</title>
+<link rel="stylesheet" href="{css_file}" type="text/css" />
+<script type="text/javascript">
+//<![CDATA[
+
+function closeWindow()
+{
+	window.opener.focus();
+	window.close();
+}
+
+//]]>
+</script>
+</head>
+
+<body class="popup">
+
+<table width="100%" cellspacing="0" cellpadding="0" align="center">
+<tr><td class="headerbg"> 
+
+	<table cellspacing="1" cellpadding="5" width="100%" align="center">
+	<tr>
+		<td colspan="3" class="usualbg" align="center">
+			{block_user_address}
+		</td>
+	</tr>
+	</tr>
+		<td colspan="3" class="headerbg" align="center">
+			<a class="headerbg" href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a>
+		</td>
+	</tr>
+	</table>
+
+</td></tr></table>
+
+</form>
+
+</body>
+</html>

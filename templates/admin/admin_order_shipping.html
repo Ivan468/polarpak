@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {ADMIN_ORDER_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+var shipCostValues = new Array();//<!-- begin shipping_cost_values -->
+shipCostValues["{shipping_type_id}"] = "{shipping_cost}";//<!-- end shipping_cost_values -->
+
+function closeWindow(imageName)
+{
+	window.opener.focus();
+	window.close();
+}
+
+function selectShipping()
+{
+	var formObj = document.shipping;
+	var selectedId = formObj.shipping_type_id.options[formObj.shipping_type_id.selectedIndex].value;
+	if (selectedId != "") {
+		formObj.custom_shipping_type.value = "";
+		formObj.custom_shipping_cost.value = "";
+		formObj.shipping_cost.value = shipCostValues[selectedId];
+	}
+}
+
+function customShipping()
+{
+	var formObj = document.shipping;
+	if (formObj.shipping_type_id) {
+		var descValue = formObj.custom_shipping_type.value;
+		var costValue = formObj.custom_shipping_cost.value;
+		if (descValue != "" || costValue != "") {
+			formObj.shipping_type_id.selectedIndex = 0;
+			formObj.shipping_cost.value = "";
+		}
+	}
+}
+
+function reloadParentWin()
+{
+	window.opener.location.reload();
+}
+
+
+//-->
+</script>
+</head>
+
+<body class="popup" onload="{onload_js}">
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle" align="center">
+	<td colspan="5"><a href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+<tr>
+	<td>
+
+
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+<tr align="center" valign="top" class="middle">
+	<td class="usual">
+		{PROD_NAME_MSG}
+	</td>
+	<td class="usual">
+		{QTY_MSG}
+	</td>
+	<td class="usual">
+		{WEIGHT_MSG} 
+	</td>
+	<td class="usual">
+		{PACKAGES_NUMBER_MSG} 
+	</td>
+</tr>
+<!-- begin order_packages -->
+<tr align="right" valign="top">
+	<td class="usual" align="left">
+		{item_name}<br>
+		{DIMENSIONS_MSG}: [{width} x {height} x {length}]
+		<!-- begin item_remove_button -->
+		<div class="button"><a href="{admin_order_shipping_href}?order_shipping_id={order_shipping_id}&order_item_id={order_item_id}&operation=remove_item" class="smallButton" onclick="return confirm('{confirm_message}');">{REMOVE_BUTTON}</a></div><!-- end item_remove_button -->
+	</td>
+	<td class="usual" align="center">
+		{quantity}
+	</td>
+	<td class="usual">
+		{weight} 
+	</td>
+	<td class="usual">
+		{packages_number} 
+	</td>
+</tr><!-- end order_packages -->
+<tr class="middle" align="right" valign="top">
+	<td class="usual">
+		<b>{TOTAL_MSG}</b>
+	</td>
+	<td class="usual" align="center">
+		{total_quantity}
+	</td>
+	<td class="usual">
+		{total_weight}
+	</td>
+	<td class="usual">
+		{total_packages}
+	</td>
+</tr>
+</table>
+
+<table cellspacing="1" cellpadding="4" border="0" align="right">
+<tr class="usual">
+	<td align="right">
+		{SHIPPING_METHOD_MSG}:
+	</td>
+	<td>
+		{cur_shipping_type_desc}
+	</td>
+</tr>
+<tr>
+	<td align="right">
+		{SHIPPING_TRACKING_NUMBER_MSG}:
+	</td>
+	<td>
+		{cur_shipping_tracking_id}
+	</td>
+</tr><!-- begin shipping_company_block -->
+<tr>
+	<td align="right">
+		{SHIPPING_COMPANY_MSG}:
+	</td>
+	<td>
+		{cur_shipping_company}
+	</td>
+</tr><!-- end shipping_company_block -->
+</table>
+
+<hr class="middle" width="100%">
+
+
+<form name="shipping" action="{admin_order_shipping_href}" method="post">
+<input type="hidden" name="operation" value="update">
+<input type="hidden" name="order_id" value="{order_id}">
+<input type="hidden" name="order_items_ids" value="{order_items_ids}">
+<input type="hidden" name="order_shipping_id" value="{order_shipping_id}">
+<table cellspacing="1" cellpadding="4" border="0" align="right"><!-- begin predefined_shipping_types -->
+<tr class="usual">
+	<td align="right">
+		{SHIPPING_METHOD_MSG}:
+	</td>
+	<td>
+		<select name="shipping_type_id" onchange="selectShipping();"><!-- begin shipping_types -->
+			<option value="{shipping_type_id}">{shipping_type_desc}</option><!-- end shipping_types -->
+		</select>
+	</td>
+	<td align="right">
+		{currency_left}
+		<input type="text" name="shipping_cost" size="6" value="" />
+		{currency_right}
+	</td>
+</tr><!-- end predefined_shipping_types -->
+<tr class="usual">
+	<td align="right">
+		{CUSTOM_SHIPPING_MSG}:
+	</td>
+	<td>
+		<input type="text" name="custom_shipping_type" size="30" onkeyup="customShipping();" value="" />
+	</td>
+	<td align="right">
+		{currency_left}
+		<input type="text" name="custom_shipping_cost" size="6" onkeyup="customShipping();" value="" />
+		{currency_right}
+	</td>
+</tr>
+<tr>
+	<td align="right">
+		{SHIPPING_TRACKING_NUMBER_MSG}:
+	</td>
+	<td colspan="2">
+		<input type="text" name="shipping_tracking_id" size="30" value="" />
+	</td>
+</tr><!-- begin shipping_company_id_block -->
+<tr>
+	<td align="right">
+		{SHIPPING_COMPANY_MSG}:
+	</td>
+	<td colspan="2">
+		<select name="shipping_company_id"><!-- begin shipping_company_id -->
+			<option {shipping_company_id_selected} value="{shipping_company_id_value}">{shipping_company_id_description}<!-- end shipping_company_id -->
+		</select>
+	</td>
+</tr><!-- end shipping_company_id_block -->
+<tr>
+	<td align="right">
+		&nbsp;
+	</td>
+	<td colspan="2">
+		<!-- begin update_button -->
+		<span class="button"><input class="submit" type="submit" name="submit" value="{UPDATE_BUTTON}" /></span><!-- end update_button -->
+		<!-- begin add_button -->
+		<span class="button"><input class="submit" type="submit" name="submit" value="{ADD_BUTTON}" /></span><!-- end add_button -->
+	</td>
+</tr>
+</table>
+</form>
+
+	</td>
+</tr>
+<tr class="middle" align="center">
+	<td colspan="5"><a href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+</table>
+
+
+</body>
+</html>

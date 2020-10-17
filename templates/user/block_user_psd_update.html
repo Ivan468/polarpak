@@ -1,0 +1,130 @@
+<script type="text/javascript" >
+//<![CDATA[
+	function checkActive() 
+	{
+		var isDefault = document.record.is_default.checked;
+		if (isDefault) {
+			document.record.is_active.checked = true;
+		}
+
+	}
+
+	function checkDefault()
+	{
+		var isActive = document.record.is_active.checked;
+		if (!isActive) {
+			document.record.is_default.checked = false
+		}
+	}
+//]]>
+</script>
+
+<form action="{user_psd_update_url}" name="record" method="post">
+<input type="hidden" name="operation" value="save" />
+<input type="hidden" name="psd_id" value="{psd_id}" />
+<input type="hidden" name="type" value="{type}" />
+<table width="100%" cellspacing="1" class="table-data"><!-- BEGIN errors -->
+<tr>
+	<td colspan="2">
+		<div class="errorbg">{errors_list}</div>
+	</td>
+</tr><!-- END errors -->
+
+<!-- begin form_sections --><!-- end form_sections --><!-- begin form_section -->
+<tr class="middlebg">
+	<td colspan="2">{section_name}</td>
+</tr><!-- end form_section --><!-- begin order_properties -->
+<tr id="op_block_{property_id}" class="usualbg">
+	<td style="{property_style}">{property_name} {property_required}</td>
+	<td style="{property_style}">{property_control}</td>
+</tr><!-- end order_properties --><!-- begin payment_info_block -->
+<tr class="usualbg">
+	<td colspan="2">{payment_info}</td>
+</tr><!-- end payment_info_block -->
+<!-- begin is_active_block -->
+<tr class="usualbg">
+	<td>{IS_ACTIVE_MSG}</td>
+	<td><input type="checkbox" name="is_active" {is_active} value="1" onclick="checkDefault();" /></td>
+</tr><!-- end is_active_block --><!-- begin is_default_block -->
+<tr class="usualbg">
+	<td>{DEFAULT_MSG}</td>
+	<td><input type="checkbox" name="is_default" {is_default} value="1" onclick="checkActive();" /></td>
+</tr><!-- end is_default_block --><!-- begin cc_name_block -->
+<tr class="usualbg">
+	<td>
+		{CC_NAME_FIELD}&nbsp;{cc_name_required}
+		<div class="smallText">({CC_NAME_DESC})</div>
+	</td>
+	<td><input class="text" type="text" name="cc_name" size="50" value="{cc_name}" /></td>
+</tr><!-- end cc_name_block --><!-- begin cc_first_name_block -->
+<tr class="usualbg">
+	<td>{CC_FIRST_NAME_FIELD}&nbsp;{cc_first_name_required}</td>
+	<td><input class="text" type="text" name="cc_first_name" size="50" value="{cc_first_name}" /></td>
+</tr><!-- end cc_first_name_block --><!-- begin cc_last_name_block -->
+<tr class="usualbg">
+	<td>{CC_LAST_NAME_FIELD}&nbsp;{cc_last_name_required}</td>
+	<td><input class="text" type="text" name="cc_last_name" size="50" value="{cc_last_name}" /></td>
+</tr><!-- end cc_last_name_block --><!-- begin cc_number_block -->
+<tr class="usualbg">
+	<td>{CC_NUMBER_FIELD}&nbsp;{cc_number_required}</td>
+	<td><input class="text" type="text" name="cc_number" size="50" value="{cc_number}" /></td>
+</tr><!-- end cc_number_block --><!-- begin cc_start_date_block -->
+<tr class="usualbg">
+	<td>{CC_START_DATE_FIELD}&nbsp;{cc_start_date_required}</td>
+	<td>
+		<select class="text" name="cc_start_month"><!-- begin cc_start_month -->
+			<option {cc_start_month_selected} value="{cc_start_month_value}">{cc_start_month_description}</option><!-- end cc_start_month -->
+		</select>
+		<select class="text" name="cc_start_year"><!-- begin cc_start_year -->
+			<option {cc_start_year_selected} value="{cc_start_year_value}">{cc_start_year_description}</option><!-- end cc_start_year -->
+		</select>
+	</td>
+</tr><!-- end cc_start_date_block --><!-- begin cc_expiry_date_block -->
+<tr class="usualbg">
+	<td>{CC_EXPIRY_DATE_FIELD}&nbsp;{cc_expiry_date_required}</td>
+	<td>
+		<select class="text" name="cc_expiry_month"><!-- begin cc_expiry_month -->
+			<option {cc_expiry_month_selected} value="{cc_expiry_month_value}">{cc_expiry_month_description}</option><!-- end cc_expiry_month -->
+		</select>
+		<select class="text" name="cc_expiry_year"><!-- begin cc_expiry_year -->
+			<option {cc_expiry_year_selected} value="{cc_expiry_year_value}">{cc_expiry_year_description}</option><!-- end cc_expiry_year -->
+		</select>
+	</td>
+</tr><!-- end cc_expiry_date_block --><!-- begin cc_type_block -->
+<tr class="usualbg">
+	<td>{CC_TYPE_FIELD}&nbsp;{cc_type_required}</td>
+	<td>
+		<select class="text" name="cc_type"><!-- begin cc_type -->
+			<option {cc_type_selected} value="{cc_type_value}">{cc_type_description}</option><!-- end cc_type -->
+		</select>
+	</td>
+</tr><!-- end cc_type_block --><!-- begin cc_issue_number_block -->
+<tr class="usualbg">
+	<td>{CC_ISSUE_NUMBER_FIELD}&nbsp;{cc_issue_number_required}</td>
+	<td>
+		<select class="text" name="cc_issue_number" width="20"><!-- begin cc_issue_number -->
+				<option {cc_issue_number_selected} value="{cc_issue_number_value}">{cc_issue_number_description}</option><!-- end cc_issue_number -->
+		</select>
+		&nbsp;({CC_ISSUE_NUMBER_DESC})
+	</td>
+</tr><!-- end cc_issue_number_block --><!-- begin cc_security_code_block -->
+<tr class="usualbg">
+	<td>{CC_SECURITY_CODE_FIELD}&nbsp;{cc_security_code_required}</td>
+	<td>
+		<input class="text" type="text" name="cc_security_code" width="10" value="{cc_security_code}" /> 
+			<a href="{cc_security_code_help_href}" target="_blank" 
+				onclick="window.open('{cc_security_code_help_href}', 'cc_security_code_help', 'width=425,height=300,location=no,menubar=no,status=no,toolbar=no');return false;" 
+				class="tocreverse">{CC_SECURITY_CODE_HELP_MSG}</a>
+	</td>
+</tr><!-- end cc_security_code_block -->
+<tr class="middlebg">
+	<td>&nbsp;</td>
+	<td><!-- BEGIN add_button -->
+		<span class="submit"><input class="submit" type="submit" value="{ADD_NEW_MSG}" onclick="document.record.operation.value='save';" /></span> &nbsp; <!-- END add_button --><!-- BEGIN update_button -->
+		<span class="submit"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onclick="document.record.operation.value='save';" /></span> &nbsp; <!-- END update_button --><!-- begin delete -->
+		<span class="submit"><input class="submit" type="submit" id="delete" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{confirm_delete_message}?');" /></span> &nbsp; <!-- end delete -->
+		<span class="submit"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel';" /></span>
+	</td>
+</tr>
+</table>
+</form>

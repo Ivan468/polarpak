@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {EDIT_STATUS_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script>
+	var statusTypesInfo = {status_types_info};
+	function statusTypeChanged(firstCall)
+	{	
+		var typeObj = document.querySelector("select[name=status_type]");
+		var descObj = document.querySelector(".type-desc");
+		var typeCode = typeObj.value;
+		if (typeCode && statusTypesInfo[typeCode]) {
+			descObj.innerHTML = statusTypesInfo[typeCode];
+		}
+	}
+	window.addEventListener("DOMContentLoaded", statusTypeChanged, false);
+
+</script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Form">
+<div class="FormTitle">{EDIT_STATUS_MSG}</div>
+<div class="FormContent">
+
+<form action="{admin_support_status_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="status_id" value="{status_id}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="usual">
+	<td>{STATUS_ORDER_MSG} *</td>
+	<td><input class="field" type="text" size="10" name="status_order" value="{status_order}"></td>
+</tr>
+<tr class="usual">
+	<td>{STATUS_TYPE_MSG} *</td>
+	<td>
+		<select oninput="statusTypeChanged();" name="status_type"><!-- begin status_type -->
+			<option {status_type_selected} value="{status_type_value}">{status_type_description}<!-- end status_type -->
+		</select>
+		<span class="comment type-desc"></span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{STATUS_NAME_MSG} *</td>
+	<td><input class="field" type="text" size="50" name="status_name" value="{status_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{PROPERTIES_MSG}</td>
+	<td>
+		<input type="checkbox" {is_internal} name="is_internal" id="is_internal" value="1"> <label for="is_internal">{IS_TICKET_INTERNAL_NOTE}</label><br>
+		<input type="checkbox" {is_list} name="is_list" id="is_list" value="1"> <label for="is_list">{IS_TICKET_DEFAULT_NOTE}</label><br>
+		<input type="checkbox" {is_update_status} name="is_update_status" id="is_update_status" value="1"> <label for="is_update_status">{IS_UPDATE_STATUS_NOTE}</label><br>
+		<input type="checkbox" {is_keep_assigned} name="is_keep_assigned" id="is_keep_assigned" value="1"> <label for="is_keep_assigned">{IS_KEEP_ASSIGNED_NOTE}</label><br>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{HTML_TAG_BEFORE_SUMMARY_MSG}</td>
+	<td><input class="field" type="text" size="50" name="html_start" value="{html_start}"></td>
+</tr>
+<tr class="usual">
+	<td>{HTML_TAG_AFTER_SUMMARY_MSG}</td>
+	<td><input class="field" type="text" size="50" name="html_end" value="{html_end}"></td>
+</tr>
+<tr class="usual">
+	<td>{STATUS_ICON_MSG}</td>
+	<td>
+		<input class="field" type="text" size="50" name="status_icon" value="{status_icon}">
+		<span class="small">({EG_MSG} '../images/icon/status_new.gif')</span>
+	</td>
+</tr>
+<tr class="buttons">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{PRODUCTS_SETTINGS_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="../js/calendar.js"></script>
+<script language="JavaScript">
+<!--
+	function openWindow(pagename, filetype)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+	}
+	function setFileName(filename, filetype)
+	{
+		var siteUrl = '{site_url}';
+		if(filename != "")
+		{
+			if(filetype == "wm_tiny") {
+				document.record.wm_tiny_image.value = siteUrl + "images/" + filename;
+				document.record.wm_tiny_image.focus();
+			} else if (filetype == "wm_small") {
+				document.record.wm_small_image.value = siteUrl + "images/" + filename;
+				document.record.wm_small_image.focus();
+			} else if (filetype == "wm_large") {
+				document.record.wm_large_image.value = siteUrl + "images/" + filename;
+				document.record.wm_large_image.focus();
+			} else if (filetype == "wm_super") {
+				document.record.wm_super_image.value = siteUrl + "images/" + filename;
+				document.record.wm_super_image.focus();
+			}
+		}
+	}
+	function rangeSelected() {
+		sel = document.record.new_product_range.selectedIndex;
+		if (sel == 3) {
+			document.getElementById("new_product_from_date_block").style.display = "block";
+		} else {
+			document.getElementById("new_product_from_date_block").style.display = "none";		
+		}
+		
+		if (sel == 2) {
+			document.getElementById("new_product_x_days_block").style.display = "block";
+		} else {
+			document.getElementById("new_product_x_days_block").style.display = "none";
+		}
+	}
+
+	function setCode(column, code)
+	{
+		var fieldName = "column_code_" + column;
+		var fieldObj = document.record.elements[fieldName];
+		if (fieldObj && code && code != "") {
+			var fieldValue = fieldObj.value;
+			if (fieldValue && fieldValue != "") {
+				fieldValue += ",";
+			}
+			fieldValue += code;
+			fieldObj.value = fieldValue;
+		}
+	}
+//-->
+</script>
+</head>
+<body class="mainbg">
+{admin_header}
+<form action="{admin_dating_settings_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="rp" value="{rp}">
+<input type="hidden" name="tab" value="{tab}">
+
+<!-- begin sitelist -->
+<div class="sitelist">
+	{SELECT_SITE_MSG}&nbsp;
+	<select name="param_site_id" onchange="reloadSite(this.form)"><!-- begin param_site_id -->
+		<option {param_site_id_selected} value="{param_site_id_value}">{param_site_id_description}<!-- end param_site_id -->
+	</select>		
+</div><!-- end sitelist -->
+{block_leftside_breadcrumbs}
+
+<div id="tabs"><!-- BEGIN tabs_rows -->
+	<ul id="{row_id}" class="tabRow"><!-- BEGIN tabs -->
+		<li id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+	</ul><!-- END tabs_rows -->
+</div>
+
+<div class="Block clearBoth">
+<div class="BlockContent">
+
+<!-- BEGIN success_block --><div class="messagebg">{CHANGES_SAVED_MSG}</div><!-- END success_block -->
+<!-- BEGIN errors --><div class="error">{errors_list}</div><!-- END errors -->
+<div id="data_general" style="{general_style}">
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2">{DEFAULT_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{DEFAULT_TINY_IMAGE_MSG}</td>
+	<td>
+		<input onfocus="showHint(this, 'defTinyHint');" onblur="hideHint('defTinyHint');" class="field" type="text" name="no_tiny_image" value="{no_tiny_image}" size="60" maxlength="255">
+		<img onmouseover="showHint(this, 'defTinyHint');" onmouseout="hideHint('defTinyHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+		<div id="defTinyHint" class="hintPopup">{DEFAULT_TINY_IMAGE_DESC}</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{DEFAULT_SMALL_IMAGE_MSG}</td>
+	<td>
+		<input onfocus="showHint(this, 'defSmallHint');" onblur="hideHint('defSmallHint');" class="field" type="text" name="no_small_image" value="{no_small_image}" size="60" maxlength="255">
+		<img onmouseover="showHint(this, 'defSmallHint');" onmouseout="hideHint('defSmallHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+		<div id="defSmallHint" class="hintPopup">{DEFAULT_SMALL_IMAGE_DESC}</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td width="20%">{DEFAULT_LARGE_IMAGE_MSG}</td>
+	<td>
+		<input onfocus="showHint(this, 'defLargeHint');" onblur="hideHint('defLargeHint');" class="field" type="text" name="no_large_image" value="{no_large_image}" size="60" maxlength="255">
+		<img onmouseover="showHint(this, 'defLargeHint');" onmouseout="hideHint('defLargeHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+		<div id="defLargeHint" class="hintPopup">{DEFAULT_LARGE_IMAGE_DESC}</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{JPEG_QUALITY_MSG}</td>
+	<td>
+		<input onfocus="showHint(this, 'jpegQualityHint');" onblur="hideHint('jpegQualityHint');" class="field" type="text" name="jpeg_quality" value="{jpeg_quality}" size="10" maxlength="3">
+		<img onmouseover="showHint(this, 'jpegQualityHint');" onmouseout="hideHint('jpegQualityHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+		<div id="jpegQualityHint" class="hintPopup">{JPEG_QUALITY_NOTE}</div>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{PHOTO_RESTRICTIONS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>&nbsp;</td>
+	<td class="small">({WIDTH_MSG} x {HEIGHT_MSG})</td>
+</tr>
+<tr class="usual">
+	<td>{PHOTO_TINY_MSG}</td>
+	<td>
+		<input class="field" type="text" size="5" name="photo_tiny_width" value="{photo_tiny_width}">
+		x
+		<input class="field" type="text" size="5" name="photo_tiny_height" value="{photo_tiny_height}">
+
+		<input type="checkbox" name="photo_tiny_generate" id="photo_tiny_generate" {photo_tiny_generate} value="1"> 
+
+		<label for="photo_tiny_generate">{GENERATE_TINY_PHOTO_MSG}</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{PHOTO_SMALL_MSG}</td>
+	<td>
+		<input class="field" type="text" size="5" name="photo_small_width" value="{photo_small_width}">
+		x
+		<input class="field" type="text" size="5" name="photo_small_height" value="{photo_small_height}">
+		
+		<input type="checkbox" name="photo_small_generate" id="photo_small_generate" {photo_small_generate} value="1"> 
+		<label for="photo_small_generate">{GENERATE_SMALL_PHOTO_MSG}</label>
+
+	</td>
+</tr>
+<tr class="usual">
+	<td>{PHOTO_LARGE_MSG}</td>
+	<td>
+		<input class="field" type="text" size="5" name="photo_large_width" value="{photo_large_width}">
+		x
+		<input class="field" type="text" size="5" name="photo_large_height" value="{photo_large_height}">
+
+		<input type="checkbox" name="photo_large_generate" id="photo_large_generate" {photo_large_generate} value="1"> 
+		<label for="photo_large_generate">{GENERATE_LARGE_PHOTO_MSG}</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{PHOTO_SUPER_MSG}</td>
+	<td>
+		<input class="field" type="text" size="5" name="photo_super_width" value="{photo_super_width}">
+		x
+		<input class="field" type="text" size="5" name="photo_super_height" value="{photo_super_height}">
+
+		<input type="checkbox" name="photo_super_generate" id="photo_super_generate" {photo_super_generate} value="1"> 
+		<label for="photo_super_generate">{GENERATE_SUPER_PHOTO_MSG}</label>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+<div id="data_watermarks" style="{watermarks_style}">
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2">{WATERMARK_SETTINGS_MSG}</td>
+</tr>
+<tr class="label">
+	<td colspan="2">
+		{PHOTO_TINY_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td>{WATERMARK_IMAGE_MSG}</td>
+	<td>
+		<select name="wm_tiny_image_pos"><!-- begin wm_tiny_image_pos -->
+			<option {wm_tiny_image_pos_selected} value="{wm_tiny_image_pos_value}">{wm_tiny_image_pos_description}<!-- end wm_tiny_image_pos -->
+		</select>
+		<input class="field" type="text" name="wm_tiny_image" value="{wm_tiny_image}" size="60" maxlength="255">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'wm_tiny')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'wm_tiny')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td></td>
+	<td>
+		<table cellspacing="0" cellpadding="2" border="0">
+		<tr>
+			<td>&nbsp;{TRANSPARENCY_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'imageTrHint');" onblur="hideHint('imageTrHint');" class="field" type="text" name="wm_tiny_image_pct" value="{wm_tiny_image_pct}" size="10" maxlength="10">
+				<img onmouseover="showHint(this, 'imageTrHint');" onmouseout="hideHint('imageTrHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="imageTrHint" class="hintPopup">{IMAGE_TRANSPARENCY_DESC}</div>
+    
+				{OR_MSG}		
+				<input type="checkbox" name="wm_tiny_transparent" id="wm_tiny_transparent" {wm_tiny_transparent} value="1">
+				<label for="wm_tiny_transparent">{IMAGE_IS_TRANSPARENT_ITSELF_MSG}</label>
+			</td>
+		</tr>
+		</table>
+	</td>	
+</tr>
+<tr class="usual">
+	<td>{WATERMARK_TEXT_MSG}</td>
+	<td>
+		<select name="wm_tiny_text_pos"><!-- begin wm_tiny_text_pos -->
+			<option {wm_tiny_text_pos_selected} value="{wm_tiny_text_pos_value}">{wm_tiny_text_pos_description}<!-- end wm_tiny_text_pos -->
+		</select>
+		<input class="field" type="text" name="wm_tiny_text" value="{wm_tiny_text}" size="60" maxlength="255">
+	</td>
+</tr>
+<tr class="usual">
+	<td></td>
+	<td>
+		<table cellspacing="0" cellpadding="2" border="0">
+		<tr>
+			<td>&nbsp;{ADMIN_SIZE_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textSizeHint');" onblur="hideHint('textSizeHint');" class="field" type="text" name="wm_tiny_text_size" value="{wm_tiny_text_size}" size="10" maxlength="10">
+				<img onmouseover="showHint(this, 'textSizeHint');" onmouseout="hideHint('textSizeHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textSizeHint" class="hintPopup">{TEXT_SIZE_DESC}</div>
+			</td>
+			<td>&nbsp;{COLOR_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textColorHint'); " onblur="hideHint('textColorHint');" class="field" type="text" name="wm_tiny_text_color" value="{wm_tiny_text_color}" size="10" maxlength="20"/>
+				<img onmouseover="showHint(this, 'textColorHint');" onmouseout="hideHint('textColorHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textColorHint" class="hintPopup">{TEXT_COLOR_DESC}</div>
+			</td>
+			<td>&nbsp;{ANGLE_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textAngleHint'); " onblur="hideHint('textAngleHint');" class="field" type="text" name="wm_tiny_text_angle" value="{wm_tiny_text_angle}" size="10" maxlength="20">
+				<img onmouseover="showHint(this, 'textAngleHint');" onmouseout="hideHint('textAngleHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textAngleHint" class="hintPopup">{TEXT_ANGLE_DESC}</div>
+			</td>
+			<td>&nbsp;{TRANSPARENCY_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textTrHint'); " onblur="hideHint('textTrHint');" class="field" type="text" name="wm_tiny_text_pct" value="{wm_tiny_text_pct}" size="10" maxlength="10">
+				<img onmouseover="showHint(this, 'textTrHint');" onmouseout="hideHint('textTrHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textTrHint" class="hintPopup">{TEXT_TRANSPARENCY_DESC}</div>
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<tr class="label">
+	<td colspan="2">
+		{PHOTO_SMALL_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td>{WATERMARK_IMAGE_MSG}</td>
+	<td>
+		<select name="wm_small_image_pos"><!-- begin wm_small_image_pos -->
+			<option {wm_small_image_pos_selected} value="{wm_small_image_pos_value}">{wm_small_image_pos_description}<!-- end wm_small_image_pos -->
+		</select>
+		<input class="field" type="text" name="wm_small_image" value="{wm_small_image}" size="60" maxlength="255">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'wm_small')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'wm_small')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td></td>
+	<td>
+		<table cellspacing="0" cellpadding="2" border="0">
+		<tr>
+			<td>&nbsp;{TRANSPARENCY_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'imageTrHint');" onblur="hideHint('imageTrHint');" class="field" type="text" name="wm_small_image_pct" value="{wm_small_image_pct}" size="10" maxlength="10">
+				<img onmouseover="showHint(this, 'imageTrHint');" onmouseout="hideHint('imageTrHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="imageTrHint" class="hintPopup">{IMAGE_TRANSPARENCY_DESC}</div>
+    
+				{OR_MSG}		
+				<input type="checkbox" name="wm_small_transparent" id="wm_small_transparent" {wm_small_transparent} value="1">
+				<label for="wm_small_transparent">{IMAGE_IS_TRANSPARENT_ITSELF_MSG}</label>
+			</td>
+		</tr>
+		</table>
+	</td>	
+</tr>
+<tr class="usual">
+	<td>{WATERMARK_TEXT_MSG}</td>
+	<td>
+		<select name="wm_small_text_pos"><!-- begin wm_small_text_pos -->
+			<option {wm_small_text_pos_selected} value="{wm_small_text_pos_value}">{wm_small_text_pos_description}<!-- end wm_small_text_pos -->
+		</select>
+		<input class="field" type="text" name="wm_small_text" value="{wm_small_text}" size="60" maxlength="255">
+	</td>
+</tr>
+<tr class="usual">
+	<td></td>
+	<td>
+		<table cellspacing="0" cellpadding="2" border="0">
+		<tr>
+			<td>&nbsp;{ADMIN_SIZE_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textSizeHint');" onblur="hideHint('textSizeHint');" class="field" type="text" name="wm_small_text_size" value="{wm_small_text_size}" size="10" maxlength="10">
+				<img onmouseover="showHint(this, 'textSizeHint');" onmouseout="hideHint('textSizeHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textSizeHint" class="hintPopup">{TEXT_SIZE_DESC}</div>
+			</td>
+			<td>&nbsp;{COLOR_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textColorHint'); " onblur="hideHint('textColorHint');" class="field" type="text" name="wm_small_text_color" value="{wm_small_text_color}" size="10" maxlength="20"/>
+				<img onmouseover="showHint(this, 'textColorHint');" onmouseout="hideHint('textColorHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textColorHint" class="hintPopup">{TEXT_COLOR_DESC}</div>
+			</td>
+			<td>&nbsp;{ANGLE_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textAngleHint'); " onblur="hideHint('textAngleHint');" class="field" type="text" name="wm_small_text_angle" value="{wm_small_text_angle}" size="10" maxlength="20">
+				<img onmouseover="showHint(this, 'textAngleHint');" onmouseout="hideHint('textAngleHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textAngleHint" class="hintPopup">{TEXT_ANGLE_DESC}</div>
+			</td>
+			<td>&nbsp;{TRANSPARENCY_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textTrHint'); " onblur="hideHint('textTrHint');" class="field" type="text" name="wm_small_text_pct" value="{wm_small_text_pct}" size="10" maxlength="10">
+				<img onmouseover="showHint(this, 'textTrHint');" onmouseout="hideHint('textTrHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textTrHint" class="hintPopup">{TEXT_TRANSPARENCY_DESC}</div>
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<tr class="label">
+	<td colspan="2">
+		{PHOTO_LARGE_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td>{WATERMARK_IMAGE_MSG}</td>
+	<td>
+		<select name="wm_large_image_pos"><!-- begin wm_large_image_pos -->
+			<option {wm_large_image_pos_selected} value="{wm_large_image_pos_value}">{wm_large_image_pos_description}<!-- end wm_large_image_pos -->
+		</select>
+		<input class="field" type="text" name="wm_large_image" value="{wm_large_image}" size="60" maxlength="255">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'wm_large')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'wm_large')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td></td>
+	<td>
+		<table cellspacing="0" cellpadding="2" border="0">
+		<tr>
+			<td>&nbsp;{TRANSPARENCY_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'imageTrHint');" onblur="hideHint('imageTrHint');" class="field" type="text" name="wm_large_image_pct" value="{wm_large_image_pct}" size="10" maxlength="10">
+				<img onmouseover="showHint(this, 'imageTrHint');" onmouseout="hideHint('imageTrHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="imageTrHint" class="hintPopup">{IMAGE_TRANSPARENCY_DESC}</div>
+    
+				{OR_MSG}		
+				<input type="checkbox" name="wm_large_transparent" id="wm_large_transparent" {wm_large_transparent} value="1">
+				<label for="wm_large_transparent">{IMAGE_IS_TRANSPARENT_ITSELF_MSG}</label>
+			</td>
+		</tr>
+		</table>
+	</td>	
+</tr>
+<tr class="usual">
+	<td>{WATERMARK_TEXT_MSG}</td>
+	<td>
+		<select name="wm_large_text_pos"><!-- begin wm_large_text_pos -->
+			<option {wm_large_text_pos_selected} value="{wm_large_text_pos_value}">{wm_large_text_pos_description}<!-- end wm_large_text_pos -->
+		</select>
+		<input class="field" type="text" name="wm_large_text" value="{wm_large_text}" size="60" maxlength="255">
+	</td>
+</tr>
+<tr class="usual">
+	<td></td>
+	<td>
+		<table cellspacing="0" cellpadding="2" border="0">
+		<tr>
+			<td>&nbsp;{ADMIN_SIZE_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textSizeHint');" onblur="hideHint('textSizeHint');" class="field" type="text" name="wm_large_text_size" value="{wm_large_text_size}" size="10" maxlength="10">
+				<img onmouseover="showHint(this, 'textSizeHint');" onmouseout="hideHint('textSizeHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textSizeHint" class="hintPopup">{TEXT_SIZE_DESC}</div>
+			</td>
+			<td>&nbsp;{COLOR_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textColorHint'); " onblur="hideHint('textColorHint');" class="field" type="text" name="wm_large_text_color" value="{wm_large_text_color}" size="10" maxlength="20"/>
+				<img onmouseover="showHint(this, 'textColorHint');" onmouseout="hideHint('textColorHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textColorHint" class="hintPopup">{TEXT_COLOR_DESC}</div>
+			</td>
+			<td>&nbsp;{ANGLE_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textAngleHint'); " onblur="hideHint('textAngleHint');" class="field" type="text" name="wm_large_text_angle" value="{wm_large_text_angle}" size="10" maxlength="20">
+				<img onmouseover="showHint(this, 'textAngleHint');" onmouseout="hideHint('textAngleHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textAngleHint" class="hintPopup">{TEXT_ANGLE_DESC}</div>
+			</td>
+			<td>&nbsp;{TRANSPARENCY_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textTrHint'); " onblur="hideHint('textTrHint');" class="field" type="text" name="wm_large_text_pct" value="{wm_large_text_pct}" size="10" maxlength="10">
+				<img onmouseover="showHint(this, 'textTrHint');" onmouseout="hideHint('textTrHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textTrHint" class="hintPopup">{TEXT_TRANSPARENCY_DESC}</div>
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<tr class="label">
+	<td colspan="2">
+		{PHOTO_SUPER_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td>{WATERMARK_IMAGE_MSG}</td>
+	<td>
+		<select name="wm_super_image_pos"><!-- begin wm_super_image_pos -->
+			<option {wm_super_image_pos_selected} value="{wm_super_image_pos_value}">{wm_super_image_pos_description}<!-- end wm_super_image_pos -->
+		</select>
+		<input class="field" type="text" name="wm_super_image" value="{wm_super_image}" size="60" maxlength="255">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'wm_super')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'wm_super')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td></td>
+	<td>
+		<table cellspacing="0" cellpadding="2" border="0">
+		<tr>
+			<td>&nbsp;{TRANSPARENCY_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'imageTrHint');" onblur="hideHint('imageTrHint');" class="field" type="text" name="wm_super_image_pct" value="{wm_super_image_pct}" size="10" maxlength="10">
+				<img onmouseover="showHint(this, 'imageTrHint');" onmouseout="hideHint('imageTrHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="imageTrHint" class="hintPopup">{IMAGE_TRANSPARENCY_DESC}</div>
+    
+				{OR_MSG}		
+				<input type="checkbox" name="wm_super_transparent" id="wm_super_transparent" {wm_super_transparent} value="1">
+				<label for="wm_super_transparent">{IMAGE_IS_TRANSPARENT_ITSELF_MSG}</label>
+			</td>
+		</tr>
+		</table>
+	</td>	
+</tr>
+<tr class="usual">
+	<td>{WATERMARK_TEXT_MSG}</td>
+	<td>
+		<select name="wm_super_text_pos"><!-- begin wm_super_text_pos -->
+			<option {wm_super_text_pos_selected} value="{wm_super_text_pos_value}">{wm_super_text_pos_description}<!-- end wm_super_text_pos -->
+		</select>
+		<input class="field" type="text" name="wm_super_text" value="{wm_super_text}" size="60" maxlength="255">
+	</td>
+</tr>
+<tr class="usual">
+	<td></td>
+	<td>
+		<table cellspacing="0" cellpadding="2" border="0">
+		<tr>
+			<td>&nbsp;{ADMIN_SIZE_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textSizeHint');" onblur="hideHint('textSizeHint');" class="field" type="text" name="wm_super_text_size" value="{wm_super_text_size}" size="10" maxlength="10">
+				<img onmouseover="showHint(this, 'textSizeHint');" onmouseout="hideHint('textSizeHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textSizeHint" class="hintPopup">{TEXT_SIZE_DESC}</div>
+			</td>
+			<td>&nbsp;{COLOR_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textColorHint'); " onblur="hideHint('textColorHint');" class="field" type="text" name="wm_super_text_color" value="{wm_super_text_color}" size="10" maxlength="20"/>
+				<img onmouseover="showHint(this, 'textColorHint');" onmouseout="hideHint('textColorHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textColorHint" class="hintPopup">{TEXT_COLOR_DESC}</div>
+			</td>
+			<td>&nbsp;{ANGLE_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textAngleHint'); " onblur="hideHint('textAngleHint');" class="field" type="text" name="wm_super_text_angle" value="{wm_super_text_angle}" size="10" maxlength="20">
+				<img onmouseover="showHint(this, 'textAngleHint');" onmouseout="hideHint('textAngleHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textAngleHint" class="hintPopup">{TEXT_ANGLE_DESC}</div>
+			</td>
+			<td>&nbsp;{TRANSPARENCY_MSG}&nbsp;</td>
+			<td>
+				<input onfocus="showHint(this, 'textTrHint'); " onblur="hideHint('textTrHint');" class="field" type="text" name="wm_super_text_pct" value="{wm_super_text_pct}" size="10" maxlength="10">
+				<img onmouseover="showHint(this, 'textTrHint');" onmouseout="hideHint('textTrHint');" src="images/question.gif" border="0" align="top" alt="" title="">
+				<div id="textTrHint" class="hintPopup">{TEXT_TRANSPARENCY_DESC}</div>
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+</div>
+</div>
+
+</form>
+
+{admin_footer}
+</body>
+</html>

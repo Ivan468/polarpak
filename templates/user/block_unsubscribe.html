@@ -1,0 +1,17 @@
+<!-- begin before_block --><a name="block_{pb_id}"></a><!-- end before_block -->
+
+	<!-- begin unsubscribe_error -->
+	<div class="errorbg"><b>{error_desc}</b></div>
+	<!-- end unsubscribe_error -->
+	<!-- begin unsubscribe_message -->
+	<div class="messagebg"><b>{message_desc}</b></div><br />
+	<!-- end unsubscribe_message -->
+	<div>{UNSUBSCRIBE_FORM_MSG}</div><br />
+	<div>
+		<form action="{current_href}#block_{pb_id}" method="get">
+		<input type="hidden" name="unsubscribe" value="1" />
+		{hidden_parameters}
+		<input class="field" type="text" name="unsubscribed_email" value="{unsubscribed_email}" />
+		<span class="submit"><input class="submit" type="submit" value="{UNSUBSCRIBE_BUTTON}" /></span>
+		</form>
+	</div>

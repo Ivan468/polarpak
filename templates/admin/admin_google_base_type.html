@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {GOOGLE_BASE_ITEM_TYPES_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{GOOGLE_BASE_ITEM_TYPES_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_google_base_type_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="type_id" value="{type_id}">
+<input type="hidden" name="number_attributes" value="{number_attributes}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="usual">
+	<td>{NAME_MSG}</td>
+	<td><input class="field" type="text" name="type_name" size="50" value="{type_name}"></td>
+</tr>
+<tr class="usual">
+	<td colspan="2">{GOOGLE_BASE_PRODUCT_TYPE_NOTE}</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

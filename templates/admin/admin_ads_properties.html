@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {CUSTOM_PROPERTIES_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="">
+<!--
+
+function setDefaultValue(propertyNumber)
+{
+	var defaultValue = document.record.elements["default_value_" + propertyNumber].options[document.record.elements["default_value_" + propertyNumber].selectedIndex].value;
+	document.record.elements["property_value_" + propertyNumber].value = defaultValue;
+}
+
+//-->
+</script>
+</head>
+
+<body class="bodyDboard">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{PROPERTIES_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_ads_properties_href}" name="record" method="post">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="item_id" value="{item_id}">
+<input type="hidden" name="category_id" value="{category_id}">
+<input type="hidden" name="more_properties" value="0">
+<input type="hidden" name="number_properties" value="{number_properties}">
+<input type="hidden" name="rp" value="{rp}">
+
+<table border="0" cellpadding="4" cellspacing="1" align="center" width="100%">
+<tr class="middle" align="center">
+	<td>#</td>
+	<td>{GROUP_AND_NAME_MSG}</td>
+	<td>{VALUE_MSG}</td>
+	<td>{DELETE_BUTTON}</td>
+</tr>
+<!-- begin properties --><!-- begin properties_errors -->
+<tr class="usual" align="center">
+	<td>&nbsp;</td>
+	<td colspan="2" class="errorbg">{errors_list}</td>
+	<td>&nbsp;</td>	
+</tr><!-- end properties_errors -->
+<tr class="usual" valign="top">
+	<td align="center">
+		{row_number}
+		<input type="hidden" name="property_id_{properties_number}" value="{property_id}">
+		<input type="hidden" name="item_id_{properties_number}" value="{item_id}">
+	</td>
+	<td width="250" valign="bottom"><input class="field" size=20 type="text" name="property_name_{properties_number}" value="{property_name}"></td>
+	<td valign="bottom"><!-- begin default_value_block -->
+		<input type="hidden" name="property_values_{properties_number}" value="{property_values}">
+		<select name="default_value_{properties_number}" onChange="setDefaultValue({properties_number});"
+			style="width: 400px; color: #303030;"><!-- begin default_value -->
+			<option {default_value_selected} value="{default_value_value}">{default_value_description}<!-- end default_value -->
+		</select><br><!-- end default_value_block --> 
+		<input class="field" type="text" name="property_value_{properties_number}" value="{property_value}" size="50" style="width: 400px;">
+	</td>
+	<td align="center"><input type="checkbox" name="properties_delete_{properties_number}" {properties_delete} value="1"></td>
+</tr><!-- END properties -->
+<tr class="usual">
+	<td colspan="4" align="right">{ADD_MORE_PROPERTIES_QST} <span class="button"><input class="submit" type="submit" value=" {ADD_BUTTON} " onClick="document.record.more_properties.value=1"></span></td>
+</tr>
+<tr class="middle">
+	<td colspan="4" align="right">
+		<span class="button"><input class="submit" type="submit" value=" {UPDATE_BUTTON} " onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{DELETE_ALL_BUTTON}" onCLick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span> 
+		<span class="button"><input class="submit" type="submit" value=" {CANCEL_BUTTON} " onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>	
+</form>
+
+	</div>
+	</div>
+
+{admin_footer}
+</body>
+</html>

@@ -1,0 +1,285 @@
+<?php
+/*
+  ****************************************************************************
+  ***                                                                      ***
+  ***      Viart Shop 5.6                                                  ***
+  ***      File:  admin_cms_block_property.php                             ***
+  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      http://www.viart.com                                            ***
+  ***                                                                      ***
+  ****************************************************************************
+*/
+
+
+	include_once("./admin_config.php");
+	include_once($root_folder_path . "includes/common.php");
+	include_once($root_folder_path . "includes/record.php");
+	include_once($root_folder_path . "includes/editgrid.php");
+	include_once($root_folder_path."messages/".$language_code."/cart_messages.php");
+	include_once($root_folder_path."messages/".$language_code."/download_messages.php");
+	include_once("./admin_common.php");
+
+	check_admin_security("cms_settings");
+
+  $t = new VA_Template($settings["admin_templates_dir"]);
+  $t->set_file("main","admin_cms_block_property.html");
+
+	$t->set_var("admin_href", $admin_site_url . "admin.php");
+	$t->set_var("admin_cms_block_property_href", "admin_cms_block_property.php");
+	$t->set_var("admin_cms_block_properties_href", "admin_cms_block_properties.php");
+
+	$t->set_var("CONFIRM_DELETE_JS", str_replace("{record_name}", OPTION_MSG, CONFIRM_DELETE_MSG));
+	
+	$block_id = get_param("block_id");
+	$property_id = get_param("property_id");
+
+	$t->set_var("block_id", htmlspecialchars($block_id));
+
+	$parent_properties = array();
+
+	// check if block exists so we can add/update options and get parent properites
+	$sql  = " SELECT block_name FROM " . $table_prefix . "cms_blocks ";
+	$sql .= " WHERE block_id=" . $db->tosql($block_id, INTEGER);
+	$db->query($sql);
+	if ($db->next_record()) {
+		$block_name = get_translation($db->f("block_name"));
+		$t->set_var("block_name", $block_name);
+
+		// get parent options
+		$sql  = " SELECT property_id, property_name FROM " . $table_prefix . "cms_blocks_properties ";
+		$sql .= " WHERE block_id=" . $db->tosql($block_id, INTEGER);
+		if ($property_id) {
+			$sql .= " AND property_id<>" . $db->tosql($property_id, INTEGER);
+		}
+		$sql .= " ORDER BY property_order ";
+		$parent_properties = get_db_values($sql, array(array("", "")));
+	} else {
+		header("Location: admin_cms_blocks.php");
+		exit;
+	}
+
+
+	$controls = 
+		array(			
+			array("", ""),  
+			array("CHECKBOX",     CHECKBOX_MSG),
+			array("CHECKBOXLIST", CHECKBOXLIST_MSG),
+			array("LABEL",        LABEL_MSG),
+			array("LISTBOX",      LISTBOX_MSG),
+			array("RADIOBUTTON",  RADIOBUTTON_MSG),
+			array("TEXTAREA",     TEXTAREA_MSG),
+			array("TEXTBOX",      TEXTBOX_MSG),
+			);
+
+	// set up html form parameters
+	$r = new VA_Record($table_prefix . "cms_blocks_properties");
+	$r->add_where("property_id", INTEGER);
+	$r->change_property("property_id", USE_IN_INSERT, true);
+	$r->add_hidden("block_id", INTEGER);
+	$r->change_property("block_id", USE_IN_INSERT, true);
+	$r->add_textbox("property_order", INTEGER, OPTION_ORDER_MSG);
+	$r->parameters["property_order"][REQUIRED] = true;
+	$r->add_textbox("property_name", TEXT, OPTION_NAME_MSG);
+	$r->parameters["property_name"][REQUIRED] = true;
+	$r->add_select("control_type", TEXT, $controls, OPTION_CONTROL_MSG);
+	$r->parameters["control_type"][REQUIRED] = true;
+	$r->add_textbox("variable_name", TEXT, VARIABLE_NAME_MSG);
+	$r->parameters["variable_name"][REQUIRED] = true;
+	$r->add_select("parent_property_id", INTEGER, $parent_properties, PARENT_OPTION_MSG);
+	$r->add_select("parent_value_id", INTEGER, "", PARENT_OPTION_VALUE_MSG);
+	$r->add_textbox("default_value", TEXT, DEFAULT_VALUE_MSG);
+	$r->add_checkbox("required", INTEGER);
+
+	$r->add_textbox("property_class", TEXT);
+	$r->add_textbox("property_style", TEXT);
+	$r->add_textbox("control_style", TEXT);
+	$r->add_textbox("start_html", TEXT);
+	$r->add_textbox("middle_html", TEXT);
+	$r->add_textbox("before_control_html", TEXT);
+	$r->add_textbox("after_control_html", TEXT);
+	$r->add_textbox("end_html", TEXT);
+	$r->add_textbox("control_code", TEXT);
+	$r->add_textbox("onchange_code", TEXT);
+	$r->add_textbox("onclick_code", TEXT);
+
+	$r->add_hidden("sort_dir", TEXT);
+	$r->add_hidden("sort_ord", TEXT);
+	$r->add_hidden("page", TEXT);
+	$r->add_hidden("os_dir", TEXT);
+	$r->add_hidden("os_ord", TEXT);
+	$r->add_hidden("op", TEXT);
+	$r->return_page = "admin_cms_block_properties.php";
+
+	$r->get_form_values();
+
+	$ipv = new VA_Record($table_prefix . "cms_blocks_values", "properties");
+	$ipv->add_where("value_id", INTEGER);
+	$ipv->add_hidden("property_id", INTEGER);
+	$ipv->change_property("property_id", USE_IN_INSERT, true);
+
+	$ipv->add_textbox("value_name", TEXT, DESCRIPTION_MSG);
+	$ipv->change_property("value_name", REQUIRED, true);
+	$ipv->add_textbox("value_order", INTEGER, SORT_ORDER_MSG);
+	$ipv->add_textbox("variable_name", TEXT, VARIABLE_NAME_MSG);
+	$ipv->add_textbox("variable_value", TEXT, VARIABLE_VALUE_MSG);
+	$ipv->add_checkbox("hide_value", INTEGER);
+	$ipv->add_checkbox("is_default_value", INTEGER);
+	
+	$more_properties = get_param("more_properties");
+	$number_properties = get_param("number_properties");
+
+	$eg = new VA_EditGrid($ipv, "properties");
+	$eg->get_form_values($number_properties);
+
+	$eg->set_event(BEFORE_INSERT, "check_value_order");
+	$eg->set_event(BEFORE_UPDATE, "check_value_order");
+
+	$operation = get_param("operation");
+	$property_id = get_param("property_id");
+	$tab = get_param("tab");
+	if (!$tab) { $tab = "general"; }
+
+	$return_page = $r->get_return_url();
+
+	if(strlen($operation) && !$more_properties)
+	{
+		$tab = "general";
+		if($operation == "cancel")
+		{
+			header("Location: " . $return_page);
+			exit;
+		}
+		else if($operation == "delete" && $property_id)
+		{
+			$db->query("DELETE FROM " . $table_prefix . "cms_blocks_properties WHERE property_id=" . $db->tosql($property_id, INTEGER));		
+			$db->query("DELETE FROM " . $table_prefix . "cms_blocks_values WHERE property_id=" . $db->tosql($property_id, INTEGER));		
+			header("Location: " . $return_page);
+			exit;
+		}
+
+		$is_valid = $r->validate();
+		$is_valid = ($eg->validate() && $is_valid); 
+
+		if($is_valid)
+		{
+			if(strlen($property_id))
+			{
+				$r->update_record();
+				$eg->set_values("property_id", $property_id);
+				$eg->update_all($number_properties);
+			}
+			else
+			{
+				$db->query("SELECT MAX(property_id) FROM " . $table_prefix . "cms_blocks_properties");
+				$db->next_record();
+				$property_id = $db->f(0) + 1;
+				$r->set_value("property_id", $property_id);
+				$r->set_value("block_id", $block_id);
+				$r->insert_record();
+				$eg->set_values("property_id", $property_id);
+				$eg->insert_all($number_properties);
+			}
+
+			header("Location: " . $return_page);
+			exit;
+		}
+	}
+	else if(strlen($property_id) && !$more_properties)
+	{
+		$r->get_db_values();
+		$eg->set_value("property_id", $property_id);
+		$eg->change_property("value_id", USE_IN_SELECT, true);
+		$eg->change_property("value_id", USE_IN_WHERE, false);
+		$eg->change_property("property_id", USE_IN_WHERE, true);
+		$eg->change_property("property_id", USE_IN_SELECT, true);
+		$number_properties = $eg->get_db_values();
+		if ($number_properties == 0) {
+			$number_properties = 5;
+		}
+	}
+	else if($more_properties)
+	{
+		$number_properties += 5;
+	}
+	else // set default values
+	{
+		$sql  = " SELECT MAX(property_order) FROM " . $table_prefix . "cms_blocks_properties ";
+		$sql .= " WHERE block_id=" . $db->tosql($block_id, INTEGER);
+		$property_order = get_db_value($sql);
+		$property_order = ($property_order) ? ($property_order + 1) : 1;
+		$r->set_value("property_order", $property_order);
+
+		$number_properties = 5;
+	}
+	$t->set_var("number_properties", $number_properties);
+
+
+	$parent_values = array(array("", ""));
+	if (is_array($parent_properties) && sizeof($parent_properties) > 1) {
+		for ($p = 0; $p < sizeof($parent_properties); $p++) {
+			$parent_id = $parent_properties[$p][0];
+			if ($parent_id) {
+				$t->set_var("property_id", $parent_id);
+				$t->parse("parent_options", true);
+				$sql  = " SELECT value_id, value_name FROM " . $table_prefix . "cms_blocks_values ";
+				$sql .= " WHERE property_id=" . $db->tosql($parent_id, INTEGER);
+				$db->query($sql);
+				while ($db->next_record()) {
+					$list_id = $db->f("value_id");
+					$list_value = $db->f("value_name");
+					$t->set_var("value_id", $list_id);
+					$t->set_var("value_title", htmlspecialchars($list_value));
+					$t->parse("options_values", true);
+					if ($r->get_value("parent_property_id") == $parent_id) {
+						$parent_values[] = array($list_id, $list_value);
+					}
+				}
+			}
+		}
+	}
+
+	$r->change_property("parent_value_id", VALUES_LIST, $parent_values);
+	$eg->set_parameters_all($number_properties);
+	$r->set_parameters();
+
+	if (is_array($parent_properties) && sizeof($parent_properties) > 1) {
+		if (is_array($parent_values) && sizeof($parent_values) > 1) {
+			$t->set_var("parent_value_style", "display: block;");
+		} else {
+			$t->set_var("parent_value_style", "display: none;");
+		}
+		$t->parse("parent_property_block", false);
+	}
+
+	if(strlen($property_id)) {
+		$t->set_var("save_button", UPDATE_BUTTON);
+		$t->parse("delete", false);	
+	} else {
+		$t->set_var("save_button", ADD_BUTTON);
+		$t->set_var("delete", "");	
+	}
+
+	$tabs = array(
+		"general" => array("title" => ADMIN_GENERAL_MSG), 
+		"html" => array("title" => OPTIONS_APPEARANCE_MSG), 
+		"js" => array("title" => JAVASCRIPT_SETTINGS_MSG), 
+	);
+
+	parse_admin_tabs($tabs, $tab, 7);
+	$t->set_var("tab", $tab);
+
+	include_once("./admin_header.php");
+	include_once("./admin_footer.php");
+
+	$t->pparse("main");
+
+function check_value_order()
+{
+	global $eg;
+	$value_order = $eg->record->get_value("value_order");
+	if (!$value_order) {
+		$eg->record->set_value("value_order", 1);
+	}
+}
+
+?>

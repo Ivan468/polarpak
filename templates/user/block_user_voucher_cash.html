@@ -1,0 +1,542 @@
+<script type="text/javascript">
+	var selectCountryFirst = "{SELECT_COUNTRY_FIRST_MSG}";
+	var noStatesForCountry = "{NO_STATES_FOR_COUNTRY_MSG}";
+	var site_url = "{site_url}";
+	var states = {states_json};
+</script>
+<div class="voucher-events">
+
+	<div class="bk-back"><a class="link lk-back" href="{user_vouchers_href}">{BACK_MSG}</a></div>
+	<div class="clear"></div>
+
+		<!-- BEGIN errors -->
+		<div class="errors">{errors_list}</div><!-- END errors -->
+
+		<form name="transfer" action="{user_voucher_cash_href}" method="post">
+		<input type="hidden" name="operation" value="cash"/>
+		<input type="hidden" name="voucher_id" value="{voucher_id}"/>
+			<!-- begin transfer_form -->
+
+			<div class="field middlebg">
+				<div class="name">
+					{CASH_OUT_MSG}
+				</div>
+			</div>
+			<div class="field fd-amount">
+				<div class="before"></div>
+				<div class="name">
+					{VOUCHER_AMOUNT_MSG}
+				</div>
+				<div class="control">
+					{voucher_amount}
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- begin cash_out_fee_desc_block -->
+			<div class="field fd-fee">
+				<div class="before"></div>
+				<div class="name">
+					{CASH_OUT_FEE_MSG}
+				</div>
+				<div class="control">
+					{cash_out_fee_desc}
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- end cash_out_fee_desc_block -->
+            
+			<div class="field fd-amount">
+				<div class="before"></div>
+				<div class="name">
+					{CASH_OUT_AMOUNT_MSG}
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="transfer_amount" value="{transfer_amount}" size="16" maxlength="16"> ({default_currency_code})
+				</div>
+				<div class="after"></div>
+			</div>            
+
+			<div class="field middlebg">
+				<div class="name">
+					{CREDIT_TO_MSG}
+				</div>
+			</div>
+	
+			<!-- begin name_block -->
+			<div class="field">
+				<div class="name">
+					{FULL_NAME_FIELD} <span class="required">{name_required}</span>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="name" value="{name}" {name_disabled} size="30" maxlength="128"  />
+				</div>
+			</div><!-- end name_block --><!-- begin first_name_block -->
+			<div class="field">
+				<div class="name">
+					{FIRST_NAME_FIELD} <span class="required">{first_name_required}</span>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="first_name" value="{first_name}" {first_name_disabled} size="30" maxlength="64"  />
+				</div>
+			</div><!-- end first_name_block --><!-- begin middle_name_block -->
+			<div class="field">
+				<div class="name">
+					{MIDDLE_NAME_FIELD} <span class="required">{middle_name_required}</span>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="middle_name" value="{middle_name}" {middle_name_disabled} size="30" maxlength="64"  />
+				</div>
+			</div><!-- end middle_name_block --><!-- begin last_name_block -->
+			<div class="field">
+				<div class="name">
+					{LAST_NAME_FIELD} <span class="required">{last_name_required}</span>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="last_name" value="{last_name}" {last_name_disabled} size="30" maxlength="64"  />
+				</div>
+			</div><!-- end last_name_block --><!-- begin company_id_block -->
+			<div class="field">
+				<div class="name">
+					{COMPANY_SELECT_FIELD} <span class="required">{company_id_required}</span>
+				</div>
+				<div class="control">
+					<select class="text" name="company_id" {company_id_disabled} ><!-- begin company_id -->
+						<option {company_id_selected} value="{company_id_value}">{company_id_description}</option><!-- end company_id -->
+					</select>
+				</div>
+			</div><!-- end company_id_block --><!-- begin company_name_block -->
+			<div class="field">
+				<div class="name">
+					{COMPANY_NAME_FIELD} <span class="required">{company_name_required}</span>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="company_name" {company_name_disabled} value="{company_name}" size="30" maxlength="128"  />
+				</div>
+			</div>
+			<!-- end company_name_block --><!-- begin email_block -->
+			<div class="field">
+				<div class="name">
+					{EMAIL_FIELD} <span class="required">{email_required}</span>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="email" {email_disabled} value="{email}" size="30" maxlength="128"  />
+				</div>
+			</div><!-- end email_block --><!-- begin country_id_block -->
+			<div class="field personal-country">
+				<div class="name">
+					{COUNTRY_FIELD} <span class="required">{country_id_required}</span>
+				</div>
+				<div class="control">
+					<select class="text field-control" id="country_id_{pb_id}" name="country_id" {country_id_disabled} onchange="updateStates('{pb_id}', 'personal');"><!-- begin country_id -->
+						<option {country_id_selected} value="{country_id_value}">{country_id_description}</option><!-- end country_id -->
+					</select>
+				</div>
+			</div><!-- end country_id_block --><!-- begin state_id_block -->
+			<div class="field personal-state">
+				<div class="name">
+					<span class="field-name">{STATE_FIELD}</span> 
+					<span id="state_id_required_{pb_id}" style="{state_id_required_style}" class="required">{state_id_required}</span>
+				</div>
+				<div class="control">
+					<select class="text field-control" id="state_id_{pb_id}"  name="state_id" {state_id_disabled} style="{state_id_control_style}" ><!-- begin state_id -->
+						<option {state_id_selected} value="{state_id_value}">{state_id_description}</option><!-- end state_id -->
+					</select>
+					<span class="field-comments message" id="state_id_comments_{pb_id}" style="{state_id_comments_style}">{state_id_comments}</span>
+				</div>
+			</div>
+			<!-- end state_id_block --><!-- begin province_block -->
+			<div class="field">
+				<div class="name">
+					{PROVINCE_FIELD} <span class="required">{province_required}</span>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="province" {province_disabled} value="{province}" size="30" maxlength="128"  />
+				</div>
+			</div><!-- end province_block --><!-- begin address1_block -->
+			<div class="field">
+				<div class="name">
+					{STREET_FIRST_FIELD} <span class="required">{address1_required}</span>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="address1" {address1_disabled} value="{address1}" size="30" maxlength="255"  />
+				</div>
+			</div><!-- end address1_block --><!-- begin address2_block -->
+			<div class="field">
+				<div class="name">
+					{STREET_SECOND_FIELD} <span class="required">{address2_required}</span>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="address2" {address2_disabled} value="{address2}" size="30" maxlength="255"  />
+				</div>
+			</div><!-- end address2_block --><!-- begin address3_block -->
+			<div class="field">
+				<div class="name">
+					{STREET_THIRD_FIELD} <span class="required">{address3_required}</span>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="address3" {address3_disabled} value="{address3}" size="30" maxlength="255"  />
+				</div>
+			</div><!-- end address3_block --><!-- begin city_block -->
+			<div class="field">
+				<div class="name">
+					{CITY_FIELD} <span class="required">{city_required}</span>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="city" {city_disabled} value="{city}" size="30" maxlength="128"  />
+				</div>
+			</div><!-- end city_block --><!-- begin zip_block -->
+			<div class="field">
+				<div class="name">
+					{ZIP_FIELD} <span class="required">{zip_required}</span>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="zip" {zip_disabled} value="{zip}" size="10" maxlength="16" />
+				</div>
+			</div>
+			<!-- end zip_block --><!-- begin phone_block -->
+			<div class="field">
+				<div class="name">
+					{PHONE_FIELD} <span class="required">{phone_required}</span>
+				</div>
+				<div class="control">
+					<!-- begin phone_code_block -->
+					<select class="text" name="phone_code" {phone_code_disabled}><!-- begin phone_code -->
+						<option {phone_code_selected} value="{phone_code_value}">{phone_code_description}</option><!-- end phone_code -->
+					</select>
+					<!-- end phone_code_block -->
+					<input class="text" type="text" name="phone" {phone_disabled}  value="{phone}" size="30" maxlength="32"  />
+				</div>
+			</div>
+			<!-- end phone_block --><!-- begin daytime_phone_block -->
+			<div class="field">
+				<div class="name">
+					{DAYTIME_PHONE_FIELD} <span class="required">{daytime_phone_required}</span>
+				</div>
+				<div class="control">
+					<!-- begin daytime_phone_code_block -->
+					<select class="text" name="daytime_phone_code" {daytime_phone_code_disabled} ><!-- begin daytime_phone_code -->
+						<option {daytime_phone_code_selected} value="{daytime_phone_code_value}">{daytime_phone_code_description}</option><!-- end daytime_phone_code -->
+					</select>
+					<!-- end daytime_phone_code_block -->
+					<input class="text" type="text" name="daytime_phone" {daytime_phone_disabled} value="{daytime_phone}" size="30" maxlength="32"  />
+				</div>
+			</div>
+			<!-- end daytime_phone_block --><!-- begin evening_phone_block -->
+			<div class="field">
+				<div class="name">
+					{EVENING_PHONE_FIELD} <span class="required">{evening_phone_required}</span>
+				</div>
+				<div class="control">
+					<!-- begin evening_phone_code_block -->
+					<select class="text" name="evening_phone_code" {evening_phone_code_disabled}><!-- begin evening_phone_code -->
+						<option {evening_phone_code_selected} value="{evening_phone_code_value}">{evening_phone_code_description}</option><!-- end evening_phone_code -->
+					</select>
+					<!-- end evening_phone_code_block -->
+					<input class="text" type="text" name="evening_phone" {evening_phone_disabled} value="{evening_phone}" size="30" maxlength="32"  />
+				</div>
+			</div>
+			<!-- end evening_phone_block --><!-- begin cell_phone_block -->
+			<div class="field">
+				<div class="name">
+					{CELL_PHONE_FIELD} <span class="required">{cell_phone_required}</span>
+				</div>
+				<div class="control">
+					<!-- begin cell_phone_code_block -->
+					<select class="text" name="cell_phone_code" {cell_phone_code_disabled}><!-- begin cell_phone_code -->
+						<option {cell_phone_code_selected} value="{cell_phone_code_value}">{cell_phone_code_description}</option><!-- end cell_phone_code -->
+					</select>
+					<!-- end cell_phone_code_block -->
+					<input class="text" type="text" name="cell_phone" {cell_phone_disabled} value="{cell_phone}" size="30" maxlength="32"  />
+				</div>
+			</div><!-- end cell_phone_block --><!-- begin fax_block -->
+			<div class="field">
+				<div class="name">
+					{FAX_FIELD} <span class="required">{fax_required}</span>
+				</div>
+				<div class="control">
+					<!-- begin fax_code_block -->
+					<select class="text" name="fax_code" {fax_code_disabled}><!-- begin fax_code -->
+						<option {fax_code_selected} value="{fax_code_value}">{fax_code_description}</option><!-- end fax_code -->
+					</select>
+					<!-- end fax_code_block -->
+					<input class="text" type="text" name="fax" {fax_disabled} value="{fax}" size="30" maxlength="32"  />
+				</div>
+			</div><!-- end fax_block -->
+
+			<div class="field middlebg fd-buttons">
+				<div class="before"></div>
+				<div class="name"></div>
+				<div class="control">
+					<input class="submit" type="submit" value="{CASH_OUT_MSG}" onclick="document.transfer.operation.value='cash'" /> 
+					<input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.transfer.operation.value='cancel'" /> 
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- end transfer_form -->
+
+			<!-- begin confirm_form -->
+
+			<div class="message">{CASH_OUT_CONFIRM_DESC}</div>
+	
+			<div class="field middlebg">
+				<div class="name">
+					{CASH_OUT_MSG}
+				</div>
+			</div>
+			<div class="field fd-amount">
+				<div class="before"></div>
+				<div class="name">
+					{VOUCHER_AMOUNT_MSG}
+				</div>
+				<div class="control">
+					{voucher_amount}
+				</div>
+				<div class="after"></div>
+			</div>            
+			<div class="field fd-amount">
+				<div class="before"></div>
+				<div class="name">
+					{CASH_OUT_AMOUNT_MSG}
+				</div>
+				<div class="control">
+					{transfer_amount_currency}
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- begin cash_out_fee_block -->
+			<div class="field fd-fee">
+				<div class="before"></div>
+				<div class="name">
+					{CASH_OUT_FEE_MSG}
+				</div>
+				<div class="control">
+					{cash_out_fee}
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- end cash_out_fee_block -->
+			<div class="field middlebg">
+				<div class="before"></div>
+				<div class="name">
+					{CREDIT_TO_MSG}
+				</div>
+				<div class="after"></div>
+			</div>
+
+			<!-- begin name_preview -->
+			<div class="field">
+				<div class="name">
+					{FULL_NAME_FIELD}
+				</div>
+				<div class="control">
+					{name}
+				</div>
+			</div><!-- end name_preview --><!-- begin first_name_preview -->
+			<div class="field">
+				<div class="name">
+					{FIRST_NAME_FIELD}
+				</div>
+				<div class="control">
+					{first_name}
+				</div>
+			</div><!-- end first_name_preview --><!-- begin middle_name_preview -->
+			<div class="field">
+				<div class="name">
+					{MIDDLE_NAME_FIELD} 
+				</div>
+				<div class="control">
+					{middle_name}
+				</div>
+			</div><!-- end middle_name_preview --><!-- begin last_name_preview -->
+			<div class="field">
+				<div class="name">
+					{LAST_NAME_FIELD} 
+				</div>
+				<div class="control">	
+					{last_name}
+				</div>
+			</div><!-- end last_name_preview --><!-- begin company_id_preview -->
+			<div class="field">
+				<div class="name">
+					{COMPANY_SELECT_FIELD} 
+				</div>
+				<div class="control">
+					{company_select_name}
+				</div>
+			</div><!-- end company_id_preview --><!-- begin company_name_preview -->
+			<div class="field">
+				<div class="name">
+					{COMPANY_NAME_FIELD} 
+				</div>
+				<div class="control">
+					{company_name}
+				</div>
+			</div>
+			<!-- end company_name_preview --><!-- begin email_preview -->
+			<div class="field">
+				<div class="name">
+					{EMAIL_FIELD} 
+				</div>
+				<div class="control">
+					{email}
+				</div>
+			</div><!-- end email_preview --><!-- begin country_id_preview -->
+			<div class="field personal-country">
+				<div class="name">
+					{COUNTRY_FIELD} 
+				</div>
+				<div class="control">
+					{country_name}
+				</div>
+			</div><!-- end country_id_preview --><!-- begin state_id_preview -->
+			<div class="field personal-state">
+				<div class="name">
+					<span class="field-name">{STATE_FIELD}</span> 
+				</div>
+				<div class="control">
+					{state_name}
+				</div>
+			</div>
+			<!-- end state_id_preview --><!-- begin province_preview -->
+			<div class="field">
+				<div class="name">
+					{PROVINCE_FIELD} 
+				</div>
+				<div class="control">
+					{province}
+				</div>
+			</div><!-- end province_preview --><!-- begin address1_preview -->
+			<div class="field">
+				<div class="name">
+					{STREET_FIRST_FIELD} 
+				</div>
+				<div class="control">
+					{address1}
+				</div>
+			</div><!-- end address1_preview --><!-- begin address2_preview -->
+			<div class="field">
+				<div class="name">
+					{STREET_SECOND_FIELD} 
+				</div>
+				<div class="control">
+					{address2}
+				</div>
+			</div><!-- end address2_preview --><!-- begin address3_preview -->
+			<div class="field">
+				<div class="name">
+					{STREET_THIRD_FIELD} 
+				</div>
+				<div class="control">
+					{address3}
+				</div>
+			</div><!-- end address3_preview --><!-- begin city_preview -->
+			<div class="field">
+				<div class="name">
+					{CITY_FIELD} 
+				</div>
+				<div class="control">
+					{city}
+				</div>
+			</div><!-- end city_preview --><!-- begin zip_preview -->
+			<div class="field">
+				<div class="name">
+					{ZIP_FIELD} 
+				</div>
+				<div class="control">
+					{zip}
+				</div>
+			</div>
+			<!-- end zip_preview --><!-- begin phone_preview -->
+			<div class="field">
+				<div class="name">
+					{PHONE_FIELD} 
+				</div>
+				<div class="control">
+					{phone}
+				</div>
+			</div>
+			<!-- end phone_preview --><!-- begin daytime_phone_preview -->
+			<div class="field">
+				<div class="name">
+					{DAYTIME_PHONE_FIELD} 
+				</div>
+				<div class="control">
+					{daytime_phone}
+				</div>
+			</div>
+			<!-- end daytime_phone_preview --><!-- begin evening_phone_preview -->
+			<div class="field">
+				<div class="name">
+					{EVENING_PHONE_FIELD}
+				</div>
+				<div class="control">
+					{evening_phone}
+				</div>
+			</div>
+			<!-- end evening_phone_preview --><!-- begin cell_phone_preview -->
+			<div class="field">
+				<div class="name">
+					{CELL_PHONE_FIELD} 
+				</div>
+				<div class="control">
+					{cell_phone}
+				</div>
+			</div><!-- end cell_phone_preview --><!-- begin fax_preview -->
+			<div class="field">
+				<div class="name">
+					{FAX_FIELD} 
+				</div>
+				<div class="control">
+					{fax}
+				</div>
+			</div><!-- end fax_preview -->
+
+			<div class="field middlebg">
+				<div class="before"></div>
+				<div class="name">
+					{CONFIRMATION_MSG}
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-valid">
+				<div class="before"></div>
+				<div class="name">
+					{CODE_VALID_TILL_MSG}
+				</div>
+				<div class="control">
+					{code_valid_till}
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-code">
+				<div class="before"></div>
+				<div class="name">
+					{TRANSFER_CODE_MSG}
+				</div>
+				<div class="control">
+					<input class="field" type="text" name="confirm_code" value="{confirm_code}" size="16" maxlength="32">
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field middlebg fd-buttons">
+				<div class="before"></div>
+				<div class="name"></div>
+				<div class="control">
+					<input class="submit" type="submit" value="{CONFIRM_BUTTON}" onclick="document.transfer.operation.value='confirm'" /> 
+					<input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.transfer.operation.value='cancel'" /> 
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- END confirm_form -->
+
+			<!-- begin transfer_finished -->
+			<div class="message">{transfer_message}</div>
+			<!-- end transfer_finished -->
+		
+	</form>
+
+
+
+	</table>	
+
+</div>

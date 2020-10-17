@@ -1,0 +1,26 @@
+<div class="area bk-support-live br-solid bg-body {online_offline_class} {block_class}" style="{block_style}"
+	onmouseover='this.getElementsByClassName("desc")[0].className ="desc desc-show";' 
+	onmouseout='this.getElementsByClassName("desc")[0].className ="desc";' 
+	onclick="{support_onclick}">
+	<div class="title">{block_title}</div>
+
+	<div class="desc">
+		<!-- begin support_online -->
+		<div id="online-desc">
+			<br />
+			{SUPPORT_ONLINE_DESC}
+			<br /><br />
+			<span class="submit"><input class="submit" type="button" title="{START_CHATTING_MSG}" value="{START_CHATTING_MSG}" /></span>
+		</div>
+		<!-- end support_online -->
+		<!-- begin support_offline -->
+		<div id="offline-desc">
+			<br />
+			{SUPPORT_OFFLINE_DESC}
+			<br /><br />
+		</div>
+		<!-- end support_offline -->
+	</div>
+
+</div>
+

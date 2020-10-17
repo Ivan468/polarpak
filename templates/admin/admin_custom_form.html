@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {CUSTOM_BLOCKS_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+function clearSearch() {
+		document.search_blocks.search_block.value = "";
+		document.search_blocks.submit();
+
+	}
+</script>
+</head>
+
+<body class="bodySbuilder">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+<td valign="top" width="75%" class="paddingRight">
+
+<div class="Block">
+<div class="BlockTitle">Edit Form</div>
+<div class="BlockContent">
+
+<div id="tabs"><!-- BEGIN tabs_rows -->
+	<ul id="{row_id}" class="tabRow"><!-- BEGIN tabs -->
+		<li id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+	</ul><!-- END tabs_rows -->
+</div>
+
+<form action="{admin_custom_form_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="form_id" value="{form_id}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="page" value="{page}">
+<input type="hidden" name="tab" value="{tab}">
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border: 1px solid #D3E8EE;">
+<tr align="center"> 
+	<td class="">
+
+	<div id="data_general" style="{general_style}">
+
+		<table width="100%" border="0" cellspacing="1" cellpadding="6" align="center">
+		<!-- BEGIN errors -->
+		<tr class="usual">
+			<td colspan="2" align="center">
+				<div class="error">{errors_list}</div>
+			</td>
+		</tr><!-- END errors -->
+		<tr class="usual">
+			<td>
+				&nbsp;Form Name *
+			</td>
+			<td>
+				<input class="field" type="text" name="form_name" size="100" value="{form_name}">
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>
+				&nbsp;Form Title
+			</td>
+			<td>
+				<input class="field" type="text" name="form_title" size="100" value="{form_title}">
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>
+				&nbsp;Form Template
+			</td>
+			<td>
+				<input class="field" type="text" name="form_template" size="100" value="{form_template}">
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>
+				&nbsp;Form Notes
+			</td>
+			<td>
+				<textarea class="text" name="form_notes" style="display: block; width: 565px; height: 200px;">{form_notes}</textarea>
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>
+				&nbsp;Submit Button Name
+			</td>
+			<td>
+				<input class="field" type="text" name="submit_name" size="100" value="{submit_name}">
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>
+				&nbsp;Success Message
+			</td>
+			<td>
+				<textarea class="text" name="success_message" style="display: block; width: 565px; height: 200px;">{success_message}</textarea>
+			</td>
+		</tr>
+		<tr class="middle">
+			<td>
+			</td>
+			<td>
+				<input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- BEGIN delete -->
+				<input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- END delete -->
+				<input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'">
+			</td>
+		</tr>
+		</table>
+	</div>
+	
+	<div id="data_mail_fields" style="{mail_fields_style}">
+		<table width="100%" border="0" cellspacing="1" cellpadding="6" align="center">
+		<tr class="usual">
+			<td>
+				&nbsp;Sent Email(s)
+			</td>
+			<td>
+				<input type="checkbox" name="sent_email" {sent_email} value="1">
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>
+				&nbsp;Sent form to
+			</td>
+			<td>
+				<input class="field" type="text" name="form_emails" size="100" value="{form_emails}">
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>
+				&nbsp;Email From
+			</td>
+			<td>
+				<input class="field" type="text" name="email_from" size="100" value="{email_from}">
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>
+				&nbsp;Email Subject
+			</td>
+			<td>
+				<input class="field" type="text" name="email_subject" size="100" value="{email_subject}">
+			</td>
+		</tr>
+		<tr class="middle">
+			<td>
+			</td>
+			<td>
+				<input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- BEGIN delete -->
+				<input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- END delete -->
+				<input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'">
+			</td>
+		</tr>
+		</table>
+	</div>
+	
+	
+	<!-- custom fields -->
+	<div id="data_form_fields" style="{form_fields_style}">
+		<table border="0" cellpadding="4" cellspacing="1" width="100%">
+		<!-- begin name_fields --><tr class="middle" align="center">
+			<td valign="top">
+				&nbsp;{ID_MSG}
+			</td>
+			<td valign="top">
+				&nbsp;{FIELD_NAME_MSG}
+			</td>
+			<td>
+				&nbsp;{FIELD_CONTROL_MSG}
+			</td>
+			<td align="center">
+				&nbsp;
+			</td>
+		</tr><!-- end name_fields -->
+		<!-- begin fields -->
+		<tr class="usual">
+			<td align="center">
+				&nbsp;{field_id}
+			</td>
+			<td>
+				&nbsp;{field_name}
+			</td>
+			<td align="center">
+				&nbsp;{control_type}
+			</td>
+			<td align="center">
+				&nbsp;<a href="{admin_custom_form_field_href}?form_id={form_id}&field_id={field_id}">{EDIT_MSG}</a>
+			</td>
+		</tr>
+		<!-- end fields -->
+		<!-- begin no_fields -->
+		<tr class="usual">
+			<td colspan="5">
+				&nbsp;{NO_CUSTOM_FIELDS_MSG}
+			</td>
+		</tr>
+		<!-- end no_fields -->
+		<tr class="middle">
+			<td colspan="5">
+				&nbsp;<a href="{admin_custom_form_field_href}?form_id={form_id}">{ADD_NEW_MSG}</a>&nbsp;
+			</td>
+		</tr>
+		</table>
+	</div>
+
+</td>
+</tr>
+</table>
+</form>
+
+</div>
+</div>
+
+</td>
+</tr>
+</table>	
+
+{admin_footer}
+</body>
+</html>

@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html><head><title>{GLOBAL_SETTINGS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="../js/admin.js"></script>
+<script language="JavaScript">
+<!--
+	function openWindow(pagename, filetype)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+	}
+
+	function setFileName(filename, filetype)
+	{
+		if(filename != "")
+		{
+			if(filetype == "logo") {
+				document.record.logo_image.value = "images/" + filename;
+				document.record.logo_image.focus();
+			} else if (filetype == "favicon") {
+				document.record.favicon.value = "images/" + filename;
+				document.record.favicon.focus();
+			}
+		}
+	}
+	function imageUrlHelp()
+	{
+		var fullUrl = document.record.full_image_url.value;
+		var siteUrl = document.record.site_url.value;
+		var helpObj = document.getElementById("full_image_url_help");
+		if (fullUrl == 1) {
+			helpObj.innerHTML = siteUrl+"images/example.jpg";
+		} else {
+			helpObj.innerHTML = "images/example.jpg";;
+		}
+
+	}
+
+	window.addEventListener("load", imageUrlHelp, false);
+//-->
+</script>
+</head>
+<body class="bodySettings">
+
+{admin_header}
+{admin_breadcrumb}
+
+<form action="{admin_global_settings_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="rp" value="{rp}">
+<input type="hidden" name="tab" value="{tab}">
+
+<!-- BEGIN success_block --><div class="messagebg">{CHANGES_SAVED_MSG}</div><br/><!-- END success_block -->
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><br/><!-- END errors -->
+
+	<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+		<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+	</ul>
+
+<div class="Form clearBoth">
+<div class="FormContent">
+
+<div id="general_data" class="tab-data {general_class}">
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<!-- begin sitelist -->
+<tr class="middle">
+	<td colspan="2">{SITE_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{ACTIVE_SITE_MSG}</td>
+	<td>
+		<select name="param_site_id" onchange="reloadSite(this.form);"><!-- begin param_site_id -->
+			<option {param_site_id_selected} value="{param_site_id_value}">{param_site_id_description}<!-- end param_site_id -->
+		</select>
+		<span class="comment">({SELECT_SITE_DESC})</span>
+</tr><!-- end sitelist -->
+<tr class="middle">
+	<td colspan="2">{GLOBAL_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{SITE_NAME_MSG}</td>
+	<td><input class="field" type="text" size="80" name="site_name" value="{site_name}"></td>
+</tr>
+<tr class="usual">
+	<td>
+		{SITE_URL_MSG} ({FRONT_END_MSG})
+	</td>
+	<td>
+		<input class="field" type="text" size="80" name="site_url" value="{site_url}">
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">
+				{EG_MSG}: <br><b>http://www.yoursite.com/</b><br><br>
+				{SECURE_SITE_URL_MSG}: <br><b>https://www.yoursite.com/</b>
+			</div>
+		</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{SITE_URL_MSG} ({BACK_END_MSG})
+	</td>
+	<td>
+		<input class="field" type="text" size="80" name="admin_url" value="{admin_url}">
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">
+				{EG_MSG}: <br><b>http://www.yoursite.com/admin/</b><br><br>
+				{SECURE_SITE_URL_MSG}: <br><b>https://www.yoursite.com/admin/</b>
+			</div>
+		</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="secure_redirect">{REDIRECT_TO_SSL_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="secure_redirect" id="secure_redirect" {secure_redirect} value="1">
+		<span class="small">({REDIRECT_TO_SSL_NOTE})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ADMIN_EMAIL_MSG}</td>
+	<td>
+		<input class="field" type="text" size="80" name="admin_email" value="{admin_email}">
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">
+				{EG_MSG}: <b>admin@yoursite.com</b>
+			</div>
+		</div>
+	</td>
+</tr>
+<tr>
+	<td class="usual">{DEFAULT_COUNTRY_MSG}</td>
+	<td class="usual">	
+		<select name="country_id"><!-- begin country_id -->
+			<option {country_id_selected} value="{country_id_value}">{country_id_description}<!-- end country_id -->
+		</select>
+	</td>
+</tr>
+<tr>
+	<td class="usual">{DEFAULT_STATE_MSG}</td>
+	<td class="usual">
+		<select name="state_id"><!-- begin state_id -->
+			<option {state_id_selected} value="{state_id_value}">{state_id_description}<!-- end state_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="use_default_language">{USE_DEFAULT_LANGUAGE_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="use_default_language" id="use_default_language" {use_default_language} value="1">
+		<span class="small">{USE_DEFAULT_LANGUAGE_DESC}</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="phone_code_select">{PHONE_CODES_LISTBOX_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="phone_code_select" id="phone_code_select" {phone_code_select} value="1">
+		<span class="small">{PHONE_CODES_LISTBOX_DESC}</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ACTIVE_LAYOUT_MSG}</td>
+	<td>
+		<select name="layout_id"><!-- begin layout_id -->
+			<option {layout_id_selected} value="{layout_id_value}">{layout_id_description}<!-- end layout_id -->
+		</select>
+		{layout_scheme}
+	</td>
+</tr>
+<!-- begin password_encrypt_block -->
+<tr class="usual">
+	<td>{USER_PASSWORD_ENCRYPTION_MSG}</td>
+	<td><!-- begin password_encrypt -->
+		<input type="radio" name="password_encrypt" id="password_encrypt{password_encrypt_value}" {password_encrypt_checked} {password_encrypt_disabled} value="{password_encrypt_value}"><label for="password_encrypt{password_encrypt_value}">{password_encrypt_description}</label><!-- end password_encrypt -->
+	</td>
+</tr><!-- end password_encrypt_block -->
+<!-- begin admin_password_encrypt_block -->
+<tr class="usual">
+	<td>{ADMIN_PASSWORD_ENCRYPTION_MSG}</td>
+	<td><!-- begin admin_password_encrypt -->
+		<input type="radio" name="admin_password_encrypt" id="admin_password_encrypt{admin_password_encrypt_value}" {admin_password_encrypt_checked} {admin_password_encrypt_disabled} value="{admin_password_encrypt_value}"><label for="admin_password_encrypt{admin_password_encrypt_value}">{admin_password_encrypt_description}</label><!-- end admin_password_encrypt -->
+	</td>
+</tr><!-- end admin_password_encrypt_block -->
+<tr class="usual">
+	<td>{WEIGHT_MEASURE_MSG}</td>
+	<td><input class="field" type="text" size="10" name="weight_measure" value="{weight_measure}"></td>
+</tr>
+<tr class="usual">
+	<td>{TEMP_FOLDER_MSG}</td>
+	<td>
+		<input class="field" type="text" size="80" name="tmp_dir" value="{tmp_dir}">
+		<div class="small">(Unix {EG_MSG} <b>/tmp/</b>, Windows {EG_MSG} <b>C:\WINNT\TEMP\</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CURRENT_DIR_MSG}</td>
+	<td>{current_dir}</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{LOGO_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>Favicon</td>
+	<td>
+		<input class="field" type="text" size="80" name="favicon" value="{favicon}">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'favicon')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'favicon')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{LOGO_IMAGE_MSG}</td>
+	<td>
+		<input class="field" type="text" size="80" name="logo_image" value="{logo_image}">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'logo')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'logo')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{LOGO_IMAGE_ALT_MSG}</td>
+	<td><input class="field" type="text" size="80" name="logo_image_alt" value="{logo_image_alt}"></td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{SMS_TITLE}</td>
+</tr>
+<tr class="usual">
+	<td>{SMS_NOTIFICATION_UNREGISTERED_MSG}</td>
+	<td>
+		<select name="is_sms_allowed"><!-- begin is_sms_allowed -->
+			<option {is_sms_allowed_selected} value="{is_sms_allowed_value}">{is_sms_allowed_description}<!-- end is_sms_allowed -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{TOP_RATED_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{MINIMAL_RATING_MSG}</td>
+	<td><input class="field" type="text" size="10" name="min_rating" value="{min_rating}" ></td>
+</tr>
+<tr class="usual">
+	<td>{MINIMAL_NUMBER_OF_VOTES_MSG} </td>
+	<td><input class="field" type="text" size="10" name="min_votes" value="{min_votes}" ></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="images_data" class="tab-data {images_class}">
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr class="middle">
+	<td colspan="2">{IMAGES_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="full_image_url">{USE_FULL_URL_IMAGES_MSG}</label></td>
+	<td>
+		<!-- begin full_image_url -->
+		<input onclick="imageUrlHelp();" type="radio" name="full_image_url" id="full_image_url{full_image_url_value}" {full_image_url_checked} value="{full_image_url_value}"><label for="full_image_url{full_image_url_value}">{full_image_url_description}</label><!-- end full_image_url -->	
+		<span class="comment">({EG_MSG}: <b><span id="full_image_url_help"></span></b>)</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="show_preview_image_admin">{SHOW_PREVIEW_ADMIN_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="show_preview_image_admin" id="show_preview_image_admin" {show_preview_image_admin} value="1">
+		<span class="small">({SHOW_PREVIEW_ADMIN_NOTE})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="show_preview_image_client">{SHOW_PREVIEW_USER_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="show_preview_image_client" id="show_preview_image_client" {show_preview_image_client} value="1">
+		<span class="small">({SHOW_PREVIEW_USER_NOTE})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CURRENT_DIR_MSG}</td>
+	<td>{current_dir}</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{CUSTOMER_IMAGES_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="user_image_upload">{CUSTOMER_IMAGE_UPLOAD_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="user_image_upload" id="user_image_upload" {user_image_upload} value="1">
+		<span class="small">({ALLOW_USERS_UPLOAD_IMAGES_MSG})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CUSTOMER_IMAGE_RESTRICTIONS_MSG}</td>
+	<td>
+		{FILESIZE_IN_BYTES_MSG}&nbsp;
+		<input class="field" type="text" name="user_image_size" value="{user_image_size}" size="12" maxlength="12">
+		&nbsp;&nbsp;
+		{WIDTH_IN_PIXELS_MSG}&nbsp;
+		<input class="field" type="text" name="user_image_width" value="{user_image_width}" size="12" maxlength="12">
+		&nbsp;&nbsp;
+		{HEIGHT_IN_PIXELS_MSG}&nbsp;
+		<input class="field" type="text" name="user_image_height" value="{user_image_height}" size="12" maxlength="12">
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="friendly_data" class="tab-data {friendly_class}">
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr class="middle">
+	<td colspan="2">{FRIENDLY_URLS_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>
+		{APACHE_SETTINGS_MSG}<br><br>
+		({APACHE_SETTINGS_URL_MSG})
+	</td>
+	<td>
+		<table border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td>
+					<b>
+					&lt;IfModule mod_rewrite.c&gt;<br>
+					RewriteEngine On<br>
+					RewriteCond %&#123;REQUEST_FILENAME&#125; !-f<br>
+					RewriteCond %&#123;REQUEST_FILENAME&#125; !-d<br>
+					RewriteRule . {friendly_path}friendly_url.php [L]<br>
+					&lt;/IfModule&gt;<br>
+					</b>
+				</td>
+				<td width="20">
+					&nbsp;
+				</td>
+				<td>
+					or
+				</td>
+				<td width="20">
+					&nbsp;
+				</td>
+				<td>
+					<b>ErrorDocument 404 {friendly_path}friendly_url.php</b>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="friendly_urls">{ACTIVATE_FRIENDLY_URLS_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="friendly_urls" id="friendly_urls" {friendly_urls} value="1">
+		<span class="small">({TURN_ON_FRIENDLY_URLS_NOTE})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="friendly_url_redirect">{REDIRECT_TO_FRIENDLY_URL_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="friendly_url_redirect" id="friendly_url_redirect" {friendly_url_redirect} value="1">
+		<span class="small">({REDIRECT_TO_FRIENDLY_URL_NOTE})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{AUTO_GENERATE_FRIENDLY_URLS_MSG}</td>
+	<td>
+		<select name="friendly_auto"><!-- begin friendly_auto -->
+			<option {friendly_auto_selected} value="{friendly_auto_value}">{friendly_auto_description}<!-- end friendly_auto -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FRIENDLY_EXTENSION_MSG}</td>
+	<td><!-- begin friendly_extension -->
+		<input type="radio" name="friendly_extension" id="friendly_extension{friendly_extension_value}" {friendly_extension_checked} {friendly_extension_disabled} value="{friendly_extension_value}"><label for="friendly_extension{friendly_extension_value}">{friendly_extension_description}</label> &nbsp; <!-- end friendly_extension -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{TRANSFORM_URL_MSG}</td>
+	<td>
+		<select name="friendly_transform"><!-- begin friendly_transform -->
+			<option {friendly_transform_selected} value="{friendly_transform_value}">{friendly_transform_description}<!-- end friendly_transform -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="footer_data" class="tab-data {footer_class}">
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+
+<tr class="middle">
+	<td colspan="2">{FOOTER_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td valign="top">{FOOTER_MSG} ({BEFORE_MSG})</td>
+	<td><textarea name="footer_head" cols="80" rows="10">{footer_head}</textarea></td>
+</tr>
+<tr class="usual">
+	<td valign="top">{FOOTER_MENU_MSG}</td>
+	<td><a href="{footer_url}" target="_blank">{EDIT_MSG}</a></td>
+</tr>
+<tr class="usual">
+	<td valign="top">{FOOTER_MSG} ({END_HTML_MSG})</td>
+	<td><textarea name="html_below_footer" cols="80" rows="10">{html_below_footer}</textarea></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="head_data" class="tab-data {head_class}">
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+
+<tr class="middle">
+	<td colspan="2"></td>
+</tr>
+<tr class="usual">
+	<td valign="top">Head HTML</td>
+	<td><textarea name="head_html" cols="80" rows="10">{head_html_edit}</textarea></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="smtp_data" class="tab-data {smtp_class}">
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr class="middle">
+	<td colspan="2">{SMTP_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="smtp_mail">{ENABLE_SMTP_MSG}</label></td>
+	<td><input type="checkbox" name="smtp_mail" id="smtp_mail" {smtp_mail} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{HOST_MSG}</td>
+	<td><input class="field" type="text" size="80" name="smtp_host" value="{smtp_host}"></td>
+</tr>
+<tr class="usual">
+	<td>{ADMIN_PORT_MSG}</td>
+	<td><input class="field" type="text" size="10" name="smtp_port" value="{smtp_port}"></td>
+</tr>
+<tr class="usual">
+	<td>{TIMEOUT_MSG}</td>
+	<td><input class="field" type="text" size="10" name="smtp_timeout" value="{smtp_timeout}"></td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{AUTHENTICATION_PARAMETERS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{LOGIN_FIELD}</td>
+	<td><input class="field" type="text" size="40" name="smtp_username" value="{smtp_username}"></td>
+</tr>
+<tr class="usual">
+	<td>{PASSWORD_FIELD}</td>
+	<td><input class="field" type="password" size="40" name="smtp_password" value="{smtp_password}"></td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{PHP_MAIL_FUNCTION_PARAMETERS}</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_ADDITIONAL_HEADERS_MSG}</td>
+	<td><textarea name="email_additional_headers" cols="80" rows="3">{email_additional_headers}</textarea></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_ADDITIONAL_PARAMETERS_MSG}</td>
+	<td><input class="field" type="text" size="40" name="email_additional_parameters" value="{email_additional_parameters}"></td>
+</tr>
+<tr class="middle">
+	<td width="20%">&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+<div id="site_map_data" class="tab-data {site_map_class}">
+
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr class="middle">
+	<td colspan="2">{SM_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+    <td>{SM_FOLDER_MSG}</td>
+    <td><input class="field" type="text" size="40" name="site_map_folder" value="{site_map_folder}"></td>
+</tr>
+<tr class="usual">
+    <td>{FILENAME_MSG}</td>
+    <td>
+			<input class="field" type="text" size="40" name="site_map_filename" value="{site_map_filename}">
+			<span class="comment">({DEFAULT_MSG}: sitemap)</span>
+	</td>
+</tr>
+<tr class="usual">
+    <td>{SM_BUILD_BUTTON}</td>
+    <td>
+      <input class="submit" type="submit" value="{SM_BUILD_BUTTON}" onCLick="document.record.operation.value='build_xml'">
+			&nbsp; <!-- begin success_build_xml --><span class="comment">({message_build_xml})</span><!-- end success_build_xml -->
+    </td>
+</tr>
+<tr class="middle">
+	<td colspan="2"></td>
+</tr>
+<tr class="usual">
+    <td><label for="site_map_custom_pages">{SM_SHOW_CUSTOM_PAGES_MSG}</label></td>
+    <td><input type="checkbox" name="site_map_custom_pages" id="site_map_custom_pages" {site_map_custom_pages} value="1"></td>
+</tr><!-- begin site_map_items_block -->
+<tr class="usual">
+    <td><label for="site_map_categories">{SM_SHOW_PRODUCT_CAT_MSG}</label></td>
+    <td><input type="checkbox" name="site_map_categories" id="site_map_categories" {site_map_categories} value="1"></td>
+</tr>
+<tr class="usual">
+    <td><label for="site_map_manufacturers">{MANUFACTURERS_TITLE}</label></td>
+    <td><input type="checkbox" name="site_map_manufacturers" id="site_map_manufacturers" {site_map_manufacturers} value="1"></td>
+</tr>
+<tr class="usual">
+    <td><label for="site_map_items">{SM_SHOW_PRODUCTS_MSG}</label></td>
+    <td><input type="checkbox" name="site_map_items" id="site_map_items" {site_map_items} value="1"></td>
+</tr>
+<tr class="usual">
+    <td><label for="remove_prod_dup" style="">{REMOVE_PRODUCTS_DUPS_MSG}</label></td>
+    <td><input id="remove_prod_dup" type="checkbox" name="remove_prod_dup" {remove_prod_dup} value="1"></td>
+</tr>
+<!-- end site_map_items_block --><!-- begin articles_settings_block -->
+<tr class="middle">
+    <td>Articles settings</td>
+    <td><input type="checkbox" value="{SELECT_ALL_ARTICLES_MSG}" id="articlesButton"> <span class="fw300">{SELECT_ALL_ARTICLES_MSG}</span></td>
+</tr>
+<tr class="usual">
+    <td><label for="remove_art_dup">{REMOVE_ARTICLES_DUPS_MSG}</label></td>
+    <td><input id="remove_art_dup" type="checkbox" name="remove_art_dup" {remove_art_dup} value="1"></td>
+</tr><!-- end articles_settings_block --><!-- begin map_articles_settings -->
+<tr class="usual">
+    <td>
+        <label for="site_map_articles_categories_{row_cat_id}">{SM_SHOW_ARTICLES_CAT_MSG}</label>
+    </td>
+    <td>
+        <input class="articleCheckbox" type="checkbox" name="site_map_articles_categories_{row_cat_id}" id="site_map_articles_categories_{row_cat_id}" {site_map_articles_categories} value="1">
+        <div class="smArticleCol">
+            <label for="site_map_articles_{row_cat_id}">{SM_SHOW_ARTICLES_MSG}</label>
+            <input class="articleCheckbox" type="checkbox" name="site_map_articles_{row_cat_id}" id="site_map_articles_{row_cat_id}" {site_map_articles} value="1">
+        </div>
+    </td>
+</tr><!-- end map_articles_settings -->
+<tr class="middle">
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+</tr>
+<!-- begin site_map_forum_categories_block -->
+<tr class="usual">
+    <td><label for="site_map_forum_categories">{SM_SHOW_FORUM_CAT_MSG}</label></td>
+    <td><input type="checkbox" name="site_map_forum_categories" id="site_map_forum_categories" {site_map_forum_categories} value="1"></td>
+</tr>
+<tr class="usual">
+    <td><label for="site_map_forums">{SM_SHOW_FORUMS_MSG}</label></td>
+    <td><input type="checkbox" name="site_map_forums" id="site_map_forums" {site_map_forums} value="1"></td>
+</tr><!-- end site_map_forum_categories_block --><!-- begin site_map_ads_block -->
+<tr class="usual">
+    <td><label for="site_map_ad_categories">{SM_SHOW_AD_CAT_MSG}</label></td>
+    <td><input type="checkbox" name="site_map_ad_categories" id="site_map_ad_categories" {site_map_ad_categories} value="1"></td>
+</tr>
+<tr class="usual">
+    <td><label for="site_map_ads">{SM_SHOW_ADS_MSG}</label></td>
+    <td><input type="checkbox" name="site_map_ads" id="site_map_ads" {site_map_ads} value="1"></td>
+</tr><!-- end site_map_ads_block --><!-- begin site_map_manual_categories_block -->
+<tr class="usual">
+    <td><label for="site_map_manual_categories">{SM_SHOW_MANUAL_CAT_MSG}</label></td>
+    <td><input type="checkbox" name="site_map_manual_categories" id="site_map_manual_categories" {site_map_manual_categories} value="1"></td>
+</tr>
+<tr class="usual">
+    <td><label for="site_map_manuals">{SM_SHOW_MANUALS_MSG}</label></td>
+    <td><input type="checkbox" name="site_map_manuals" id="site_map_manuals" {site_map_manuals} value="1"></td>
+</tr>
+<tr class="usual">
+    <td><label for="site_map_manual_articles">{SM_SHOW_MANUAL_ARTICLES_MSG}</label></td>
+    <td><input type="checkbox" name="site_map_manual_articles" id="site_map_manual_articles" {site_map_manual_articles} value="1"></td>
+</tr><!-- end site_map_manual_categories_block -->
+<tr class="middle">
+	<td colspan="2"></td>
+</tr>
+<tr class="usual">
+    <td>{SM_BUILD_BUTTON}</td>
+    <td>
+      <input class="submit" type="submit" value="{SM_BUILD_BUTTON}" onCLick="document.record.operation.value='build_xml'">
+			&nbsp; <!-- begin success_build_xml --><span class="comment">({message_build_xml})</span><!-- end success_build_xml -->
+    </td>
+</tr>
+<tr class="middle">
+    <td width="20%">&nbsp;</td>
+    <td>
+        <span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+        <span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+    </td>
+</tr>
+</table>
+</div>
+
+<div id="pgp_data" class="tab-data {pgp_class}">
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr class="middle">
+	<td colspan="2">{PGP_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{GNUPG_BINARY_PATH_MSG}</td>
+	<td>
+		<input class="field" type="text" size="80" name="pgp_binary" value="{pgp_binary}">
+		<div class="small">(Unix {EG_MSG} <b>./gpg</b>, Windows {EG_MSG} <b>C:\Program Files\GNU\GnuPG\gpg.exe</b>)</div>
+		<div class="small"><a href='http://www.gnupg.org'>{GNUPG_DOWNLOAD_LINK_MSG}</a></div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{PGP_HOME_FOLDER_MSG}</td>
+	<td>
+		<input class="field" type="text" size="80" name="pgp_home" value="{pgp_home}">
+		<div class="small">(Unix {EG_MSG} <b>/home/$user/.gnupg</b>, Windows {EG_MSG} <b>C:\Documents and Settings\$user\Application Data\gnupg</b>)</div>		
+	</td>
+</tr>
+<tr class="usual">
+	<td>{PGP_TEMP_FOLDER_MSG}<br>({PGP_TEMP_FOLDER_NOTE})</td>
+	<td>
+		<input class="field" type="text" size="80" name="pgp_tmp" value="{pgp_tmp}">
+		<div class="small">(Unix {EG_MSG} <b>/home/$user/gnupg_temp</b>, Windows {EG_MSG} <b>C:\gnupg_temp</b>)</div>		
+	</td>
+</tr>
+<!-- begin pgp_keyserver_block -->
+<tr class="usual">
+	<td>{PGPKEYKEYSERVER_MSG}</td>
+	<td>
+		<input class="field" type="text" size="80" name="pgp_keyserver" value="{pgp_keyserver}">
+		<div class="small">(standart server {EG_MSG} <b>pgp.mit.edu</b>, ubuntu server {EG_MSG} <b>keyserver.ubuntu.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{PGP_PROXY_MSG}</td>
+	<td>
+		<input class="field" type="text" size="80" name="pgp_proxy" value="{pgp_proxy}">
+		<div class="small">({EG_MSG} <b>http://PROXY:PORT</b> or <b>http://USER:PASSWORD@PROXY:PORT</b>)</div>
+	</td>
+</tr>
+<!-- end pgp_keyserver_block -->
+<tr class="usual">
+	<td><label for="pgp_ascii">{CREATE_ASCII_ARMORED_OUTPUT_MSG}</label></td>
+	<td><input type="checkbox" name="pgp_ascii" id="pgp_ascii" {pgp_ascii} value="1"></td>
+</tr>
+<tr class="middle">
+	<td width="20%">&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="offline_data" class="tab-data {offline_class}">
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2">{OFFLINE_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{SITE_OFFLINE_MSG}</td>
+	<td><!-- begin site_offline -->
+		<input type="radio" name="site_offline" id="site_offline{site_offline_value}" {site_offline_checked} {site_offline_disabled} value="{site_offline_value}"><label for="site_offline{site_offline_value}">{site_offline_description}</label><!-- end site_offline -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{OFFLINE_MESSAGE_MSG}</td>
+	<td><textarea name="offline_message" cols="80" rows="10">{offline_message}</textarea></td>
+</tr>
+<tr class="middle">
+	<td width="20%">&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="texteditor_data" class="tab-data {texteditor_class}">
+	<table border="0" cellpadding="6" cellspacing="1" width="100%">
+		<tr class="middle">
+			<td colspan="2">{DEFAULT_EDITOR_MSG}<!--{ADMINISTRATOR_HTML_EDITOR_MSG}--></td>
+		</tr>
+		<tr class="usual">
+			<td valign="center"><div id="ie8">{GLOBAL_SETTINGS_MSG}</div></td>
+			<td>
+				<div style="position:relative;width:730px;" id="editorWrap"><!-- begin html_editor -->
+					<input type="radio" name="html_editor" id="html_editor{html_editor_value}" {html_editor_checked} {html_editor_disabled} value="{html_editor_value}"><label for="html_editor{html_editor_value}">{html_editor_description}</label><!-- end html_editor -->
+					<div id="editorHint" style="display:none;border: 2px solid #d5d4e9;position:absolute;right:0;top:0;width:315px;padding:7px;background-color:#fff;">
+						{EXTERNAL_CKEDITOR_TIP} 
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr class="middle">
+			<td colspan="2">{OVERRIDE_SETTINGS_MSG}</td>
+		</tr>
+		<tr class="usual">
+			<td>{CUSTOM_BLOCKS_MSG}</td>
+			<td><!-- begin html_editor_custom_blocks -->
+				<input type="radio" name="html_editor_custom_blocks" id="html_editor_custom_blocks{html_editor_custom_blocks_value}" {html_editor_custom_blocks_checked} {html_editor_custom_blocks_disabled} value="{html_editor_custom_blocks_value}"><label for="html_editor_custom_blocks{html_editor_custom_blocks_value}">{html_editor_custom_blocks_description}</label><!-- end html_editor_custom_blocks -->
+				<span class="button" style="margin-left:25px;"><input class="submit" type="button" value="{RESET_BUTTON}" onclick="BLZ.globalSettingsHelper.resetRadio('html_editor_custom_blocks')"></span>
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>{CUSTOM_PAGES_MSG}</td>
+			<td><!-- begin html_editor_custom_pages -->
+				<input type="radio" name="html_editor_custom_pages" id="html_editor_custom_pages{html_editor_custom_pages_value}" {html_editor_custom_pages_checked} {html_editor_custom_pages_disabled} value="{html_editor_custom_pages_value}"><label for="html_editor_custom_pages{html_editor_custom_pages_value}">{html_editor_custom_pages_description}</label><!-- end html_editor_custom_pages -->
+				<span class="button" style="margin-left:25px;"><input class="submit" type="button" value="{RESET_BUTTON}" onclick="BLZ.globalSettingsHelper.resetRadio('html_editor_custom_pages')"></span>
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>{EMAIL_NOTIFICATION_MSG}</td>
+			<td><!-- begin html_editor_email -->
+				<input type="radio" name="html_editor_email" id="html_editor_email{html_editor_email_value}" {html_editor_email_checked} {html_editor_email_disabled} value="{html_editor_email_value}"><label for="html_editor_email{html_editor_email_value}">{html_editor_email_description}</label><!-- end html_editor_email -->
+				<span class="button" style="margin-left:25px;"><input class="submit" type="button" value="{RESET_BUTTON}" onclick="BLZ.globalSettingsHelper.resetRadio('html_editor_email')"></span>
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>{PRODUCTS_PAGE_MSG}</td>
+			<td><!-- begin html_editor_products -->
+				<input type="radio" name="html_editor_products" id="html_editor_products{html_editor_products_value}" {html_editor_products_checked} {html_editor_products_disabled} value="{html_editor_products_value}"><label for="html_editor_products{html_editor_products_value}">{html_editor_products_description}</label><!-- end html_editor_products -->
+				<span class="button" style="margin-left:25px;"><input class="submit" type="button" value="{RESET_BUTTON}" onclick="BLZ.globalSettingsHelper.resetRadio('html_editor_products')"></span>
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>{AD_PAGES_MSG}</td>
+			<td><!-- begin html_editor_ads -->
+				<input type="radio" name="html_editor_ads" id="html_editor_ads{html_editor_ads_value}" {html_editor_ads_checked} {html_editor_ads_disabled} value="{html_editor_ads_value}"><label for="html_editor_ads{html_editor_ads_value}">{html_editor_ads_description}</label><!-- end html_editor_ads -->
+				<span class="button" style="margin-left:25px;"><input class="submit" type="button" value="{RESET_BUTTON}" onclick="BLZ.globalSettingsHelper.resetRadio('html_editor_ads')"></span>
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>{ARTICLE_PAGES_MSG}:</td>
+			<td><!-- begin html_editor_articles -->
+				<input type="radio" name="html_editor_articles" id="html_editor_articles{html_editor_articles_value}" {html_editor_articles_checked} {html_editor_articles_disabled} value="{html_editor_articles_value}"><label for="html_editor_articles{html_editor_articles_value}">{html_editor_articles_description}</label><!-- end html_editor_articles -->
+				<span class="button" style="margin-left:25px;"><input class="submit" type="button" value="{RESET_BUTTON}" onclick="BLZ.globalSettingsHelper.resetRadio('html_editor_articles')"></span>
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>{MANUAL_PAGES_MSG}:</td>
+			<td><!-- begin html_editor_manuals -->
+				<input type="radio" name="html_editor_manuals" id="html_editor_manuals{html_editor_manuals_value}" {html_editor_manuals_checked} {html_editor_manuals_disabled} value="{html_editor_manuals_value}"><label for="html_editor_manuals{html_editor_manuals_value}">{html_editor_manuals_description}</label><!-- end html_editor_manuals -->
+				<span class="button" style="margin-left:25px;"><input class="submit" type="button" value="{RESET_BUTTON}" onclick="BLZ.globalSettingsHelper.resetRadio('html_editor_manuals')"></span>
+			</td>
+		</tr>
+		<tr class="middle">
+			<td width="20%">&nbsp;</td>
+			<td>
+				<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+				<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div id="tracking_data" class="tab-data {tracking_class}">
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2">{VIART_TRACKING_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{ONLINE_TIME_MSG}</td>
+	<td>
+		<input class="field" type="text" size="20" name="online_time" value="{online_time}"> 
+		<span class="small">({ONLINE_TIME_NOTE})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{VIART_TRACKING_MSG}</td>
+	<td>
+		<input type="checkbox" name="tracking_visits" id="tracking_visits" {tracking_visits} value="1"> <label for="tracking_visits">{SITE_VISITS_MSG}</label>
+		<input type="checkbox" name="tracking_pages" id="tracking_pages" {tracking_pages} value="1"> <label for="tracking_pages">{PAGE_VIEWS_MSG}</label>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{GOOGLE_ANALYTICS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="google_analytics">{GOOGLE_ANALYTICS_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="google_analytics" id="google_analytics" {google_analytics} value="1">
+		<span class="small">{TURN_ON_GOOGLE_TRACKING_MSG}</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{GOOGLE_TRACKING_CODE_MSG}</td>
+	<td>
+		<input class="field" type="text" size="20" name="google_tracking_code" value="{google_tracking_code}"> 
+		<span class="small">{PLEASE_SPECIFY_THE_CODE_MSG} '<b>UA-xxxxx-x</b>' {WITH_YOUR_ACTUAL_GOOGLE_MSG}</span>
+	</td>
+</tr>
+<tr class="middle">
+	<td width="20%">&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="cookies_data" class="tab-data {cookies_class}">
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2">{COOKIE_BAR_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{COOKIE_BAR_SHOW_MSG}</td>
+	<td>
+		<label>
+			<input type="checkbox" name="cookie_bar" {cookie_bar} value="1">
+			<span class="small">{COOKIE_BAR_SHOW_DESC}</span>
+		</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{COOKIE_CONSENT_TIME_MSG}</td>
+	<td>
+		<input class="field" type="text" size="10" name="cookie_consent_time" value="{cookie_consent_time}" maxlength="9"> 
+		<span class="small">({COOKIE_CONSENT_TIME_DESC})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CUSTOM_MESSAGE_MSG}</td>
+	<td>
+		<textarea class="fd-full" name="cookie_bar_message" cols="80" rows="2">{cookie_bar_message}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{DEFAULT_COMMENT_MSG}</td>
+	<td>
+		<span class="small">{COOKIE_BAR_DESC}</span>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{NECESSARY_COOKIES_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{COOKIE_SHOW_MSG}</td>
+	<td>
+		<label>
+			<input type="checkbox" name="cookie_necessary_show" {cookie_necessary_show} value="1">
+			<span class="small">{COOKIE_SHOW_DESC}</span>
+		</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CUSTOM_NAME_MSG}</td>
+	<td>
+		<input class="field" type="text" size="40" name="cookie_necessary_name" value="{cookie_necessary_name}"> 
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CUSTOM_MESSAGE_MSG}</td>
+	<td>
+		<textarea class="fd-full" name="cookie_necessary_message" cols="80" rows="2">{cookie_necessary_message}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{DEFAULT_COMMENT_MSG}</td>
+	<td>
+		<span class="small">{NECESSARY_COOKIES_DESC}</span>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{ANALYTICS_COOKIES_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{COOKIE_SHOW_MSG}</td>
+	<td>
+		<label>
+			<input type="checkbox" name="cookie_analytics_show" {cookie_analytics_show} value="1">
+			<span class="small">{COOKIE_SHOW_DESC}</span>
+		</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ALLOWED_DISABLE_COOKIE_MSG}</td>
+	<td>
+		<label>
+			<input type="checkbox" name="cookie_analytics_disable" {cookie_analytics_disable} value="1">
+			<span class="small">{ALLOWED_DISABLE_COOKIE_DESC}</span>
+		</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CUSTOM_NAME_MSG}</td>
+	<td>
+		<input class="field" type="text" size="40" name="cookie_analytics_name" value="{cookie_analytics_name}"> 
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CUSTOM_MESSAGE_MSG}</td>
+	<td>
+		<textarea class="fd-full" name="cookie_analytics_message" cols="80" rows="2">{cookie_analytics_message}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{DEFAULT_COMMENT_MSG}</td>
+	<td>
+		<span class="small">{ANALYTICS_COOKIES_DESC}</span>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{PERSONAL_COOKIES}</td>
+</tr>
+<tr class="usual">
+	<td>{COOKIE_SHOW_MSG}</td>
+	<td>
+		<label>
+			<input type="checkbox" name="cookie_personal_show" {cookie_personal_show} value="1">
+			<span class="small">{COOKIE_SHOW_DESC}</span>
+		</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ALLOWED_DISABLE_COOKIE_MSG}</td>
+	<td>
+		<label>
+			<input type="checkbox" name="cookie_personal_disable" {cookie_personal_disable} value="1">
+			<span class="small">{ALLOWED_DISABLE_COOKIE_DESC}</span>
+		</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CUSTOM_NAME_MSG}</td>
+	<td>
+		<input class="field" type="text" size="40" name="cookie_personal_name" value="{cookie_personal_name}"> 
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CUSTOM_MESSAGE_MSG}</td>
+	<td>
+		<textarea class="fd-full" name="cookie_personal_message" cols="80" rows="2">{cookie_personal_message}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{DEFAULT_COMMENT_MSG}</td>
+	<td>
+		<span class="small">{PERSONAL_COOKIES_DESC}</span>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{TARGET_COOKIES_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{COOKIE_SHOW_MSG}</td>
+	<td>
+		<label>
+			<input type="checkbox" name="cookie_target_show" {cookie_target_show} value="1">
+			<span class="small">{COOKIE_SHOW_DESC}</span>
+		</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ALLOWED_DISABLE_COOKIE_MSG}</td>
+	<td>
+		<label>
+			<input type="checkbox" name="cookie_target_disable" {cookie_target_disable} value="1">
+			<span class="small">{ALLOWED_DISABLE_COOKIE_DESC}</span>
+		</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CUSTOM_NAME_MSG}</td>
+	<td>
+		<input class="field" type="text" size="40" name="cookie_target_name" value="{cookie_target_name}"> 
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CUSTOM_MESSAGE_MSG}</td>
+	<td>
+		<textarea class="fd-full" name="cookie_target_message" cols="80" rows="2">{cookie_target_message}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{DEFAULT_COMMENT_MSG}</td>
+	<td>
+		<span class="small">{TARGET_COOKIES_DESC}</span>
+	</td>
+</tr>
+
+<tr class="middle">
+	<td colspan="2">{OTHER_COOKIES_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{COOKIE_SHOW_MSG}</td>
+	<td>
+		<label>
+			<input type="checkbox" name="cookie_other_show" {cookie_other_show} value="1">
+			<span class="small">{COOKIE_SHOW_DESC}</span>
+		</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ALLOWED_DISABLE_COOKIE_MSG}</td>
+	<td>
+		<label>
+			<input type="checkbox" name="cookie_other_disable" {cookie_other_disable} value="1">
+			<span class="small">{ALLOWED_DISABLE_COOKIE_DESC}</span>
+		</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CUSTOM_NAME_MSG}</td>
+	<td>
+		<input class="field" type="text" size="40" name="cookie_other_name" value="{cookie_other_name}"> 
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CUSTOM_MESSAGE_MSG}</td>
+	<td>
+		<textarea class="fd-full" name="cookie_other_message" cols="80" rows="2">{cookie_other_message}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{DEFAULT_COMMENT_MSG}</td>
+	<td>
+		<span class="small">{OTHER_COOKIES_DESC}</span>
+	</td>
+</tr>
+
+<tr class="middle">
+	<td width="20%">&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+</div>
+</div>
+
+
+
+</form>
+
+{admin_footer}
+<script type="text/javascript">
+/*using namespace BLZ*/
+	var BLZ = BLZ || {};
+
+	BLZ.globalSettingsHelper = {
+		radiosGroup: null,
+		config: {
+			article: {
+				arcicleCheckboxClass: "articleCheckbox",
+				checkBoxList: []
+			}
+		},
+		editorNotation: function() {
+			var groupName = 'html_editor',
+				radiosGroup, groupLength, i;
+			radiosGroup = document.getElementsByName(groupName);
+			BLZ.globalSettingsHelper.radiosGroup = radiosGroup;
+			groupLength = radiosGroup.length;
+			for(i = 0; i < groupLength; i++) {
+				BLZ.utils.addListener(radiosGroup[i], 'click', BLZ.globalSettingsHelper.notationFactory);
+			}
+			BLZ.globalSettingsHelper.notationFactory();
+		},
+		notationFactory: function(){
+			var _rG, _rGLen, i;
+			_rG = BLZ.globalSettingsHelper.radiosGroup;
+			_rGLen = _rG.length;
+			for(i = 0; i < _rGLen; i++) {
+				if(_rG[i].checked) {
+					if(_rG[i].value == 2){
+						BLZ.globalSettingsHelper.showNotation();
+						return;
+					}
+					BLZ.globalSettingsHelper.hideNotation();
+				}
+			}
+		},
+		showNotation: function() {
+			var _e, _eW, _ie8Bug;
+			_e = document.getElementById('editorHint');
+			_eW = document.getElementById('editorWrap');
+			_ie8Bug = document.getElementById('ie8');
+			_e.style.display = '';
+			_eW.style.height = '97px';
+			_ie8Bug.style.height = '';
+
+		},
+		hideNotation: function() {
+			var _e, _eW, _ie8Bug;
+			_e = document.getElementById('editorHint');
+			_eW = document.getElementById('editorWrap');
+			_ie8Bug = document.getElementById('ie8');//ie 8 absolute positioned blocks fix
+			_e.style.display = 'none';
+			_eW.style.height = '';
+			_ie8Bug.style.height = '16px';
+			
+		},
+		resetRadio: function(groupName) {
+			var radiosGroup, groupLength, i;
+			radiosGroup = document.getElementsByName(groupName);
+			groupLength = radiosGroup.length;
+			for(i = 0; i < groupLength; i++) {
+				if(radiosGroup[i].checked === true) {
+					radiosGroup[i].checked = false;
+				}
+			}
+		},
+		selectAllArticles: function(){
+			var _obj = BLZ.globalSettingsHelper,
+				articleConfig = _obj.config.article,
+				elems = (!articleConfig.checkBoxList.length) ? _obj.getElementsByClassName(document, articleConfig.arcicleCheckboxClass) : articleConfig.checkBoxList,
+				len = elems.length, i = 0;
+			
+			for(i; i < len; i += 1){
+				elems[i].checked = true;
+			}
+
+			articleConfig.checkBoxList = elems;
+		},
+		getElementsByClassName:  function(node,classname) {
+			if (node.getElementsByClassName) { // use native implementation if available
+				return node.getElementsByClassName(classname);
+			} else {
+				return (function getElementsByClass(searchClass,node) {
+					if ( node == null )
+						node = document;
+					var classElements = [],
+						els = node.getElementsByTagName("*"),
+						elsLen = els.length,
+						pattern = new RegExp("(^|\\s)"+searchClass+"(\\s|$)"), i, j;
+
+					for (i = 0, j = 0; i < elsLen; i++) {
+						if ( pattern.test(els[i].className) ) {
+							classElements[j] = els[i];
+							j++;
+						}
+					}
+					return classElements;
+				})(classname, node);
+			}
+		}
+	};
+
+	BLZ.utils.addListener(window, 'load', BLZ.globalSettingsHelper.editorNotation);
+
+	//add special listener(s) to appropriate va version only
+	document.getElementById("articlesButton") && BLZ.utils.addListener(document.getElementById("articlesButton"), 'click', BLZ.globalSettingsHelper.selectAllArticles);
+
+	
+</script>
+</body>
+</html>

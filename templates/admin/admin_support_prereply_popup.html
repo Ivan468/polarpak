@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{ADMINISTRATION_MSG} :: {EDIT_PREDEFINED_REPLY_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+function closeWindow()
+{
+	window.opener.focus();
+	window.close();
+}
+//-->
+</script>
+</head>
+
+<body class="popup">
+
+<table width="100%" border="0" cellspacing="0" cellpadding="5" align="center">
+<tr>
+	<td class="header">
+		<a class="header" href="{admin_support_prereplies_url}">{PREDEFINED_REPLIES_MSG}</a>&nbsp;&gt;&nbsp;<b>{EDIT_PREDEFINED_REPLY_MSG}</b>
+	</td>
+</tr>
+</table>
+
+<form action="{admin_support_prereply_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="reply_id" value="{reply_id}">
+<input type="hidden" name="s_kw" value="{s_kw}">
+<input type="hidden" name="s_type" value="{s_type}">
+<input type="hidden" name="is_popup" value="{is_popup}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="page" value="{page}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="middle">
+	<td align="center" colspan="2">{EDIT_PREDEFINED_REPLY_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{TYPE_MSG}</td>
+	<td>
+		<select name="type_id"><!-- begin type_id -->
+			<option {type_id_selected} value="{type_id_value}">{type_id_description}<!-- end type_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ADMIN_TITLE_MSG} </td>
+	<td><input class="field" type="text" size="80" name="subject" value="{subject}"></td>
+</tr>
+<tr class="usual" valign="top">
+	<td>{BODY_MSG}</td>
+	<td><textarea name="body" cols="80" rows="15">{body}</textarea></td>
+</tr>
+<tr class="middle">
+	<td align="center" colspan="2"><!-- BEGIN edit_button -->
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- END edit_button --><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle">
+	<td align="center"><b><a href="javascript:closeWindow();">{CLOSE_WINDOW_MSG}</a></b></td>
+</tr>
+</table>
+
+</body>
+</html>

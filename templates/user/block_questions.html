@@ -1,0 +1,262 @@
+<!-- begin reviews_data -->
+<div id="questions_{pb_id}" data-pb-type="questions" data-pb-id="{pb_id}" data-html-id="{html_id}" data-pb-params="{pb_params}">
+
+			<div class="reviews-stats">
+				<!-- begin summary_statistic -->
+				{QUESTIONS_ASKED_MSG} 
+				<!-- end summary_statistic -->
+
+				<div class="product-emotions">
+					<!-- begin answered_link -->
+					<a href="{answered_url}" data-js="link" class="emotion positive"><i class="ico ico-smile"></i> <span class="caption">{ANSWERED_MSG}</span> <span class="percent">{positive_percent}</span></a><!-- end answered_link -->
+					<!-- begin unanswered_link -->
+					<a href="{critical_url}" data-js="link" class="emotion critical"><i class="ico ico-frown"></i> <span class="caption">{UNANSWERED_MSG}</span> <span class="percent">{critical_percent}</span> </a><!-- end unanswered_link -->
+				</div>
+				<div class="clear"></div>
+
+				<!-- begin write_review_form -->
+				<a class="write-review" onclick="showReviewForm(this);">{ASK_A_QUESTION_MSG}</a><!-- end write_review_form -->
+				<!-- begin write_review_sign_in -->
+				<a class="write-review" href="{write_review_url}">{ASK_A_QUESTION_SIGN_IN_MSG}</a><!-- end write_review_sign_in -->
+				<!-- begin already_reviewed -->
+				<span class="already-asked">{ALREADY_ASKED_PRODUCT_MSG}</span><!-- end already_reviewed -->
+				<!-- begin write_review_error -->
+				<span class="review-error">{write_review_error_desc}</span><!-- end write_review_error -->
+
+			</div>
+
+
+			<div class="reviews-total">
+				<!-- begin filtered_by -->
+				<span class="filtered-by">
+					<span class="caption">{FILTERED_BY_MSG}</span>
+					<!-- begin selected_filters -->
+					<a class="filter" data-js="link" href="{filter_url}">{filter_desc}</a>
+					<!-- end selected_filters -->
+				</span>
+				<!-- end filtered_by -->
+
+				<span class="records-found">{FOUND_MSG}: <b>{total_records}</b></span>
+
+			</div>
+
+
+
+		<div class="review-form {review_form_class}" id="question_form_{pb_id}">
+
+			<div class="error-block {error_class}"><div class="msg-close" onclick="hideReviewError(this);"></div><div class="msg-desc">{error_desc}</div></div>
+			<div class="message-block {message_class}"><div class="msg-close" onclick="hideReviewMessage(this);"></div><div class="msg-desc">{message_desc}</div></div>
+
+			<!-- begin record_form -->
+			<form name="review" action="{reviews_href}#question_form_{pb_id}" method="post" onsubmit="sendReview(this); return false;">
+			<input type="hidden" name="pb_id" value="{pb_id}" />
+			<input type="hidden" name="pb_type" value="product_questions" />
+			<input type="hidden" name="rnd" value="{rnd}" />
+			<input type="hidden" name="tab" value="questions" />
+			<input type="hidden" name="operation" value="review" />
+			<input type="hidden" name="item_id" value="{item_id}" />
+			<input type="hidden" name="category_id" value="{current_category_id}" />
+				{record_fields}
+				<!-- begin user_name_block -->
+				<div class="field fd-user-name {user_name_class}">
+					<div class="name">
+	    			{NAME_MSG} 
+					</div>
+					<div class="control">
+	    			<input class="text" type="text" name="user_name" size="42" value="{user_name}" maxlength="64" />
+					</div>
+				</div><!-- end user_name_block --><!-- begin user_email_block -->
+				<div class="field fd-user-email {user_email_class}">
+					<div class="name">
+	    			{EMAIL_FIELD} 
+					</div>
+					<div class="control">
+	    			<input class="text" type="text" name="user_email" size="42" value="{user_email}" maxlength="64" />
+					</div>
+				</div>
+				<!-- end user_email_block --><!-- begin summary_block -->
+				<div class="field fd-summary {summary_class}">
+					<div class="name">
+	    			{ONE_LINE_SUMMARY_MSG}
+					</div>
+					<div class="control">
+	    			<input class="text" type="text" name="summary" size="42" value="{summary}" />
+					</div>
+				</div><!-- end summary_block --><!-- begin comments_block -->
+				<div class="field fd-comments {comments_class}">
+					<div class="name">
+	    			{YOUR_QUESTION_MSG}
+					</div>
+					<div class="control">
+	    			<textarea name="comments" cols="40" rows="5">{comments}</textarea>
+					</div>
+				</div>
+				<!-- end comments_block --><!-- begin validation_number_block -->
+				<div class="field fd-validation {validation_number_class}">
+					<div class="name">
+	    			{VALIDATION_CODE_FIELD} 
+					</div>
+					<div class="control">
+						<input class="field" type="text" name="validation_number" size="4" value="{validation_number}" maxlength="4" />
+						<img src="validation_image.php?id=ptqn-{item_id}" class="validation-image" />
+					</div>
+				</div><!-- end validation_number_block --><!-- begin record_buttons -->
+				<div class="field fd-buttons">
+					<div class="name">
+	    
+					</div>
+					<div class="control">
+	    			<!-- begin record_insert -->
+						<input class="submit" type="button" value="{ASK_A_QUESTION_MSG}" onclick="sendReview(this);"/><!-- end record_insert -->
+	    			<input class="submit" type="button" value="{CANCEL_BUTTON}" onclick="showReviewForm(this);" />
+					</div>
+				</div><!-- end record_buttons -->
+
+
+			</form>
+			<!-- end record_form -->
+
+		</div>
+
+			<br />
+
+			<!-- begin reviews_block -->
+			
+			<!-- begin navigator_block -->
+			<div align="right" class="middlebg padding6px">{navigator}</div><!-- end navigator_block -->
+			
+		
+			<!-- begin reviews -->
+			<!-- BEGIN reviews_list -->
+			<div class="review" data-review-id="{review_id}" data-pb-id="{pb_id}" data-sign-url="{sign_url}" data-user="{sign_user}">
+			
+				<!-- img class="{recommended_image}" src="images/tr.gif" align="top" alt="" / -->
+			
+				<div class="review-data">
+					<div class="review-header">
+						<span class="review-stars"><i class="ico ico-stars {rating_class}"></i></span>
+						<span class="review-user {review_user_class}">{review_user_name} <span class="user-type">{review_user_type}</span></span>
+						<span class="review-on">{REVIEW_ON_DATE_MSG}</span>
+						<span class="review-date">{review_date_added}</span>
+						<!-- begin review_verified_buyer --><span class="verified-buyer">{VERIFIED_BUYER_MSG}</span><!-- end review_verified_buyer -->
+					</div>
+
+					<div class="summary">{review_summary}</div>
+					<div class="comments">{review_comments}</div>
+				</div>
+
+				<!-- begin review_emotions -->
+				<div class="review-emotions">
+					<!-- begin review_likes_block -->
+					<i class="ico ico-likes" title="{LIKE_BUTTON}"><span class="value">{review_likes}</span></i><!-- end review_likes_block -->
+					<!-- begin review_dislikes_block -->
+					<i class="ico ico-dislikes" title="{DISLIKE_BUTTON}"><span class="value">{review_dislikes}</span></i><!-- end review_dislikes_block -->
+				</div>
+				<!-- end review_emotions -->
+
+				<div class="review-actions">
+					<!-- begin comment_button -->
+					<i class="ico ico-comment" title="{REPLY_BUTTON}" onclick="showReplyForm({review_id});"><span>{REPLY_BUTTON}</span></i><!-- end comment_button -->
+					<!-- begin like_button -->
+					<i class="ico ico-like {like_class}" title="{LIKE_BUTTON}" data-emotion="1" onclick="reviewEmotion(this);"><span>{LIKE_BUTTON}</span></i><!-- end like_button -->
+					<!-- begin dislike_button -->
+					<i class="ico ico-dislike {dislike_class}" title="{DISLIKE_BUTTON}" data-emotion="-1" onclick="reviewEmotion(this);"><span>{DISLIKE_BUTTON}</span></i><!-- end dislike_button -->
+				</div>
+
+				<!-- begin replies_block -->
+				<div class="replies">
+					<!-- begin replies -->
+					<div class="reply-data">
+						<div class="comments">{reply_comments}</div>
+						<div class="reply-footer">
+							<span class="reply-user {reply_user_class}">{reply_user_name} <span class="user-type">{reply_user_type}</span></span>
+							<span class="reply-on">{REVIEW_ON_DATE_MSG}</span>
+							<span class="reply-date">{reply_date_added}</span>
+							<!-- begin reply_verified_buyer --><span class="verified-buyer">{VERIFIED_BUYER_MSG}</span><!-- end reply_verified_buyer -->
+						</div>
+					</div>
+					<!-- end replies -->
+
+					<!-- begin comment_form -->
+					<div class="reply-form {comment_form_class}" id="comment-form-{review_id}">
+
+						<div class="error-block comment-errors" id="comment-errors-{review_id}"></div>
+						<div class="message-block comment-message" id="comment-message-{review_id}"></div>
+
+						<form name="review" action="{reviews_href}#comment-form-{review_id}" method="post" onsubmit="sendComment(this); return false;">
+						<input type="hidden" name="pb_id" value="{pb_id}" />
+						<input type="hidden" name="pb_type" value="questions" />
+						<input type="hidden" name="rnd" value="{rnd}" />
+						<input type="hidden" name="tab" value="questions" />
+						<input type="hidden" name="operation" value="comment" />
+						<input type="hidden" name="review_id" value="{review_id}" />
+						<input type="hidden" name="item_id" value="{item_id}" />
+				  
+							<!-- begin comment_user_name_block -->
+							<div class="field fr-reply-user-name {comment_name_class}">
+								<div class="name">
+	          			{NAME_ALIAS_MSG} 
+								</div>
+								<div class="control">
+	          			<input class="text" type="text" name="comment_user_name" size="42" value="{comment_user_name}" maxlength="64" />
+								</div>
+							</div><!-- end comment_user_name_block --><!-- begin comment_user_email_block -->
+							<div class="field fr-reply-user-email {comment_email_class}">
+								<div class="name">
+	          			{EMAIL_FIELD} 
+								</div>
+								<div class="control">
+	          			<input class="text" type="text" name="comment_user_email" size="42" value="{comment_user_email}" maxlength="64" />
+								</div>
+							</div>
+							<!-- end comment_user_email_block -->
+							<div class="field fr-reply-comments {comment_comments_class}">
+								<div class="name">
+	          			{YOUR_COMMENT_MSG}
+								</div>
+								<div class="control">
+	          			<textarea name="comment_comments" cols="40" rows="5">{comment_comments}</textarea>
+								</div>
+							</div>
+							<!-- begin comment_validation_number_block -->
+							<div class="field fr-reply-validation {comment_validation_number_class}">
+								<div class="name">
+	          			{VALIDATION_CODE_FIELD} 
+								</div>
+								<div class="control">
+									<input class="field" type="text" name="comment_validation_number" size="4" value="{comment_validation_number}" maxlength="4" />
+									<img src="validation_image.php?id=rw-{review_id}" id="comment-validation-image-{review_id}" class="validation-image" />
+								</div>
+							</div><!-- end comment_validation_number_block -->
+							<div class="field">
+								<div class="name">
+	          
+								</div>
+								<div class="control">
+	          			<input class="submit" type="button" value="{COMMENT_BUTTON}" onclick="sendComment(this);"/>
+	          			<input class="submit" type="button" value="{CANCEL_BUTTON}" onclick="showReplyForm({review_id});" />
+								</div>
+							</div>
+						</form>
+					</div>
+					<!-- end comment_form -->
+
+				</div>
+				<!-- end replies_block -->
+
+			
+			</div>
+			<!-- END reviews_list -->
+			<!-- end reviews -->
+			
+			<!-- begin no_reviews -->
+			<div class="padding10px"><b>{NO_QUESTIONS_MSG}</b></div><!-- end no_reviews -->
+			
+			<!-- begin navigator_block -->
+			{navigator}
+			<!-- end navigator_block -->
+			
+			<!-- end reviews_block -->
+
+</div>
+<!-- end reviews_data -->

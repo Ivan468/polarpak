@@ -1,0 +1,581 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{USER_VOUCHER_SETTINGS_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="../js/admin.js"></script>
+<script language="JavaScript">
+<!--
+	function openWindow(pagename, filetype)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+	}
+//-->
+</script>
+</head>
+<body class="mainbg">
+{admin_header}
+{admin_breadcrumb}
+
+<form action="{settings_user_voucher_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="rp" value="{rp}">
+<input type="hidden" name="tab" value="{tab}">
+
+<div class="sitelist"><!-- begin sitelist -->
+	{SELECT_SITE_MSG}&nbsp;
+	<select name="param_site_id" onchange="reloadSite(this.form)"><!-- begin param_site_id -->
+		<option {param_site_id_selected} value="{param_site_id_value}">{param_site_id_description}<!-- end param_site_id -->
+	</select><!-- end sitelist -->
+</div>
+{block_leftside_breadcrumbs}
+
+<!-- BEGIN success_block --><div class="messagebg">{CHANGES_SAVED_MSG}</div><br/><!-- END success_block -->
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+	<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+		<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+	</ul>
+
+<div class="Form clearBoth">
+<div class="FormContent">
+
+
+<div id="general_data" class="tab-data {general_class}">
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr class="middle">
+	<td colspan="2">{VOUCHER_PURCHASE_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="voucher_purchase">{VOUCHER_PURCHASE_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="voucher_purchase" id="voucher_purchase" {voucher_purchase} value="1">
+		({VOUCHER_PURCHASE_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{PURCHASE_FEE_MSG} ({PERCENTAGE_MSG})</td>
+	<td>
+		<input type="text" size="5" name="purchase_fee_percent" value="{purchase_fee_percent}"> (%)
+	</td>
+</tr>
+<tr class="usual">
+	<td>{PURCHASE_FEE_MSG} ({FIXED_AMOUNT_MSG})</td>
+	<td>
+		<input type="text" size="5" name="purchase_fee_amount" value="{purchase_fee_amount}" > ({default_currency_code})
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{VOUCHER_TRANSFER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="voucher_transfer">{VOUCHER_TRANSFER_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="voucher_transfer" id="voucher_transfer" {voucher_transfer} value="1">
+		({VOUCHER_TRANSFER_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{TRANSFER_TIME_LIMIT_MSG}</td>
+	<td>
+		<input type="text" size="5" name="transfer_time_limit" value="{transfer_time_limit}">
+		({TRANSFER_TIME_LIMIT_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{TRANSFER_FEE_MSG} ({PERCENTAGE_MSG})</td>
+	<td>
+		<input type="text" size="5" name="transfer_fee_percent" value="{transfer_fee_percent}"> (%)
+	</td>
+</tr>
+<tr class="usual">
+	<td>{TRANSFER_FEE_MSG} ({FIXED_AMOUNT_MSG})</td>
+	<td>
+		<input type="text" size="5" name="transfer_fee_amount" value="{transfer_fee_amount}" > ({default_currency_code})
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{CASH_OUT_VOUCHER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="cash_out_voucher">{CASH_OUT_VOUCHER_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="cash_out_voucher" id="cash_out_voucher" {cash_out_voucher} value="1">
+		({CASH_OUT_ALLOWED_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CASH_OUT_TIME_LIMIT_MSG}</td>
+	<td>
+		<input type="text" size="5" name="cash_out_time_limit" value="{cash_out_time_limit}">
+		({CASH_OUT_TIME_LIMIT_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CASH_OUT_FEE_MSG} ({PERCENTAGE_MSG})</td>
+	<td>
+		<input type="text" size="5" name="cash_out_fee_percent" value="{cash_out_fee_percent}"> (%)
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CASH_OUT_FEE_MSG} ({FIXED_AMOUNT_MSG})</td>
+	<td>
+		<input type="text" size="5" name="cash_out_fee_amount" value="{cash_out_fee_amount}" > ({default_currency_code})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ORDER_STATUS_MSG}</td>
+	<td>
+		<select name="cash_out_status_id"><!-- begin cash_out_status_id -->
+			<option {cash_out_status_id_selected} value="{cash_out_status_id_value}">{cash_out_status_id_description}<!-- end cash_out_status_id -->
+		</select>
+		({CASH_OUT_ORDER_STATUS_DESC})
+	</td>
+</tr>
+
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<!-- notification email -->
+<div id="request_data" class="tab-data {request_class}">
+<table border="0" cellpadding="5" cellspacing="1" width="100%">
+<tr class="usual">
+	<td colspan="2">{TRANSFER_REQUEST_DESC}</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{EMAIL_NOTIFICATION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="request_notify">{SEND_NOTIFICATION_USER_MSG}</label></td>
+	<td><input type="checkbox" name="request_notify" id="request_notify" {request_notify} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_FROM_MSG}</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="request_from" value="{request_from}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>message@example.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="request_cc" value="{request_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="request_bcc" value="{request_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="request_reply_to" value="{request_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="request_return_path" value="{request_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="request_subject" value="{request_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin request_message_type -->
+		<input class="field" type="radio" name="request_message_type" id="request_message_type{request_message_type_value}" {request_message_type_checked} value="{request_message_type_value}">
+		<label for="request_message_type{request_message_type_value}">{request_message_type_description}</label><!-- end request_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<div><b>{MESSAGE_MSG}</b></div>
+
+		<br>
+		<table cellspacing="1" cellpadding="2">
+		<tr class="middle"><td>{TAG_NAME_MSG}</td><td>{TAG_DESCRIPTION_MSG}</td></tr>
+		<tr><td>&#123;transfer_code}</td><td>{TRANSFER_CODE_MSG}</td></tr>
+		<tr><td>&#123;transfer_expiration}</td><td>{TRANSFER_EXPIRATION_MSG}</td></tr>
+		<tr><td>&#123;voucher_amount}</td><td>{VOUCHER_AMOUNT_MSG}</td></tr>
+		<tr><td>&#123;voucher_code}</td><td>{VOUCHER_CODE_MSG}</td></tr>
+		</table>
+	</td>
+	<td><textarea name="request_message" cols="80" rows="10">{request_message}</textarea></td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{SMS_NOTIFICATION_USER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="request_sms_notify">{SMS_SEND_USER_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="request_sms_notify" id="request_sms_notify" {request_sms_notify} value="1">
+		({SMS_NOTIFICATION_NOTE})
+	</td>
+</tr>
+<tr class="usual">
+	<td><b>{SMS_RECIPIENT_MSG}</b> ({SMS_RECIPIENT_USER_DESC})</td>
+	<td><input class="field" type="text" name="request_sms_recipient" value="{request_sms_recipient}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{SMS_ORIGINATOR_MSG}</b></td>
+	<td><input class="field" type="text" name="request_sms_originator" value="{request_sms_originator}" size="80" maxlength="16"></td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{SMS_MESSAGE_MSG}</b>
+		<br/><br/>
+		<table cellspacing="1" cellpadding="2">
+		<tr class="middle"><td>{TAG_NAME_MSG}</td><td>{TAG_DESCRIPTION_MSG}</td></tr>
+		<tr><td>&#123;transfer_code}</td><td>{TRANSFER_CODE_MSG}</td></tr>
+		<tr><td>&#123;transfer_expiration}</td><td>{TRANSFER_EXPIRATION_MSG}</td></tr>
+		<tr><td>&#123;voucher_amount}</td><td>{VOUCHER_AMOUNT_MSG}</td></tr>
+		<tr><td>&#123;voucher_code}</td><td>{VOUCHER_CODE_MSG}</td></tr>
+		</table>
+	</td>
+	<td>
+		<textarea name="request_sms_message" cols="80" rows="4">{request_sms_message}</textarea>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+<div id="confirm_data" class="tab-data {confirm_class}">
+<table border="0" cellpadding="5" cellspacing="1" width="100%">
+<tr class="usual">
+	<td colspan="2">{TRANSFER_CONFIRMATION_DESC}</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{SEND_NOTIFICATION_SENDER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="sender_notify">{SEND_NOTIFICATION_SENDER_MSG}</label></td>
+	<td><input type="checkbox" name="sender_notify" id="sender_notify" {sender_notify} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_FROM_MSG}</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="sender_from" value="{sender_from}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>message@example.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="sender_cc" value="{sender_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="sender_bcc" value="{sender_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="sender_reply_to" value="{sender_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="sender_return_path" value="{sender_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="sender_subject" value="{sender_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin sender_message_type -->
+		<input class="field" type="radio" name="sender_message_type" id="sender_message_type{sender_message_type_value}" {sender_message_type_checked} value="{sender_message_type_value}">
+		<label for="sender_message_type{sender_message_type_value}">{sender_message_type_description}</label><!-- end sender_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<div><b>{MESSAGE_MSG}</b></div>
+		<br>
+		<table cellspacing="1" cellpadding="2">
+		<tr class="middle"><td>{TAG_NAME_MSG}</td><td>{TAG_DESCRIPTION_MSG}</td></tr>
+		<tr><td>&#123;sender_name}</td><td>{SENDER_NAME_MSG}</td></tr>
+		<tr><td>&#123;receiver_name}</td><td>{RECEIVER_NAME_MSG}</td></tr>
+		<tr><td>&#123;voucher_amount}</td><td>{VOUCHER_AMOUNT_MSG}</td></tr>
+		<tr><td>&#123;voucher_code}</td><td>{VOUCHER_CODE_MSG}</td></tr>
+		</table>
+	</td>
+	<td><textarea name="sender_message" cols="80" rows="10">{sender_message}</textarea></td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{SEND_NOTIFICATION_RECEIVER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="receiver_notify">{SEND_NOTIFICATION_RECEIVER_MSG}</label></td>
+	<td><input type="checkbox" name="receiver_notify" id="receiver_notify" {receiver_notify} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_FROM_MSG}</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="receiver_from" value="{receiver_from}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>message@example.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="receiver_cc" value="{receiver_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="receiver_bcc" value="{receiver_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="receiver_reply_to" value="{receiver_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="receiver_return_path" value="{receiver_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="receiver_subject" value="{receiver_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin receiver_message_type -->
+		<input class="field" type="radio" name="receiver_message_type" id="receiver_message_type{receiver_message_type_value}" {receiver_message_type_checked} value="{receiver_message_type_value}">
+		<label for="receiver_message_type{receiver_message_type_value}">{receiver_message_type_description}</label><!-- end receiver_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<div><b>{MESSAGE_MSG}</b></div>
+		<br>
+		<table cellspacing="1" cellpadding="2">
+		<tr class="middle"><td>{TAG_NAME_MSG}</td><td>{TAG_DESCRIPTION_MSG}</td></tr>
+		<tr><td>&#123;sender_name}</td><td>{SENDER_NAME_MSG}</td></tr>
+		<tr><td>&#123;receiver_name}</td><td>{RECEIVER_NAME_MSG}</td></tr>
+		<tr><td>&#123;voucher_amount}</td><td>{VOUCHER_AMOUNT_MSG}</td></tr>
+		<tr><td>&#123;voucher_code}</td><td>{VOUCHER_CODE_MSG}</td></tr>
+		</table>
+	</td>
+	<td><textarea name="receiver_message" cols="80" rows="10">{receiver_message}</textarea></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+<!-- notification email -->
+<div id="cash_request_data" class="tab-data {cash_request_class}">
+<table border="0" cellpadding="5" cellspacing="1" width="100%">
+<tr class="usual">
+	<td colspan="2">{CASH_OUT_REQUEST_DESC}</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{EMAIL_NOTIFICATION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="cash_request_notify">{SEND_NOTIFICATION_USER_MSG}</label></td>
+	<td><input type="checkbox" name="cash_request_notify" id="cash_request_notify" {cash_request_notify} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_FROM_MSG}</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="cash_request_from" value="{cash_request_from}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>message@example.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="cash_request_cc" value="{cash_request_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="cash_request_bcc" value="{cash_request_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="cash_request_reply_to" value="{cash_request_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="cash_request_return_path" value="{cash_request_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="cash_request_subject" value="{cash_request_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin cash_request_message_type -->
+		<input class="field" type="radio" name="cash_request_message_type" id="cash_request_message_type{cash_request_message_type_value}" {cash_request_message_type_checked} value="{cash_request_message_type_value}">
+		<label for="cash_request_message_type{cash_request_message_type_value}">{cash_request_message_type_description}</label><!-- end cash_request_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<div><b>{MESSAGE_MSG}</b></div>
+
+		<br>
+		<table cellspacing="1" cellpadding="2">
+		<tr class="middle"><td>{TAG_NAME_MSG}</td><td>{TAG_DESCRIPTION_MSG}</td></tr>
+		<tr><td>&#123;cash_out_amount}</td><td>{CASH_OUT_AMOUNT_MSG}</td></tr>
+		<tr><td>&#123;transfer_code}</td><td>{TRANSFER_CODE_MSG}</td></tr>
+		<tr><td>&#123;transfer_expiration}</td><td>{TRANSFER_EXPIRATION_MSG}</td></tr>
+		<tr><td>&#123;voucher_amount}</td><td>{VOUCHER_AMOUNT_MSG}</td></tr>
+		<tr><td>&#123;voucher_code}</td><td>{VOUCHER_CODE_MSG}</td></tr>
+		</table>
+	</td>
+	<td><textarea name="cash_request_message" cols="80" rows="10">{cash_request_message}</textarea></td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{SMS_NOTIFICATION_USER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="cash_request_sms_notify">{SMS_SEND_USER_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="cash_request_sms_notify" id="cash_request_sms_notify" {cash_request_sms_notify} value="1">
+		({SMS_NOTIFICATION_NOTE})
+	</td>
+</tr>
+<tr class="usual">
+	<td><b>{SMS_RECIPIENT_MSG}</b> ({SMS_RECIPIENT_USER_DESC})</td>
+	<td><input class="field" type="text" name="cash_request_sms_recipient" value="{cash_request_sms_recipient}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{SMS_ORIGINATOR_MSG}</b></td>
+	<td><input class="field" type="text" name="cash_request_sms_originator" value="{cash_request_sms_originator}" size="80" maxlength="16"></td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{SMS_MESSAGE_MSG}</b>
+		<br/><br/>
+		<table cellspacing="1" cellpadding="2">
+		<tr class="middle"><td>{TAG_NAME_MSG}</td><td>{TAG_DESCRIPTION_MSG}</td></tr>
+		<tr><td>&#123;cash_out_amount}</td><td>{CASH_OUT_AMOUNT_MSG}</td></tr>
+		<tr><td>&#123;transfer_code}</td><td>{TRANSFER_CODE_MSG}</td></tr>
+		<tr><td>&#123;transfer_expiration}</td><td>{TRANSFER_EXPIRATION_MSG}</td></tr>
+		<tr><td>&#123;voucher_amount}</td><td>{VOUCHER_AMOUNT_MSG}</td></tr>
+		<tr><td>&#123;voucher_code}</td><td>{VOUCHER_CODE_MSG}</td></tr>
+		</table>
+	</td>
+	<td>
+		<textarea name="cash_request_sms_message" cols="80" rows="4">{cash_request_sms_message}</textarea>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+<div id="cash_confirm_data" class="tab-data {cash_confirm_class}">
+<table border="0" cellpadding="5" cellspacing="1" width="100%">
+<tr class="usual">
+	<td colspan="2">{CASH_OUT_CONFIRMATION_DESC}</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{EMAIL_NOTIFICATION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="cash_confirm_notify">{SEND_NOTIFICATION_USER_MSG}</label></td>
+	<td><input type="checkbox" name="cash_confirm_notify" id="cash_confirm_notify" {cash_confirm_notify} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_FROM_MSG}</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="cash_confirm_from" value="{cash_confirm_from}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>message@example.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="cash_confirm_cc" value="{cash_confirm_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="cash_confirm_bcc" value="{cash_confirm_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="cash_confirm_reply_to" value="{cash_confirm_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="cash_confirm_return_path" value="{cash_confirm_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="cash_confirm_subject" value="{cash_confirm_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin cash_confirm_message_type -->
+		<input class="field" type="radio" name="cash_confirm_message_type" id="cash_confirm_message_type{cash_confirm_message_type_value}" {cash_confirm_message_type_checked} value="{cash_confirm_message_type_value}">
+		<label for="cash_confirm_message_type{cash_confirm_message_type_value}">{cash_confirm_message_type_description}</label><!-- end cash_confirm_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<div><b>{MESSAGE_MSG}</b></div>
+		<br>
+		<table cellspacing="1" cellpadding="2">
+		<tr class="middle"><td>{TAG_NAME_MSG}</td><td>{TAG_DESCRIPTION_MSG}</td></tr>
+		<tr><td>&#123;cash_out_amount}</td><td>{CASH_OUT_AMOUNT_MSG}</td></tr>
+		<tr><td>&#123;voucher_amount}</td><td>{VOUCHER_AMOUNT_MSG}</td></tr>
+		<tr><td>&#123;voucher_code}</td><td>{VOUCHER_CODE_MSG}</td></tr>
+		</table>
+	</td>
+	<td><textarea name="cash_confirm_message" cols="80" rows="10">{cash_confirm_message}</textarea></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+</div>
+</div>
+</form>
+
+{admin_footer}
+</body>
+</html>

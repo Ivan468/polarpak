@@ -1,0 +1,30 @@
+<table cellpadding="3" cellspacing="1" width="100%">
+<tr style="background-color: #E9E9E9;" align="center">
+	<th>{PROD_TITLE_COLUMN}</th>
+	<th>{PROD_PRICE_COLUMN}</th>
+	<th>{PROD_QTY_COLUMN}</th>
+	<th>{PROD_TOTAL_COLUMN}</th>
+</tr><!-- begin html_saved_items -->
+<tr valign="top">
+	<td>
+		{item_name}
+		<!-- begin html_saved_items_item_code -->
+		<br />{PROD_CODE_MSG}: <b>{item_code}</b><!-- end html_saved_items_item_code -->	
+		<!-- begin html_saved_items_manufacturer_code_block -->
+		<br />{MANUFACTURER_CODE_MSG}: <b>{manufacturer_code}</b><!-- end html_saved_items_manufacturer_code_block -->	
+	</td>
+	<td align="right">
+		{price}&nbsp;
+	</td>
+	<td align="center">{quantity}</td>
+	<td align="right">{item_total}&nbsp;</td>
+</tr><!-- end html_saved_items -->
+<tr style="background-color: #E9E9E9;">
+	<td colspan="3" align="right">
+		<b>{GOODS_TOTAL_MSG}&nbsp;</b>
+	</td>
+	<td align="right">
+		<b>{goods_total}&nbsp;</b>
+	</td>
+</tr>
+</table>

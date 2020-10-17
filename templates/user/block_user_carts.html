@@ -1,0 +1,25 @@
+<table cellspacing="1" width="100%" class="table-data"><!-- begin sorters -->
+<tr class="middlebg" align="center">
+	<td>{sorter_id}</td>
+	<td>{sorter_cart_name}</td>
+	<td>{sorter_total}</td>
+	<td>{sorter_date}</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="usualbg" valign="top" align="center">
+	<td>{cart_id}</td>
+	<td align="left">{cart_name}</td>
+	<td align="right">{cart_total}</td>
+	<td>{cart_added}</td>
+	<td><a href="{cart_retrieve_href}?cart_id={cart_id}&operation=retrieve">{RETRIEVE_CART_BUTTON}</a></td>
+	<td><a href="{user_carts_href}?cart_id={cart_id}&operation=delete" onclick="return confirm('{CONFIRM_DELETE_JS}');">{DELETE_BUTTON}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usualbg">
+	<td colspan="6">{NO_CARTS_MSG}</td>
+</tr><!-- END no_records --><!-- begin navigator_block -->
+<tr class="middlebg">
+	<td colspan="6" align="right">{navigator}</td>
+</tr><!-- end navigator_block -->
+</table>	
+

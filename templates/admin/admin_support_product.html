@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html><head><title>{HELPDESK_MSG} :: {EDIT_PRODUCT_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+{head_tags}
+<script>
+var list_fields_names = new Array('deps', 'sites');
+</script>
+<script language="JavaScript" type= "text/javascript" src="../js/list_fields.js"></script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{admin_breadcrumb}
+
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+	<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+</ul>
+
+<div class="Form clearBoth">
+<div class="FormContent">
+
+<form action="{admin_support_product_href}" name="record" method="post" onsubmit="selectListFieldsAll();" >
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="deps" value="">
+<input type="hidden" name="sites" value="">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="product_id" value="{product_id}">
+
+<div id="general_data" class="tab-data {general_class}">
+	<table border="0" cellspacing="1" cellpadding="6" width="100%">
+	<tr class="usual">
+		<td><label for="show_for_user">{SHOW_FOR_USER_MSG}</label></td>
+		<td><input type="checkbox" {show_for_user} name="show_for_user" id="show_for_user" value="1"></td>
+	</tr>
+	<tr class="usual">
+		<td>{SORT_ORDER_MSG} *</td>
+		<td><input class="field" type="text" size="10" name="product_order" value="{product_order}"></td>
+	</tr>
+	<tr class="usual">
+		<td>{PROD_NAME_MSG} *</td>
+		<td><input class="field" type="text" size="40" name="product_name" value="{product_name}"></td>
+	</tr>
+	<tr class="buttons">
+		<td>&nbsp;</td>
+		<td>
+			<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+			<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+			<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+
+<div id="deps_data" class="tab-data {deps_class}">
+	<table cellspacing="1" cellpadding="4" border="0" width="100%">
+	<tr class="usual">
+		<td colspan="3">
+			<input type="checkbox" name="deps_all" id="deps_all" {deps_all} onClick="checkListFields('deps');" value="1">
+			<label for="deps_all">{DEPS_ALL_MSG} ({DEPS_ALL_UNTICK_MSG})</label>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td colspan="2">
+	
+			<table width="100%" border="0" cellspacing="1" cellpadding="3">
+			<tr align="center" class="usual">
+				<td width="40%"><b>{AVAILABLE_DEPS_MSG}</b></td>
+				<td width="20%"><b>{OPERATIONS_MSG}</b></td>
+				<td width="40%"><b>{APPLY_FOR_DEPS_MSG}</b></td>
+			</tr>
+			<tr align="center" class="usual">
+				<td width="40%">
+					<select name="available_deps" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_deps -->
+						<option value="{list_id}">{list_name}<!-- end available_deps-->
+					</select>
+				</td>
+				<td width="20%">
+					<span class="button"><input class="submit" readonly type="button" name="add_deps" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('deps');"></span>
+					<br><br>
+					<span class="button"><input class="submit" type="button" name="remove_deps" value="<- {REMOVE_BUTTON}" onClick="removeListFields('deps');"></span>
+				</td>
+				<td width="40%">
+	
+					<select name="selected_deps" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_deps -->
+						<option value="{list_id}">{list_name}<!-- end selected_deps -->
+					</select>
+				</td>
+			</tr>
+			</table>
+	
+		</td>
+	</tr>
+	<tr class="middle">
+		<td colspan="3">
+			<span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+<div id="sites_data" class="tab-data {sites_class}">
+	<table cellspacing="1" cellpadding="4" border="0" width="100%">
+	<tr class="usual">
+		<td colspan="3">
+			<input type="checkbox" name="sites_all" id="sites_all" {sites_all} onClick="checkListFields('sites');" value="1">
+			<label for="sites_all">{SITES_ALL_MSG} ({SITES_ALL_UNTICK_MSG})</label>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td colspan="2">
+	
+			<table width="100%" border="0" cellspacing="1" cellpadding="3">
+			<tr align="center" class="usual">
+				<td width="40%"><b>{AVAILABLE_SITES_MSG}</b></td>
+				<td width="20%"><b>{OPERATIONS_MSG}</b></td>
+				<td width="40%"><b>{APPLY_FOR_SITES_MSG}</b></td>
+			</tr>
+			<tr align="center" class="usual">
+				<td width="40%">
+					<select name="available_sites" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_sites -->
+						<option value="{site_id}">{site_name}<!-- end available_sites-->
+					</select>
+				</td>
+				<td width="20%">
+					<span class="button"><input class="submit" readonly type="button" name="add_sites" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('sites');"></span>
+					<br><br>
+					<span class="button"><input class="submit" type="button" name="remove_sites" value="<- {REMOVE_BUTTON}" onClick="removeListFields('sites');"></span>
+				</td>
+				<td width="40%">
+	
+					<select name="selected_sites" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_sites -->
+						<option value="{site_id}">{site_name}<!-- end selected_sites -->
+					</select>
+				</td>
+			</tr>
+			</table>
+	
+		</td>
+	</tr>
+	<tr class="middle">
+		<td colspan="3">
+			<span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

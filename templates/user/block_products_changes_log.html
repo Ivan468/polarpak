@@ -1,0 +1,21 @@
+	<table cellspacing="1" width="100%" class="padding6px">
+	<tr>
+		<td>
+			<div class="bigtitle">{PROD_CHANGES_LOG_MSG}</div>
+			<hr size="1">
+			<!-- begin releases -->
+			<table width="100%" cellspacing="0" cellpadding="0">
+			<tr>
+				<td class="title">&nbsp;{release_title} ({PROD_VER_MSG} {version})</td>
+				<td align="right"><span class="articleDate">{release_date}</span>&nbsp;</td>
+			</tr>
+			</table>
+			<ul><!-- BEGIN changes -->
+				<li>{change_desc}</li><!-- END changes -->
+			</ul>
+			<!-- end releases -->
+			<!-- BEGIN no_releases -->
+			<div class="title">{NO_RELEASE_CHANGES_MSG}</div><!-- END no_releases -->
+		</td>
+	</tr>
+	</table>

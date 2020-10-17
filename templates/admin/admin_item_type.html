@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html><head><title>{EDIT_PRODUCT_TYPE_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="bodyDboard">
+
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_PRODUCT_TYPE_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_item_type_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="item_type_id" value="{item_type_id}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+
+<tr class="usual">
+	<td>{TYPE_NAME_MSG} *</td>
+	<td><input class="field" type="text" size="60" name="item_type_name" value="{item_type_name}"></td>
+</tr>
+<tr class="usual">
+	<td><label for="is_gift_voucher">{GIFT_VOUCHER_MSG}</label></td>
+	<td>
+		<input type="checkbox" {is_gift_voucher} name="is_gift_voucher" id="is_gift_voucher" value="1">
+		{GIFT_VOUCHER_NOTE} 
+		<br/>{ACTIVATE_VOUCHER_NOTE} 
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="is_user_voucher">{USER_VOUCHER_MSG}</label></td>
+	<td>
+		<input type="checkbox" {is_user_voucher} name="is_user_voucher" id="is_user_voucher" value="1">
+		{USER_VOUCHER_NOTE} 
+		<br/>{ACTIVATE_VOUCHER_NOTE} 
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="is_bundle">{BUNDLE_MSG}</label></td>
+	<td>
+		<input type="checkbox" {is_bundle} name="is_bundle" id="is_bundle" value="1">
+		({BUNDLE_NOTE})
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="is_user">{SHOW_FOR_MERCHANT_MSG}</label></td>
+	<td>
+		<input type="checkbox" {is_user} name="is_user" id="is_user" value="1">
+		({PRODUCT_TYPE_MERCHANT_ACCESS_NOTE})
+	</td>
+</tr>
+<tr>
+	<td>Google Merchant Center Product Type</td>
+	<td>
+		<select name="google_base_type_id"><!-- begin google_base_type_id -->
+			<option {google_base_type_id_selected} value="{google_base_type_id_value}">{google_base_type_id_description}<!-- end google_base_type_id -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2" class="middle">{FEES_COMMISSIONS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{MERCHANT_FEE_MSG}</td>
+	<td colspan="3">
+
+		<select name="merchant_fee_type"><!-- begin merchant_fee_type -->
+
+			<option {merchant_fee_type_selected} value="{merchant_fee_type_value}">{merchant_fee_type_description}<!-- end merchant_fee_type -->
+
+		</select>
+
+		&nbsp; {AMOUNT_MSG} <input class="field"  type="text" name="merchant_fee_amount" size="20" value="{merchant_fee_amount}">
+
+	</td>
+
+</tr>
+
+<tr class="usual">
+
+	<td>{AFFILIATE_COMMISSION_MSG}</td>
+
+	<td>
+
+		<select name="affiliate_commission_type"><!-- begin affiliate_commission_type -->
+
+			<option {affiliate_commission_type_selected} value="{affiliate_commission_type_value}">{affiliate_commission_type_description}<!-- end affiliate_commission_type -->
+
+		</select>
+
+		&nbsp; {AMOUNT_MSG} <input class="field"  type="text" name="affiliate_commission_amount" size="20" value="{affiliate_commission_amount}">
+
+	</td>
+
+</tr>
+
+<tr class="middle">
+
+	<td colspan="2">{REWARDS_MSG}</td>
+
+</tr>
+
+<tr class="usual">
+
+	<td>{REWARD_POINTS_MSG}</td>
+
+	<td>
+
+		<select name="reward_type"><!-- begin reward_type -->
+
+			<option {reward_type_selected} value="{reward_type_value}">{reward_type_description}<!-- end reward_type -->
+
+		</select>
+
+		&nbsp; {AMOUNT_MSG} <input class="field" type="text" name="reward_amount" value="{reward_amount}" size="20" maxlength="10">
+
+	</td>
+
+</tr>
+
+<tr class="usual">
+
+	<td>{REWARD_CREDITS_MSG}</td>
+
+	<td>
+
+		<select name="credit_reward_type"><!-- begin credit_reward_type -->
+
+			<option {credit_reward_type_selected} value="{credit_reward_type_value}">{credit_reward_type_description}<!-- end credit_reward_type -->
+
+		</select>
+
+		&nbsp; {AMOUNT_MSG} <input class="field" type="text" name="credit_reward_amount" value="{credit_reward_amount}" size="20" maxlength="10">
+
+	</td>
+
+</tr>
+
+<tr class="middle">
+
+	<td>&nbsp;</td>
+
+	<td>
+
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+
+	</td>
+
+</tr><!-- BEGIN duplicate -->
+
+<tr class=usual>
+
+	<td>&nbsp;</td>
+
+	<td align="right">
+
+		<input type="checkbox" name="duplicate_options" id="duplicate_options" {duplicate_options} value="1"> <label for="duplicate_options">{OPTIONS_AND_COMPONENTS_MSG}</label>
+
+		<input type="checkbox" name="duplicate_features" id="duplicate_features" {duplicate_features} value="1"> <label for="duplicate_features">{PREDEFINED_SPECIFICATION_MSG}</label>
+
+		<span class="button"><input class="submit" type="submit" value="{DUPLICATE_BUTTON}" onclick="document.record.operation.value='duplicate';return confirm('Do you want create a copy of this type with selected attributes?');"></span>
+
+	</td>
+
+</tr><!-- END duplicate -->
+
+</table>
+
+</form>	
+
+
+
+</div>
+
+</div>
+
+
+
+{admin_footer}
+
+</body>
+
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{SHIPMENT_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" src="../js/calendar.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/select.js"></script>
+<script language="JavaScript">
+<!--
+
+	function mouseX(evt) {
+		if (evt.pageX) {
+			return evt.pageX;
+		} else if (evt.clientX) {
+			return evt.clientX + (document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft);
+		} else {
+			return null;
+		}
+	}
+
+	function mouseY(evt) {
+		if (evt.pageY) {
+			return evt.pageY;
+		} else if (evt.clientY) {
+			return evt.clientY + (document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop);
+		} else {
+			return null;
+		}
+	}
+
+	function showOrderItems(event, orderID)	{
+		var orderItems = document.getElementById("order_items_" + orderID);
+		if (orderItems) {
+  	  var leftPos = mouseX(event) + 15;
+	    var topPos  = mouseY(event) + 15;
+			orderItems.style.left = leftPos+"px";
+			orderItems.style.top = topPos+"px";
+
+			orderItems.style.display = "block";
+		}
+
+	}
+
+	function hideOrderItems(event, orderID)	{
+		var orderItems = document.getElementById("order_items_" + orderID);
+		if (orderItems) {
+			orderItems.style.display = 'none';
+		}
+	}
+
+//-->
+</script>
+</head>
+
+<body class="commonbg">
+
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Form">
+<div class="FormTitle">{SHIPMENT_MSG}</div>
+<div class="FormContent">
+
+
+<!-- BEGIN orders_errors -->
+&nbsp;<div align="center" class="error">{errors_list}</div>&nbsp;<!-- END orders_errors -->
+
+<!-- BEGIN orders_messages -->
+&nbsp;<div align="center" class="message">{messages_list}</div>&nbsp;<!-- END orders_messages -->
+
+
+<form name="orders" action="{admin_orders_shipment_href}" method="POST">
+<input type="hidden" name="operation" value="update">
+<input type="hidden" name="ids" value="{ids}">
+<input type="hidden" name="shipments_number" value="{shipments_number}">
+<table border="0" cellpadding="3" cellspacing="1" width="100%">
+<tr class="middle" align="center">
+	<td>
+		<b>{ID_MSG}</b>
+	</td>
+	<td>
+		<b>{ORDER_DETAILS_MSG}</b>
+	</td>
+	<td>
+		<b>{DELIVERY_TO_MSG}</b>
+	</td>
+	<td>
+		<b>Tracking Details</b>
+	</td>
+</tr><!-- BEGIN records -->
+<tr valign="top" align="center" class="{row_style} {shipping_row_class}">
+	<td onmousemove="showOrderItems(event, {order_id});"	onmouseout="hideOrderItems(event, {order_id});">
+		{order_id}
+		<div id="order_items_{order_id}" style="display: none; position: absolute;">
+
+			<div class="popUp">
+			<table width="100%" cellspacing="1" cellpadding="2" border="0">
+			<tr class="middle">
+				<td align="left"><b>{PROD_TITLE_COLUMN}</b></td>
+				<td align="center"><b>{PROD_QTY_COLUMN}</b></td>
+				<td align="right"><b>{PROD_PRICE_COLUMN}</b></td>
+			</tr><!-- BEGIN order_items -->
+			<tr class="usual">
+				<td align="left" nowrap>{item_name}</td>
+				<td align=center>{quantity}</td>
+				<td align=right>{price}</td>
+			</tr><!-- END order_items -->
+			<tr class="middle">
+				<td align="right"><b>{GOODS_TOTAL_MSG}</b></td>
+				<td align=center>{total_quantity}</td>
+				<td align=right>{total_price}</td>
+			</tr>
+			</table>
+			</div>
+
+		</div>
+	</td>
+	<td align="left" class="shipment-order" onmousemove="showOrderItems(event, {order_id});"	onmouseout="hideOrderItems(event, {order_id});">
+		<div class="date"><span class="caption">{DATE_MSG}:</span>&nbsp;<span class="data">{order_placed_date}</span></div>
+		<div class="status"><span class="caption">{STATUS_MSG}:</span>&nbsp;<span class="data">{order_status}</span></div>
+		<div class="total"><span class="caption">{TOTAL_MSG}:</span>&nbsp;<span class="data">{order_total}</span></div>
+	</td>
+	<td align="left" class="shipment-to">
+		<div class="name">{user_name}</div>
+		<div class="country-state">{country_state}</div>
+		<div class="address">{address}</div>
+		<div class="city-zip">{city_zip}</div>
+	</td>
+	<td align="right" class="shipment-data">
+		<!-- begin order_shipments -->
+		<div>
+			{SHIPPING_TRACKING_NUMBER_MSG}:
+			<input type="hidden" name="order_id_{shipping_index}" value="{order_id}"/>
+			<input type="hidden" name="order_shipping_id_{shipping_index}" value="{order_shipping_id}"/>
+			<input type="text" name="tracking_id_{shipping_index}" value="{tracking_id}"/>
+		</div>
+		<!-- begin shipping_company -->
+		<div>
+				{SHIPPING_COMPANY_MSG}:
+				<select name="company_id_{shipping_index}"><!-- begin company_id -->
+					<option {company_id_selected} value="{company_id_value}">{company_id_description}<!-- end company_id -->
+				</select>
+		</div><!-- end shipping_company -->
+		<!-- end order_shipments -->
+	</td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="{colspan}">
+		&nbsp;{NO_ORDERS_MSG}
+	</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="4" align="right">
+		<input type="submit" name="update" value="Update" />
+	</td>
+</tr>
+</table>
+</form>
+
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

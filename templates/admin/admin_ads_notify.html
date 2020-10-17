@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{ADMINISTRATION_MSG} :: {ADVERT_NOTIFICATION_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+<script type="text/javascript" src="../js/admin.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/editor.js"></script>
+{CKEditor_tag}
+<script language="JavaScript">
+<!--
+	function openWindow(pagename)
+	{
+		var popupWin = window.open (pagename, 'popup', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		popupWin.focus();
+	}
+//-->
+</script>
+</head>
+<body class="bodySettings">
+{admin_header}
+<form action="{admin_ads_notify_href}" name="record" method="POST" onsubmit="submit_editor(Array('editor_am','editor_um'));">
+<div class="sitelist"><!-- begin sitelist -->
+	{SELECT_SITE_MSG}&nbsp;
+	<select name="param_site_id" onchange="reloadSite(this.form)"><!-- begin param_site_id -->
+		<option {param_site_id_selected} value="{param_site_id_value}">{param_site_id_description}<!-- end param_site_id -->
+	</select><!-- end sitelist -->
+</div>
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EMAIL_NOTIFICATION_MSG}</div>
+<div class="BlockContent">
+
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="rp" value="{rp}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="5"><b>{EMAIL_NOTIFICATION_ADMIN_MSG}</b></td>
+</tr>
+<tr class="usual">
+	<td><label for="admin_notification">{ADMINISTRATOR_NOTIFICATION_MSG}</label></td>
+	<td colspan="4">
+		<input type="checkbox" name="admin_notification" id="admin_notification" {admin_notification} value="1">
+		{ADS_SEND_EMAIL_NOTIFY_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_TO_MSG}</b>
+		<div class="small">
+		(<a class="small" href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})
+		</div>
+	</td>
+	<td colspan="4">
+		<input class="field" type="text" name="admin_email" value="{admin_email}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>manager@yoursite.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_FROM_MSG}</b></td>
+	<td colspan="4"><input class="field" type="text" name="admin_mail_from" value="{admin_mail_from}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td colspan="4"><input class="field" type="text" name="cc_emails" value="{cc_emails}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td colspan="4"><input class="field" type="text" name="admin_mail_bcc" value="{admin_mail_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td colspan="4"><input class="field" type="text" name="admin_mail_reply_to" value="{admin_mail_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td colspan="4"><input class="field" type="text" name="admin_mail_return_path" value="{admin_mail_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td colspan="4"><input class="field" type="text" name="admin_subject" value="{admin_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td colspan="4"><!-- begin admin_message_type -->
+		<input type="radio" name="admin_message_type" id="admin_message_type{admin_message_type_value}" {admin_message_type_checked} value="{admin_message_type_value}">
+		<label for="admin_message_type{admin_message_type_value}">{admin_message_type_description}</label><!-- end admin_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{MESSAGE_MSG}</b>
+		<div class="small">
+		<br>(<a class="small" href="javascript:openWindow('{admin_ads_notify_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_SETTINGS_NOTE} 
+		<br>&nbsp;{LEARN_MORE_AND_SEE_NOTE})
+		</div>
+	</td>
+	<td>{editor_error}
+		<textarea name="admin_message" id="am" cols="80" rows="10">{admin_message}</textarea>
+		<!-- begin am_ext_editor -->
+		<script type="text/javascript">
+			var amEditor = CKEDITOR.replace('am');{ckfinder}
+		</script><!-- end am_ext_editor -->
+		<!-- begin am_int_editor -->
+		<script type= "text/javascript">
+			var editor_am = new VA_HTMLeditor('content_am','../','{html_editor}');
+			editor_am.text_field_name = 'admin_message';
+			editor_am.formname = 'record';
+			editor_am.css_file = '{css_file}';
+			editor_am.editor_type = 'amail_editor';
+			editor_am.displayEditor('editor_am', 530, 170);
+		</script><!-- end am_int_editor -->
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="5"><b>{USER_EMAIL_NOTIFICATION_MSG}</b></td>
+</tr>
+<tr class="usual">
+	<td><label for="user_notification">{USER_NOTIFICATION_MSG}</label></td>
+	<td colspan="4">
+		<input type="checkbox" name="user_notification" id="user_notification" {user_notification} value="1">
+		{ADS_SEND_EMAIL_NOTIFY_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_FROM_MSG}</b>
+		<div class="small">(<a class="small" href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td colspan="4"><input class="field" type="text" name="user_mail_from" value="{user_mail_from}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td colspan="4"><input class="field" type="text" name="user_mail_cc" value="{user_mail_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td colspan="4"><input class="field" type="text" name="user_mail_bcc" value="{user_mail_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td colspan="4"><input class="field" type="text" name="user_mail_reply_to" value="{user_mail_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td colspan="4"><input class="field" type="text" name="user_mail_return_path" value="{user_mail_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td colspan="4"><input class="field" type="text" name="user_subject" value="{user_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td colspan="4"><!-- begin user_message_type -->
+		<input type="radio" name="user_message_type" id="user_message_type{user_message_type_value}" {user_message_type_checked} value="{user_message_type_value}">
+		<label for="user_message_type{user_message_type_value}">{user_message_type_description}</label><!-- end user_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{MESSAGE_MSG}</b>
+		<div class="small">
+		<br>(<a class="small" href="javascript:openWindow('{admin_ads_notify_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_SETTINGS_NOTE} 
+		<br>&nbsp;{LEARN_MORE_AND_SEE_NOTE})
+		</div>
+	</td>
+	<td>{editor_error}
+		<textarea name="user_message" id="um" cols="80" rows="10">{user_message}</textarea>
+		<!-- begin um_ext_editor -->
+		<script type="text/javascript">
+			var umEditor = CKEDITOR.replace('um');{ckfinder}
+		</script><!-- end um_ext_editor -->
+		<!-- begin um_int_editor -->
+		<script type= "text/javascript">
+			var editor_um = new VA_HTMLeditor('content_um','../','{html_editor}');
+			editor_um.text_field_name = 'user_message';
+			editor_um.formname = 'record';
+			editor_um.css_file = '{css_file}';
+			editor_um.editor_type = 'umail_editor';
+			editor_um.displayEditor('editor_um', 530, 170);
+		</script><!-- end um_int_editor -->
+	</td>
+</tr>
+
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td colspan="4">
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+
+</div>
+</div>
+
+</form>
+
+{admin_footer}
+
+</body>
+</html>

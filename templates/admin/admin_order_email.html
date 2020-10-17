@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {SEND_EMAIL_MESSAGE_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/editor.js"></script>
+{CKEditor_tag}
+</head>
+<body class="commonbg">
+{admin_header}
+{block_leftside_breadcrumbs}
+<!-- begin message_sent --><div class="messagebg">{MESSAGE_SENT_MSG}</div><!-- end message_sent -->
+<div class="Block">
+<div class="BlockTitle">{ADMIN_EMAIL_MESSAGE_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_order_email_href}" name="admin_order_email" method="POST" onsubmit="submit_editor(Array('editor_em'));">
+<input type="hidden" name="operation" value="send">
+<input type="hidden" name="order_id" value="{order_id}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<table cellspacing="1" cellpadding="6" border="0" width=100%>
+<tr class="usual">
+	<td>{EMAIL_TO_MSG} *</td>
+	<td>
+		<input class="field" type="text" name="message_to" value="{message_to}" size="60" maxlength="255">
+		<a href="#" onClick="document.admin_order_email.message_to.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td width="20%">{EMAIL_FROM_MSG} *</td>
+	<td>
+		<input class="field" type="text" name="message_from" value="{message_from}" size="60" maxlength="255">
+		<a href="#" onClick="document.admin_order_email.message_from.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td>
+		<input class="field" type="text" name="message_cc" value="{message_cc}" size="60" maxlength="255">
+		<a href="#" onClick="document.admin_order_email.message_cc.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td>
+		<input class="field" type="text" name="message_bcc" value="{message_bcc}" size="60" maxlength="255">
+		<a href="#" onClick="document.admin_order_email.message_bcc.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td>
+		<input class="field" type="text" name="message_reply_to" value="{message_reply_to}" size="60" maxlength="255">
+		<a href="#" onClick="document.admin_order_email.message_reply_to.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td>
+		<input class="field" type="text" name="message_return_path" value="{message_return_path}" size="60" maxlength="255">
+		<a href="#" onClick="document.admin_order_email.message_return_path.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td>{EMAIL_SUBJECT_MSG}</td>
+	<td>
+		<input class="field" type="text" name="message_subject" value="{message_subject}" size="60" maxlength="255">
+		<a href="#" onClick="document.admin_order_email.message_subject.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td>{EMAIL_MESSAGE_TYPE_MSG}</td>
+	<td><!-- begin message_type -->
+		<input type="radio" name="message_type" id="message_type{message_type_value}" {message_type_checked} value="{message_type_value}">
+		<label for="message_type{message_type_value}">{message_type_description}</label><!-- end message_type -->
+	</td>
+</tr><!-- begin pgp_enable -->
+<tr class="usual">
+	<td>&nbsp;</td>
+	<td>
+		<input type="checkbox" name="message_pgp" id="message_pgp" {message_pgp} value="1">
+		<label for="message_pgp">send this email using PGP encyprtions</label>
+	</td>
+</tr><!-- end pgp_enable -->
+<tr class="usual">
+	<td colspan="2">
+		{editor_error}
+		<textarea name="message_body" id="em_ed" style="display: block; width: 560px; height: 170px;">{message_body}</textarea>
+		<a href="#" onClick="document.admin_order_email.message_body.value='';return false;">{CLEAR_BUTTON}</a>
+		<!-- begin em_ext_editor -->
+		<script type="text/javascript">
+			CKEDITOR.replace( 'em_ed' );
+		</script><!-- end em_ext_editor -->
+		<!-- begin em_int_editor -->
+		<script type= "text/javascript">
+			var editor_em = new VA_HTMLeditor('content_em','../','{html_editor}');
+			editor_em.text_field_name = 'message_body';
+			editor_em.formname = 'admin_order_email';
+			editor_em.css_file = '{css_file}';
+			editor_em.editor_type = 'email_editor';
+			editor_em.displayEditor('editor_em', 560, 170);
+		</script><!-- end em_int_editor -->
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="Send"></span>
+		<span class="button"><input class="submit" type="reset" value="Reset"></span>
+	</td>
+</tr>
+</table>
+
+</form>
+
+</div>
+</div>       
+
+{admin_footer}
+
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {ADMIN_PAGES_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+function clearSearch() {
+		document.search_form.s_n.value = "";
+		document.search_form.submit();
+	}
+</script>
+</head>
+
+<body class="bodySbuilder">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+	<div class="Block">
+	<form name="search_form" method="GET">
+		<div class="AdminSearch">
+			<div class="leftNavNonActive">
+				<a href="#" class="leftNavTitle">{SEARCH_TITLE}</a>
+				<div class="innerDiv">
+					<input class="field" type="text" name="s_n" id="s_n" value="{s_n}">
+					<span class="button"><input class="submit" type="submit" value="{SEARCH_BUTTON}"></span>
+					<span class="button"><input class="submit" type="button" value="{CLEAR_BUTTON}" onclick="clearSearch();"></span>
+				</div>
+			</div>
+		</div>
+	</form>
+	</div>
+
+
+<div class="Block">
+<div class="BlockTitle">{ADMIN_PAGES_MSG}</div>
+<div class="BlockContent">
+
+<table border="0" cellpadding="6" cellspacing="1" width="100%"><!-- begin sorters -->
+<tr class="middle"align="center">
+	<td nowrap>{sorter_page_id}</td>
+	<td nowrap>{sorter_page_name}</td>
+	<td nowrap>{sorter_module}</td>
+	<td>{sorter_page_order}</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="usual" align="center">
+	<td>{page_id}</td>
+	<td align="left">{page_name}</td>
+	<td>{module_name}</td>
+	<td>{page_order}</td>
+	<td nowrap><a href="{admin_cms_page_url}">{EDIT_MSG}</a></td>
+	<td nowrap><a href="{admin_cms_page_layout_url}">{LAYOUT_MSG}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="6">{NO_RECORDS_MSG}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="6">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_cms_page_new_url}">{NEW_MSG}</a>
+	</td>
+</tr>
+</table>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

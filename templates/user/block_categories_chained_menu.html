@@ -1,0 +1,13 @@
+<script type="text/javascript" src="js/ajax.js"></script>
+<script type="text/javascript" src="js/categories_chained_menu.js"></script>
+
+	<form action="{search_href}" method="get">
+	<div id="categories_box">
+		<select id="category_0" onchange="getCategory({pb_id}, this, this.value, 0); return false;">
+			<option value="-1">{SELECT_CATEGORY_MSG}</option>
+			<!--begin category_option-->
+			<option value="{category_id}">{category_name}</option>
+			<!--end category_option--> 
+		</select>
+	</div>
+	</form>

@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {ADMIN_PAGES_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="bodySbuilder">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<div class="Block">
+<div class="BlockTitle">{SLIDER_MSG} {ADMIN_ITEMS_MSG}</div>
+<div class="BlockContent">
+
+<table width="100%" border="0" cellpadding="6" cellspacing="1" align="center">
+<tr class="middle" align="center">
+	<td>#</td>
+	<td>{ADMIN_TITLE_MSG}</td>
+	<td>{ADMIN_SHOW_MSG}</td>
+	<td>&nbsp;</td>
+</tr><!-- BEGIN records -->
+<tr align="center" class="usual">
+	<td align="left">{item_order}</td>
+	<td align="left">{item_name}</td>
+	<td><a href="?operation={operation}&item_id={item_id}&slider_id={slider_id}">{show_for_user}</a></td>
+	<td><a href="{admin_item_edit}&item_id={item_id}">{EDIT_MSG} Item</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr>
+	<td colspan="5" class="usual">{NO_RECORDS}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="5">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_item_edit}">{ADD_BUTTON}</a>
+	</td>
+</tr>
+</table>	
+</div>
+</div>
+
+
+{admin_footer}
+</body>
+</html>

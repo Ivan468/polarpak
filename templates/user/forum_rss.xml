@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0">
+	<channel>
+		<title>{rss_title}</title>
+		<link>{rss_link}</link>
+		<description>{rss_description}</description>
+		<lastBuildDate>{rss_last_build_date}</lastBuildDate>
+		<generator>ViArt</generator><!-- begin rss_items -->
+		<item><!-- begin item_title_block -->
+			<title>{item_title}</title><!-- end item_title_block --><!-- begin item_link_block -->
+			<link>{item_link}</link><!-- end item_link_block --><!-- begin item_description_block -->
+			<description>{item_description}</description><!-- end item_description_block --><!-- begin item_author_block -->
+			<author>{item_author}</author><!-- end item_author_block --><!-- begin item_date_block -->
+			<pubDate>{item_date}</pubDate><!-- end item_date_block -->
+		</item><!-- end rss_items -->
+	</channel>
+</rss>

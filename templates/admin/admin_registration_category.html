@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {REGISTRATION_PRODUCTS_MSG} :: {EDIT_CATEGORY_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header}
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_REGISTRATION_CATEGORY_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_registration_category_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="category_id" value="{category_id}">
+
+	<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+	<table width="100%" border="0" cellspacing="1" cellpadding="6">
+		<tr class="usual">
+			<td colspan="2" align="right" class="small">{ASTERISK_MSG}</td>
+		</tr>
+		<tr class="middle">
+			<td colspan="2">{GENERAL_INFO_MSG}</td>
+		</tr>
+		<tr class="usual">
+			<td><label for="show_for_user">{SHOW_ON_SITE_FIELD}</label></td>
+			<td><input type="checkbox" name="show_for_user" id="show_for_user" {show_for_user} value="1"></td>
+		</tr>
+		<tr class="usual">
+			<td>{CATEGORY_ORDER_MSG} *</td>
+			<td><input type="text" class="field" name="category_order" value="{category_order}" size="10" maxlength="10"></td>
+		</tr>
+		<tr class="usual">
+			<td>{CATEGORY_NAME_MSG} *</td>
+			<td><input type="text" class=field name="category_name" value="{category_name}" size="80" maxlength="255"></td>
+		</tr>
+		<tr class="usual">
+			<td>{PARENT_CATEGORY_MSG} *</td>
+			<td>
+				<select name="parent_category_id"><!-- begin parent_category_id -->
+					<option {parent_category_id_selected} value="{parent_category_id_value}">{parent_category_id_description}<!-- end parent_category_id -->
+				</select>
+			</td>
+		</tr>
+		<tr class="middle">
+			<td>&nbsp;</td>
+			<td><!-- BEGIN save -->
+				<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- END save --><!-- BEGIN delete -->
+				<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+				<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+			</td>
+		</tr>
+	</table>
+
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

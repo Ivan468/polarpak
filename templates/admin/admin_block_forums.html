@@ -1,0 +1,47 @@
+<div class="Block">
+<div class="BlockTitle">{forum_name}</div>
+<div class="BlockContent">
+		<!-- begin matching_block --><div class="matchingMessage">{matching_message}</div><!-- end matching_block -->
+		<!-- begin block_message --><div class="messagebg">{message_list}</div><!-- end block_message -->
+		<table border="0" cellspacing="1" cellpadding="6" width="99%">
+		<!-- begin sorters_block -->
+		<tr class="middle" align="center">
+			<td>{sorter_id}</td>
+			<td>{sorter_topic}</td>
+			<td>{sorter_owner}</td>
+			<td>{sorter_replies}</td>
+			<td>{sorter_updated}</td>
+		</tr>
+		<!-- end sorters_block --><!-- begin no_sorters_block -->
+		<tr class="middle" align="center">		
+			<td nowrap>{NO_MSG}</td>
+			<td align="left">{TOPIC_NAME_COLUMN}</td>
+			<td nowrap>{OWNER_MSG}</td>
+			<td nowrap>{TOPIC_REPLIES_COLUMN}</td>
+			<td nowrap>{UPDATED_MSG}</td>
+		</tr><!-- end no_sorters_block --><!-- BEGIN items_list -->
+		<tr class="{row_style}" align="center" valign="top" id="tr_product_{item_index}">
+			<td>{thread_id}</td>
+			<td align="left">
+				{html_before_title}<a class="title" href="{admin_forum_thread_href}?thread_id={thread_id}">{title}</a>{html_after_title}
+				<a class="small" href="{admin_forum_thread_href}?thread_id={thread_id}">{EDIT_MSG}</a>
+				<div class="small"><!-- BEGIN product_related_priv -->
+					<a class="smallink" href="{admin_forum_items_related_href}?thread_id={thread_id}">{ADMIN_RELATED_PRODUCTS_TITLE}</a><!-- END product_related_priv --><!-- BEGIN related_articles_priv --> {delimiter} 
+					<a class="smallink" href="{admin_forum_articles_related_href}?thread_id={thread_id}">{RELATED_ARTICLES_MSG}</a><!-- END related_articles_priv -->
+				</div>
+			</td>
+			<td align="left">{user_name} &lt;{user_email}&gt;</td>
+			<td>{replies}</td>
+			<td>{thread_updated}</td>
+		</tr><!-- END items_list -->
+		<tr class="middle" align="center">
+			<td align="left" colspan="5">			
+				<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+				<!--begin show_new_block--><a href="{admin_forum_topic_href}">{ADD_NEW_MSG}</a><!--end show_new_block-->
+				<!--begin show_all_block--><a href="{admin_forum_href}?s={s}">Show all ({total_records})</a><!--end show_all_block-->
+				
+			</td>
+		</tr>
+		</table>
+</div>
+</div>

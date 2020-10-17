@@ -1,0 +1,55 @@
+	<a name="bk_login_{pb_id}"></a>
+
+	<form action="{login_form_url}#bk_login_{pb_id}" name="login" method="post">
+	<input type="hidden" name="user_id" value="" />
+	<input type="hidden" name="pb_id" value="{pb_id}" />
+	<input type="hidden" name="operation" value="{operation}" />
+	<input type="hidden" name="return_page" value="{return_page}" />
+	{hidden_parameters}
+
+		<!-- BEGIN login_form -->
+			<!-- BEGIN login_errors -->
+			<div class="errors">{errors_list}</div><!-- END login_errors -->
+
+			<div class="field fd-login">
+				<div class="before"></div>
+				<div class="name">
+					{LOGIN_FIELD}
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="login" value="{login}" size="16" maxlength="64" placeholder="{login_placeholder}" />
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-password">
+				<div class="before"></div>
+				<div class="name">
+					{PASSWORD_FIELD}
+				</div>
+				<div class="control">
+					<input class="text" type="password" name="password" value="" size="16" maxlength="32" />
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-buttons">
+				<div class="before"></div>
+				<div class="name"></div>
+				<div class="control">
+					<input class="submit" type="submit" value="{SIGN_IN_BUTTON}" onclick="document.record.operation.value='login'" /> 
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="forgot-password"><a href="{forgot_password_href}">{FORGOT_PASSWORD_MSG}</a></div>
+		<!-- END login_form -->
+
+		<!-- BEGIN logout_form -->
+		<!-- BEGIN logout_errors -->
+		<div class="errors">{errors_list}</div><!-- END logout_errors -->
+
+		<div class="logged-in">{LOGIN_AS_NAME}</div>
+		<div class="access-home">{ACCESS_HOME_MSG} <a href="{user_home_href}">{CLICK_HERE_MSG}</a></div>
+		<div class="login-signout"><input class="submit" type="submit" value="{LOGOUT_BUTTON}" onclick="document.record.operation.value='logout'" /></div>
+		<!-- END logout_form -->
+
+	</form>
+

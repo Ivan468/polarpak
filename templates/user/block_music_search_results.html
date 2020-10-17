@@ -1,0 +1,26 @@
+	<!-- begin no_results -->
+	<div class="messagebg">We can't find any songs matching your criterion - <b>{sw}</b>.</div>
+	<!-- end no_results -->
+
+	<div class="songs {columns_class}">
+		<!-- BEGIN songs_rows -->
+		<!-- BEGIN songs_cols -->
+		<div class="col {column_class}">
+
+			<div class="article">
+				<div class="author-photo">
+					<!-- begin image_tiny_block -->
+					<a class="link img-tiny" href="{author_url}" title="{author_name} Lyrics"><img class="image img-tiny" src="{image_tiny_src}" alt="{image_tiny_alt}" /></a><!-- end image_tiny_block -->
+				</div>
+
+				<a class="link song-name" href="{song_url}" title="{song_name} Lyrics">{song_name}</a><br/>
+			
+				by <span class="song-authors"><!-- begin song_authors --><a class="link author-name" href="{author_url}" title="{author_name} Lyrics">{author_name}</a><!-- end song_authors --></span>
+
+			</div>
+
+		</div>
+		<!-- END songs_cols -->
+		<!-- END songs_rows -->
+		<div class="clear"></div>
+	</div>

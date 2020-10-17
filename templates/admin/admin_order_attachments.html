@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{UPLOAD_TITLE}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+function closeWindow(attachmentsFiles)
+{
+	window.opener.updateAttachments(attachmentsFiles);
+	window.opener.focus();
+	window.close();
+}
+//-->
+</script>
+</head>
+<body class="popup">
+<form name="upload" action="{admin_order_attachments_href}" enctype="multipart/form-data" method="post">
+<input type="hidden" name="operation" value="upload">
+<input type="hidden" name="order_id" value="{order_id}">
+<input type="hidden" name="attachment_type" value="{attachment_type}">
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle">
+	<td colspan="3" align="center"><a href="javascript:closeWindow('{attachments_files}');"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+<tr>
+	<td colspan="3">&nbsp;</td>
+</tr><!-- BEGIN errors -->
+<tr>
+	<td colspan="3" align="center" class="usual">
+		<div class="errorbg">{errors_list}</div>
+	</td>
+</tr><!-- END errors -->
+<tr class="usual">
+	<td colspan="3" align="center">
+		<table>
+		<tr><td>{UPLOAD_FILE_DESC}</td></tr>
+		<tr><td>
+			<input size="40" class="submit" type="file" name="newfile">
+			<span class="button"><input class="submit" type="submit" name="submit" value="Upload"></span>
+		</td></tr>
+		</table>
+	</td>
+</tr><!-- begin attachments_block -->
+<tr class="middle" align="center">
+	<td>{ADMIN_FILE_MSG}</td>
+	<td>{ADMIN_SIZE_MSG}</td>
+	<td>&nbsp;</td>
+</tr><!-- begin attachments -->
+<tr class="usual">
+	<td>{filename}</td>
+	<td align="center">{filesize}</td>
+	<td align="center"><a href="{admin_order_attachments_href}?operation=remove&order_id={order_id}&attachment_type={attachment_type}&atid={attachment_id}" onClick="return confirm('{CONFIRM_DELETE_JS}');">{DELETE_BUTTON}</a></td>
+</tr><!-- end attachments --><!-- end attachments_block -->
+<tr>
+	<td colspan="3">&nbsp;</td>
+</tr>
+<tr class="middle">
+	<td colspan="3" align="center"><a href="javascript:closeWindow('{attachments_files}');"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+</table>
+
+</form>	
+
+
+
+
+
+</body>
+</html>

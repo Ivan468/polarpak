@@ -1,0 +1,635 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ARTICLES_TITLE} :: {action_title}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/win_select.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/editor.js"></script>
+<script language="JavaScript">
+<!--
+	var parentCategoryName = "{top_name}";
+	var parentCategoryId = "{top_id}";
+	var removeButton = "{REMOVE_BUTTON}";
+
+	function openWindow(pagename, filetype)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+  	}
+
+	function setFileName(filename, filetype)
+	{
+		var siteUrl = '{image_site_url}';
+
+		if(filename != "")
+		{
+			if(filetype == "category_small")
+			{
+				document.record.image_small.value = siteUrl + "images/categories/" + filename;
+				document.record.image_small.focus();
+			}
+			else if(filetype == "category_large")
+			{
+				document.record.image_large.value = siteUrl + "images/categories/large/" + filename;
+				document.record.image_large.focus();
+			}
+		}
+	}
+
+//-->
+</script>
+<script language="JavaScript" type= "text/javascript" src="../js/list_fields.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/access_table.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/tips.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/editor.js"></script>
+<script language="JavaScript">
+<!--
+var list_fields_names = new Array('sites');
+//-->
+</script>
+{CKEditor_tag}
+</head>
+<body class="bodySettings">
+{admin_header}
+<div class="sitelist"><!-- BEGIN view_live --><a href="{live_href}" target=new>{VIEW_ON_LIVE_MSG}</a><!-- END view_live --></div>
+{block_leftside_breadcrumbs}
+
+<!-- BEGIN success --><div class="messagebg">{success_message}</div><!-- END success -->
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+
+	<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+		<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+	</ul>
+
+<div class="Form clearBoth">
+<div class="FormContent">
+
+<form action="{admin_articles_category_href}" name="record" method="POST" onSubmit="selectListFieldsAll(); submit_editor(Array('editor_sd','editor_fd'));">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="category_id" value="{category_id}">
+<input type="hidden" name="parent_category_id" value="{parent_category_id}"/>
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="sites" value="">
+<input type="hidden" name="apply" value="0">
+
+<div id="general_data" class="tab-data {general_class}">
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr class="usual">
+	<td colspan="4" align="right" class="small">{ASTERISK_MSG}</td>
+</tr><!-- begin category_order_block -->
+<tr class="usual">
+	<td>{CATEGORY_ORDER_MSG} *</td>
+	<td colspan="4"><input class="field" type="text" name="category_order" value="{category_order}" size="10" maxlength="10"></td>
+</tr><!-- end category_order_block -->
+<tr class="usual">
+	<td>{TOTAL_VIEWS_MSG}</td>
+	<td colspan="4"><input class="field" type="text" readonly name="total_views" value="{total_views}" size="10" maxlength="10"></td>
+</tr>
+<tr class="usual">
+	<td>{CATEGORY_NAME_MSG} *</td>
+	<td colspan="4"><input class="field" type="text" name="category_name" value="{category_name}" size="80" maxlength="255"></td>
+</tr><!-- BEGIN friendly_url_block -->
+<tr class="usual">
+	<td>{FRIENDLY_URL_MSG}</td>
+	<td colspan="4"><input class="field" type="text" name="friendly_url" value="{friendly_url}" size="80" maxlength="255"></td>
+</tr><!-- END friendly_url_block --><!-- BEGIN parent_category_id_block -->
+	<tr class="usual">
+		<td>{PARENT_CATEGORY_MSG} *</td>
+		<td>
+			<span style="font-weight: bold;" id="parent_category">{parent_category_desc} <a style="{parent_category_remove_style}" class="smallButton" href="#" onClick="clearParentCategory('record', 'parent_category_id', 'parent_category'); return false;">{REMOVE_BUTTON}</a></span>
+			<span style="display: none;" id="parent_category_hidden">[parent_category_desc] <a class="smallButton" href="#" onClick="clearParentCategory('record', 'parent_category_id', 'parent_category'); return false;">{REMOVE_BUTTON}</a></span>
+			<a class="smallButton" href="#" onClick="openWindowSelect('{admin_category_select_href}', 'record', 'parent_category_id', 'parent_category', 'control', 'articles_category', '{top_id}'); return false;">{SELECT_CATEGORY_MSG}</a>
+		</td>
+	</tr><!-- END parent_category_id_block --><!-- BEGIN alias_category_id_block -->
+	<tr class="usual">
+		<td>{REDIRECT_TO_CATEGORY_MSG}</td>
+		<td>
+			<input type="hidden" name="alias_category_id" value="{alias_category_id}"/>
+			<span style="font-weight: bold; {alias_category_style}" id="alias_category">{alias_category_desc} <a class="smallButton" href="#" onClick="clearControlValue('record', 'alias_category_id', 'alias_category'); return false;">{REMOVE_BUTTON}</a></span>
+			<span style="display: none;" id="alias_category_hidden">[alias_category_desc] <a class="smallButton" href="#" onClick="clearControlValue('record', 'alias_category_id', 'alias_category'); return false;">{REMOVE_BUTTON}</a></span>
+			<a class="smallButton" href="#" onClick="openWindowSelect('{admin_category_select_href}', 'record', 'alias_category_id', 'alias_category', 'control', 'articles_category', '0'); return false;">{SELECT_CATEGORY_MSG}</a>
+		</td>
+	</tr>
+<!-- END alias_category_id_block -->
+<tr class="usual">
+	<td><label for="allowed_rate">{ALLOWED_TO_RATE_ARTICLES}</label></td>
+	<td colspan="4">
+		<input type="checkbox" name="allowed_rate" id="allowed_rate" {allowed_rate} value="1">
+		({USED_AS_DEFAULT_VALUE_MSG})
+	</td>
+</tr><!-- begin short_description_block -->
+<tr class="usual">
+	<td>{SHORT_DESCRIPTION_MSG}</td>
+	<td colspan="4">{editor_error}
+		<textarea name="short_description" id="sd" style="display: block; width: 565px; height: 100px;">{short_description}</textarea>
+		<!-- begin sd_ext_editor -->
+		<script type="text/javascript">
+			var sdEditor = CKEDITOR.replace('sd');{ckfinder}
+		</script><!-- end sd_ext_editor -->
+		<!-- begin sd_int_editor -->
+		<script language= "JavaScript" type= "text/javascript">
+		<!--
+			var editor_sd = new VA_HTMLeditor('content_sd','../','{html_editor}');
+			editor_sd.text_field_name = 'short_description';
+			editor_sd.formname = 'record';
+			editor_sd.css_file = '{css_file}';
+			editor_sd.editor_type = 'articles_category_editor';
+			editor_sd.displayEditor('editor_sd', 565, 100);
+		//-->
+		</script><!-- end sd_int_editor -->
+	</td>
+</tr><!-- end short_description_block --><!-- begin full_description_block -->
+<tr class="usual">
+	<td>{FULL_DESCRIPTION_MSG}</td>
+	<td colspan="4">{editor_error}
+		<textarea name="full_description" id="fd" style="display: block; width: 565px; height: 150px;">{full_description}</textarea>
+		<!-- begin fd_ext_editor -->
+		<script type="text/javascript">
+			var fdEditor = CKEDITOR.replace('fd');{ckfinder}
+		</script><!-- end fd_ext_editor -->
+		<!-- begin fd_int_editor -->
+		<script language= "JavaScript" type= "text/javascript">
+		<!--
+			var editor_fd = new VA_HTMLeditor('content_fd','../','{html_editor}');
+			editor_fd.text_field_name = 'full_description';
+			editor_fd.formname = 'record';
+			editor_fd.css_file = '{css_file}';
+			editor_fd.editor_type = 'articles_category_editor';
+			editor_fd.displayEditor('editor_fd', 565, 150);
+		//-->
+		</script><!-- end fd_int_editor -->
+	</td>
+</tr><!-- end full_description_block -->
+<tr class="usual">
+	<td>{NUMBER_OF_ARTICLES_MSG}</td>
+	<td colspan="4">
+		<input class="field" type="text" name="rss_limit" value="{rss_limit}" size="20" maxlength="20">&nbsp;
+		({NUMBER_OF_ARTICLES_NOTE})
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td colspan="4">
+		<span class="button"><input class="submit" type="submit" value="{save_button}"  onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1"></span>
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+<div id="fb_data" class="tab-data {fb_class}">
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr class="middle">
+	<td colspan="3"></td>
+</tr>
+<tr class="usual">
+	<td width="100">{ACTIVATE_MSG}</td>
+	<td width="400">
+		<input type="checkbox" name="fb_active" {fb_active} value="1">
+	</td>
+	<td></td>
+</tr>
+<tr class="middle">
+	<td>{TAG_NAME_MSG}</td>
+	<td>{VALUE_MSG}</td>
+	<td>{DEFAULT_VALUE_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>fb:app_id <i class="required"></i></td>
+	<td>
+		<input class="field" type="text" name="fb_app_id" value="{fb_app_id}" size="60" maxlength="255"></td>
+	</td>
+	<td><i>{NOT_AVAILABLE_MSG}</i></td>
+</tr>
+<tr class="usual">
+	<td>og:type</td>
+	<td>
+		<input class="field" type="text" name="fb_og_type" value="{fb_og_type}" size="60" maxlength="255"></td>
+	</td>
+	<td>article</td>
+</tr>
+<tr class="usual">
+	<td>og:title</td>
+	<td>
+		<input class="field" type="text" name="fb_og_title" value="{fb_og_title}" size="60" maxlength="255"></td>
+	</td>
+	<td>&#123;article_title&#125;</td>
+</tr>
+<tr class="usual">
+	<td>og:image</td>
+	<td>
+		<input class="field" type="text" name="fb_og_image" value="{fb_og_image}" size="60" maxlength="255"></td>
+	</td>
+	<td>&#123;image_small&#125;</td>
+</tr>
+<tr class="usual">
+	<td>og:site_name</td>
+	<td>
+		<input class="field" type="text" name="fb_og_site_name" value="{fb_og_site_name}" size="60" maxlength="255"></td>
+	</td>
+	<td>&#123;site_name&#125;</td>
+</tr>
+<tr class="usual">
+	<td>og:description</td>
+	<td>
+		<input class="field" type="text" name="fb_og_description" value="{fb_og_description}" size="60" maxlength="255"></td>
+	</td>
+	<td>&#123;short_description&#125;</td>
+</tr>
+	<td>&nbsp;</td>
+	<td colspan="2">
+		<span class="button"><input class="submit" type="submit" value="{save_button}"  onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1"></span>
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</table>
+</div>
+
+
+<div id="fields_data" class="tab-data {fields_class}">
+<!-- begin layout_properties -->
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr class="middle">
+	<td colspan="6">{FIELDS_PROPERTIES_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{DEFAULT_ORDER_MSG}</td>
+	<td colspan="5">
+		<select name="articles_order_column"><!-- BEGIN articles_order_column -->
+			<option {articles_order_column_selected} value="{articles_order_column_value}">{articles_order_column_description}<!-- END articles_order_column -->
+		</select>
+		<select name="articles_order_direction"><!-- BEGIN articles_order_direction -->
+			<option {articles_order_direction_selected} value="{articles_order_direction_value}">{articles_order_direction_description}<!-- END articles_order_direction -->
+		</select>
+	</td>
+</tr>
+<tr class="middle" align="center">
+	<td class="small">{FIELD_NAME_MSG}</td>
+	<td class="small" width="80">{EDIT_MSG}</td>
+	<td class="small" width="80"><span title="{SHOW_ONLIST_PAGE_MSG}}">{LIST_MSG}</span></td>
+	<td class="small" width="80"><span title="{SHOW_ON_DETAILED_PAGE_MSG}">{DETAILED_MSG}</span></td>
+	<td class="small" width="80">{REQUIRED_MSG}</td>
+	<td class="small">{FORMAT_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{DATE_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_article_date" {edit_article_date} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_article_date" {list_article_date} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_article_date" {details_article_date} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_article_date" {required_article_date} value="1"></td>
+	<td align="center">
+		<select name="article_date_format"><!-- BEGIN article_date_format -->
+			<option {article_date_format_selected} value="{article_date_format_value}">{article_date_format_description}<!-- END article_date_format -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{DATE_END_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_date_end" {edit_date_end} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_date_end" {list_date_end} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_date_end" {details_date_end} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_date_end" {required_date_end} value="1"></td>
+	<td align="center">
+		<select name="date_end_format"><!-- BEGIN date_end_format -->
+			<option {date_end_format_selected} value="{date_end_format_value}">{date_end_format_description}<!-- END date_end_format -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ADMIN_TITLE_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_article_title" {edit_article_title} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_article_title" {list_article_title} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_article_title" {details_article_title} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_article_title" {required_article_title} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{COMMENT_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_article_comment" {edit_article_comment} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_article_comment" {list_article_comment} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_article_comment" {details_article_comment} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_article_comment" {required_article_comment} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{AUTHORS_MSG} <span class="comment">({SELECT_FROM_LIST_MSG})</span></td>
+	<td align="center"><input type="checkbox" name="edit_authors" {edit_authors} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_authors" {list_authors} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_authors" {details_authors} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_authors" {required_authors} value="1"></td>
+	<td align="center">
+		<label>
+			<input type="checkbox" name="authors_filter" {authors_filter} value="1">
+			{FILTER_BY_AUTHORS_DESC}
+		</label>
+	</td>
+
+</tr>
+<tr class="usual">
+	<td>{ALBUMS_MSG} <span class="comment">({SELECT_FROM_LIST_MSG})</span></td>
+	<td align="center"><input type="checkbox" name="edit_albums" {edit_albums} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_albums" {list_albums} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_albums" {details_albums} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_albums" {required_albums} value="1"></td>
+</tr>
+
+<tr class="usual">
+	<td>{AUTHOR_NAME_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_author_name" {edit_author_name} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_author_name" {list_author_name} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_author_name" {details_author_name} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_author_name" {required_author_name} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{AUTHOR_EMAIL_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_author_email" {edit_author_email} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_author_email" {list_author_email} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_author_email" {details_author_email} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_author_email" {required_author_email} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{AUTHOR_URL_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_author_url" {edit_author_url} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_author_url" {list_author_url} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_author_url" {details_author_url} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_author_url" {required_author_url} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{LINK_URL_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_link_url" {edit_link_url} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_link_url" {list_link_url} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_link_url" {details_link_url} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_link_url" {required_link_url} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{DOWNLOAD_URL_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_download_url" {edit_download_url} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_download_url" {list_download_url} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_download_url" {details_download_url} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_download_url" {required_download_url} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_TINY_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_image_tiny" {edit_image_tiny} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_image_tiny" {list_image_tiny} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_image_tiny" {details_image_tiny} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_image_tiny" {required_image_tiny} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_SMALL_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_image_small" {edit_image_small} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_image_small" {list_image_small} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_image_small" {details_image_small} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_image_small" {required_image_small} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_LARGE_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_image_large" {edit_image_large} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_image_large" {list_image_large} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_image_large" {details_image_large} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_image_large" {required_image_large} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_SUPER_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_image_super" {edit_image_super} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_image_super" {list_image_super} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_image_super" {details_image_super} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_image_super" {required_image_super} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{YOUTUBE_VIDEO_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_youtube_video" {edit_youtube_video} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_youtube_video" {list_youtube_video} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_youtube_video" {details_youtube_video} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_youtube_video" {required_youtube_video} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{STREAM_VIDEO_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_stream_video" {edit_stream_video} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_stream_video" {list_stream_video} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_stream_video" {details_stream_video} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_stream_video" {required_stream_video} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{HIGHLIGHTS_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_highlights" {edit_highlights} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_highlights" {list_highlights} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_highlights" {details_highlights} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_highlights" {required_highlights} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{SHORT_DESCRIPTION_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_short_description" {edit_short_description} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_short_description" {list_short_description} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_short_description" {details_short_description} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_short_description" {required_short_description} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{DETAILED_DESCRIPTION_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_full_description" {edit_full_description} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_full_description" {list_full_description} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_full_description" {details_full_description} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_full_description" {required_full_description} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{KEYWORDS_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_keywords" {edit_keywords} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_keywords" {list_keywords} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_keywords" {details_keywords} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_keywords" {required_keywords} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{TAGS_MSG} <span class="comment">({SELECT_FROM_LIST_MSG})</span></td>
+	<td align="center"><input type="checkbox" name="edit_tags" {edit_tags} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_tags" {list_tags} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_tags" {details_tags} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_tags" {required_tags} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{NOTES_MSG}</td>
+	<td align="center"><input type="checkbox" name="edit_notes" {edit_notes} value="1"></td>
+	<td align="center"><input type="checkbox" name="list_notes" {list_notes} value="1"></td>
+	<td align="center"><input type="checkbox" name="details_notes" {details_notes} value="1"></td>
+	<td align="center"><input type="checkbox" name="required_notes" {required_notes} value="1"></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td colspan="5">
+		<span class="button"><input class="submit" type="submit" value="{save_button}"  onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1"></span>
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+<!-- end layout_properties -->
+</div>
+
+<div id="images_data" class="tab-data {images_class}">
+	<table cellspacing="1" cellpadding="4" border="0" width="100%">
+	<tr class="middle">
+		<td colspan="5">{CATEGORY_IMAGES_MSG}</td>
+	</tr>
+	<tr class="usual">
+		<td>{IMAGE_SMALL_MSG}</td>
+		<td colspan="4">
+			<input class="field" type="text" name="image_small" value="{image_small}" size="60" maxlength="255">
+			&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'category_small')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+			&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'category_small')"><b>{SELECT_IMAGE_MSG}</b></a>
+			<br>({SHOWN_ON_CATEGORIES_NOTE})
+		</td>
+	</tr>
+	<tr class="usual">
+		<td>{IMAGE_SMALL_ALT_MSG}</td>
+		<td colspan="4"><input class="field" type="text" name="image_small_alt" value="{image_small_alt}" size="60" maxlength="255"></td>
+	</tr>
+	<tr class="usual">
+		<td>{IMAGE_LARGE_MSG}</td>
+		<td colspan="4">
+			<input class="field" type="text" name="image_large" value="{image_large}" size="60" maxlength="255">
+			&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'category_large')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+			&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'category_large')"><b>{SELECT_IMAGE_MSG}</b></a>
+			<br>({SHOWN_WITH_DESCRIPTION_NOTE})
+		</td>
+	</tr>
+	<tr class="usual">
+		<td>{IMAGE_LARGE_ALT_MSG}</td>
+		<td colspan="4"><input class="field" type="text" name="image_large_alt" value="{image_large_alt}" size="60" maxlength="255"></td>
+	</tr>
+	<tr class="middle">
+		<td></td>
+		<td>	
+			<span class="button"><input class="submit" type="submit" value="{save_button}"  onCLick="document.record.operation.value='save'"></span>
+			<span class="button"><input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1"></span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+<div id="meta_data" class="tab-data {meta_class}">
+	<table cellspacing="1" cellpadding="4" border="0" width="100%">
+	<tr class="middle">
+		<td colspan="5">{META_DATA_MSG}</td>
+	</tr>
+	<tr class="usual">
+		<td>{META_TITLE_MSG}</td>
+		<td colspan="4"><input class="field" type="text" name="meta_title" value="{meta_title}" size="80" maxlength="255"></td>
+	</tr>
+	<tr class="usual">
+		<td>{META_KEYWORDS_MSG}</td>
+		<td colspan="4"><input class="field" type="text" name="meta_keywords" value="{meta_keywords}" size="80" maxlength="255"></td>
+	</tr>
+	<tr class="usual">
+		<td>{META_DESCRIPTION_MSG}</td>
+		<td colspan="4"><textarea name="meta_description" cols="80" rows="3">{meta_description}</textarea></td>
+	</tr>
+	<tr class="middle">
+		<td></td>
+		<td>	
+			<span class="button"><input class="submit" type="submit" value="{save_button}"  onCLick="document.record.operation.value='save'"></span>
+			<span class="button"><input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1"></span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+<div id="rss_data" class="tab-data {rss_class}">
+	<table cellspacing="1" cellpadding="4" border="0" width="100%">
+	<tr class="middle">
+		<td colspan="5">{RSS_SETTINGS_MSG}</td>
+	</tr>
+	<tr class="usual">
+		<td><label for="is_rss">{ACTIVATE_RSS_MSG}</label></td>
+		<td colspan="4"><input type="checkbox" name="is_rss" id="is_rss" {is_rss} value="1"></td>
+	</tr>
+	<tr class="usual">
+		<td>{SHOW_RSS_LINK_MSG}</td>
+		<td colspan="4">
+			<input type="checkbox" name="rss_on_breadcrumb" id="rss_on_breadcrumb" {rss_on_breadcrumb} value="1">
+			<label for="rss_on_breadcrumb">{ON_BREADCRUMB_MSG}</label>
+			<!-- 
+			<input type="checkbox" name="rss_on_list" id="rss_on_list" {rss_on_list} value="1">
+			<label for="rss_on_list">{ON_CATEGORIES_LIST_MSG}</label>-->
+		</td>
+	</tr>
+	<tr class="middle">
+		<td colspan="5">{REMOTE_RSS_MSG}</td>
+	</tr>
+	<tr class="usual">
+		<td><label for="is_remote_rss">{ACTIVATE_REMOTE_RSS_MSG}</label></td>
+		<td colspan="4"><input type="checkbox" name="is_remote_rss" id="is_remote_rss" {is_remote_rss} value="1"></td>
+	</tr>
+	<tr class="usual">
+		<td>{REMOTE_RSS_URL_MSG}</td>
+		<td colspan="4"><input class="field" type="text" name="remote_rss_url" value="{remote_rss_url}" size="60" maxlength="100">&nbsp;</td>
+	</tr>
+	<tr class="usual">
+		<td>{REMOTE_RSS_TIME_TO_LIVE_MSG}</td>
+		<td colspan="4"><input class="field" type="text" name="remote_rss_ttl" value="{remote_rss_ttl}" size="60" maxlength="100" readonly>&nbsp; ({FIELD_UPDATED_BY_SYSTEM})</td>
+	</tr>
+	<tr class="usual">
+		<td>{REMOTE_RSS_DATE_UPDATED_MSG}</td>
+		<td colspan="4"><input class="field" type="text" name="remote_rss_date_updated" value="{remote_rss_date_updated}" size="20" maxlength="100" readonly>&nbsp; ({FIELD_UPDATED_BY_SYSTEM})</td>
+	</tr>
+	<tr class="usual">
+		<td>{REMOTE_RSS_REFRESH_RATE_MSG}</td>
+		<td colspan="4"><input class="field" type="text" name="remote_rss_refresh_rate" value="{remote_rss_refresh_rate}" size="10" maxlength="20"></td>
+	</tr>
+	<tr class="middle">
+		<td></td>
+		<td>	
+			<span class="button"><input class="submit" type="submit" value="{save_button}"  onCLick="document.record.operation.value='save'"></span>
+			<span class="button"><input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1"></span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+<div id="sites_data" class="tab-data {sites_class}">
+{sites_table}
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+	<tr class="middle">
+		<td align="left">
+			<input type="checkbox" name="save_nested_sites" id="save_nested_sites" value="1">
+			<label for="save_nested_sites">{SAVE_SITE_SETTINGS_SUB_MSG}</label>
+		</td>
+		<td align="right">	
+			<span class="button"><input class="submit" type="submit" value="{save_button}"  onCLick="document.record.operation.value='save'"></span>
+			<span class="button"><input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1"></span>
+		</td>
+	</tr>
+</table>
+</div>
+
+<div id="subscriptions_data" class="tab-data {subscriptions_class}">
+{subscriptions_table}
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+	<tr class="middle">
+		<td align="left">
+			<input type="checkbox" name="save_nested_subscriptions" id="save_nested_subscriptions" value="1">
+			<label for="save_nested_subscriptions">{SAVE_SUBSCRIPTIONS_SETTINGS_SUB_MSG}</label>
+		</td>
+		<td align="right">
+			<span class="button"><input class="submit" type="submit" value="{save_button}"  onCLick="document.record.operation.value='save'"></span>
+			<span class="button"><input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1"></span>
+		</td>
+	</tr>
+</table>
+</div>
+
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+<script language="JavaScript">
+<!--
+	checkListFieldsAll();
+//-->
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+		<form action="{current_href}" name="languages" method="get">
+			{hidden_parameters}
+			<!-- begin select_languages -->
+			<select class="field" name="lang">
+				<!-- begin languages --><option {language_selected} value="{language_code}">{language_name}</option><!-- end languages -->
+			</select>
+			<span class="submit"><input class="submit" type="submit" value="{APPLY_BUTTON}" /></span>
+			<!-- end select_languages -->
+			<!-- begin languages_images --><a href="{language_url}"><img src="{src}" alt="{language_name}" title="{language_name}" /></a> <!-- end languages_images -->
+		</form>

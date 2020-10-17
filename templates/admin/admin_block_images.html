@@ -1,0 +1,937 @@
+<!-- begin images_functions -->
+<script language="JavaScript" type= "text/javascript" src="../js/blocks.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/ajax.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/admin.js"></script>
+<script>
+
+// array to save all images we will upload
+var uploadedImages = [];
+var imagesList = {images_list_json};
+var editImageId = "";
+
+function loadImagesList()
+{
+	var formObj = document.record;
+	var vaModule = (formObj.va_module) ? formObj.va_module.value : ""; 
+	var imagesUrl = "admin_block_images.php?ajax=1&va_module="+encodeURIComponent(vaModule)+"&";
+	if (vaModule == "articles") {
+		imagesUrl += "article_id="+encodeURIComponent(formObj.article_id.value);
+	} else if (vaModule == "articles_categories") {
+		imagesUrl += "category_id="+encodeURIComponent(formObj.category_id.value);
+	} else {
+		imagesUrl += "item_id="+encodeURIComponent(formObj.item_id.value);
+	}
+
+	callAjax(imagesUrl, updateImagesList, "");
+}
+
+function updateImagesList(responseText)
+{
+	var response = JSON.parse(responseText);
+	imagesList = response.images_json;
+	updateAdminBlock(response.images_preview, "images_preview")
+	updateAdminBlock(response.images_list, "images_list")
+}
+
+function updateAdminBlock(blockContent, objId)
+{
+	var oldBlockObj = document.getElementById(objId);
+	var parentObj = oldBlockObj.parentNode;
+
+	var divObj = document.createElement('div'); 
+	// trim data to correctly get main div object
+	blockContent = blockContent.replace(/^\s+|\s+$/g, "");
+	divObj.innerHTML = blockContent; 
+	var newBlockObj = divObj.firstChild;
+	// update block
+	parentObj.replaceChild(newBlockObj, oldBlockObj);
+	vaStopSpin(objId);
+}
+
+
+function hideEditBlock()
+{
+	var popupObj = document.getElementById("popupBlock");
+	if (popupObj) {
+		var parentObj = popupObj.parentNode;
+		parentObj.removeChild(popupObj);
+	}
+}
+
+function selectDefaultImage(imageId)
+{
+	var formObj = document.record;
+	var image = imagesList[imageId];
+
+	// update preview
+	var largeImage = document.getElementById("largePreviewImage");
+	if (image["admin_image_large"] == "") {
+		largeImage.className = "largeImageHidden";
+	} else {
+		largeImage.src = image["admin_image_large"];
+		largeImage.className = "largeImage";
+	}
+	var generalPreviewImg = document.querySelector(".general-preview img");
+	if (generalPreviewImg) {
+		if (image["admin_image_large"] == "") {
+			generalPreviewImg.className = "hidden";
+		} else {
+			generalPreviewImg.src = image["admin_image_large"];
+			generalPreviewImg.className = "general-preview-image";
+		}
+	}
+
+	// update default image for product 
+	var defaultLength = formObj.image_default.length;
+	for (var i = 0; i < defaultLength; i++) {
+		formObj.image_default[i].disabled = true;
+	}
+
+	var itemId = ""; var articleId = ""; var categoryId = ""; 
+	var vaModule = (formObj.va_module) ? formObj.va_module.value : ""; 
+	if (vaModule == "articles") {
+		articleId = formObj.article_id.value;
+	} else if (vaModule == "articles_categories") {
+		categoryId = formObj.category_id.value;
+	} else {
+		itemId = formObj.item_id.value;
+	}
+	var postParams = {
+		"ajax": "1", 
+		"operation": "default", 
+		"va_module": vaModule, 
+		"item_id": itemId, 
+		"article_id": articleId, 
+		"category_id": categoryId, 
+		"image_id": imageId, 
+	};
+
+	postAjax("admin_block_images.php", defaultImageUpdated, "", "", postParams);
+}
+
+function defaultImageUpdated()
+{
+	// activate default image control 
+	var formObj = document.record;
+	var defaultLength = formObj.image_default.length;
+	for (var i = 0; i < defaultLength; i++) {
+		formObj.image_default[i].disabled = false;
+	}
+}
+
+function editImage(imageId)
+{
+	// delete previoud block if it was initialized before
+	if(editImageId) {
+		deleteEditBlock(editImageId);
+		editImageId = "";
+	}
+
+	var imagesTable = document.getElementById("images_table");
+	var imageRow = document.getElementById("imageRow"+imageId);
+	// add new row to edit image
+	var editRow = imagesTable.insertRow(imageRow.rowIndex + 1);
+	var editCell = editRow.insertCell(0);
+	editCell.id = "imageEdit" + imageId;
+	editCell.colSpan = "8";
+	editCell.style.height = "20px";
+	editCell.style.borderTop = "1px solid #EAF4FC";
+
+	vaSpin("imageEdit"+imageId);
+
+	var formObj = document.record;
+	var vaModule = (formObj.va_module) ? formObj.va_module.value : ""; 
+	var imagesUrl = "admin_block_images.php";
+	imagesUrl += "?block=edit_image&ajax=1&image_id="+encodeURIComponent(imageId)+"&va_module="+encodeURIComponent(vaModule)+"&";
+	if (vaModule == "articles") {
+		imagesUrl += "article_id="+encodeURIComponent(formObj.article_id.value);
+	} else if (vaModule == "articles_categories") {
+		imagesUrl += "category_id="+encodeURIComponent(formObj.category_id.value);
+	} else {
+		imagesUrl += "item_id="+encodeURIComponent(formObj.item_id.value);
+	}
+
+	callAjax(imagesUrl, showEditBlock, "");
+}
+
+function closeEditBlock(imageId)
+{
+	var nextCall = false; 
+	var blockObj = document.getElementById("edit_image");
+	blockObj.style.overflow = "hidden";
+	currentHeight = blockObj.offsetHeight;
+	if (currentHeight > 20) {
+		nextCall = true; 
+		currentHeight -= 20;
+		blockObj.style.height = currentHeight+"px";
+	}
+
+	// check if we need to call this function again
+	if (nextCall) {
+		setTimeout("closeEditBlock('" + imageId+ "')", 25);
+	} else {
+		deleteEditBlock(imageId);
+		var editLink = document.getElementById("editLink"+imageId);
+		editLink.onclick = new Function("editImage('"+imageId+"')");
+	}
+}
+
+function deleteEditBlock(imageId)
+{
+	var imagesTable = document.getElementById("images_table");
+	var editCell = document.getElementById("imageEdit" + imageId);
+	if (editCell) {
+		var editRow = editCell.parentNode;
+		imagesTable.deleteRow(editRow.rowIndex)
+	}
+}
+
+function showEditBlock(response)
+{
+	var data = JSON.parse(response);
+
+	var imageId = data.image_id;
+	editImageId = imageId; // set image id we edit now
+	vaStopSpin("imageEdit"+imageId);
+
+	// show edit form 
+	var editCell = document.getElementById("imageEdit" + imageId);
+	editCell.innerHTML = data.edit_image;
+
+
+	var editImage = document.getElementById("edit_image");
+	// open edit form slowly
+	var editHeight = editImage.offsetHeight;
+	editImage.style.overflow = "hidden";
+	editImage.style.height = "0px";
+
+	openEditBlock("edit_image", editHeight, imageId);
+}
+
+
+function openEditBlock(blockId, blockHeight, imageId)
+{
+	var nextCall = false; 
+
+	// open next block
+	var blockObj = document.getElementById(blockId);
+	//nextObj.className = "moving";
+	currentHeight = blockObj.offsetHeight;
+	if (currentHeight <= blockHeight) {
+		if (currentHeight < (blockHeight - 20)) {
+			currentHeight += 20;
+		} else {
+			currentHeight = blockHeight;
+		}
+		blockObj.style.height = currentHeight+"px";
+		if (currentHeight < blockHeight) { 
+			nextCall = true; 
+		} else {
+			blockObj.style.overflow = "";
+		}
+
+	} else {
+		blockObj.style.overflow = "";
+	}
+
+	// check if we need to call this function again
+	if (nextCall) {
+		setTimeout("openEditBlock('" + blockId+ "',"+blockHeight+",'"+imageId+"')", 25);
+	} else {
+		blockObj.style.height = "";
+		var editLink = document.getElementById("editLink"+imageId);
+		editLink.onclick = new Function("closeEditBlock('"+imageId+"')");
+	}
+}
+
+
+function saveImage()
+{
+	var formObj = document.record;
+	var imagePosition = "0"; var isImageDefault = "0";
+	var posObj = formObj.image_position;
+	for (var i = 0; i < posObj.length; i++) {
+		if (posObj[i].checked) {
+			imagePosition = posObj[i].value;
+		}
+	}
+	if (formObj.is_image_default.checked) {
+		isImageDefault = formObj.is_image_default.value;
+	}
+
+	var itemId = ""; var articleId = ""; var categoryId = ""; 
+	var vaModule = (formObj.va_module) ? formObj.va_module.value : ""; 
+	if (vaModule == "articles") {
+		articleId = formObj.article_id.value;
+	} else if (vaModule == "articles_categories") {
+		categoryId = formObj.category_id.value;
+	} else {
+		itemId = formObj.item_id.value;
+	}
+
+	vaSpin("edit_image");
+	var url = "admin_block_images.php";
+	var postParams = {
+		"operation": "save", 
+		"block": "edit_image", 
+		"ajax": "1", 
+		"image_id": editImageId, 
+		"va_module": vaModule, 
+		"item_id": itemId, 
+		"article_id": articleId, 
+		"category_id": categoryId, 
+		"is_image_default": isImageDefault, 
+		"image_position": imagePosition, 
+		"image_title": formObj.image_title.value, 
+		"image_order": formObj.image_order.value, 
+		"image_tiny": formObj.image_tiny.value, 
+		"image_tiny_alt": formObj.image_tiny_alt.value, 
+		"image_small": formObj.image_small.value, 
+		"image_small_alt": formObj.image_small_alt.value, 
+		"image_large": formObj.image_large.value, 
+		"image_large_alt": formObj.image_large_alt.value, 
+		"image_super": formObj.image_super.value, 
+		"image_super_alt": formObj.image_super_alt.value, 
+		"image_description": formObj.image_description.value, 
+	};
+	postAjax(url, saveImageResult, "", "", postParams);
+}
+
+function saveImageResult(responseText)
+{
+	vaStopSpin("edit_image");
+
+	var response = "";
+	try {
+		response = JSON.parse(responseText);
+	} catch(e) {
+		alert(e + "\n" + responseText); 
+		return;
+	}
+	if (response.errors) {
+		// show form with errors
+		updateAdminBlock(response.edit_image, "edit_image");
+	} else {
+		// update images blocks after successful update
+		imagesList = response.images_json;
+		updateAdminBlock(response.images_preview, "images_preview")
+		updateAdminBlock(response.images_list, "images_list")
+		hideEditBlock();
+	}
+}
+
+function deleteImage(imageId)
+{
+	if (confirm("Are you sure you would like to delete this image?")) {
+		hideEditBlock();
+		var formObj = document.record;
+		var vaModule = (formObj.va_module) ? formObj.va_module.value : ""; 
+		var imagesUrl = "admin_block_images.php";
+		imagesUrl += "?operation=delete&ajax=1&image_id="+encodeURIComponent(imageId)+"&va_module="+encodeURIComponent(vaModule)+"&";
+		if (vaModule == "articles") {
+			imagesUrl += "article_id="+encodeURIComponent(formObj.article_id.value);
+		} else if (vaModule == "articles_categories") {
+			imagesUrl += "category_id="+encodeURIComponent(formObj.category_id.value);
+		} else {
+			imagesUrl += "item_id="+encodeURIComponent(formObj.item_id.value);
+		}
+
+		callAjax(imagesUrl, updateImagesList, "");
+	}
+}
+
+
+function highlightImage(imageId)
+{
+	var row = document.getElementById("imageRow"+imageId);
+	row.className = "highlightedRow";
+
+	var smallPreview = document.getElementById("smallPreview"+imageId);
+	if (smallPreview) {
+		smallPreview.className = "highlightedSmall";
+	}
+
+//smallImage
+
+	var largeImage = document.getElementById("largePreviewImage");
+	var image = imagesList[imageId];
+	if (image["admin_image_large"] == "") {
+		largeImage.className = "largeImageHidden";
+	} else {
+		largeImage.src = image["admin_image_large"];
+		largeImage.className = "largeImage";
+	}
+
+	// show image information object
+	var infoObj = document.getElementById("imageInfo" + imageId);
+	if (!infoObj) {
+		var smallImage = document.getElementById("smallImage"+imageId);
+		if (smallImage) {
+			var infoTemplate = document.getElementById("image_info_template").innerHTML;
+			// trim data to correctly get main div object
+			infoTemplate = infoTemplate.replace(/^\s+|\s+$/g, "");
+			if (smallImage.width) {
+				infoTemplate = infoTemplate.replace(/\[width\]/g, smallImage.width + "px");
+			}
+			if (smallImage.height) {
+				infoTemplate = infoTemplate.replace(/\[height\]/g, smallImage.height + "px");
+			}
+			infoObj = document.createElement("div");
+			infoObj.id = "imageInfo"+imageId;
+			infoObj.style.position = "absolute";
+			infoObj.style.zIndex = "999";
+			// set position
+			var xPos = findPosX(smallPreview);
+			var yPos = findPosY(smallPreview, true) + 2;
+			infoObj.style.left = xPos + "px";
+			infoObj.style.top  = yPos + "px";
+			infoObj.innerHTML = infoTemplate;
+			document.body.appendChild(infoObj);
+		}
+	}
+}
+
+function unhighlightImage(imageId)
+{
+	var row = document.getElementById("imageRow"+imageId);
+	row.className = "listRow";
+
+	var smallPreview = document.getElementById("smallPreview"+imageId);
+	if (smallPreview) {
+		smallPreview.className = "smallPreview";
+	}
+	// remove image information object
+	var infoObj = document.getElementById("imageInfo" + imageId);
+	if (infoObj) {
+		document.body.removeChild(infoObj);
+	}
+
+}
+
+
+/*** upload functions ***/
+
+  function prepareUploadedImages(files) {
+    for (var i = 0, f; f = files[i]; i++) {
+			var file = files[i];
+			file.index = uploadedImages.length;
+			file.uploaded = 0;
+			file.newName = "";
+			file.status = "new";
+			file.partSize = 65536;
+			uploadedImages.push(file);
+    }
+	}
+
+  function showUploadedImages() {
+    // files is a FileList of File objects. List some properties.
+    var output = [];
+		var uploadTemplate = document.getElementById("upload_template").innerHTML;
+		var listObj = document.getElementById("uploaded_images");
+    for (var i = 0, f; f = uploadedImages[i]; i++) {
+			// check only files with status - new 
+			if (uploadedImages[i].status == "new") {
+				var uploadHTML = uploadTemplate;
+				uploadHTML = uploadHTML.replace(/\[index\]/g, i);
+				uploadHTML = uploadHTML.replace(/\[filename\]/g, escape(f.name));
+				uploadHTML = uploadHTML.replace(/\[filesize\]/g, escape(f.size));
+				uploadHTML = uploadHTML.replace(/\[uploaded\]/g, escape(f.uploaded));
+				// trim data to correctly get main div object
+				uploadHTML = uploadHTML.replace(/^\s+|\s+$/g, "");
+		
+				var tmpObj = document.createElement('div');   
+				tmpObj.innerHTML = uploadHTML;   
+				var fileObj = tmpObj.firstChild;
+				listObj.appendChild (fileObj);   
+				// update status
+				uploadedImages[i].status = "show";
+			}
+    }
+
+	}
+
+  function uploadImages() {
+    for (var i = 0, file; file = uploadedImages[i]; i++) {
+			if (uploadedImages[i].status == "show") {
+				// update status that file uploading
+				uploadedImages[i].status = "uploading";
+				uploadFile(file);
+			}
+		}
+	}
+
+	function uploadFile(file)
+	{
+		var partSize = 0;
+		if (file.partSize) {
+			partSize = parseInt(file.partSize);
+		}
+		if (isNaN(partSize) || partSize == 0) {
+			partSize = (file.size < 100000) ? file.size : 100000;	
+		}
+
+		var uploadedSize = parseInt(file.uploaded);
+    var fileStart = uploadedSize;
+    var fileStop = fileStart + partSize;
+		if (fileStop > file.size) {
+			fileStop = file.size;
+		}
+    var reader = new FileReader();
+		reader.onload = function(evt) { postImage(evt, file, partSize); };  
+
+    var blob = file.slice(fileStart, fileStop);
+		reader.readAsArrayBuffer(blob);	
+	}
+
+	function postImage(evt, file, partSize)
+	{
+		var formObj = document.record;
+		var filePart = base64ArrayBuffer(evt.target.result);
+		// check what images should be generated
+		var tiny_generate = (formObj.tiny_generate.checked) ? "1" : "0";
+		var small_generate = (formObj.small_generate.checked) ? "1" : "0";
+		var large_generate = (formObj.large_generate.checked) ? "1" : "0";
+		var super_generate = (formObj.super_generate.checked) ? "1" : "0";
+		var upload_image_position = 2; 
+		if (formObj.upload_image_position) {
+			for (var i = 0; i < formObj.upload_image_position.length; i++) {
+				if (formObj.upload_image_position[i].checked) {
+					upload_image_position = formObj.upload_image_position[i].value;
+					break;
+				}
+			}
+		}
+
+		var itemId = ""; var articleId = ""; var categoryId = ""; 
+		var vaModule = (formObj.va_module) ? formObj.va_module.value : ""; 
+		var filetype = "";
+		if (vaModule == "articles") {
+			articleId = formObj.article_id.value;
+			filetype = "article_tmp";
+		} else if (vaModule == "articles_categories") {
+			categoryId = formObj.category_id.value;
+			filetype = "article_category_tmp";
+		} else {
+			itemId = formObj.item_id.value;
+			filetype = "product_tmp";
+		}
+
+		var postParams = {
+			"operation": "ajax", 
+			"jsindex": file.index, 
+			"filetype": filetype, 
+			"filepart": filePart, 
+			"filename": file.name, 
+			"filesize": file.size, 
+			"partsize": partSize, 
+			"newname": file.newName, 
+			"uploaded": file.uploaded, 
+			"va_module": vaModule, 
+			"item_id": itemId, 
+			"article_id": articleId, 
+			"category_id": categoryId, 
+			"tiny_generate": tiny_generate, 
+			"small_generate": small_generate, 
+			"large_generate": large_generate, 
+			"super_generate": super_generate, 
+			"image_position": upload_image_position, 
+		};
+
+		var fileIndex = 0;
+		postAjax("admin_upload.php", imageUploaded, file, "", postParams);
+	}
+	
+	function imageUploaded(uploadResponse, file)
+	{
+		var fileIndex = file.index;
+		var response = "";
+		try {
+			response = JSON.parse(uploadResponse);
+		} catch(e) {
+			alert(e + "\n" + uploadResponse); 
+			return;
+		}
+
+		if (response.errors) {
+			var errors = "Error while uploading file: " + response.filename + "\n";
+			errors += response.errors;
+			alert(errors);
+		} else {
+			var uploadedSize = parseInt(response.uploaded);
+			file.uploaded = uploadedSize;
+			file.newName = response.newname;
+			// update information for file
+			uploadedImages[fileIndex] = file;
+	  
+			var progressObj = document.getElementById("progress" + fileIndex);
+			var progressSize = Math.floor((uploadedSize / file.size) * 100);
+			progressObj.style.width = progressSize+"%";
+	  
+			var uploadedObj = document.getElementById("uploaded" + fileIndex);
+			uploadedObj.innerHTML = progressSize+"%";;
+			// check if we need to continue uploaded file 
+			if (uploadedSize < file.size) {
+				uploadFile(file);
+			} else {
+				// file was fully uploaded
+				uploadedImages[fileIndex].status = "uploaded";
+				var infoObj = document.getElementById("fileInfo" + fileIndex);
+				infoObj.className = "fileUploaded";
+				if (response.saved) {
+					// update files list
+					loadImagesList();
+				}
+			}
+		}
+	}
+
+  function selectFiles(evt) {
+		var files = evt.target.files; // FileList object.
+
+		prepareUploadedImages(files);
+		showUploadedImages();
+		uploadImages();
+  }
+
+  function dropFiles(evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+
+    var files = evt.dataTransfer.files; // FileList object.
+
+		prepareUploadedImages(files);
+		showUploadedImages();
+		uploadImages();
+  }
+
+  function dragFiles(evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+    evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+  }
+
+
+function base64ArrayBuffer(arrayBuffer) {
+  var base64    = ''
+  var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+ 
+  var bytes         = new Uint8Array(arrayBuffer)
+  var byteLength    = bytes.byteLength
+  var byteRemainder = byteLength % 3
+  var mainLength    = byteLength - byteRemainder
+ 
+  var a, b, c, d
+	  var chunk
+ 
+  // Main loop deals with bytes in chunks of 3
+  for (var i = 0; i < mainLength; i = i + 3) {
+    // Combine the three bytes into a single integer
+    chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2]
+ 
+    // Use bitmasks to extract 6-bit segments from the triplet
+    a = (chunk & 16515072) >> 18 // 16515072 = (2^6 - 1) << 18
+    b = (chunk & 258048)   >> 12 // 258048   = (2^6 - 1) << 12
+    c = (chunk & 4032)     >>  6 // 4032     = (2^6 - 1) << 6
+    d = chunk & 63               // 63       = 2^6 - 1
+ 
+    // Convert the raw binary segments to the appropriate ASCII encoding
+    base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d]
+  }
+ 
+  // Deal with the remaining bytes and padding
+  if (byteRemainder == 1) {
+    chunk = bytes[mainLength]
+ 
+    a = (chunk & 252) >> 2 // 252 = (2^6 - 1) << 2
+ 
+    // Set the 4 least significant bits to zero
+    b = (chunk & 3)   << 4 // 3   = 2^2 - 1
+ 
+    base64 += encodings[a] + encodings[b] + '=='
+  } else if (byteRemainder == 2) {
+    chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1]
+ 
+    a = (chunk & 64512) >> 10 // 64512 = (2^6 - 1) << 10
+    b = (chunk & 1008)  >>  4 // 1008  = (2^6 - 1) << 4
+ 
+    // Set the 2 least significant bits to zero
+    c = (chunk & 15)    <<  2 // 15    = 2^4 - 1
+ 
+    base64 += encodings[a] + encodings[b] + encodings[c] + '='
+  }
+  
+  return base64
+}
+
+
+function base64ArrayBufferBtoa( buffer ) {
+	var binary = ''
+	var bytes = new Uint8Array( buffer )
+	var len = bytes.byteLength;
+	for (var i = 0; i < len; i++) {
+		binary += String.fromCharCode( bytes[ i ] )
+	}
+	return window.btoa( binary );
+}
+
+// Setup the dnd listeners.
+var dropZone = document.getElementById('uploadZone');
+if (!dropZone) {
+	dropZone = document.getElementById('uploadForm');
+}
+dropZone.addEventListener('dragover', dragFiles, false);
+dropZone.addEventListener('drop', dropFiles, false);
+var browseObj = document.getElementById('files');
+browseObj.addEventListener('change', selectFiles, false);
+
+</script>
+<!-- end images_functions -->
+
+<!-- begin images_preview -->
+<div id="images_preview" class="imagesPreview">
+
+	<div class="previewTitle">{PREVIEW_TITLE}</div>
+
+	<div id="largePreview" class="largePreview"><img id="largePreviewImage" class="{large_image_class}" src="{large_preview_src}" border="0" alt="{alt}" /></div>
+
+	<div style="clear:both;"></div>
+
+	<!-- begin top_small_images -->
+	<div class="smallPreview" id="smallPreview{image_id}"
+		onmouseover="highlightImage('{image_id}');" onmouseout="unhighlightImage('{image_id}');"><img id="smallImage{image_id}" src="{admin_image_small}" {image_size} alt="{image_alt}" /></div><!-- end top_small_images -->
+
+	<div id="image_info_template" style="display: none;">
+		<div class="imageInfo"> [width] x [height] </div>
+	</div>
+
+	<div class="clear"></div>
+
+</div>
+<!-- end images_preview -->
+
+
+<!-- begin images_list -->
+<div id="images_list" class="imagesList">
+
+	<div class="listTitle">{IMAGES_MSG}</div>
+
+	<table id="images_table" cellspacing="0" cellpadding="0" width="100%">
+	<tr class="headerRow">
+		<td>{DEFAULT_MSG}</td>
+		<td>{TITLE_MSG}</td>
+		<td>{TINY_MSG}</td>
+		<td>{SMALL_MSG}</td>
+		<td>{LARGE_MSG}</td>
+		<td>{SUPERSIZED_MSG}</td>
+		<td>Position</td>
+		<td>&nbsp;</td>
+	</tr><!-- begin item_images -->
+	<tr id="imageRow{image_id}" class="listRow" onmouseover="highlightImage('{image_id}');" onmouseout="unhighlightImage('{image_id}');">
+		<td align="center"><input type="radio" {image_default} name="image_default" value="{image_id}" onclick="selectDefaultImage('{image_id}');"></td>
+		<td>{image_title}</td>
+		<td align="center"><img src="{tiny_icon}"></td>
+		<td align="center"><img src="{small_icon}"></td>
+		<td align="center"><img src="{large_icon}"></td>
+		<td align="center"><img src="{super_icon}"></td>
+		<td align="center">{image_position}</td>
+		<td>
+			<img class="editIcon" src="../images/icons/trash_ico.gif" width="16" height="16" border="0" onclick="deleteImage('{image_id}');" title="{DELETE_BUTTON}" />
+			<img id="editLink{image_id}" class="editIcon" src="../images/icons/edit.png" width="16" height="16" border="0" onclick="editImage('{image_id}');" title="{EDIT_BUTTON}" />
+		</td>
+	</tr><!-- end item_images -->
+	</table>
+
+	<br/>
+	<div class="floatRight"></div>
+
+</div>
+<div class="clear"></div>
+<!-- end images_list -->
+
+	<!-- begin images_upload -->
+	<div id="uploadBlock" class="uploadBlock">
+
+		<div class="uploadTitle">{UPLOAD_TITLE}</div>
+	
+		<div id="uploadForm" class="uploadForm">
+  
+			{DRAG_FILES_MSG}<br/>
+			<input type="file" multiple="multiple" id="files" ><br/>
+  
+			<br/>
+			<table border="0">
+			<tr>
+				<td>
+					<input type="checkbox" checked="checked" name="tiny_generate" />
+					{IMAGE_TINY_MSG} [{tiny_width} x {tiny_height}]
+				</td>
+				<td>
+					<input type="checkbox" checked="checked" name="small_generate" />
+					{IMAGE_SMALL_MSG} [{small_width} x {small_height}]
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="checkbox" checked="checked" name="large_generate" />
+					{IMAGE_LARGE_MSG} [{large_width} x {large_height}]
+				</td>
+				<td>
+					<input type="checkbox" checked="checked" name="super_generate" />
+					{IMAGE_SUPER_MSG} [{super_width} x {super_height}]
+				</td>
+			</tr>
+			</table>
+
+			<div class="uploadPosition">
+				<!-- begin upload_image_position -->
+				<input type="radio" name="upload_image_position" id="upload_image_position{upload_image_position_value}" {upload_image_position_checked} value="{upload_image_position_value}">
+				<label for="upload_image_position{upload_image_position_value}">{upload_image_position_description}</label><!-- end upload_image_position -->
+			</div>
+  
+			<div id="uploaded_images">
+			</div>
+  
+		</div>
+
+		<div id="upload_template" style="display: none;">
+			<div id="file[index]" class="uploadFile"> 
+				<div class="uploadBox"> 
+					<div class="fileInfo" id="fileInfo[index]">[filename] - [filesize] bytes (<span id="uploaded[index]">0%</span>)</div>
+					<div class="uploadProgress" id="progress[index]"></div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+<div class="clear"></div>
+<!-- end images_upload -->
+
+
+<!-- begin edit_image -->
+
+<div id="edit_image" class="imageEdit">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<!-- BEGIN success --><div class="messagebg">{success_message}</div><!-- END success -->
+<table border="0" cellspacing="0" cellpadding="6" width="100%">
+<tr class="usual">
+	<td>{DEFAULT_MSG}</td>
+	<td>
+		<input type="checkbox" {is_image_default} name="is_image_default" id="is_image_default" value="1">
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_TITLE_MSG} *</td>
+	<td><input class="field" type="text" size="50" name="image_title" value="{image_title}"></td>
+</tr>
+<tr class="usual">
+	<td>{ADMIN_ORDER_MSG} *</td>
+	<td><input class="field" type="text" size="10" name="image_order" value="{image_order}"></td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_POSITION_MSG} *</td>
+	<td><!-- begin image_position -->
+		<input type="radio" name="image_position" id="image_position{image_position_value}" {image_position_checked} value="{image_position_value}">
+		<label for="image_position{image_position_value}">{image_position_description}</label><!-- end image_position -->
+	</td>
+</tr>	
+<tr class="usual">
+	<td>{IMAGE_TINY_MSG} </td>
+	<td>
+		<input class="field" type="text" size="50" name="image_tiny" value="{image_tiny}">
+		&nbsp;<img class="editIcon" onclick="openWindow('{admin_upload_href}', '{image_tiny_select}');" src="../images/icons/upload.png" width="16" height="16" border="0" title="{UPLOAD_IMAGE_MSG}" />
+		&nbsp;<img class="editIcon" onclick="openWindow('{admin_select_href}', '{image_tiny_select}');" src="../images/icons/image.png" width="16" height="16" border="0" title="{SELECT_IMAGE_MSG}" />
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_TINY_ALT_MSG} </td>
+	<td>
+		<input class="field" type="text" size="50" name="image_tiny_alt" value="{image_tiny_alt}">
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_SMALL_MSG} *</td>
+	<td>
+		<input class="field" type="text" size="50" name="image_small" value="{image_small}">
+		&nbsp;<img class="editIcon" onclick="openWindow('{admin_upload_href}', '{image_small_select}');" src="../images/icons/upload.png" width="16" height="16" border="0" title="{UPLOAD_IMAGE_MSG}" />
+		&nbsp;<img class="editIcon" onclick="openWindow('{admin_select_href}', '{image_small_select}');" src="../images/icons/image.png" width="16" height="16" border="0" title="{SELECT_IMAGE_MSG}" />
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_SMALL_ALT_MSG}</td>
+	<td>
+		<input class="field" type="text" size="50" name="image_small_alt" value="{image_small_alt}">
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_LARGE_MSG}</td>
+	<td>
+		<input class="field" type="text" size="50" name="image_large" value="{image_large}">
+		&nbsp;<img class="editIcon" onclick="openWindow('{admin_upload_href}', '{image_large_select}');" src="../images/icons/upload.png" width="16" height="16" border="0" title="{UPLOAD_IMAGE_MSG}" />
+		&nbsp;<img class="editIcon" onclick="openWindow('{admin_select_href}', '{image_large_select}');" src="../images/icons/image.png" width="16" height="16" border="0" title="{SELECT_IMAGE_MSG}" />
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_LARGE_ALT_MSG}</td>
+	<td>
+		<input class="field" type="text" size="50" name="image_large_alt" value="{image_large_alt}">
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_SUPER_MSG}</td>
+	<td>
+		<input class="field" type="text" size="50" name="image_super" value="{image_super}">
+		&nbsp;<img class="editIcon" onclick="openWindow('{admin_upload_href}', '{image_super_select}');" src="../images/icons/upload.png" width="16" height="16" border="0" title="{UPLOAD_IMAGE_MSG}" />
+		&nbsp;<img class="editIcon" onclick="openWindow('{admin_select_href}', '{image_super_select}');" src="../images/icons/image.png" width="16" height="16" border="0" title="{SELECT_IMAGE_MSG}" />
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_ALT_MSG} </td>
+	<td>
+		<input class="field" type="text" size="50" name="image_super_alt" value="{image_super_alt}">
+	</td>
+</tr>
+<tr class="usual">
+	<td>{AD_IMAGE_DESC_MSG} </td>
+	<td><textarea rows="5" cols="50" name="image_description">{image_description}</textarea></td>
+</tr>
+<tr>
+	<td>&nbsp;</td>
+	<td>
+		<div id="imageEditButtons">
+			<span class="button"><input class="submit" type="button" value="{save_button}" onclick="saveImage();"></span><!-- BEGIN delete_image -->
+			<span class="button"><input class="submit" type="button" value="{DELETE_BUTTON}" onclick="deleteImage('{image_id}');"></span><!-- END delete_image -->
+			<span class="button"><input class="submit" type="button" value="{CANCEL_BUTTON}" onclick="closeEditBlock('{image_id}');"></span>
+		</div>
+	</td>
+</tr>
+</table>
+</div>
+
+<!-- end edit_image -->
+
+<!-- begin frame_layout -->
+<div id="popupFrame" class="popupFrame">
+
+	<div class="frameHeader">
+		<div class="frameClose" onclick="hideEditBlock();">{CLOSE_WINDOW_MSG}<img src="../images/icons/frame-close.gif" width="19" height="19" align="top" /></div>
+		<div class="frameTitle">&nbsp;{meta_title}&nbsp;</div>
+	</div>
+
+	<div class="frameContent">
+
+		<!-- begin layout_message -->
+		<div class="frameMessage">{message_desc}</div><!-- end layout_message -->
+		<!-- begin layout_error -->
+		<div class="frameError">{error_desc}</div><!-- end layout_error -->
+
+		<div class="centerStyle" style="{middle_style}">
+			<div class="centerStylePadding">
+				{middle}
+			</div>
+		</div>
+
+	</div>
+
+</div>
+<!-- end frame_layout -->

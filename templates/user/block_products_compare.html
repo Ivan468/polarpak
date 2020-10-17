@@ -1,0 +1,32 @@
+<!-- BEGIN compared -->
+<table cellspacing="1" width="100%" class="table-data">
+<tr>
+  <td width="20%">&nbsp;</td><!-- BEGIN top_title -->
+  <td valign="top" align="center">
+		<!-- BEGIN exclude_link -->
+		<a href="{exclude_href}" title="{COMPARE_REMOVE_HELP_MSG}">{COMPARE_REMOVE_MSG}</a><br /><br />
+		<!-- END exclude_link -->
+		<b><a href="product_details.php?item_id={item_id}" title="{a_title}">{item_name}</a></b><br />
+		<!-- begin image_block -->
+		<a href="product_details.php?item_id={item_id}" title="{a_title}"><img src="{image_src}" alt="{image_alt}" hspace="5" vspace="5" {image_width} {image_height} /></a>
+		<!-- end image_block -->
+		<br />
+		<!-- begin price_block -->
+		<div class="price-main"><span class="caption">{PRICE_MSG}</span><span class="price">{price_value}</span></div><!-- end price_block -->
+		<br />
+	</td><!-- END top_title -->
+</tr>
+<!-- BEGIN features_groups -->
+<tr>
+	<td colspan="{colspan}" class="bg-title"><b>{group_name}</b></td>
+</tr><!-- BEGIN features -->
+<tr class="usual">
+  <td valign="top" class="row" width="20%"><b>{feature_name}</b></td><!-- BEGIN features_values -->
+  <td valign="top" class="row" width="{column_width}">{feature_value}</td><!-- END features_values -->
+</tr><!-- END features -->
+<!-- END features_groups -->
+</table>
+
+<!-- END compared -->
+
+<!-- BEGIN errors_block --><div align="center" class="errorbg"><b>{errors}</b></div><!-- END errors_block -->

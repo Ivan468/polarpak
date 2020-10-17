@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html><head><title>{ADMINISTRATION_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/chart.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/blocks.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/ajax.js"></script>
+</head>
+<body class="bodyDboard">
+
+{admin_header}
+
+<!-- begin message --><div class="messagebg">{message_desc}</div><!-- end message -->
+<!-- begin upgrade_available -->
+<div class="messagebg">
+	<div><a href="{admin_upgrade_href}">{UPGRADE_AVAILABLE_MSG}</a></div>
+	<div><a href="{admin_upgrade_href}">{LATEST_VERSION_MSG}: {latest_version}</a></div>
+
+</div><!-- end upgrade_available -->
+<!-- begin errors --><div class="errorbg">{errors_list}</div><!-- end errors -->
+
+	<div class="Block stats-section">
+	<div class="BlockTitle"><i class="stats-icon"></i>{SUMMARY_STATS_MSG}</div>
+	<div class="BlockContent">
+		<table width="100%" border="0" cellspacing="1" cellpadding="6">
+			<tr class="middle" align="center">
+				<td>&nbsp;</td>
+				<td>{TODAY_MSG}</td>
+				<td>{YESTERDAY_MSG}</td>
+				<td>{LAST_7DAYS_MSG}</td>
+				<td>{THIS_MONTH_MSG}</td>
+				<td>{last_month_title}</td>
+				<td>{TOTAL_MSG} {year_title}</td>
+			</tr><!-- begin table_center -->
+			<tr class="{row_style}" align="center">
+				<td align="left" class="sumStatRowName">{row_name}</td>
+				<td>{today}</td>
+				<td>{yesterday}</td>
+				<td>{this_week}</td>
+				<td>{this_month}</td>
+				<td>{last_month}</td>
+				<td>{total_year}</td>
+			</tr><!-- end table_center -->
+		</table>
+	</div>
+	</div>
+
+	<div class="Block pin-tasks">
+	<div class="BlockTitle"><i class="pin-icon"></i>{COMMON_TASKS_MSG}</div>
+	<div class="BlockContent">
+		<ul class="LinkList">
+			<li><a href="admin_global_settings.php">{LOGO_SETTINGS_MSG}</a><a href="http://www.viart.com/site_logo_change_3.7.html" target="_blank"><img src="images/ico-manual.gif" alt="How to Change Site Logo"></a></li>
+			<li><a href="admin_payment_systems.php">{PAYMENT_SYSTEMS_MSG}</a><a href="http://www.viart.com/set_up_payment_system_3.7.html" target="_blank"><img src="images/ico-manual.gif" alt="How to Setup Payment System"></a></li>
+			<li><a href="admin_products_delete.php">{DELETE_PRODUCTS_MSG}</a><a href="http://www.viart.com/remove_demo_products_3.7.html" target="_blank"><img src="images/ico-manual.gif" alt="How to Remove Demo Products"></a></li>
+			<li><a href="admin_dump.php">{APPLY_DUMP_MSG}</a><a href="http://www.viart.com/upload_database_3.7.html" target="_blank"><img src="images/ico-manual.gif" alt="How to Upload Database"></a></li>
+			<li><a href="admin_designs.php">{CHANGE_ACTIVE_SCHEME_MSG}</a><a href="http://www.viart.com/change_active_scheme_3.7.html" target="_blank"><img src="images/ico-manual.gif" alt="How to Change Active Scheme"></a></li>
+			<li><a href="admin_upgrade.php">{SYSTEM_UPGRADE_MSG}</a><a href="http://www.viart.com/upgrade_viart_shop_3.7.html" target="_blank"><img src="images/ico-manual.gif" alt="How to Upgrade ViArt Shop"></a></li>
+		</ul>
+	</div>
+	</div>
+
+	<div class="clear"></div>
+
+	<div class="summary-group">
+		<!-- begin orders_summary -->
+		<div class="Block summary-section orders-section">
+		<div class="BlockTitle"><a href="{admin_orders_href}"><i class="orders-icon"></i>{ORDERS_MSG}</a></div>
+		<div class="BlockContent">
+
+			<table width="100%" border="0" cellspacing="1" cellpadding="6">
+				<tr>
+					<td class="sumRowName">{ALL_MSG}</td>
+					<td><a href="admin_orders.php">{orders_all}</a></td>
+				</tr>
+				<tr>
+					<td class="sumRowName">{PAID_MSG}</td>
+					<td><a href="admin_orders.php?s_pd=1">{orders_paid}</a></td>
+				</tr>
+				<tr>
+					<td class="sumRowName">{NOT_PAID_MSG}</td>
+					<td><a href="admin_orders.php?s_pd=0">{orders_not_paid}</a></td>
+				</tr>
+				<tr>
+					<td class="sumRowName">{FAILED_MSG}</td>
+					<td><a href="admin_orders.php?s_os_list=17&s_os=10">{orders_failed}</a></td>
+				</tr>
+			</table>
+		</div>
+		</div>
+		<!-- end orders_summary -->
+
+		<!-- begin products_summary -->
+		<div class="Block summary-section products-section">
+		<div class="BlockTitle"><a href="{admin_items_list_href}"><i class="products-icon"></i>{PRODUCTS_MSG}</a></div>
+		<div class="BlockContent">
+
+			<table width="100%" border="0" cellspacing="1" cellpadding="6">
+			<tr>
+				<td class="sumRowName">{ALL_MSG}</td>
+				<td><a href="admin_items_list.php?sit=1">{items_all}</a></td>
+			</tr>
+			<tr>
+				<td class="sumRowName">{SHOWN_ON_SITE_MSG}</td>
+				<td><a href="admin_items_list.php?ss=1&ap=1&search=Search">{items_show_on_web}</a></td>
+			</tr>
+			<tr>
+				<td class="sumRowName">{OUTOFSTOCK_PRODUCTS_MSG}</td>
+				<td><a href="admin_items_list.php?sl=0&search=Search">{items_out_of_stock}</a></td>
+			</tr>
+			<tr>
+				<td class="sumRowName">{WITHOUT_IMAGES_MSG}</td>
+				<td><a href="admin_items_list.php?sit=2">{items_items_the_reqire_images}</a></td>
+			</tr>
+			</table>
+		</div>
+		</div>
+		<!-- end products_summary -->
+
+		<!-- begin tickets_summary -->
+		<div class="Block summary-section helpdesk-section">
+		<div class="BlockTitle"><a href="{admin_support_href}"><i class="helpdesk-icon"></i>{TICKETS_MSG}</a></div>
+		<div class="BlockContent">
+
+			<table width="100%" border="0" cellspacing="1" cellpadding="6">
+				<tr>
+					<td class="sumRowName">{ALL_MSG}</td>
+					<td><a href="admin_support.php?s_in=2">{tickets_all}</a></td>
+				</tr>
+				<tr>
+					<td class="sumRowName">{ALL_MSG} {MESSAGES_MSG}</td>
+					<td>{tickets_all_messages}</td>
+				</tr>
+				<tr>
+					<td class="sumRowName">{ANSWERED_MSG}</td>
+					<td><a href="admin_support.php?status_id=2&s_in=2">{tickets_answered}</a></td>
+				</tr>
+				<tr>
+					<td class="sumRowName">{CLOSED_MSG}</td>
+					<td><a href="admin_support.php?status_id=6&s_in=2">{tickets_close}</a></td>
+				</tr>
+			</table>
+		</div>
+		</div>
+		<!-- end tickets_summary -->
+
+		<!-- begin articles_summary -->
+		<div class="Block summary-section articles-section">
+		<div class="BlockTitle"><a href="{admin_articles_all_href}"><i class="articles-icon"></i>{ARTICLES_TITLE}</a></div>
+		<div class="BlockContent">
+
+			<table width="100%" border="0" cellspacing="1" cellpadding="6">
+				<tr>
+					<td class="sumRowName">{ALL_MSG}</td>
+					<td><a href="admin_articles_all.php">{articles_all}</a></td>
+				</tr>
+				<tr>
+					<td class="sumRowName">{SHOWN_ON_SITE_MSG}</td>
+					<td><a href="admin_articles_all.php?sa=1">{articles_show_on_web}</a></td>
+				</tr>
+				<tr>
+					<td class="sumRowName">{REMOTE_RSS_MSG}</td>
+					<td><a href="admin_articles_all.php?sa=2">{articles_remote}</a></td>
+				</tr>
+				<tr>
+					<td class="sumRowName">{WITHOUT_IMAGES_MSG}</td>
+					<td><a href="admin_articles_all.php?sa=3">{articles_articles_the_reqire_images}</a></td>
+				</tr>
+			</table>
+		</div>
+		</div>
+		</div>
+		<!-- end articles_summary -->
+	</div>
+	<div class="clear"></div>
+
+		<form action="{admin_href}" name="record" method="GET">
+		<input type="hidden" name="tab" value="{tab}">
+		<div class="Block chart-section">
+		<div class="BlockTitle"><i class="chart-icon"></i>{CHARTS_MSG}</div>
+
+		<br/>
+		<ul class="tabs tabs-large" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+			<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+		</ul>
+		
+		<div class="Form clearBoth">
+			<div class="clear"></div>
+			<div>
+				<!-- begin users_chart -->
+				<div id="users_data" class="chart tab-data {users_class}"></div><!-- end users_chart -->
+				<!-- begin orders_chart -->
+				<div id="orders_data" class="chart tab-data {orders_class}"></div><!-- end orders_chart -->
+				<!-- begin sales_chart -->
+				<div id="sales_data" class="chart tasb-data {sales_class}"></div><!-- end sales_chart -->
+			</div>
+		</div>
+
+		</div>
+		</form>
+
+{admin_footer}
+
+<script language="JavaScript">
+function vaAdminCharts()
+{
+	var dataUsers = document.getElementById("users_data");
+	if (dataUsers) {
+		vaSpin("users_data");
+		loadAjax("users_data", "admin_chart.php?chart=users", function() { vaStopSpin("users_data") });
+	}
+	var dataOrders = document.getElementById("orders_data");
+	if (dataOrders) {
+		vaSpin("orders_data");
+		loadAjax("orders_data", "admin_chart.php?chart=orders", function() { vaStopSpin("orders_data") });
+	}
+	var dataSales = document.getElementById("sales_data");
+	if (dataSales) {
+		vaSpin("sales_data");
+		loadAjax("sales_data", "admin_chart.php?chart=sales", function() { vaStopSpin("sales_data") });
+	}
+}
+window.addEventListener("load", vaAdminCharts);
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{EDIT_SUPPLIER_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+
+	function openWindow(pagename, filetype)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype, 'uploadWindow', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+	}
+
+	function setFileName(filename, filetype)
+	{
+		var siteUrl = '{site_url}';
+		if (filename != "" && filetype == "supplier_small")
+		{
+			document.record.image_small.value = siteUrl + "images/suppliers/small/" + filename;
+			document.record.image_small.focus();
+		} else if (filename != "" && filetype == "supplier_large") {
+			document.record.image_large.value = siteUrl + "images/suppliers/large/" + filename;
+			document.record.image_large.focus();
+		}
+	}
+
+//-->
+</script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_SUPPLIER_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_supplier_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="supplier_id" value="{supplier_id}">
+<!-- begin errors --><div class="errorbg">{errors_list}</div><!-- end errors -->
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="usual">
+	<td>{SUPPLIER_ORDER_MSG} *</td>
+	<td><input class="field" type="text" size="10" name="supplier_order" value="{supplier_order}"></td>
+</tr>
+<tr class="usual">
+	<td>{SUPPLIER_NAME_MSG} *</td>
+	<td><input class="field" type="text" size="80" name="supplier_name" value="{supplier_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_MSG}</td>
+	<td><input class="field" type="text" name="supplier_email" value="{supplier_email}" size="80" maxlength="255"></td>
+</tr>
+<!-- begin short_description_block -->
+<tr class="usual">
+	<td>{SHORT_DESCRIPTION_MSG}</td>
+	<td><textarea name="short_description" cols="80" rows="4">{short_description}</textarea></td>
+</tr><!-- end short_description_block --><!-- begin full_description_block -->
+<tr class="usual">
+	<td>{FULL_DESCRIPTION_MSG}</td>
+	<td><textarea name="full_description" cols="80" rows="10">{full_description}</textarea></td>
+</tr><!-- end full_description_block -->
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{confirm_delete}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

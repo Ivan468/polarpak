@@ -1,0 +1,74 @@
+<!--begin preview_simple_link-->
+<div class="preview">
+	<a href="{preview_path}" target="_blank">{preview_title}</a>
+</div>
+<!--end preview_simple_link-->
+<!--begin preview_simple_link_with_image-->
+<div class="preview">
+	<a href="{preview_path}" target="_blank"><img src="{preview_image}" title="{preview_title}" alt="{preview_title}" /></a>
+</div>
+<!--end preview_simple_link_with_image-->
+
+<!--begin preview_mp3-->
+<div class="preview">
+<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" width="{preview_width}" height="15">
+<param name="allowScriptAccess" value="sameDomain"/>
+<param name="movie" value="swf/xspf_player_slim.swf?song_url={preview_path}&song_title={preview_title}"/>
+<param name="quality" value="high"/>
+<param name="bgcolor" value="#E6E6E6"/>
+
+<embed src="swf/xspf_player_slim.swf?song_url={preview_path}&song_title={preview_title}" 
+quality="high" 
+bgcolor="#E6E6E6" 
+name="xspf_player" 
+allowscriptaccess="sameDomain"
+type="application/x-shockwave-flash"
+pluginspage="http://www.macromedia.com/go/getflashplayer"
+align="center" height="15" width="{preview_width}"></embed>
+</object>
+</div>
+<!--end preview_mp3-->
+
+<!--begin preview_swf-->
+<div class="preview">
+<object id="player" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" name="player" width="{preview_width}" height="{preview_height}"> 
+	<param name="movie" value="swf/player.swf" /> 
+	<param name="allowfullscreen" value="true" /> 
+	<param name="allowscriptaccess" value="always" /> 
+	<param name="flashvars" value="file=../{preview_path}&image={preview_image}" /> 
+	<embed 
+		type="application/x-shockwave-flash"
+		id="player2"
+		name="player2"
+		src="swf/player.swf" 
+		width="{preview_width}" 
+		height="{preview_height}"
+		allowscriptaccess="always" 
+		allowfullscreen="true"
+		flashvars="file=../{preview_path}&image={preview_image}" 
+	/> 
+</object> 
+</div>
+<!--end preview_swf-->
+
+<!--begin preview_avi--> 
+<div class="preview">
+	<object id="MediaPlayer" name="MediaPlayer" 
+			width="{preview_width}" height="{preview_height}" align="left"
+			classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" 
+			standby="Loading Windows Media Player components..." 
+			type="application/x-oleobject" 
+			codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112"> 
+		<param name="filename" value="{preview_path}">
+		<param name="Showcontrols" value="false">
+		<param name="autoStart" value="false">
+		<embed type="application/x-mplayer2"
+		    pluginspage="http://www.microsoft.com/Windows/MediaPlayer/"
+		    src="{preview_path}"
+		    name="MediaPlayer"
+		    autostart="0"
+		    showcontrols="0">
+		</embed>
+	</object>
+</div>
+<!--end preview_avi-->

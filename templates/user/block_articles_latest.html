@@ -1,0 +1,67 @@
+	<div class="articles {columns_class}">
+		<!-- BEGIN article_rows -->
+		<!-- BEGIN article_cols -->
+		<div class="col {column_class}">
+
+			<!-- begin article_category -->
+			<div class="article-category category-name bg-title br-solid"><a href="{category_url}">{category_name}</a></div>
+			<!-- end article_category -->
+
+			<!-- begin article_list -->
+			<div class="article {article_class}">
+
+				<div class="before-image">
+					<span class="article-date before-title">{article_date}</span>
+					<h2 class="article-title"><a href="{details_url}" title="{a_title}">{article_title}</a></h2>
+					<span class="article-date after-title">{article_date}</span>
+				</div>
+
+				<!-- begin image_block -->
+				<div class="article-image" data-js="images" data-main-class="img-default" data-sub-class="top-images"> 
+					<!-- begin image_tiny_block -->
+					<a href="{details_url}" title="{a_title}"><img data-image-click="{image_super}" src="{src}" class="img-default img-tiny" alt="{alt}" /></a><!-- end image_tiny_block -->
+					<!-- begin image_small_block -->
+					<a href="{details_url}" title="{a_title}"><img data-image-click="{image_super}" src="{src}" class="img-default img-small" alt="{alt}" /></a><!-- end image_small_block -->
+					<!-- begin image_large_block -->
+					<a href="{details_url}" title="{a_title}"><img data-image-click="{image_super}" src="{src}" class="img-default img-large" alt="{alt}" /></a><!-- end image_large_block -->
+					<!-- begin image_super_block -->
+					<a href="{details_url}" title="{a_title}"><img data-image-click="{image_super}" src="{src}" class="img-default img-super" alt="{alt}" /></a><!-- end image_super_block -->
+				</div>
+				<!-- end image_block -->
+
+				<div class="after-image">
+					<span class="article-date before-title">{article_date}</span>
+					<h2 class="article-title"><a href="{details_url}" title="{a_title}">{article_title}</a></h2>
+					<span class="article-date after-title">{article_date}</span>
+				</div>
+
+				<!-- begin desc_block -->
+				<div class="article-desc">
+					<!-- begin desc_short_block -->
+					<div class="desc desc-short">{desc_text}</div><!-- end desc_short_block -->
+					<!-- begin desc_full_block -->
+					<div class="desc desc-full">{desc_text}</div><!-- end desc_full_block -->
+				</div>
+				<!-- end desc_block -->
+
+
+				<!-- begin more_button -->
+				<a class="button bn-more" href="{details_url}" title="{a_title}"><span>{READ_MORE_MSG}</span></a><!-- end more_button -->
+
+			</div>
+			<!-- end article_list -->
+
+			<!-- begin article_sub -->
+			<div class="article-sub">
+				<a class="article-title {article_class}" href="{details_url}">{article_title}</a>
+				<span class="article-date">{article_date}</span>
+			</div>
+			<!-- end article_sub -->
+
+		</div>
+		<!-- END article_cols -->
+		<!-- END article_rows -->
+		<div class="clear"></div>
+
+	</div>
+

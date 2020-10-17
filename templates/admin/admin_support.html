@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html><head><title>{HELPDESK_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/calendar.js"></script>
+<script language="JavaScript" type="text/javascript" src="../js/select.js"></script>
+<script language="JavaScript"> 
+
+	function clearSearchValues(bnClear)
+	{
+		var searchForm = vaParent(bnClear, ".search-form");
+		var searchFields = searchForm.querySelectorAll(".field");
+		for (var f = 0; f < searchFields.length; f++) {
+			var field = searchFields[f];
+			if (field.hasAttribute("data-control")) {
+				var defaultValue = (field.hasAttribute("data-default-value")) ? field.getAttribute("data-default-value") : "";
+				var controls = field.getAttribute("data-control").split(/[\s;,]/);
+				for (var c = 0; c < controls.length; c++) {
+					var controlName = controls[c];
+					var control = searchForm.querySelector("[name="+controlName+"]");
+					if (control.type == "radio") {
+						var radioControls = searchForm.querySelectorAll("[name="+controlName+"]");
+						for (var rc = 0; rc < radioControls.length; rc++) {
+							if (radioControls[rc].value == defaultValue) {
+								radioControls[rc].checked = true;
+							} else {
+								radioControls[rc].checked = false;
+							}
+						}
+					} else if (control.type == "select-one1") {
+					} else {
+						control.value = defaultValue;
+					}
+				}
+			}
+		}
+		var formObj = searchForm.querySelector("form");
+		formObj.submit();
+	}
+
+	function closeTicket()
+	{
+		return confirm("{CLOSE_CONFIRM_QST}?");
+	} 
+	
+	function allItems()
+	{
+		var checkedStatus = document.items.all_items.checked;
+		var itemsNumber = document.items.items_number.value;
+		for (var i = 1; i <= itemsNumber; i++) {
+			document.items.elements["id_" + i].checked = checkedStatus;
+		}
+		checkItems();
+	}
+
+	function updateItems(operation)
+	{
+		var itemId = "";
+		var itemsIds = "";
+		var itemsNumber = document.items.items_number.value;
+		var totalitems = 0;
+		for (var i = 1; i <= itemsNumber; i++) {
+			if (document.items.elements["id_" + i].checked) {
+				totalitems++;
+				itemId = document.items.elements["id_" + i].value;
+				if(totalitems > 1) { itemsIds += ","; }
+				itemsIds += itemId;
+			}
+		}
+
+		if (totalitems == 0) {
+			alert("Please select tickets first.");
+			window.event.returnValue=false;
+		} else if (operation == "delete_items") {
+			if (confirm("{DELETE_CONFIRM_QST} " + totalitems + " {SELECTED_TICKETS_MSG}?")) {
+				document.items.items_ids.value = itemsIds;
+				document.items.operation.value = "delete_items";
+				document.items.submit();
+			}
+		}
+	}
+	
+	function checkItems()
+	{
+		var itemId = "";
+		var itemsIds = "";
+		var itemsNumber = document.items.items_number.value;
+		var totalSelected = 0;
+		for (var i = 1; i <= itemsNumber; i++) {
+			if (document.items.elements["id_" + i].checked) {
+				document.getElementById("tr_ticket_" + i).className = "SelectedRow";
+				totalSelected++;
+				itemId = document.items.elements["id_" + i].value;
+				if(itemsIds != "") { itemsIds += ","; }
+				itemsIds += itemId;
+			} else {
+				document.getElementById("tr_ticket_" + i).className = mas[i];
+			}
+		}
+		var deleteLink = document.getElementById("delete_items");
+		if (deleteLink) {
+			if (itemsIds == "") {
+				deleteLink.innerHTML = "{DELETE_SELECTED_MSG}";
+				deleteLink.href = "admin_support.php";
+			} else {
+				deleteLink.innerHTML = "{DELETE_SELECTED_MSG} (" + totalSelected + ")";
+				deleteLink.href = "admin_support.php?operation=delete&items_ids=" + itemsIds;
+			}
+		}
+		var editLink = document.getElementById("edit_items");
+		if (editLink) {
+			if (itemsIds == "") {
+				editLink.innerHTML = "{EDIT_SELECTED_MSG}";
+				editLink.href = "admin_support.php";
+			} else {
+				editLink.innerHTML = "{EDIT_SELECTED_MSG} (" + totalSelected + ")";
+				editLink.href = "{admin_products_edit_href}?category_id={parent_category_id}&page_show=fields&items_ids="+itemsIds;
+				
+			}
+		}
+	} 
+
+	var select_form = new select();
+	select_form.object_name = 'select_form';
+	select_form.name_prefix = 'id_';
+	select_form.formname = 'items';
+	select_form.final_action = 'checkItems();';
+	select_form.create_event_click();
+
+	function start_event_select(){
+		if (document.items) {
+			create_event_listener(select_form);
+			var itemsNumber = document.items.items_number.value;
+			mas = new Array();
+			for (var i = 1; i <= itemsNumber; i++) {
+				mas[i] = document.getElementById("tr_ticket_" + i).className;
+			}
+		}
+	}
+
+</script>
+</head>
+
+<body class="commonbg" onload="start_event_select();">
+
+{admin_header}
+{admin_breadcrumb}
+
+<div class="panel">
+
+<div class="popup-stats right">
+	<div class="head expand" data-class="body" data-js="expand">
+		<i class="ico-toggle"></i>
+		<div class="title">{SUMMARY_STATS_MSG}</div>
+		<div class="clear"></div>
+	</div>	
+	<div class="body">
+		<table>
+		<tr class="stat-title">
+			<td>&nbsp;</td><!-- begin stats_titles -->
+			<td><a href="{stat_url}">{stat_title}</a></td><!-- end stats_titles -->
+		</tr>
+		<!-- begin stats_rows -->
+		<tr class="{stat_class}">
+			<td class="stat-name" align="left" nowrap><a href="{stat_url}">{stat_name}</a></td><!-- begin stats_data -->
+			<td class="stat-value"><a href="{stat_url}">{stat_value}</a></td><!-- end stats_data -->
+		</tr>
+		<!-- end stats_rows -->
+
+		<tr class="stat-total">
+			<td class="stat-name">{TOTAL_MSG}</td><!-- begin stats_totals -->
+			<td class="stat-value">{stat_total}</td><!-- end stats_totals -->
+		</tr>
+		</table>
+	</div>
+</div>
+
+<div class="expand-search right {search_form_class}" data-class="search-form" data-js="expand" data-ajax="admin" data-ajax-open-params="operation=setting-add&amp;setting_name=support-search&amp;setting_value=expand-open" data-ajax-hide-params="operation=setting-remove&amp;setting_name=support-search">
+	<i class="ico-toggle"></i>
+	<div class="title">{SEARCH_TICKETS_MSG}</div>
+	<div class="clear"></div>
+</div>	
+
+<!-- begin create_ticket_link -->
+<a class="bn-large" href="admin_support_request.php">{CREATE_TICKET_MSG}</a>
+<!-- end create_ticket_link -->
+<div class="clear"></div>
+
+</div>
+
+
+	<div class="search-form search-hide {search_form_class}">
+		<div class="head">
+			<div class="title">{SEARCH_MESSAGES_MSG}</div>
+			<div class="clear"></div>
+		</div>
+		<div class="body">
+			<form action="{admin_users_href}" name="search_form">
+			<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+			<div class="field fd-ticket {s_tn_hide_class}" data-control="s_tn">
+				<div class="name">{BY_TICKET_NO_MSG}</div> 
+				<div class="control"><input type="text" name="s_tn" value="{s_tn}" class="search" size="40">
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-name {s_ne_hide_class}" data-control="s_ne" data-default-field="1">
+				<div class="name">{BY_NAME_EMAIL_MSG}</div> 
+				<div class="control"><input type="text" name="s_ne" value="{s_ne}" class="search" size="40">
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-summary {s_sm_hide_class}" data-control="s_sm">
+				<div class="name">{BY_SUMMARY_MSG}</div> 
+				<div class="control"><input type="text" name="s_sm" value="{s_sm}" class="search" size="40">
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-keyword {s_kw_hide_class}" data-control="s_kw">
+				<div class="name">{BY_KEYWORD_MSG}</div> 
+				<div class="control"><input type="text" name="s_kw" value="{s_kw}" class="search" size="40">
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-date {s_sd_ed_hide_class}" data-control="s_sd,s_ed">
+				<div class="name">{DATE_MSG}</div> 
+				<div class="control">
+					<a class="calendar" href="#"
+						onClick="setDateField(document.search_form.s_sd, '{date_edit_format}');
+						top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=240,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+						<i class="calendar"></i></a>
+					<input type="text" name="s_sd" value="{s_sd}" placeholder="{START_DATE_MSG}" size="10">
+					&ndash;
+					<input type="text" name="s_ed" value="{s_ed}" placeholder="{END_DATE_MSG}" size="10">
+					<a class="calendar" href="#"
+						onClick="setDateField(document.search_form.s_ed, '{date_edit_format}');
+						top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=240,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+					<i class="calendar"></i></a>
+				</div>
+				<div class="after"></div>
+			</div>
+
+			<!-- begin s_at_block -->
+			<div class="field {s_at_hide_class}" data-control="s_at">
+				<div class="name">{ASSIGN_TO_MSG}</div> 
+				<div class="control">
+					<select name="s_at" class="search"><!-- BEGIN s_at -->
+						<option {s_at_selected} value="{s_at_value}">{s_at_description}<!-- END s_at -->
+					</select>
+				</div>
+				<div class="after"></div>
+			</div><!-- end s_at_block -->
+
+			<!-- begin s_dp_block -->
+			<div class="field {s_dp_hide_class}" data-control="s_dp">
+				<div class="name">{SUPPORT_DEPARTMENT_FIELD}</div> 
+				<div class="control">
+					<select name="s_dp" class="search"><!-- BEGIN s_dp -->
+						<option {s_dp_selected} value="{s_dp_value}">{s_dp_description}<!-- END s_dp -->
+					</select>
+				</div>
+				<div class="after"></div>
+			</div><!-- end s_dp_block -->
+
+			<!-- begin s_tp_block -->
+			<div class="field {s_tp_hide_class}" data-control="s_tp">
+				<div class="name">{SUPPORT_TYPE_FIELD}</div> 
+				<div class="control">
+					<select name="s_tp" class="search"><!-- BEGIN s_tp -->
+						<option {s_tp_selected} value="{s_tp_value}">{s_tp_description}<!-- END s_tp -->
+					</select>
+				</div>
+				<div class="after"></div>
+			</div><!-- end s_tp_block -->
+
+			<div class="field {s_st_hide_class}" data-control="s_st">
+				<div class="name">{ADMIN_WHERE_STATUS_IS_MSG}</div> 
+				<div class="control">
+					<select name="s_st" class="search"><!-- BEGIN s_st-->
+						<option {s_st_selected} value="{s_st_value}">{s_st_description}<!-- END s_st-->
+					</select>
+				</div>
+				<div class="after"></div>
+			</div>
+
+			<div class="field {s_in_hide_class}" data-control="s_in" data-default-value="0">
+				<div class="name">{SEARCH_IN_MSG}</div> 
+				<div class="control">
+					<!-- BEGIN s_in -->
+					<input type="radio" name="s_in" id="s_in{s_in_value}" {s_in_checked} value="{s_in_value}">
+					<label for="s_in{s_in_value}">{s_in_description}</label><!-- END s_in -->
+				</div>
+				<div class="after"></div>
+			</div>
+
+			<!-- begin sitelist -->
+			<div class="field {s_sti_hide_class}" data-control="s_sti">
+				<div class="name">{ADMIN_SITE_MSG}</div> 
+				<div class="control">
+					<select name="s_sti" class="search"><!-- BEGIN s_sti -->
+						<option {s_sti_selected} value="{s_sti_value}">{s_sti_description}<!-- END s_sti -->
+					</select>
+				</div>
+				<div class="after"></div>
+			</div><!-- end sitelist -->
+
+				<div class="field fb-buttons">
+					<div class="name"><div data-js="expand-fields" data-fields-class="search-form" data-fields-class="search-form" class="bn-small bn-more-less"><span class="more-fields">More Fields</span><span class="less-fields">Less Fields</span></div></div> 
+					<div class="control">
+						<input type="submit" value="{SEARCH_BUTTON}" class="submit">
+						<input type="button" value="{CLEAR_BUTTON}" class="submit" onclick="clearSearchValues(this);">
+					</div>
+					<div class="after"></div>
+				</div>
+
+			</form>
+
+		</div>
+	</div>
+
+	<!-- BEGIN search_info -->
+	<div class="search-info">
+		<!-- begin filtered_by -->
+		<span class="filtered-by">
+			<span class="caption">{FILTERED_BY_MSG}</span>
+			<!-- begin selected_filters -->
+			<a class="filter {filter_class}" href="{filter_url}">{filter_desc}</a>
+			<!-- end selected_filters -->
+		</span>
+		<div class="clear"></div>
+		<!-- end filtered_by -->
+	</div>
+	<!-- END search_info -->
+
+<!-- BEGIN allocated_me -->
+<div class="Block">
+<div class="BlockTitle">{ALLOCATED_TO_ME_MSG}</div>
+<div class="BlockContent">
+
+	<table border="0" cellpadding="4" cellspacing="1" width="100%">
+	<!-- begin sorters_am -->
+	<tr class="middle" align="center">
+		<td nowrap>{sorter_id_am}</td>
+		<td nowrap>{sorter_summary_am}</td>
+		<td nowrap>{sorter_dep_am}</td>
+		<td nowrap>{sorter_type_am}</td>
+		<td nowrap>{sorter_status_am}</td>
+		<td nowrap>{sorter_user_am}</td>
+		<td nowrap>{sorter_modified_am}</td><!--begin site_name_header_am-->
+		<td align="left" nowrap>{sorter_site_am}</td><!--end site_name_header_am-->
+		<td nowrap>{sorter_close_am}</td>
+	</tr>
+	<!-- end sorters_am -->
+	<!-- BEGIN records_am -->
+	<tr class="{style_am}" valign="top" align="center">
+		<td>{support_id_am}</td>
+		<td align="left" style="word-wrap: break-word; word-break: break-all;">
+			{priority_html} 
+			<a href="{admin_support_reply_url_am}">{html_start_am}{summary_am}{html_end_am}</a>
+		</td>
+		<td align="center">{dep_am}</td>
+		<td align="center">{type_am}</td>
+		<td align="left"><!-- BEGIN status_ico_am -->
+			<img src="{status_icon_am}" alt="{status_am}" width="16" height="16" border="0" align="absmiddle"><!-- END status_ico_am -->
+			{status_am}
+		</td>
+		<td align="left">{user_email_am}</td>
+		<td align="left">{date_modified_am}</td><!--begin site_name_am-->
+		<td align="left">{site_name}</td><!--end site_name_am-->
+		<td align="center" width="18" nowrap><!-- BEGIN close_ticket_enable_am -->
+			<a href="{close_ticket_am}" onclick="return closeTicket();"><img src="../images/close.gif" alt="{close_summary_am}" title="{close_summary_am}" border="0"></a><!-- END close_ticket_enable_am --><!-- BEGIN close_ticket_disable_am -->
+			<img src="../images/closed.gif" alt="{close_summary_am}" title="{close_summary_am}" border="0"><!-- END close_ticket_disable_am -->
+		</td>
+	</tr>
+	<!-- END records_am -->
+	</table>	
+	
+</div>
+</div>
+<!-- END allocated_me -->
+
+<!-- BEGIN navigator_am_block -->
+<div align="right" style="margin-bottom: 15px;">{navigator_am}</div>
+<!-- END navigator_am_block -->
+
+
+<!-- BEGIN tickets_block -->
+<form name="items" action="admin_support.php" method="POST">
+<input type="hidden" name="items_number" value="{items_number}">
+<input type="hidden" name="items_ids" value="{items_ids}">
+<input type="hidden" name="operation" value="delete">
+
+<!-- begin error_delete -->
+<div class="error-block">{REMOVE_TICKET_NOT_ALLOWED_MSG}</div>
+<!-- end error_delete -->
+
+<div class="Block">
+	<div class="BlockTitle">
+		{HELPDESK_TICKETS_MSG}
+	</div>
+	<div class="BlockContent">
+
+	<table border="0" cellpadding="4" cellspacing="1" width="100%">
+	<!-- begin sorters -->
+	<tr class="middle" align="center">
+		<td><input type="checkbox" name="all_items" value="1" onClick="allItems();"></td>
+		<td nowrap>{sorter_id}</td>
+		<td nowrap>{sorter_summary}</td>
+		<td nowrap>{sorter_dep}</td>
+		<td nowrap>{sorter_type}</td>
+		<td nowrap>{sorter_status}</td>
+		<td nowrap>{sorter_user}</td>
+		<td nowrap>{sorter_admin_alias}</td>
+		<td nowrap>{sorter_modified}</td><!--begin site_name_header-->
+		<td nowrap>{sorter_site}</td><!--end site_name_header-->
+		<td nowrap>{sorter_close}&nbsp;</nobr>
+		</td>
+	</tr>
+	<!-- end sorters -->
+	<!-- BEGIN records -->
+	<tr class="{style}" valign="top" align="center" id="tr_ticket_{item_index}">
+		<td><input type="checkbox" name="id_{item_index}" value="{support_id}" onClick="checkItems();"></td>
+		<td>{support_id}</td>
+		<td align="left" style="word-wrap: break-word;">
+			{priority_html} 
+			<a href="{admin_support_reply_url}">{html_start}{summary}{html_end}</a>
+		</td>
+		<td align="center">{dep}</td>
+		<td align="center">{type}</td>
+		<td align="left"><!-- BEGIN status_ico -->
+			<img src="{status_icon}" alt="{status}" width="16" height="16" border="0" align="absmiddle"><!-- END status_ico -->
+			{status}
+		</td>
+		<td align="left">{user_email}</td>
+		<td align="center">{admin_alias}</td>
+		<td align="left">{date_modified}</td><!--begin site_name_block-->
+		<td align="left">{site_name}</td><!--end site_name_block-->
+		<td align="center" width="18"><!-- BEGIN close_ticket_enable -->
+			<a href="{close_ticket}" onclick="return closeTicket();"><img src="../images/close.gif" alt="{close_summary}" title="{close_summary}" border="0"></a><!-- END close_ticket_enable --><!-- BEGIN close_ticket_disable -->
+			<img src="../images/closed.gif" alt="{close_summary}" title="{close_summary}" border="0"><!-- END close_ticket_disable -->
+		</td>
+	</tr><!-- END records -->
+	<tr class="middle">
+		<td colspan="{colspan}"><!-- BEGIN delete_tickets_link -->
+			<a id="delete_items" href="admin_support.php" onClick="updateItems('delete_items');return false;">{DELETE_SELECTED_MSG}</a><!-- END delete_tickets_link -->
+		</td>
+	</tr>
+	</table>	
+
+</div>
+</div>
+
+</form>
+<!-- END tickets_block -->
+
+<!-- BEGIN navigator_block -->
+<div align="right" style="margin-bottom: 15px;">{navigator}</div>
+<!-- END navigator_block -->
+	
+{admin_footer}
+</body>
+</html>

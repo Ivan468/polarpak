@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html><head><title>{CARTS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" src="../js/calendar.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/select.js"></script>
+<script language= "JavaScript" type= "text/javascript">
+<!--
+
+	var reminderStatus = "";
+
+	function openReminder(reminderType)
+	{
+		reminderStatus = "new";
+
+		var remindersTotal = 0;
+		if (reminderType == "filtered") {
+			var filteredObj = document.getElementById("send_filtered");
+			remindersTotal = filteredObj.getAttribute("data-total");
+		} else {
+			var selectedObj = document.getElementById("send_selected");
+			remindersTotal = selectedObj.getAttribute("data-total");
+		}	
+		var totalObj = document.querySelector(".reminders-total");
+		totalObj.innerHTML = remindersTotal;
+		var sentObj = document.querySelector(".reminders-sent");
+		sentObj.innerHTML = 0;
+
+		var startButton = document.getElementById("start-button");
+		startButton.setAttribute("data-reminder-type", reminderType);
+		startButton.style.display = "inline-block";
+		startButton.style.position = "relative";
+
+		var icoClose = document.querySelector(".ico-close");
+		icoClose.style.display = "inline";
+
+		var continueButton = document.getElementById("continue-button");
+		var cancelButton = document.getElementById("cancel-button");
+		var stopButton = document.getElementById("stop-button");
+		var closeButton = document.getElementById("close-button");
+		stopButton.style.display = "none";
+		continueButton.style.display = "none";
+		cancelButton.style.display = "none";
+		closeButton.style.display = "none";
+
+		var areaObj = document.querySelector(".popup-area");
+		if (areaObj) {
+			areaObj.style.display = "block";
+		}
+	}
+
+	function closeReminder()
+	{
+		var areaObj = document.querySelector(".popup-area");
+		if (areaObj) {
+			areaObj.style.display = "none";
+		}
+	}
+
+	function sendReminders(operation)
+	{
+		var paramValue;
+		var formObj = document.search_form; 
+		var delayObj = document.getElementById("sending-delay");
+		var url = "admin_carts.php?ajax=1&operation="+encodeURIComponent(operation);
+		if (delayObj) {
+			url += "&delay="+encodeURIComponent(delayObj.value);
+		}
+
+		if (operation == "start") {
+			reminderStatus = "start";
+
+			var startButton = document.getElementById("start-button");
+			var stopButton = document.getElementById("stop-button");
+			var reminderType = startButton.getAttribute("data-reminder-type");
+			var icoClose = document.querySelector(".ico-close");
+			var sendingSpin = document.querySelector(".sending-spin");
+
+			startButton.style.display = "none";
+			icoClose.style.display = "none";
+			stopButton.style.display = "inline";
+			sendingSpin.style.display = "inline-block";
+
+			if (reminderType == "selected") {
+	  		// prepare selected parameters
+				var selectedObj = document.getElementById("send_selected");
+				var cartIds = selectedObj.getAttribute("data-ids");
+				url += "&cart_ids="+encodeURIComponent(cartIds);
+	  		// end of selected parameters
+			} else {
+	  		// prepare filtered parameters
+				for (var i = 0; i < formObj.s_ct.length; i++) {
+					if (formObj.s_ct[i].checked ) {
+						paramValue = formObj.s_ct[i].value;
+						url += "&s_ct=" + encodeURIComponent(paramValue);
+					}
+				}
+				for (var i = 0; i < formObj.s_em.length; i++) {
+					if (formObj.s_em[i].checked ) {
+						paramValue = formObj.s_em[i].value;
+						url += "&s_em=" + encodeURIComponent(paramValue);
+					}
+				}
+				if (formObj.s_sd.value != "") {
+					url += "&s_sd=" + encodeURIComponent(formObj.s_sd.value);
+				}
+				if (formObj.s_ed.value != "") {
+					url += "&s_ed=" + encodeURIComponent(formObj.s_ed.value);
+				}
+				for (var i = 0; i < formObj.s_rs.length; i++) {
+					if (formObj.s_rs[i].checked ) {
+						paramValue = formObj.s_rs[i].value;
+						url += "&s_rs=" + encodeURIComponent(paramValue);
+					}
+				}
+	    
+				if (formObj.s_ssd.value != "") {
+					url += "&s_ssd=" + encodeURIComponent(formObj.s_ssd.value);
+				}
+				if (formObj.s_sed.value != "") {
+					url += "&s_sed=" + encodeURIComponent(formObj.s_sed.value);
+				}
+				if (formObj.s_sti && formObj.s_sti.value != "") {
+					url += "&s_sti=" + encodeURIComponent(formObj.s_sti.value);
+				}
+	  		// end of filtered parameters
+			}
+		}
+		callAjax(url, sendResults); // general request to send reminders
+		sendRequest("check"); // check number of sent reminders
+	}
+
+	function sendRequest(operation)
+	{
+		if (operation == "continue") {
+			var continueButton = document.getElementById("continue-button");
+			var cancelButton = document.getElementById("cancel-button");
+			var stopButton = document.getElementById("stop-button");
+			var sendingSpin = document.querySelector(".sending-spin");
+
+			stopButton.style.display = "inline";
+			continueButton.style.display = "none";
+			cancelButton.style.display = "none";
+			sendingSpin.style.display = "inline-block";
+		} else if (operation == "cancel") {
+			var cancelButton = document.getElementById("cancel-button");
+			var continueButton = document.getElementById("continue-button");
+			var buttonSpin = document.querySelector(".button-spin");
+			buttonSpin.style.display = "inline-block";
+			continueButton.style.display = "none";
+			cancelButton.disabled = true;
+		} else if (operation == "stop") {
+			var stopButton = document.getElementById("stop-button");
+			stopButton.disabled = true;
+			var buttonSpin = document.querySelector(".button-spin");
+			buttonSpin.style.display = "inline-block";
+		}
+
+		var url = "admin_carts.php?ajax=1&operation="+encodeURIComponent(operation);;
+		callAjax(url, sendResults);
+	}
+
+	function sendResults(response)
+	{
+		var data; // save here parsed data
+		try {
+			data = JSON.parse(response);
+		} catch (e) {}
+
+		if (!data) {
+			// if we didn't received any data then show error and close reminder window
+			var cancelButton = document.getElementById("cancel-button");
+			cancelButton.disabled = false;
+			var buttonSpin = document.querySelector(".button-spin");
+			buttonSpin.style.display = "none";
+			var sendingSpin = document.querySelector(".sending-spin");
+			sendingSpin.style.display = "none";
+			closeReminder();
+			alert("Bad Resonse:\n" + response);
+		} else if (data.status == "stopped") {
+			reminderStatus = "stopped";
+			var continueButton = document.getElementById("continue-button");
+			var cancelButton = document.getElementById("cancel-button");
+			var stopButton = document.getElementById("stop-button");
+			var sendingSpin = document.querySelector(".sending-spin");
+			var buttonSpin = document.querySelector(".button-spin");
+			buttonSpin.style.display = "none";
+			stopButton.style.display = "none";
+			continueButton.style.display = "inline";
+			cancelButton.style.display = "inline";
+			sendingSpin.style.display = "none";
+			stopButton.disabled = false;
+		} else if (data.status == "next") {
+			var url = "admin_carts.php?ajax=1&operation=send";
+			var sentObj = document.querySelector(".reminders-sent");
+			if (sentObj && data.reminders_sent) {
+				sentObj.innerHTML = data.reminders_sent;
+			}
+			callAjax(url, sendResults);
+		} else if (data.status == "finished") {
+			reminderStatus = "finished";
+			var sentObj = document.querySelector(".reminders-sent");
+			if (sentObj && data.reminders_sent) {
+				sentObj.innerHTML = data.reminders_sent;
+			}
+			var stopButton = document.getElementById("stop-button");
+			var closeButton = document.getElementById("close-button");
+			var icoClose = document.querySelector(".ico-close");
+			var sendingSpin = document.querySelector(".sending-spin");
+			var buttonSpin = document.querySelector(".button-spin");
+			buttonSpin.style.display = "none";
+			stopButton.style.display = "none";
+			closeButton.style.display = "inline";
+			icoClose.style.display = "inline";
+			sendingSpin.style.display = "none";
+		} else if (data.status == "cancelled") {
+			var cancelButton = document.getElementById("cancel-button");
+			cancelButton.disabled = false;
+			var buttonSpin = document.querySelector(".button-spin");
+			buttonSpin.style.display = "none";
+			reminderStatus = "cancelled";
+			closeReminder();
+		} else if (data.status == "check") {
+			var totalObj = document.querySelector(".reminders-total");
+			var sentObj = document.querySelector(".reminders-sent");
+			if (totalObj && data.reminders_total) {
+				totalObj.innerHTML = data.reminders_total;
+			}
+			if (sentObj && data.reminders_sent) {
+				sentObj.innerHTML = data.reminders_sent;
+			}
+			if (reminderStatus != "cancelled" && reminderStatus != "stopped" && reminderStatus != "finished") {
+				sendRequest("check");
+			}
+		}
+
+
+	}
+
+
+	function showCart(activeCartId)	{
+		var cartsNumber = document.carts.carts_number.value;
+		for (var i = 1; i <= cartsNumber; i++) {
+			var cartId = document.carts.elements["cart_id_" + i].value;
+			if(cartId != activeCartId) {
+				var savedCartObj = document.getElementById("saved-cart-"+cartId);
+				savedCartObj.className = "saved-cart";
+				var showCartObj = document.getElementById("show-cart-"+cartId);
+				showCartObj.innerHTML = "{VIEW_MSG}";
+			}
+		}
+		// check if we need show or hide cart block	
+		var activeCartObj = document.getElementById("saved-cart-"+activeCartId);
+		var showCartObj = document.getElementById("show-cart-"+activeCartId);
+		var regExp = /d-block/g;
+		if (activeCartObj.className && activeCartObj.className.match(regExp)) {
+			activeCartObj.className = "saved-cart";
+			showCartObj.innerHTML = "{VIEW_MSG}";
+		} else {
+			activeCartObj.className = "saved-cart d-block";
+			showCartObj.innerHTML = "{HIDE_MSG}";
+		}
+	}
+
+	function changeStatus()
+	{
+		var checkedStatus = document.carts.all_carts.checked;
+		var cartsNumber = document.carts.carts_number.value;
+		for (var i = 1; i <= cartsNumber; i++) {
+			document.carts.elements["cart_id_" + i].checked = checkedStatus;
+		}
+		checkcarts();
+	}
+	
+	function showOrderItems(event, orderID)	{
+		var orderItems = document.getElementById("order_items_" + orderID);
+		if (orderItems) {
+  	  var leftPos = mouseX(event) + 15;
+	    var topPos  = mouseY(event) + 15;
+			orderItems.style.left = leftPos;
+			orderItems.style.top = topPos;
+
+			orderItems.style.display = "block";
+		}
+
+	}
+
+	function hideOrderItems(event, orderID)	{
+
+		var orderItems = document.getElementById("order_items_" + orderID);
+		if (orderItems) {
+			orderItems.style.display = 'none';
+		}
+	}
+	
+	function checkcarts()
+	{
+		var orderId = "";
+		var cartsIds = "";
+		var cartsNumber = document.carts.carts_number.value;
+		var totalSelected = 0;
+
+		for (var i = 1; i <= cartsNumber; i++) {
+			if (document.carts.elements["cart_id_" + i].checked) {
+				document.getElementById("tr_order_" + i).className = "row-selected";
+				totalSelected++;
+				orderId = document.carts.elements["cart_id_" + i].value;
+				if(cartsIds != "") { cartsIds += ","; }
+				cartsIds += orderId;
+			} else {
+				document.getElementById("tr_order_" + i).className = mas[i];
+			}
+		}
+
+		var sendSelectedBlock = document.getElementById("send_selected");
+		var sendFilteredBlock = document.getElementById("send_filtered");
+		var deleteSelectedBlock = document.getElementById("delete_selected");
+		var deleteFilteredBlock = document.getElementById("delete_filtered");
+		if (sendSelectedBlock) {
+			if (cartsIds == "") {
+				sendSelectedBlock.style.display = "none";
+				sendFilteredBlock.style.display = "inline";
+				sendSelectedBlock.setAttribute("data-ids", "");
+				sendSelectedBlock.setAttribute("data-total", 0);
+
+				deleteSelectedBlock.style.display = "none";
+				deleteFilteredBlock.style.display = "inline";
+			} else {
+				sendSelectedBlock.innerHTML = "{SEND_TO_SELECTED_MSG} (" + totalSelected + ")";
+				sendSelectedBlock.setAttribute("data-ids", cartsIds);
+				sendSelectedBlock.setAttribute("data-total", totalSelected);
+				sendSelectedBlock.style.display = "inline";
+				sendFilteredBlock.style.display = "none";
+
+				deleteSelectedBlock.innerHTML = "{DELETE_SELECTED_MSG} (" + totalSelected + ")";
+				deleteSelectedBlock.href = "{admin_carts_href}?operation=delete-selected&cart_ids="+encodeURIComponent(cartsIds);
+				deleteSelectedBlock.style.display = "inline";
+				deleteFilteredBlock.style.display = "none";
+			}
+		}
+	}
+
+	function clearSearch() {
+		var formObj = document.search_form;
+		for (var i = 0; i < formObj.s_ct.length; i++) {
+			if (formObj.s_ct[i].value == "0") {
+				formObj.s_ct[i].checked = true;
+			} else {
+				formObj.s_ct[i].checked = false;
+			}
+		}
+		for (var i = 0; i < formObj.s_em.length; i++) {
+			if (formObj.s_em[i].value == "1") {
+				formObj.s_em[i].checked = true;
+			} else {
+				formObj.s_em[i].checked = false;
+			}
+		}
+		document.search_form.s_tp.selectedIndex = 0;
+		document.search_form.s_sd.value = "";
+		document.search_form.s_ed.value = "";
+		for (var i = 0; i < formObj.s_rs.length; i++) {
+			if (formObj.s_rs[i].value == "0") {
+				formObj.s_rs[i].checked = true;
+			} else {
+				formObj.s_rs[i].checked = false;
+			}
+		}
+		document.search_form.s_ssd.value = "";
+		document.search_form.s_sed.value = "";
+		if (document.search_form.s_sti) {
+			document.search_form.s_sti.selectedIndex = 0;
+		}
+		document.search_form.submit();
+	}
+
+	var select_form = new select();
+		select_form.object_name = 'select_form';
+		select_form.name_prefix = 'cart_id_';
+		select_form.formname = 'carts';
+		select_form.final_action = 'checkcarts();';
+		select_form.create_event_click();
+
+	function start_event_select(){
+		create_event_listener(select_form);
+		var cartsNumber = document.carts.carts_number.value;
+		mas = new Array();
+		for (var i = 1; i <= cartsNumber; i++) {
+			mas[i] = document.getElementById("tr_order_" + i).className;
+		}
+	}
+
+	function reminderChanged(reminderValue)
+	{
+		var dateSentRow = document.getElementById("date-sent-row");
+		if (reminderValue == "1") {	
+			dateSentRow.className = "usual";
+		} else {
+			dateSentRow.className = "hidden";
+		}
+	}
+
+//-->
+</script>
+</head>
+<body class="commonbg" onload="start_event_select();">
+{admin_header}
+
+{block_leftside_breadcrumbs}
+
+
+<div class="overHidd">
+	<div class="Block floatLeft">
+	<div class="BlockTitle">{SEARCH_TITLE}</div>
+	<div class="BlockContent">
+		<form action="{admin_carts_href}" name="search_form">
+		<input type="hidden" name="operation" value="search">
+		<input type="hidden" name="s_form" value="1">
+		<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+		<table border="0" cellpadding="4" cellspacing="1">
+		<tr class="usual">
+			<td>{TYPE_MSG}</td>
+			<td><!-- BEGIN s_ct -->
+				<input type="radio" name="s_ct" id="s_ct{s_ct_value}" {s_ct_checked} value="{s_ct_value}">
+				<label for="s_ct{s_ct_value}">{s_ct_description}</label><!-- END s_ct -->
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>{EMAIL_FIELD}</td>
+			<td><!-- BEGIN s_em -->
+				<input type="radio" name="s_em" id="s_em{s_em_value}" {s_em_checked} value="{s_em_value}">
+				<label for="s_em{s_em_value}">{s_em_description}</label><!-- END s_em -->
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>{TIME_PERIOD_MSG}</td>
+			<td>
+				<select name="s_tp" class="search" onChange="setDatePeriod(document.search_form, 's_tp', 's_sd', 's_ed', '{date_edit_format}');"><!-- BEGIN s_tp -->
+					<option {s_tp_selected} value="{s_tp_value}">{s_tp_description}<!-- END s_tp -->
+				</select>
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>{LAST_UPDATED_MSG}</td>
+			<td>
+				<a class="calendar" href="#"
+					onClick="setDateField(document.search_form.s_sd, '{date_edit_format}');
+					top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+					<i class="calendar"></i></a>
+				<input type="text" name="s_sd" value="{s_sd}" class="search" placeholder="{START_DATE_MSG}" size="10">
+				&ndash;
+				<input type="text" name="s_ed" value="{s_ed}" class="search" placeholder="{END_DATE_MSG}" size="10">
+				<a class="calendar" href="#"
+					onClick="setDateField(document.search_form.s_ed, '{date_edit_format}');
+					top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+				<i class="calendar"></i></a>
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>{REMINDER_SEND_MSG}</td>
+			<td><!-- BEGIN s_rs -->
+				<input type="radio" name="s_rs" id="s_rs{s_rs_value}" {s_rs_checked} value="{s_rs_value}" onclick="reminderChanged('{s_rs_value}');">
+				<label for="s_rs{s_rs_value}">{s_rs_description}</label><!-- END s_rs -->
+			</td>
+		</tr>
+		<tr id="date-sent-row" class="{date_sent_class}">
+			<td>{DATE_SENT_MSG}</td>
+			<td> 
+				<a class="calendar" href="#"
+					onClick="setDateField(document.search_form.s_ssd, '{date_edit_format}');
+					top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+				<i class="calendar"></i></a>
+				<input type="text" name="s_ssd" value="{s_ssd}" class="search" placeholder="{START_DATE_MSG}" size="10">
+				&ndash;
+				<input type="text" name="s_sed" value="{s_sed}" class="search" placeholder="{END_DATE_MSG}" size="10">
+				<a class="calendar" href="#"
+					onClick="setDateField(document.search_form.s_sed, '{date_edit_format}');
+					top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+				<i class="calendar"></i></a>
+
+			</td>
+		</tr>
+		<tr class="middle">
+			<td>&nbsp;</td>
+			<td>
+				<span class="button"><input type="submit" value="Search" class="submit"></span>
+				<span class="button"><input type="button" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch();"></span>
+			</td>
+		</tr>
+		</table>
+		</form>
+	</div>
+	</div>
+
+	<div class="Block floatRight">
+	<div class="BlockTitle">{STATS_MSG}</div>
+	<div class="BlockContent">
+		<table cellpadding="4" cellspacing="1" border="0">
+		<tr class="middle" align="center">
+			<td>&nbsp;</td><!-- begin stats_titles -->
+			<td><a href="{admin_carts_href}?operation=search&s_sd={start_date}&s_ed={end_date}">{stat_title}</a></td><!-- end stats_titles -->
+		</tr><!-- begin statuses_stats -->
+		<tr class="usual" align="center">
+			<td align="left"><a href="{admin_carts_href}?operation=search&s_os={status_id}">{cart_type_name}</a></td><!-- begin stats_periods -->
+			<td>{period_carts}</td><!-- end stats_periods -->
+		</tr><!-- end statuses_stats -->
+		<tr class="middle" align="center">
+			<td align="right">{TOTAL_MSG}:</td><!-- begin stats_totals -->
+			<td>{period_total}</td><!-- end stats_totals -->
+		</tr>
+		</table>
+	</div>
+	</div>
+</div>
+
+<!-- begin recover_success -->
+<div class="messagebg">{success_message}</div><!-- end recover_success --><!-- begin recover_errors -->
+<div class="errorbg">{errors_list}</div><!-- end recover_errors -->
+
+<div class="Block">
+<div class="BlockTitle">
+	{CARTS_MSG} 
+	<div class="right">
+		<a href="{admin_saved_cart_notify_href}?tab=reminder&rp={admin_carts_href}"><i class="ico-settings"></i>{SETTINGS_MSG}</a>
+	</div>
+</div>
+
+<div class="BlockContent">
+
+<form name="carts" action="{admin_carts_href}" method="POST">
+<input type="hidden" name="carts_number" value="{carts_number}">
+
+<table border="0" cellpadding="4" cellspacing="1" width="100%"><!-- begin sorters -->
+<tr class="middle" align="center">
+	<td><input type="checkbox" name="all_carts" value="1" onClick="changeStatus();"></td>
+	<td>{sorter_id}</td>
+	<td>{CUSTOMER_NAME_MSG} &lt;{EMAIL_MSG}&gt;</td>
+	<td>{TYPE_MSG}</td>
+	<td>{NAME_MSG}</td>
+	<td>{sorter_date}</td>
+	<td>{sorter_cart_total}</td>
+	<td>{COUNTRY_FIELD}</td>
+	<td>{sorter_reminder_sent}</td>
+	<td>&nbsp;</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr id="tr_order_{cart_index}" valign="top" align="center" class="{row_style}" {send_style}>
+	<td><input type="checkbox" name="cart_id_{cart_index}" value="{cart_id}" onClick="checkcarts();"></td>
+	<td>
+		{cart_id}
+	</td>
+	<td align="left">
+		{user_name} <!-- begin user_email_block -->
+		&lt;<a href="mailto:{user_email}">{user_email}</a>&gt;<!-- end user_email_block -->
+	</td>
+	<td>{cart_type_name}</td>
+	<td>{cart_name}</td>
+	<td>{cart_updated}</td>
+	<td>
+		{cart_total}
+	</td>
+	<td>{country_code}</td>
+	<td>{reminder_sent}</td>
+	<td class="cart-view">
+		<a id="show-cart-{cart_id}" onclick="showCart({cart_id});return false;" class="show-cart">{VIEW_MSG}</a>
+
+		<div id="saved-cart-{cart_id}" class="saved-cart" >
+			<div class="popUp">
+			<table width="100%" cellspacing="0" cellpadding="4" border="0">
+			<tr class="middle">
+				<th>{PROD_TITLE_COLUMN}</th>
+				<th align="center">{PROD_QTY_COLUMN}</td>
+				<th align="right">{PROD_PRICE_COLUMN}</td>
+			</tr><!-- BEGIN cart_items -->
+			<tr class="usual" valign="top">
+				<td>&nbsp;{item_name}</td><td align=center>{quantity}</td><td align="right">{price}&nbsp;</td>
+			</tr><!-- END cart_items -->
+			<tr class="middle"><td align="right"><b>&nbsp;{GOODS_TOTAL_MSG}&nbsp;</b></td><td align=center>{total_quantity}</td><td align=right>{total_price}&nbsp;</td></tr>
+			</table>
+			</div>
+		</div>
+
+	</td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="10">{NO_CARTS_MSG}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="10">
+
+			<a style="display: none; cursor: pointer;" id="send_selected" data-ids="" data-total="" onclick="openReminder('selected');">{SEND_TO_SELECTED_MSG}</a>
+			<!-- begin send_reminder_filtered -->
+			<a style="cursor: pointer;" id="send_filtered" data-total="{total_filtered}" onclick="openReminder('filtered');">{SEND_TO_FILTERED_MSG} ({total_filtered})</a>
+			<span class="v-bar"></span> 
+			<!-- end send_reminder_filtered -->
+
+			<a href="" style="display: none;" id="delete_selected" onclick="return confirm('{RECORDS_DELETE_CONFIRM_MSG}');">{DELETE_SELECTED_MSG}</a>
+			<!-- begin delete_filtered -->
+			<a href="{delete_filtered_url}" id="delete_filtered" data-total="{total_filtered}" onclick="return confirm('{RECORDS_DELETE_CONFIRM_MSG}');">{DELETE_FILTERED_MSG} ({total_filtered})</a>
+			<!-- end delete_filtered -->
+
+
+		&nbsp;
+		<!-- begin navigator_block -->
+		<div class="floatRight">{navigator}</div><!-- end navigator_block -->
+	</td>
+</tr>
+<tr>
+	<td colspan="10">
+
+		<div class="floatRight">{RECORDS_PER_PAGE_MSG}:<!-- begin recs_values -->
+		<a href="{recs_url}" class="{recs_style}">{recs_value_title}</a>{recs_delimiter}<!-- end recs_values -->
+		</div>
+
+	</td>
+</tr>
+</table>
+</form>
+
+</div>
+
+</div>
+
+
+
+<div class="popup-area" style="{popup_area_style}">
+
+<div class="popup-reminder">
+	<i class="right ico-close" style="{close_icon_style}" onclick="closeReminder();"></i>
+
+	<table cellspacing="1" cellpadding="6" border="0" width="100%" class="reminder-preview">
+	<tr class="middle" align="center">
+		<td colspan="2">{PREVIEW_TITLE}</td>
+	</tr>
+	<tr>
+		<td class="middle reminder-name">{EMAIL_FROM_MSG}:</td>
+		<td class="usual">{reminder_from}</td>
+	</tr><!-- begin reminder_cc_block -->	
+	<tr>
+		<td class="middle reminder-name">{EMAIL_CC_MSG}:</td>
+		<td class="usual">{reminder_cc}</td>
+	</tr><!-- end reminder_cc_block --><!-- begin reminder_bcc_block -->	
+	<tr>
+		<td class="middle reminder-name">{EMAIL_BCC_MSG}:</td>
+		<td class="usual">{reminder_bcc}</td>
+	</tr><!-- end reminder_bcc_block --><!-- begin reminder_reply_to_block -->	
+	<tr>
+		<td class="middle reminder-name">{EMAIL_REPLY_TO_MSG}:</td>
+		<td class="usual">{reminder_reply_to}</td>
+	</tr><!-- end reminder_reply_to_block --><!-- begin reminder_return_path_block -->
+	<tr>
+		<td class="middle reminder-name" nowrap>{EMAIL_RETURN_PATH_MSG}:</td>
+		<td class="usual">{reminder_return_path}</td>
+	</tr><!-- end reminder_return_path_block -->
+	<tr>
+		<td class="middle reminder-name">{EMAIL_SUBJECT_MSG}:</td>
+		<td class="usual"><b>{reminder_subject}</b></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="usual"><div class="reminder-body">{reminder_body}</div></td>
+	</tr>
+	</table>
+
+	<table cellspacing="1" cellpadding="6" border="0" width="100%">
+	<tr>
+		<td colspan="2" class="middle">{READY_FOR_SENDING_MSG}</td>
+	</tr>
+	<tr>
+
+		<td class="middle reminder-name">{EMAILS_TO_SEND_MSG}</td>
+		<td class="usual reminders-total">{reminders_total}</td>
+	</tr>
+	<tr>
+		<td class="middle reminder-name">{EMAILS_SENT_MSG}</td>
+		<td class="usual"><span class="reminders-sent">{reminders_sent}</span> <i style="display: none;" class="spin sending-spin"></i></td>
+	</tr>
+	<tr>
+		<td class="middle reminder-name">{SENDING_DELAY_MSG}</td>
+		<td class="usual">
+			<select id="sending-delay">
+				<option value="0"> no 
+				<option selected value="100000">0.1 {ADMIN_SECONDS_MSG}
+				<option value="200000">0.2 {ADMIN_SECONDS_MSG}
+				<option value="500000">0.5 {ADMIN_SECONDS_MSG}
+				<option value="1000000">1 {ADMIN_SECOND_MSG}
+			</select> 
+			{DELAY_AFTER_EACH_EMAIL_MSG}
+		</td>
+	</tr>
+	<tr class="middle">
+		<td></td>
+		<td id="buttons">
+			<input type="button" id="start-button" style="{start_button_style}" data-reminder-type="" class="submit" value="{START_SENDING_MSG}" onclick="sendReminders('start');">
+
+			<input type="button" id="stop-button" style="{stop_button_style}" data-reminder-type="" class="submit" value="{STOP_SENDING_MSG}" onclick="sendRequest('stop');" >
+
+			<input type="button" id="continue-button" style="{continue_button_style}" data-reminder-type="" class="submit" value="{CONTINUE_SENDING_MSG}" onclick="sendRequest('continue');" >
+
+			<input type="button" id="cancel-button" style="{cancel_button_style}" data-reminder-type="" class="submit" value="{CANCEL_BUTTON}" onclick="sendRequest('cancel');" >
+
+			<input type="button" id="close-button" style="display: none;" data-reminder-type="" class="submit" value="{CLOSE_BUTTON}" onclick="closeReminder();" >
+
+			<i style="display: none;" class="spin button-spin"></i>
+
+		</td>
+	</tr>
+
+	</table>
+
+</div>
+</div>
+
+
+
+{admin_footer}
+</body>
+</html>

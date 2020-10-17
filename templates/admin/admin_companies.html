@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {COMPANIES_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="bodySettings">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{COMPANIES_MSG}</div>
+<div class="BlockContent">
+
+<table border="0" cellpadding="6" cellspacing="1" width="100%"><!-- begin sorters -->
+<tr class="middle" align="center">
+	<td>{sorter_company_id}</td>
+	<td>{sorter_company_name}</td>
+	<td>{sorter_contact_email}</td>
+	<td>&nbsp;</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="usual" align="center">
+	<td>{company_id}</td>
+	<td align="left">{company_name}</td>
+	<td><a href="mailto:{contact_email}">{contact_email}</a></td>
+	<td><a href="{admin_company_href}?company_id={company_id}">{EDIT_COMPANY_MSG}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr>
+	<td colspan="4" class="usual">{NO_COMPANIES_FOUND_MSG}</td>
+</tr><!-- END no_records -->
+<tr>
+	<td colspan="4">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_company_href}?discount_type=1">{ADD_NEW_MSG}</a>
+	</td>
+</tr>
+</table>
+	
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

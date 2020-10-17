@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html><head><title>{EMAIL_PIPE_MSG} :: {EDIT_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header}
+{admin_breadcrumb}
+
+<div class="Form clearBoth">
+<div class="FormTitle">{EMAIL_PIPE_MSG}</div>
+<div class="FormContent">
+
+<form action="{admin_support_pipe_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="pipe_id" value="{pipe_id}">
+<input type="hidden" name="tab" value="{tab}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+		<table width="100%" cellspacing="1" cellpadding="6">
+		<tr class="usual">
+			<td>
+				{INCOMING_EMAIL_MSG} {incoming_email_required}	
+			</td>
+			<td>
+				<input class="field" type="text" size="60" name="incoming_email" value="{incoming_email}">
+				<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+				<div class="help-popup">
+					<div class="popup-body">
+						{INCOMING_EMAIL_DESC}
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>
+				{OUTGOING_EMAIL_MSG}
+			</td>
+			<td>
+				<input class="field" type="text" size="60" name="outgoing_email" value="{outgoing_email}">
+				<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+				<div class="help-popup">
+					<div class="popup-body">
+						{OUTGOING_EMAIL_DESC}
+					</div>
+				</div>
+
+			</td>
+		</tr>
+
+		<tr class="usual">
+			<td>{SUPPORT_DEPARTMENT_FIELD} {dep_id_required} </td>
+			<td>
+				<select name="dep_id"><!-- begin dep_id -->
+					<option {dep_id_selected} value="{dep_id_value}">{dep_id_description}<!-- end dep_id -->
+				</select>
+			</td>
+		</tr>
+		<!-- begin support_type_id_block -->
+		<tr class="usual">
+			<td>{SUPPORT_TYPE_FIELD}</td>
+			<td>
+				<select name="support_type_id"><!-- begin support_type_id -->
+					<option {support_type_id_selected} value="{support_type_id_value}">{support_type_id_description}<!-- end support_type_id -->
+				</select>
+			</td>
+		</tr><!-- end support_type_id_block -->
+
+		<!-- begin support_product_id_block -->
+		<tr class="usual">
+			<td>{SUPPORT_PRODUCT_FIELD}</td>
+			<td>
+				<select name="support_product_id"><!-- begin support_product_id -->
+					<option {support_product_id_selected} value="{support_product_id_value}">{support_product_id_description}<!-- end support_product_id -->
+				</select>
+			</td>
+		</tr><!-- end support_product_id_block -->
+		<tr class="buttons">
+			<td></td>
+			<td>
+				<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+				<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+				<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+			</td>
+		</tr>
+		</table>
+
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

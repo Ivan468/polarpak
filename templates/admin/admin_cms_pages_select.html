@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{SELECT_USER_page_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/win_select.js"></script>
+<script language="JavaScript">
+<!--
+
+function clearSearch() {
+	document.form_list.sw.value = "";
+	document.form_list.submit();
+}
+
+//-->
+</script>
+</head>
+
+<body class="popup">
+
+<form action="{admin_cms_pages_select_href}" name="form_list">
+<input type="hidden" name="operation" value="1">
+<input type="hidden" name="form_name" value="{form_name}">
+<input type="hidden" name="field_name" value="{field_name}">
+<input type="hidden" name="id_name" value="{id_name}">
+<input type="hidden" name="selection_type" value="{selection_type}">
+
+	<table cellspacing="1" cellpadding="6" border="0" width="100%" align="center">
+	<tr class="middle" align="center">
+		<td colspan="4"><a href="javascript:closeWindowSelect();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+	</tr>
+	<tr class="usual" align="center">
+		<td colspan="4">
+			<input class="field" type="text" name="sw" value="{sw}">&nbsp;
+			<span class="button"><input type="submit" value="{SEARCH_BUTTON}" class="submit"></span>
+			<span class="button"><input type="submit" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch()"></span>
+		</td>
+	</tr><!-- begin search_results -->
+	<tr class="usual" align="center">
+		<td colspan="4">{found_message}</td>
+	</tr><!-- end search_results --><!-- begin sorters -->
+	<tr class="middle" align="center">
+		<td>{sorter_page_id}</td>
+		<td>{sorter_page_name}</td>
+		<td>{sorter_module}</td>
+		<td>&nbsp;</td>
+	</tr><!-- end sorters --><!-- begin records -->
+	<tr class="usual">
+		<td align="center">{page_id}</td>
+		<td>{page_name}</td>
+		<td align="center">{module_name}</td>
+		<td align="center"><a href="javascript:selectItem('{page_id}', '{page_name_js}');">{SELECT_MSG}</a></td>
+	</tr><!-- end records --><!-- begin navigator_block -->
+	<tr class="middle" align="right">
+		<td colspan="4">{navigator}</td>
+	</tr><!-- end navigator_block -->
+	<tr class="middle" align="center">
+		<td colspan="4"><a href="javascript:closeWindowSelect();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+	</tr>
+	</table>
+
+</form>
+
+</body>
+</html>

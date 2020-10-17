@@ -1,0 +1,189 @@
+<!-- begin before_block --><!-- begin global_errors --><div class="errorbg">{errors_list}</div><br /><!-- end global_errors --><!-- end before_block -->
+
+	<!-- begin request_info -->
+<table cellspacing="1" width="100%" class="table-data">
+<tr valign="top">
+	<td width="25%" class="middlebg">
+		{SUPPORT_DEPARTMENT_FIELD}
+	</td>
+	<td class="usualbg" >
+		{dep_name}
+	</td>
+</tr>
+<tr valign="top">
+	<td width="25%" class="middlebg">
+		{SUPPORT_PRODUCT_FIELD}
+	</td>
+	<td class="usualbg" >
+		{product_name}
+	</td>
+</tr>
+<tr valign="top">
+	<td width="25%" class="middlebg">
+		{SUPPORT_ENVIRONMENT_FIELD}
+	</td>
+	<td class="usualbg">
+		{environment}
+	</td>
+</tr>
+<tr valign="top">
+	<td width="25%" class="middlebg">
+		{SUPPORT_TYPE_FIELD}
+	</td>
+	<td class="usualbg">
+		{type}
+	</td>
+</tr>
+<tr valign="top">
+	<td width="25%" class="middlebg">
+		{SUPPORT_CURRENT_STATUS_FIELD}
+	</td>
+	<td class="usualbg">
+		{current_status}
+	</td>
+</tr>
+<tr valign="top">
+	<td width="25%" class="middlebg">
+		{SUPPORT_ADDED_FIELD}
+	</td>
+	<td class="usualbg">
+		{request_added}
+	</td>
+</tr>
+<tr valign="top">
+	<td width="25%" class="middlebg">
+		{SUPPORT_UPDATED_FIELD}
+	</td>
+	<td class="usualbg">
+		{date_modified}
+	</td>
+</tr>
+<tr valign="top">
+	<td width="25%" class="middlebg">
+		{SUPPORT_SUMMARY_FIELD}
+	</td>
+	<td class="usualbg">
+		{summary}
+	</td>
+</tr>
+</table>	
+<!-- end request_info -->
+
+<!-- begin reply_form -->
+<a name="reply_form"></a>
+<form action="{support_messages_href}?support_id={support_id}&vc={vc}#reply_form" name="reply" method="post">
+<input type="hidden" name="rnd" value="{rnd}" />
+<input type="hidden" name="support_id" value="{support_id}" />
+<input type="hidden" name="action" value="save" />
+<input type="hidden" name="attachments_url" value="{user_support_attachments_url}" />
+<input type="hidden" name="page" value="{page}" />
+
+<table cellspacing="1" width="100%" class="table-data"><!-- BEGIN errors -->
+<tr class="usualbg">
+	<td colspan="2" align="center">
+		<div class="errorbg">{errors_list}</div>
+	</td>
+</tr><!-- END errors -->
+<!-- begin attachments_block -->
+<tr class="usualbg">
+	<td>
+		<a href="#" onclick="attachFiles(document.reply);return false;">{ATTACHMENTS_MSG}</a>
+		<a href="#" onclick="attachFiles(document.forum);return false;"><img src="images/clip.gif" align="top" width="16" height="16" /></a>
+	</td>
+	<td>
+		<div id="attachmentsBlock" style="{attachments_class}">
+			<a href="#" onclick="attachFiles(document.reply);return false;">{ATTACHED_FILES_MSG}</a>:&nbsp;
+			&nbsp;<span id="attachedFiles">{attached_files}</span>
+		</div>
+	</td>
+</tr><!-- end attachments_block -->
+<tr class="usualbg">
+	<td>
+		{SUPPORT_MESSAGE_FIELD} *
+	</td>
+	<td>
+		<textarea class="text" name="message_text" cols="60" rows="10">{response_message}</textarea>
+	</td>
+</tr>
+	<!-- begin validation_number_block -->
+	<tr class="usualbg">
+		<td class="{validation_class}">{VALIDATION_CODE_FIELD} <span class="required">*</span></td>
+		<td class="{validation_class}">
+			&nbsp;<input class="field" type="text" name="validation_number" size="4" value="{validation_number}" />
+			&nbsp;<img src="validation_image.php" align="absmiddle" />
+		</td>
+	</tr><!-- end validation_number_block -->
+<tr class="middlebg">
+	<td>
+	</td>
+	<td>
+		<span class="submit"><input class="submit" type="submit" value="{REPLY_BUTTON}" /></span>
+		<span class="submit"><input class="submit" type="button" value="{CLEAR_BUTTON}" onclick="document.reply.message_text.value=''" /></span>
+		<span class="submit"><input class="submit" type="reset" value="{RESET_BUTTON}" /></span>
+	</td>
+</tr>
+</table>	
+
+</form>
+<!-- end reply_form -->
+
+	<!-- BEGIN records -->
+	<br />
+	<table cellspacing="1" cellpadding="6" width="100%" class="table-data">
+	<tr valign="top">
+		<td class="middlebg" width="25%">
+			{STATUS_MSG}
+		</td>
+		<td class="usualbg">
+			{status}
+		</td>
+	</tr>
+	<tr valign="top">
+		<td class="middlebg">
+			{SUPPORT_ADDED_BY_FIELD}
+		</td>
+		<td class="usualbg">
+			{posted_by}
+		</td>
+	</tr>
+	<tr valign="top">
+		<td class="middlebg">
+			{SUPPORT_ADDED_FIELD}
+		</td>
+		<td class="usualbg">
+			{date_added}
+		</td>
+	</tr>
+	<tr valign="top">
+		<td class="middlebg">
+			{viewed_by}
+		</td>
+		<td class="usualbg">
+			{date_viewed}
+		</td>
+	</tr>
+	<!-- begin message_attachments -->
+	<tr valign="top">
+		<td class="middlebg">
+			{ATTACHMENTS_MSG}
+		</td>
+		<td class="usualbg">
+			{attachments_files}
+		</td>
+	</tr>
+	<!-- end message_attachments -->
+	<tr>
+		<td colspan="2" class="usualbg">
+			{message_text}
+		</td>
+	</tr>
+	</table>
+	<!-- END records -->
+
+	<!-- begin navigator_block -->
+	<br />
+	<div class="padding6px" align="right">{navigator}</div>
+	<!-- end navigator_block -->
+
+
+

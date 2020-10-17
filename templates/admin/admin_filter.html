@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {ADMIN_FILTER_MSG} :: {EDIT_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+</head>
+
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{ADMIN_FILTER_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_filter_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="filter_id" value="{filter_id}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="page" value="{page}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table width="100%" border="0" cellspacing="1" cellpadding="6" align="center">
+<tr class="usual">
+	<td>{TYPE_MSG} *</td>
+	<td colspan="4">
+		<select name="filter_type"><!-- begin filter_type -->
+			<option {filter_type_selected} value="{filter_type_value}">{filter_type_description}<!-- end filter_type -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{NAME_MSG} *</td>
+	<td><input class="field" type="text" name="filter_name" size="100" value="{filter_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{DESCRIPTION_MSG}</td>
+	<td><textarea name="filter_desc" cols="100" rows="8">{filter_desc}</textarea></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+
+</body>
+</html>

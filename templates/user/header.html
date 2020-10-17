@@ -1,0 +1,18 @@
+	<div class="logo"><a href="{site_url}"><img src="{logo_src}" {logo_size} alt="{logo_alt}" title="{logo_alt}" /></a></div>
+
+	<!-- begin block_menu_header -->
+	<div class="header-menu {header_menu_class}">
+		<div class="nav-expand" data-js="expand" data-tag="ul"><span>{MENU_MSG}</span><i></i></div>
+		<ul data-js="nav" class="{parent_menu_class}"><!-- BEGIN menus -->
+			<li class="{menu_class}">
+				<i class="fa expand"></i>
+				<!-- BEGIN menu_image -->
+				<a class="nav-image" href="{menu_href}" {menu_target}><img src="{src}" alt="{alt}" title="{alt}" /></a><!-- END menu_image --><!-- BEGIN menu_text -->
+				<a class="nav-text" href="{menu_href}" {menu_target}><span>{menu_title}</span></a><!-- END menu_text --><!-- BEGIN submenus_block --> 
+				<ul>{submenus}</ul><!-- END submenus_block --> 
+			</li><!-- END menus -->
+		</ul>
+		<div class="clear"></div>
+	</div><!-- end block_menu_header -->
+
+	<div class="clear"></div>

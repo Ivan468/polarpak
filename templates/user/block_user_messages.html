@@ -1,0 +1,180 @@
+<div class="msg-box">
+
+<div class="msgLeft">
+<div class="msgLeftHeader"><img src="images/icons/folder_ico.gif" width="16" height="16" /></div>
+<div class="msgLeftContent">
+<!-- begin folders -->
+<div class="{folder_class}"><a href="{folder_url}">{folder_name}</a></div><!-- end folders -->
+</div>
+</div>
+
+<div class="msgRight">
+	<div class="msgRightHeader">
+		{content_title} 
+		<a href="{user_messages_href}?operation=new"><img align="right" src="images/icons/message_ico.gif" width="16" height="16" /></a>
+	</div>
+	<div class="msgRightContent">
+
+		<!-- begin message_sent_block -->
+		<div class="messageSent">{MESSAGE_SENT_MSG}</div>
+		<!-- end message_sent_block -->
+
+		<!-- begin message_saved_block -->
+		<div class="messageSaved">{MESSAGE_SAVED_MSG}</div>
+		<!-- end message_saved_block -->
+
+		<!-- BEGIN no_messages -->
+		<div class="noMessages">{NO_MESSAGES_MSG}</div>
+		<!-- END no_messages -->
+
+
+	<!-- begin messages_block -->
+	<table cellspacing="1" width="100%" class="table-data"><!-- begin sorters -->
+	<tr class="messagesHeader"><!-- begin message_from_header -->	
+		<td>{EMAIL_FROM_MSG}</td><!-- end message_from_header --><!-- begin message_to_header -->	
+		<td>{EMAIL_TO_MSG}</td><!-- end message_to_header -->	
+		<td>{EMAIL_SUBJECT_MSG}</td>
+		<td align="center" width="80">{TYPE_MSG}</td>
+		<td align="center" width="120">{DATE_MSG}</td>
+		<td>&nbsp;</td>
+	</tr><!-- end sorters --><!-- BEGIN messages -->
+	<tr class="{message_class}" valign="top"><!-- begin message_from_data -->	
+		<td><a href="{msg_url}">{message_from}</a></td><!-- end message_from_data --><!-- begin message_to_data -->	
+		<td><a href="{msg_url}">{message_to}</a></td><!-- end message_to_data -->	
+		<td><a href="{msg_url}">{message_subject}</a></td>
+		<td align="center">{message_type}</td>
+		<td align="center">{date_added}</td>
+		<td align="center">
+			<!-- begin delete_operation -->
+			<a href="{delete_url}"><img src="images/icons/delete_ico.gif" width="16" height="16" title="{DELETE_BUTTON}" alt="{DELETE_BUTTON}" /></a><!-- end delete_operation -->
+			<!-- begin trash_operation -->
+			<a href="{trash_url}"><img src="images/icons/trash_ico.gif" width="16" height="16" title="{DELETE_BUTTON}" alt="{DELETE_BUTTON}" /></a><!-- end trash_operation -->
+			<!-- begin undel_operation -->
+			<a href="{undel_url}"><img src="images/icons/undel_ico.gif" width="16" height="16" title="Undelete" alt="Undelete"/></a><!-- end undel_operation -->
+
+		</td>
+	
+	</tr><!-- END messages -->
+	</table>	
+
+	<div class="padding6px">
+		<!-- begin new_message_bottom --><a class="button" href="{user_messages_href}?operation=new"><span>{WRITE_NEW_MESSAGE_MSG}</span></a><!-- end new_message_bottom -->
+		<!-- begin navigator_block --><div class="floatright">{navigator}</div><!-- end navigator_block -->
+	</div>
+	<!-- end messages_block -->
+
+<!-- begin message_view_block -->
+<div class="viewMessage">
+<!-- begin view_message_type -->
+<div class="msgHeader">
+	<div class="headerTitle">
+		{type_name}
+	</div>
+	<div class="headerDesc">
+		<div><a href="{type_url}">{type_desc}</a></div>
+	</div>
+</div>
+<!-- end view_message_type -->
+<div class="msgHeader">
+	<div class="headerTitle">
+		{EMAIL_FROM_MSG}
+	</div>
+	<div class="headerValue">
+		<div>
+			{message_from}
+			<!-- begin profile_from -->
+			<span class="profile"><a href="{profile_url}">{PROFILE_TITLE}</a></span><!-- end profile_from -->
+		</div>
+	</div>
+</div>
+<div class="msgHeader">
+	<div class="headerTitle">
+		{EMAIL_TO_MSG}
+	</div>
+	<div class="headerValue">
+		<div>{message_to}</div>
+	</div>
+</div>
+<div class="msgHeader">
+	<div class="headerTitle">
+		{EMAIL_SUBJECT_MSG}
+	</div>
+	<div class="headerValue">
+		<div>{message_subject}</div>
+	</div>
+</div>
+<div class="msgText">
+	<div>{message_text}</div>
+</div>
+
+<div class="msgButtons">
+	<a class="button" href="{reply_url}"><span>{REPLY_BUTTON}</span></a> &nbsp;
+	<a class="button" href="{forward_url}"><span>{FORWARD_BUTTON}</span></a> &nbsp;
+	<a class="button" href="{trash_url}"><span>{DELETE_BUTTON}</span></a> &nbsp;
+</div>
+
+</div>
+<!-- end message_view_block -->
+
+
+<!-- begin message_form_block -->
+<form name="message" action="{user_messages_url}" method="post"> 
+<input type="hidden" name="operation" value="send">
+<input type="hidden" name="rnd" value="{rnd}">
+<input type="hidden" name="mid" value="{mid}">
+<input type="hidden" name="rmid" value="{rmid}">
+<input type="hidden" name="fmid" value="{fmid}">
+<input type="hidden" name="mtid" value="{mtid}">
+<input type="hidden" name="mkid" value="{mkid}">
+
+<div class="newMessage">
+
+<!-- begin errors -->
+<div class="errorbg">{errors_list}</div>
+<!-- end errors -->
+<!-- begin success -->
+<div class="success">{success_message}</div>
+<!-- end success -->
+
+<!-- begin form_message_type -->
+<div class="msgHeader">
+	<div class="headerTitle">
+		{type_name}
+	</div>
+	<div class="headerDesc">
+		<div><a href="{type_url}">{type_desc}</a></div>
+	</div>
+</div>
+<!-- end form_message_type -->
+<div class="msgHeader">
+	<div class="headerTitle">
+		{EMAIL_TO_MSG} 
+	</div>
+	<div class="headerValue">
+		<input class="text" type="text" name="message_to" value="{message_to}" size="60" maxlength="128" />
+	</div>
+</div>
+<div class="msgHeader">
+	<div class="headerTitle">
+		{EMAIL_SUBJECT_MSG}
+	</div>
+	<div class="headerValue">
+		<input class="text" type="text" name="message_subject" value="{message_subject}" size="60" maxlength="128" />
+	</div>
+</div>
+<div class="msgText">
+	<textarea name="message_text" cols="80" rows="10">{message_text}</textarea>
+</div>
+<div class="msgButtons">
+	<input type="submit" value="{SEND_BUTTON}" onclick="document.message.operation.value='send';" />
+	<input type="submit" value="{SAVE_BUTTON}" onclick="document.message.operation.value='save';" />
+</div>
+
+</div>
+</form>
+<!-- end message_form_block -->
+
+</div>
+</div>
+<div class="clear"></div>
+</div>

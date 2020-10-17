@@ -1,0 +1,169 @@
+	<!-- begin block_head -->
+	<h1>{block_title}</h1>
+	<!-- end block_head -->
+
+		<div class="right">
+			<a class="ico-print" href="{articles_print_href}?article_id={article_id}"><img src="images/ico-print.gif" alt="{PRINTER_FRIENDLY_MSG}" /></a>
+			<a class="ico-tell" onclick="window.open('{tell_friend_href}','tell_friend','toolbar=no,scrollbars=yes,resizable=no,width=425,height=400');return false;" href="{tell_friend_href}"><img src="images/ico-friend.gif" alt="{TELL_FRIEND_TITLE}" /></a>
+		</div>
+
+			<!-- begin no_article_item --><div class="errorbg" align="center">{NO_ARTICLE_MSG}</div><!-- end no_article_item -->
+
+			<!-- BEGIN article_item -->
+			<div>
+					<!-- begin authors_block -->
+					<ul class="article-authors"><!-- begin authors -->
+						<li>{author_name}<i class="separator">,</i></li> <!-- end authors -->
+					</ul>
+					<!-- end authors_block -->
+
+					<!-- begin author_block -->
+					<div class="article-author">
+					<!-- begin author_name_block --><b>{author_name}</b> <!-- end author_name_block -->
+					<!-- begin author_email_block -->&lt;{author_email}&gt;<!-- end author_email_block -->
+					<!-- begin author_url_block --> <a href="{author_url}" target="_blank">{author_url}</a><!-- end author_url_block -->
+					</div>
+					<!-- end author_block -->
+
+					<!-- begin date_block -->
+					<div class="article-date">
+					<!-- begin article_date_block -->{article_date}<!-- end article_date_block --> 
+					<!-- begin date_end_block --> &ndash; {date_end}<!-- end date_end_block --> 
+					</div>
+					<!-- end date_block -->
+
+
+					<div class="article-desc">
+						<!-- begin youtube_video_block-->
+						<div class="youtube-video">
+						<div id="youtube-player"></div>
+				    <script>
+							var tag = document.createElement('script');
+							tag.src = "https://www.youtube.com/iframe_api";
+							var firstScriptTag = document.getElementsByTagName('script')[0];
+							firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+							var player; var lyrics; var lyricsTid; 
+							function onYouTubeIframeAPIReady() {
+							  player = new YT.Player('youtube-player', {
+							    height: '{youtube_video_height}',
+							    width: '{youtube_video_width}',
+							    videoId: '{youtube_video}',
+							    events: {
+							      'onReady': vaInitLyrics,
+							      'onStateChange': vaPlayerState,
+							    }
+							  });
+							}
+				    </script>
+						</div>
+						<!-- end youtube_video_block -->
+
+						<!-- begin flash_player_block -->
+						<script type="text/javascript">
+						//<![CDATA[
+						flashplayer('{stream_video}','{stream_video_preview}','{stream_video_width}','{stream_video_height}','no','');
+						//]]>
+						</script><!-- end flash_player_block -->
+						<!-- begin windows_media_block-->
+						<script type="text/javascript">
+						//<![CDATA[
+						mediaplayer('{stream_video}','{stream_video_width}','{stream_video_height}','false');
+						//]]>
+						</script><!-- end windows_media_block-->
+
+						<!-- begin image_block -->
+						<div class="image-block" data-js="images" data-main-class="img-default" data-sub-class="top-images"> 
+							<!-- begin image_tiny_block -->
+							<img data-image-click="{image_super}" src="{src}" class="img-default img-tiny" alt="{alt}" /><!-- end image_tiny_block -->
+							<!-- begin image_small_block -->
+							<img data-image-click="{image_super}" src="{src}" class="img-default img-small" alt="{alt}" /><!-- end image_small_block -->
+							<!-- begin image_large_block -->
+							<img data-image-click="{image_super}" src="{src}" class="img-default img-large" alt="{alt}" /><!-- end image_large_block -->
+							<!-- begin image_super_block -->
+							<img src="{src}" class="img-default img-super" alt="{alt}" /><!-- end image_super_block -->
+
+							<!-- begin images_top_block -->
+							<div class="top-images"><!-- begin images_top -->
+								<img data-image-over="{image_large}" data-image-click="{image_super}" src="{image_small}" alt="{image_small_alt}" /><!-- end images_top -->
+							</div><div class="clear"></div>
+							<!-- end images_top_block -->
+
+						</div>
+						<!-- end image_block -->
+
+						<!-- begin hot_description_block --><div class="desc desc-hot">{hot_description}</div><!-- end hot_description_block -->
+						<!-- begin highlights_block --><div class="desc desc-high">{highlights}</div><!-- end highlights_block -->
+						<!-- begin short_description_block --><div class="desc desc-short">{short_description}</div><!-- end short_description_block -->
+						<!-- begin full_description_block --><div class="desc desc-full">{full_description}</div><!-- end full_description_block -->
+
+					</div>
+
+					<div class="article-other">
+						<!-- begin link_url_block --><div><b>{LINK_URL_MSG}</b>: <a href="{link_url}" target="_blank">{link_title}</a></div><!-- end link_url_block -->
+						<!-- begin download_url_block --><div><b>{DOWNLOAD_URL_MSG}</b>: <a href="{download_url}" target="_blank">{download_url}</a></div><!-- end download_url_block -->
+						<!-- begin notes_block --><div><b>{NOTES_MSG}</b>: {notes}</div><!-- end notes_block -->
+						<!-- begin keywords_block --><div><b>{KEYWORDS_MSG}</b>: {keywords}</div><!-- end keywords_block -->
+					</div>
+					
+			</div>
+			<!-- END article_item -->
+	
+			<br />
+
+			<!-- begin images_gallery_block -->
+			<div class="images-gallery" data-js="images" data-sub-class="sub-images">
+				<!-- begin images_gallery_title -->
+				<div class="title">{IMAGES_MSG}</div><!-- end images_gallery_title -->
+	  
+				<div class="sub-images"><!-- begin images_gallery -->
+					<div class="sub-image">
+						<div class="sub-title">{image_title}</div>
+						<img data-image-click="{image_super}" class="image" src="{image_small}" />
+						<div class="sub-desc">{image_description}</div>
+					</div><!-- end images_gallery -->
+				</div>
+				<div class="clear"></div>
+	  
+			</div>
+			<!-- end images_gallery_block -->
+
+			<!-- begin reviews_block -->
+			<div class="reviews">
+				<div class="title">{REVIEWS_MSG}</div>
+				<div class="rate">
+
+					<div class="rate-article"><a href="{reviews_href}">{RATE_ARTICLE_MSG}</a>.</div>
+					<div class="rate-desc">
+						<!-- begin not_rated -->
+						<b>{NOT_RATED_ARTICLE_MSG}</b> 
+						<!-- end not_rated -->
+						<!-- begin summary_statistic -->
+						<b>{AVERAGE_RATING_MSG}:</b> 
+						<img class="{average_rating_image}" src="images/tr.gif" alt="{average_rating_alt}" align="top" /> 
+						{BASED_ON_REVIEWS_MSG}. 
+						<!-- end summary_statistic -->
+						<a href="{reviews_href}">{WRITE_REVIEW_MSG}</a>.
+					</div>
+		    </div>
+
+				<br />
+
+				<!-- begin reviews -->
+				<div class="middlebg padding6px">{recommended_title}</div>
+				<div class="review-date padding6px floatright">{review_date_added}</div>
+				<div class="{review_user_class} padding6px">{review_user_name} 
+					<img class="{recommended_class}" src="images/tr.gif" align="top" alt="" /></div>
+		  
+				<div class="RatingImage"><img class="{rating_class}" src="images/tr.gif" align="top" /></div>
+				<div class="RatingText">
+					<div class="title">{review_summary}</div>
+					<div align="justify">{review_comments}</div>
+				</div>
+				<!-- end reviews -->
+
+				<!-- begin all_reviews_link -->
+				<div class="reviews-view"><a href="{reviews_url}">{SEE_ALL_REVIEWS_MSG}</a></div>
+				<!-- end all_reviews_link -->
+			</div>
+			<!-- end reviews_block -->
+			<div class="clearboth"></div>

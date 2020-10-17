@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {ADMIN_FORUM_TITLE} :: {ATTACHMENTS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+
+<script language="JavaScript">
+<!--
+
+function closeWindow(attachmentsFiles)
+{
+	window.opener.updateAttachments(attachmentsFiles);
+	window.opener.focus();
+	window.close();
+}
+
+//-->
+</script>
+</head>
+
+<body class="popup">
+<form name="upload" action="{admin_forum_attachments_href}" enctype="multipart/form-data" method="post">
+<input type="hidden" name="operation" value="upload">
+<input type="hidden" name="forum_id" value="{forum_id}">
+<input type="hidden" name="thread_id" value="{thread_id}">
+<input type="hidden" name="message_id" value="{message_id}">
+<input type="hidden" name="status" value="{status}">
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle" align="center">
+	<td><a href="javascript:closeWindow('{attachments_files}');"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+</table>
+
+<!-- BEGIN errors --><div class="error">{errors_list}</div><!-- END errors -->
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="usual" align="center">
+	<td colspan="3">
+		<table>
+		<tr><td>{UPLOAD_FILE_DESC}</td></tr>
+		<tr><td>
+			<input size="40" class="submit" type="file" name="newfile">
+			<span class="button"><input class="submit" type="submit" name="submit" value="Upload"></span>
+		</td></tr>
+		</table>
+	</td>
+</tr><!-- begin attachments_block -->
+<tr class="middle" align="center">
+	<td>{ADMIN_FILE_MSG}</td>
+	<td>{ADMIN_SIZE_MSG}</td>
+	<td>&nbsp;</td>
+</tr>
+<!-- begin attachments -->
+<tr class="usual">
+	<td>{filename}</td>
+	<td align="center">{filesize}</td>
+	<td align="center"><a href="{admin_forum_attachments_href}?operation=remove&forum_id={forum_id}&thread_id={thread_id}&message_id={message_id}&status={status}&atid={attachment_id}" onClick="return confirm('{CONFIRM_DELETE_JS}');">{DELETE_BUTTON}</a></td>
+</tr><!-- end attachments --><!-- end attachments_block -->
+<tr class="middle" align="center">
+	<td colspan="3"><a href="javascript:closeWindow('{attachments_files}');"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+</table>
+
+</form>	
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..::{ADMINISTRATION_MSG} :: {EDIT_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+	
+	function openWindow(pagename, filetype)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,sliderbar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+	}
+
+	function setFileName(filename, filetype)
+	{
+		if (filename != "")
+		{
+			if (filetype == "slider_image")
+			{
+				document.record.slider_image.value = "images/" + filename;
+				document.record.slider_image.focus();
+			}
+		}
+	}
+//]]>
+</script>
+
+<body class="bodySbuilder">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<div class="Block">
+<div class="BlockTitle">{EDIT_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_slider_item_edit_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="slider_id" value="{slider_id}">
+<input type="hidden" name="item_id" value="{item_id}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="usual">
+	<td>
+	</td>
+	<td>
+		<div class="small floatRight">{ASTERISK_MSG}</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		<label for="show_for_user">{SHOW_FOR_USER_MSG}</label>
+	</td>
+	<td>
+		<input type="checkbox" name="show_for_user" id="show_for_user" {show_for_user} value="1"> 
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ADMIN_ORDER_MSG} *</td>
+	<td><input class="field" type="text" name="item_order" value="{item_order}" size="10"></td>
+</tr>
+<tr class="usual">
+	<td>{NAME_MSG} *</td>
+	<td>
+		<input class="field" type="text" name="item_name" value="{item_name}" size="50">
+	</td>
+</tr>
+
+<tr class="usual">
+	<td>{IMAGE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="slider_image" value="{slider_image}" size="50">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'slider_image')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'slider_image')"><b>{SELECT_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="#" onClick="document.record.slider_image.value=''">{CLEAR_BUTTON}</a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{TARGET_URL_MSG}</td>
+	<td>
+		<input class="field" type="text" name="slider_link" value="{slider_link}" size="50">
+	</td>
+</tr>
+<tr class="usual">
+	<td>{HTML_MSG}</td>
+	<td><textarea name="slider_html" cols="85" rows="15">{slider_html}</textarea></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{SMS_TITLE} :: {STATUS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header}
+{block_leftside_breadcrumbs}
+
+<!-- begin message --><div class="messagebg">{STATUS_MSG}: {sms_status}</div><!-- end message -->
+
+<div class="Block">
+<div class="BlockTitle">{SMS_TITLE} :: {STATUS_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_sms_status_href}" name="sms_status" method="POST">
+<input type="hidden" name="operation" value="submit">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table align="center" cellspacing="1" cellpadding="6" border="0" width=100%>
+<tr class="usual">
+	<td>
+		&nbsp;{ID_MSG}:
+		<input class="field" type="text" name="sms_message_id" value="{sms_message_id}" size="20" maxlength="32">
+		<span class="button"><input class="submit" type="submit" value="{SUBMIT_BUTTON}"></span>
+	</td>                         
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+</tr>
+</table>
+
+</form>
+</div>
+</div>       
+
+{admin_footer}
+</body>
+</html>

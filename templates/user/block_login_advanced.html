@@ -1,0 +1,99 @@
+<a name="bk_login_{pb_id}"></a>
+
+	<form action="{user_login_href}" name="record" method="post">
+	<input type="hidden" name="user_id" value="" />
+	<input type="hidden" name="ssl" value="{ssl}" />
+	<input type="hidden" name="operation" value="{operation}" />
+	<input type="hidden" name="return_page" value="{return_page}" />
+		
+		<!-- BEGIN login_form -->
+		<!-- begin new_user_block -->
+		<div class="new-user">
+			<div class="bg-title">{NEW_USER_MSG}</div>
+			<div class="login-signup"><!-- begin user_types -->
+				<a href="{user_profile_url}">{SIGN_UP_MSG} <span class="user-type">({user_type_name})</span></a><!-- end user_types -->
+			</div>
+		</div><!-- end new_user_block -->
+
+		<div class="exists-user">
+			<div class="bg-title">{EXISTS_USER_MSG}</div>
+			<div class="login-hint">{ENTER_LOGIN_MSG}</div>
+			<!-- begin admin_select_user -->
+			<div class="field admin-select">
+				<div class="before"></div>
+				<div class="name"></div>
+				<div class="control">
+					<a href="#" onClick="openUsersWindow('{call_center_users_href}', 'record', '', 'login'); return false;">{SELECT_USER_MSG}</a>
+				</div>
+				<div class="after"></div>
+			</div><!-- end admin_select_user -->
+			<!-- BEGIN login_errors -->
+			<div class="errors">{errors_list}</div><!-- END login_errors -->
+
+			<div class="field fd-login">
+				<div class="before"></div>
+				<div class="name">
+					{LOGIN_FIELD}
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="login" value="{login}" size="24" maxlength="64" placeholder="{login_placeholder}" />
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-password">
+				<div class="before"></div>
+				<div class="name">
+					{PASSWORD_FIELD}
+				</div>
+				<div class="control">
+					<input class="text" type="password" name="password" value="" size="24" maxlength="32" />
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-remember">
+				<div class="before"></div>
+				<div class="name"></div>
+				<div class="control">
+					<label><input type="checkbox" {remember_me} name="remember_me" value="1" />{REMEMBER_ME_MSG}</label> 
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-buttons">
+				<div class="before"></div>
+				<div class="name"></div>
+				<div class="control">
+					<input class="submit" type="submit" value="{SIGN_IN_BUTTON}" onclick="document.record.operation.value='login'" /> 
+				</div>
+				<div class="after"></div>
+			</div>
+
+			<div class="field forgot-password">
+				<div class="before"></div>
+				<div class="name"></div>
+				<div class="control">
+					<a href="{forgot_password_href}">{FORGOT_PASSWORD_MSG}</a>
+				</div>
+				<div class="after"></div>
+			</div>
+		</div>
+		<!-- END login_form -->
+		
+		<!-- BEGIN logout_form -->
+		<!-- BEGIN logout_errors -->
+		<div class="errors">{errors_list}</div><!-- END logout_errors -->
+
+		<div class="logged-in">{LOGIN_AS_NAME}</div>
+		<div class="access-home">{ACCESS_HOME_MSG} <a href="{user_home_href}">{CLICK_HERE_MSG}</a></div>
+		<div class="login-signout"><input class="submit" type="submit" value="{LOGOUT_BUTTON}" onclick="document.record.operation.value='logout'" /></div>
+		<!-- END logout_form -->
+
+		<div class="clear"></div>
+	</form>
+
+<script type="text/javascript">
+//<![CDATA[
+	if(document.record.login) {
+		document.record.login.focus();
+	}
+//]]>
+</script>

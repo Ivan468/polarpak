@@ -1,0 +1,130 @@
+	<!-- begin menu_block -->
+	<div class="{block_menu_class}">
+		<div class="nav-expand" data-js="expand" data-tag="ul"><span>{NAVIGATION_BAR_MSG}</span><i></i></div>
+		<ul data-js="nav" data-js-type="click" class="{top_menu_class}">
+			<!-- begin home_block -->
+			<li class="home {menu_class}"><a href="{site_url}"><i></i><span>{HOME_PAGE_TITLE}</span></a></li><!-- end home_block -->
+			<!-- begin account_block -->
+			<li class="account {menu_class}"><a href="{user_home_href}"><i></i><span>{MY_ACCOUNT_MSG}</span></a></li><!-- end account_block -->
+			<!-- begin wishlist_block -->
+			<li class="wishlist {menu_class}"><a href="{user_wishlist_href}"><i></i><span>{WISHLIST_MSG}</span></a></li><!-- end wishlist_block -->
+			<!-- begin compare_block -->
+			<li class="compare {menu_class}"><a href="{compare_href}"><i></i><span>{COMPARE_MSG}</span></a></li><!-- end compare_block -->
+			<!-- begin products_block -->
+			<li class="products {menu_class}" data-js-type="click">
+				<a href="{products_href}"><i></i><span>{PRODUCTS_TITLE}</span></a>
+				<!-- BEGIN categories_list -->
+				<ul><!-- BEGIN category_item -->
+					<li class="{category_class}">
+						<i></i><a href="{category_url}">{category_name}</a><!-- BEGIN subcategories_list --> 
+						<ul>{subcategories}</ul><!-- END subcategories_list --> 
+					</li><!-- END category_item -->
+				</ul><!-- END categories_list -->
+	
+			</li><!-- end products_block -->
+			<!-- begin languages_block -->
+			<li class="languages nav-childs {menu_class}">
+				<i class="expand"></i><a><!-- begin active_language_image --><span class="language-image"><img src="{src}" alt="{alt}"/></span><!-- end active_language_image --><span class="language-name">{active_language_code}</span></a>
+				<ul><!-- begin languages -->
+					<li><a href="{language_url}"><!-- begin language_image --><span class="language-image"><img src="{src}" alt="{alt}" /></span><!-- end language_image --><span class="language-name">{language_name}</span></a></li><!-- end languages -->
+				</ul>
+			</li>
+			<!-- end languages_block -->
+			<!-- begin currencies_block -->
+			<li class="currencies nav-childs {menu_class}">
+				<i class="expand"></i><a class="currency-{active_currency_code_lowercase}"><!-- begin active_currency_image --><span class="currency-image"><img src="{src}" alt="{alt}"/></span><!-- end active_currency_image --><span class="currency-name">{active_currency_code}</span></a>
+				<ul><!-- begin currencies -->
+					<li class="currency-{currency_code_lowercase}"><a href="{currency_url}"><!-- begin currency_image --><span class="currency-image"><img src="{src}" alt="{alt}" /></span><!-- end currency_image --><span class="currency-name">{currency_name}</span></a></li><!-- end currencies -->
+				</ul>
+			</li>
+			<!-- end currencies_block -->
+			<!-- begin products_search_block -->
+			<li class="search {menu_class}">
+				<a href="{products_search_href}"><i></i><span>{PRODUCTS_TITLE} {SEARCH_TITLE}</span></a>
+				<ul>
+					<li>
+						<form action="{products_search_href}" name="bar_products_search" method="get">
+						<input type="hidden" name="category_id" value="{top_id}" />
+						<!-- BEGIN search_categories -->
+						<div class="category-select" data-js="select" data-form="bar_products_search" data-input="category_id"><span data-type="selected" class="category-title">All</span><i></i>	
+							<div class="categories-options" data-type="options">
+								<!-- begin category_id -->
+								<div class="{category_id_class}" data-type="option" data-value="{category_id_value}">
+									{category_id_description}
+								</div><!-- end category_id -->
+							</div>
+						</div>
+						<!-- END search_categories -->
+						<div class="search-button"><input type="submit" name="search" value=" {GO_BUTTON} " /></div>
+						<div class="search-field"><input type="text" name="search_string" value="{search_string}" /></div>
+						</form>
+					</li>
+				</ul>
+			</li><!-- end products_search_block -->
+	
+			<!-- begin site_search_block -->
+			<li class="site-search {menu_class}">
+				<a href="{site_search_href}"><i></i><span>{FULL_SITE_SEARCH_MSG}</span></a>
+				<ul>
+					<li>
+						<form action="{site_search_href}" name="bar_site_search" method="get">
+							<div class="search-button"><input type="submit" name="search" value=" {GO_BUTTON} " /></div>
+							<div class="search-field"><input type="text" name="sq" value="{sq}" /></div>
+						</form>
+					</li>
+				</ul>
+	
+			</li><!-- end site_search_block -->
+
+			<!-- begin music_search_block -->
+			<li class="music-search {menu_class}">
+				<form action="{music_search_href}" name="bar_music_search" method="get">
+					<div class="search-button"><input type="submit" name="search" value=" &#xf002; " /></div>
+					<div class="search-field"><input placeholder="{SEARCH_TITLE}" type="text" name="sw" value="{sw}" /></div>
+				</form>
+			</li><!-- end music_search_block -->
+			<!-- begin cart_block -->
+			<li id="cart_{pb_id}" data-type="cart" data-pb-id="{pb_id}" class="cart {menu_class}"><a href="{cart_href}"><i></i><span class="cart-title">{CART_TITLE}</span> <span class="cart-qty">{total_quantity}</span><span class="cart-total">{total_price}</span></a>
+				<ul>
+					<li>
+					<!-- begin empty_small_cart -->
+					<div class="empty">{EMPTY_CART_MSG}</div>
+					<!-- end empty_small_cart -->
+          
+					<!-- begin small_cart -->
+					<table width="100%" cellspacing="0" class="cart-small">
+					<tr class="cart-title">
+						<td><b>{PROD_TITLE_COLUMN}</b></td><td align="center"><b>{PROD_QTY_COLUMN}</b></td><td align="right"><b>{PROD_PRICE_COLUMN}</b></td>
+					</tr><!-- BEGIN small_cart_items -->
+					<tr class="cart-item">
+						<td class="product-name">{item_name}</td><td align="product-qty">{quantity}</td><td class="product-price">{price}</td>
+					</tr><!-- END small_cart_items -->
+					<tr class="cart-total">
+						<td align="right"><b>{GOODS_TOTAL_MSG}</b></td><td align="center">{total_quantity}</td><td align="right">{total_price}</td>
+					</tr>
+					<tr>
+						<td colspan="3" class="cart-buttons">
+							<a class="button bn-view" href="{basket_href}"><span>{VIEW_CART_MSG}</span></a>
+							<a class="button bn-checkout" href="{checkout_href}"><span>{GOTO_CHECKOUT_MSG}</span></a>
+						</td>
+					</tr>
+					</table>
+					<!-- end small_cart -->
+					</li>
+				</ul>
+			</li><!-- end cart_block -->
+	
+			<!-- BEGIN menus -->
+			<li class="nav-item {menu_class}">
+				<i class="expand"></i><!-- BEGIN menu_image -->
+				<a class="nav-image" href="{menu_href}" {menu_target}><img src="{src}" alt="{alt}" title="{alt}" /></a><!-- END menu_image --><!-- BEGIN menu_text -->
+				<a class="nav-text" href="{menu_href}" {menu_target}><i></i><span>{menu_title}</span></a><!-- END menu_text --><!-- BEGIN submenus_block --> 
+				<ul class="sub-menu">{submenus}</ul><!-- END submenus_block --> 
+			</li><!-- END menus -->
+		</ul>
+		<div class="clear"></div>
+	</div>
+	<!-- end menu_block -->
+
+<!-- begin after_block -->
+<div class="foot-navigation-bar {block_position}"></div><!-- end after_block -->

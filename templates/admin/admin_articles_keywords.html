@@ -1,0 +1,393 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{KEYWORDS_SEARCH_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/ajax.js"></script>
+<script language="JavaScript">
+<!--
+	var indexedArticles = 0;
+	var progressNumber = 0;
+	var stopKeywords = false;
+	var stopProgress = false;
+
+	function startGenerateKeywords()
+	{
+		stopKeywords = false;
+		stopProgress = false;
+		// check indexed articles value 
+		var obj = document.getElementById("indexed_articles");
+		indexedArticles = parseInt(obj.innerHTML);
+		// disable active buttons
+		document.record.generateButton.disabled = true;
+		document.record.clearButton.disabled = true;
+		// show cancel button
+		obj = document.getElementById("cancelBlock");
+		obj.style.display = "inline";
+
+		showProcess();
+		generateKeywords();
+	}
+
+	function stopGenerateKeywords()
+	{
+		stopKeywords = true;
+	}
+
+	function generateKeywords()
+	{
+		callAjax("admin_articles_keywords.php?operation=generate", keywordsResult, "generate");
+	}
+
+	function clearKeywords()
+	{
+		callAjax("admin_articles_keywords.php?operation=clear", keywordsResult, "clear");
+	}
+
+	function keywordsResult(data, operation)
+	{
+		try { 
+			data = JSON.parse(data); 
+		} catch(e){
+			alert("Bad respnose: " + data);
+		}
+
+		var params = new Array();
+		params["total_articles"] = data.total_articles;
+		params["indexed_articles"] = data.indexed_articles;
+		params["indexed_keywords"] = data.indexed_keywords;
+
+		for (paramName in params) {
+			obj = document.getElementById(paramName);
+			if (obj) {
+				obj.innerHTML = params[paramName];
+			}
+		}
+		// check how many articles has been indexed
+		obj = document.getElementById("total_articles");
+		var totalArticles = parseInt(obj.innerHTML);
+		obj = document.getElementById("indexed_articles");
+		var lastindexedArticles = parseInt(obj.innerHTML);
+
+		if (!stopKeywords && operation == "generate" && lastindexedArticles < totalArticles && lastindexedArticles > indexedArticles) {
+			setTimeout("generateKeywords()", 100);
+		} else {
+			stopProgress = true;
+			// activate disabled buttons
+			document.record.generateButton.disabled = false;
+			document.record.clearButton.disabled = false;
+			// hide cancel button
+			obj = document.getElementById("cancelBlock");
+			obj.style.display = "none";
+		}
+	}
+
+	function showProcess()
+	{
+		var obj = "";
+		var prEl = new Array("\\", "|", "/", "&mdash;");
+		if (!stopProgress) {
+			progressNumber++;
+			obj = document.getElementById("progress_articles");
+			var indexNumber = (progressNumber % 4);
+			obj.innerHTML = prEl[indexNumber];
+
+			obj = document.getElementById("progress_keywords");
+			indexNumber = ((progressNumber + 2) % 4);
+			obj.innerHTML = prEl[indexNumber];
+			setTimeout("showProcess()", 100);
+		} else {
+			obj = document.getElementById("progress_articles");
+			obj.innerHTML = "";
+			obj = document.getElementById("progress_keywords");
+			obj.innerHTML = "";
+		}
+	}
+
+//-->
+</script>
+</head>
+<body class="mainbg">
+{admin_header}
+<form action="{admin_articles_keywords_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="rp" value="{rp}">
+<input type="hidden" name="tab" value="{tab}">
+<!-- begin sitelist -->
+<div class="sitelist">
+	{SELECT_SITE_MSG}&nbsp;
+	<select name="param_site_id" onchange="reloadSite(this.form)"><!-- begin param_site_id -->
+		<option {param_site_id_selected} value="{param_site_id_value}">{param_site_id_description}<!-- end param_site_id -->
+	</select>		
+</div><!-- end sitelist -->
+{block_leftside_breadcrumbs}
+
+<!-- BEGIN success_block --><div class="messagebg">{CHANGES_SAVED_MSG}</div><!-- END success_block -->
+<!-- BEGIN errors --><div class="error">{errors_list}</div><!-- END errors -->
+
+	<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+		<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+	</ul>
+
+<div class="Form clearBoth">
+<div class="FormContent">
+
+<div id="settings_data" class="tab-data {settings_class}">
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="usual">
+	<td width="20%"><b>{KEYWORDS_SEARCH_MSG}</b></td>
+	<td>
+		<!-- begin keywords_search -->
+		<input type="radio" name="keywords_search" id="keywords_search{keywords_search_value}" {keywords_search_checked} value="{keywords_search_value}">{keywords_search_description}<!-- end keywords_search -->
+	</td>
+</tr>
+<tr class="usual">
+	<td width="20%"><b>{FIELDS_SETTINGS_MSG}</b></td>
+	<td>
+		<table>
+		<tr>
+			<th>{FIELD_NAME_MSG}</th>
+			<th>{INDEX_MSG}</th>
+			<th>{RANK_MSG}</th>
+		</tr>
+		<tr>
+			<td>
+				<label for="article_title_index">{ARTICLE_TITLE_MSG}</label>
+			</td>
+			<td>
+				<input type="checkbox" name="article_title_index" id="article_title_index" {article_title_index} value="1"> 
+			</td>
+			<td>
+				<input type="textbox" name="article_title_rank" value="{article_title_rank}" size="10" maxlength="10"> 
+			</td>
+			<td>
+				<select name="article_title_type"><!-- begin article_title_type -->
+					<option {article_title_type_selected} value="{article_title_type_value}">{article_title_type_description}<!-- end article_title_type -->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="author_name_index">{AUTHOR_NAME_MSG}</label>
+			</td>
+			<td>
+				<input type="checkbox" name="author_name_index" id="author_name_index" {author_name_index} value="1"> 
+			</td>
+			<td>
+				<input type="textbox" name="author_name_rank" value="{author_name_rank}" size="10" maxlength="10"> 
+			</td>
+			<td>
+				<select name="author_name_type"><!-- begin author_name_type -->
+					<option {author_name_type_selected} value="{author_name_type_value}">{author_name_type_description}<!-- end author_name_type -->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="album_name_index">{ALBUM_NAME_MSG}</label>
+			</td>
+			<td>
+				<input type="checkbox" name="album_name_index" id="album_name_index" {album_name_index} value="1"> 
+			</td>
+			<td>
+				<input type="textbox" name="album_name_rank" value="{album_name_rank}" size="10" maxlength="10"> 
+			</td>
+			<td>
+				<select name="album_name_type"><!-- begin album_name_type -->
+					<option {album_name_type_selected} value="{album_name_type_value}">{album_name_type_description}<!-- end album_name_type -->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="tag_name_index">{TAG_NAME_MSG}</label>
+			</td>
+			<td>
+				<input type="checkbox" name="tag_name_index" id="tag_name_index" {tag_name_index} value="1"> 
+			</td>
+			<td>
+				<input type="textbox" name="tag_name_rank" value="{tag_name_rank}" size="10" maxlength="10"> 
+			</td>
+			<td>
+				<select name="tag_name_type"><!-- begin tag_name_type -->
+					<option {tag_name_type_selected} value="{tag_name_type_value}">{tag_name_type_description}<!-- end tag_name_type -->
+				</select>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<label for="short_description_index">{SHORT_DESCRIPTION_MSG}</label>
+			</td>
+			<td>
+				<input type="checkbox" name="short_description_index" id="short_description_index" {short_description_index} value="1"> 
+			</td>
+			<td>
+				<input type="textbox" name="short_description_rank" value="{short_description_rank}" size="10" maxlength="10"> 
+			</td>
+			<td>
+				<select name="short_description_type"><!-- begin short_description_type -->
+					<option {short_description_type_selected} value="{short_description_type_value}">{short_description_type_description}<!-- end short_description_type -->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="full_description_index">{FULL_DESCRIPTION_MSG}</label>
+			</td>
+			<td>
+				<input type="checkbox" name="full_description_index" id="full_description_index" {full_description_index} value="1"> 
+			</td>
+			<td>
+				<input type="textbox" name="full_description_rank" value="{full_description_rank}" size="10" maxlength="10"> 
+			</td>
+			<td>
+				<select name="full_description_type"><!-- begin full_description_type -->
+					<option {full_description_type_selected} value="{full_description_type_value}">{full_description_type_description}<!-- end full_description_type -->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="highlights_index">{HIGHLIGHTS_MSG}</label>
+			</td>
+			<td>
+				<input type="checkbox" name="highlights_index" id="highlights_index" {highlights_index} value="1"> 
+			</td>
+			<td>
+				<input type="textbox" name="highlights_rank" value="{highlights_rank}" size="10" maxlength="10"> 
+			</td>
+			<td>
+				<select name="highlights_type"><!-- begin highlights_type -->
+					<option {highlights_type_selected} value="{highlights_type_value}">{highlights_type_description}<!-- end highlights_type -->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="hot_description_index">{HOT_DESCRIPTION_MSG}</label>
+			</td>
+			<td>
+				<input type="checkbox" name="hot_description_index" id="hot_description_index" {hot_description_index} value="1"> 
+			</td>
+			<td>
+				<input type="textbox" name="hot_description_rank" value="{hot_description_rank}" size="10" maxlength="10"> 
+			</td>
+			<td>
+				<select name="hot_description_type"><!-- begin hot_description_type -->
+					<option {hot_description_type_selected} value="{hot_description_type_value}">{hot_description_type_description}<!-- end hot_description_type -->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="notes_index">{NOTES_MSG}</label>
+			</td>
+			<td>
+				<input type="checkbox" name="notes_index" id="notes_index" {notes_index} value="1"> 
+			</td>
+			<td>
+				<input type="textbox" name="notes_rank" value="{notes_rank}" size="10" maxlength="10"> 
+			</td>
+			<td>
+				<select name="notes_type"><!-- begin notes_type -->
+					<option {notes_type_selected} value="{notes_type_value}">{notes_type_description}<!-- end notes_type -->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="meta_title_index">{META_TITLE_MSG}</label>
+			</td>
+			<td>
+				<input type="checkbox" name="meta_title_index" id="meta_title_index" {meta_title_index} value="1"> 
+			</td>
+			<td>
+				<input type="textbox" name="meta_title_rank" value="{meta_title_rank}" size="10" maxlength="10"> 
+			</td>
+			<td>
+				<select name="meta_title_type"><!-- begin meta_title_type -->
+					<option {meta_title_type_selected} value="{meta_title_type_value}">{meta_title_type_description}<!-- end meta_title_type -->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="meta_keywords_index">{META_KEYWORDS_MSG}</label>
+			</td>
+			<td>
+				<input type="checkbox" name="meta_keywords_index" id="meta_keywords_index" {meta_keywords_index} value="1"> 
+			</td>
+			<td>
+				<input type="textbox" name="meta_keywords_rank" value="{meta_keywords_rank}" size="10" maxlength="10"> 
+			</td>
+			<td>
+				<select name="meta_keywords_type"><!-- begin meta_keywords_type -->
+					<option {meta_keywords_type_selected} value="{meta_keywords_type_value}">{meta_keywords_type_description}<!-- end meta_keywords_type -->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="meta_description_index">{META_DESCRIPTION_MSG}</label>
+			</td>
+			<td>
+				<input type="checkbox" name="meta_description_index" id="meta_description_index" {meta_description_index} value="1"> 
+			</td>
+			<td>
+				<input type="textbox" name="meta_description_rank" value="{meta_description_rank}" size="10" maxlength="10"> 
+			</td>
+			<td>
+				<select name="meta_description_type"><!-- begin meta_description_type -->
+					<option {meta_description_type_selected} value="{meta_description_type_value}">{meta_description_type_description}<!-- end meta_description_type -->
+				</select>
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+<div id="keywords_data" class="tab-data {keywords_class}">
+
+	<table width="100%" align="center" cellspacing="1" cellpadding="4" border="0">
+	<tr class="usual">
+		<td width="20%">{TOTAL_ARTICLES_MSG}</td>
+		<td width="80%"><b><span id="total_articles">{total_articles}</span></b></td>
+	</tr>
+	<tr class="usual">
+		<td width="20%">{INDEXED_ARTICLES_MSG}</td>
+		<td width="80%"><div id="indexed_articles" style="float: left; font-weight: bold;">{indexed_articles}</div> <div id="progress_articles" style="color: #2F97EC; float: left; width: 20px; text-align: center;"></div></td>
+	</tr>
+	<tr class="usual">
+		<td width="20%">{INDEXED_KEYWORDS_MSG}</td>
+		<td width="80%"><div id="indexed_keywords" style="float: left; font-weight: bold;">{indexed_keywords}</div> <div id="progress_keywords" style="color: #2F97EC; float: left; width: 20px; text-align: center;"></div></td>
+	</tr>
+	<tr class="middle">
+		<td>&nbsp;</td>
+		<td>
+			<span class="button"><input class="submit" name="generateButton" type="button" value="{GENERATE_KEYWORDS_MSG}" onCLick="startGenerateKeywords();"></span>
+			<span class="button"><input class="submit" name="clearButton" type="button" value="{CLEAR_KEYWORDS_MSG}" onCLick="clearKeywords();"></span>
+			<span id="cancelBlock" class="button" style="display:none;"><input class="submit" name="cancelButton" type="button" value="{CANCEL_BUTTON}" onCLick="stopGenerateKeywords();"></span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+
+</div>
+</div>
+</form>
+{admin_footer}
+</body>
+</html>

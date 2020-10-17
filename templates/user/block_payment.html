@@ -1,0 +1,23 @@
+	<br/><br/>
+	<!-- begin errors -->
+	<div align="center">{errors_list}</div>
+	<!-- end errors -->
+
+	<!-- begin submit_payment -->
+	<form action="{payment_url}" name="payment" method="{submit_method}"><!-- begin parameters -->
+	<input type="hidden" name="{parameter_name}" value="{parameter_value}" /><!-- end parameters -->
+	<div align="center" style="font-family: tahoma, arial, sans-serif; color: navy; ">
+	{GOTO_PAYMENT_MSG}<br /><br />
+	<input type="submit" value="{CONTINUE_BUTTON}" />
+	</div>
+	</form>
+
+
+	<script type="text/javascript">
+	//<![CDATA[
+	document.payment.submit();
+	//]]>
+	</script>
+	<!-- end submit_payment -->
+
+	<br/><br/>

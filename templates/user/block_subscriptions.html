@@ -1,0 +1,40 @@
+<script type="text/javascript">
+//<![CDATA[
+var addSubscription = "{CONFIRM_SUBSCRIPTION_MSG}";
+var confirmAdd = "{confirm_add}";
+//]]>
+</script>
+
+	<!-- BEGIN subscriptions_items -->
+	<!-- BEGIN subscription_group --><div class="middlebg padding6px"><b>{group_name}</b></div><!-- END subscription_group -->
+	<div class="{class_item_td}">
+		<a name="f{form_id}"></a>
+		<!-- BEGIN subscription_added --><div class="message" align="center">{added_message}</div><!-- END subscription_added -->
+		<!-- BEGIN sc_errors --><div class="error" align="center">{errors_list}</div><!-- END sc_errors -->
+		<form name="form_{form_id}" method="post" action="{subscriptions_href}#f{form_id}">
+		<input type="hidden" name="group_id" value="{group_id}" />
+		<input type="hidden" name="rp" value="{rp}" />
+		<input type="hidden" name="rnd" value="{rnd}" />
+		<input type="hidden" name="cart" value="SUBSCRIPTION" />
+		<div>
+			<!-- begin subscription_value -->
+			<input type="hidden" name="subscription_id" value="{subscription_id_value}" />
+			<span class="title">{subscription_name}</span> - <span class="ourprice">{subscription_fee}</span> ({subscription_period})<br />
+			<!-- end subscription_value -->
+			<!-- begin subscription_id -->
+			<input type="radio" name="subscription_id" {subscription_id_checked} value="{subscription_id_value}" />
+			<span class="title">{subscription_name}</span> - <span class="ourprice">{subscription_fee}</span> ({subscription_period})<br /><!-- end subscription_id -->
+		</div>
+		<div class="padding2px">
+			<!-- begin cart_add_button -->
+			<a class="button bn-add" id="add{form_id}" href="{buy_href}" onclick="return confirmSubscription(document.form_{form_id});"><span>{ADD_TO_CART_MSG}</span><img src="images/tr.gif" alt="{ADD_TO_CART_MSG}" /></a> 
+			<!-- end cart_add_button -->
+			<!-- begin view_button -->
+			<a class="button bn-view" id="view{form_id}" href="{basket_href}?rp={rp_url}"><span>{VIEW_CART_MSG}</span><img src="images/tr.gif" alt="{VIEW_CART_MSG}" /></a> 
+			<!-- end view_button -->
+			<!-- begin checkout_button -->
+			<a class="button bn-checkout" id="checkout{form_id}" href="{checkout_href}?rp={rp_url}"><span>{GOTO_CHECKOUT_MSG}</span><img src="images/tr.gif" alt="{GOTO_CHECKOUT_MSG}" /></a>
+			<!-- end checkout_button -->
+		</div>
+		</form>
+	</div><!-- END subscriptions_items -->

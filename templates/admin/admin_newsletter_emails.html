@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{EMAILS_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/calendar.js"></script>
+<script language="JavaScript" type="text/javascript" src="../js/select.js"></script>
+<script language="JavaScript">
+<!--
+	function clearSearch() {
+		document.search_form.s_ne.value = "";
+		document.search_form.submit();
+
+	}
+
+	function changeStatus()
+	{
+		var checkedStatus = document.users.all_users.checked;
+		var usersNumber = document.users.users_number.value;
+		for (var i = 1; i <= usersNumber; i++) {
+			document.users.elements["id_" + i].checked = checkedStatus;
+		}
+		checkUsers();
+	}
+
+	function checkUsers()
+	{
+		var userId = "";
+		var usersIds = "";
+		var usersNumber = document.users.users_number.value;
+		var totalSelected = 0;
+		for (var i = 1; i <= usersNumber; i++) {
+			if (document.users.elements["id_" + i].checked) {
+				document.getElementById("tr_user_" + i).className = "SelectedRow";
+				totalSelected++;
+				userId = document.users.elements["id_" + i].value;
+				if(usersIds != "") { usersIds += ","; }
+				usersIds += userId;
+			} else {
+				document.getElementById("tr_user_" + i).className = mas[i];
+			}
+		}
+		var exportUsersLink = document.getElementById("export_emails");
+		if (exportUsersLink) {
+			if (usersIds == "") {
+				exportUsersLink.innerHTML = "{EXPORT_MSG}";
+				exportUsersLink.href = "{admin_export_href}?newsletter_id={newsletter_id}&table=newsletters_emails ";
+			} else {
+				exportUsersLink.innerHTML = "{EXPORT_MSG} {ADMIN_SELECTED_MSG} (" + totalSelected + ")";
+				exportUsersLink.href = "{admin_export_href}?newsletter_id={newsletter_id}&table=newsletters_emails&ids=" + usersIds;
+			}
+		}
+
+		var deleteLink = document.getElementById("delete_emails");
+		if (deleteLink) {
+			if (usersIds == "") {
+				deleteLink.innerHTML = "{DELETE_SELECTED_MSG}";
+				deleteLink.href = "{admin_newsletter_emails_href}?newsletter_id={newsletter_id}";
+			} else {
+				deleteLink.innerHTML = "{DELETE_SELECTED_MSG} (" + totalSelected + ")";
+				deleteLink.href = "{admin_newsletter_emails_href}?newsletter_id={newsletter_id}&operation=delete_emails&ids=" + usersIds;
+			}
+		}
+
+	}
+
+	function deleteEmails(operation)
+	{
+		var confirmed = false;
+		var userId = "";
+		var usersIds = "";
+		var usersNumber = document.users.users_number.value;
+		var totalUsers = 0;
+		for (var i = 1; i <= usersNumber; i++) {
+			if (document.users.elements["id_" + i].checked) {
+				totalUsers++;
+				userId = document.users.elements["id_" + i].value;
+				if(totalUsers > 1) { usersIds += ","; }
+				usersIds += userId;
+			}
+		}
+		var usersControl = document.update_users.status_id;
+		if (totalUsers == 0) {
+			alert("Please select emails first.")
+		} else if (operation == "delete_emails") {
+			confirmed = confirm("Are you sure you want remove selected emails (" + totalUsers + ")?");
+		}
+		return confirmed;
+	} 
+
+//-->
+</script>
+<script language= "JavaScript" type= "text/javascript">
+<!--
+	var select_form = new select();
+		select_form.object_name = 'select_form';
+		select_form.name_prefix = 'id_';
+		select_form.formname = 'users';
+		select_form.final_action = 'checkUsers();';
+		select_form.create_event_click();
+//-->
+</script>
+</head>
+<body class="commonbg" onload="start_event_select();">
+<script language= "JavaScript" type= "text/javascript">
+<!--
+	function start_event_select(){
+		create_event_listener(select_form);
+		var usersNumber = document.users.users_number.value;
+		mas = new Array();
+		for (var i = 1; i <= usersNumber; i++) {
+			mas[i] = document.getElementById("tr_user_" + i).className;
+		}
+	}
+//-->
+</script>
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+	<tr>
+		<td valign="top">
+
+		<div class="Block floatLeft">
+		<div class="BlockTitle">{SEARCH_FORM_MSG}</div>
+		<div class="BlockContent">
+			<form action="{admin_newsletter_emails_href}" name="search_form">
+			<input type="hidden" name="newsletter_id" value="{newsletter_id}">
+			<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+			<table border="0" cellpadding="6" cellspacing="1">
+				<tr class="usual">
+					<td>{BY_NAME_EMAIL_MSG}:</td>
+					<td><input type="text" name="s_ne" value="{s_ne}" size="40" class="search"></td>
+				</tr>
+				<tr class="middle">
+					<td>&nbsp;</td>
+					<td>
+						<span class="button"><input type="submit" value="{SEARCH_BUTTON}" class="submit"></span>
+						<span class="button"><input type="button" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch()"></span>
+					</td>
+				</tr>
+			</table>
+			</form>
+		</div>
+		</div>
+
+		</td>
+		<td valign="top">
+		
+
+		</td>
+	</tr>
+</table>
+
+<br>
+<!-- BEGIN users_errors --><div class="errorbg">{errors_list}</div><!-- END users_errors -->
+<!-- BEGIN users_messages --><div class="message">{messages_list}</div><!-- END users_messages -->
+
+<div class="Block">
+<div class="BlockTitle">{EMAILS_MSG}</div>
+<div class="BlockContent">
+
+<form name="users" action="{admin_users_href}" method="POST">
+<input type="hidden" name="users_number" value="{users_number}">
+<table border="0" cellspacing="1" cellpadding="4" width="100%"><!-- begin sorters -->
+<tr align="center" class="middle">
+	<td><input type="checkbox" name="all_users" value="1" onClick="changeStatus();"></td>
+	<td>{sorter_email_id}</td>
+	<td>{sorter_user_email}</td>
+	<td>{sorter_user_name}</td>
+	<td>&nbsp;</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="{row_style}" id="tr_user_{user_index}">
+	<td align="center"><input type="checkbox" name="id_{user_index}" value="{email_id}" onClick="checkUsers();"></td>
+	<td align="center">{email_id}</td>
+	<td><a href="mailto:{email}">{user_email}</a></td>
+	<td>{user_name}</td>
+	<td align="center"><a href="{admin_newsletter_email_href}?newsletter_id={newsletter_id}&email_id={email_id}">{EDIT_MSG}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+<td colspan="11">{NO_DATA_WERE_FOUND_MSG}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="11">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_newsletter_email_href}?newsletter_id={newsletter_id}">{ADD_NEW_MSG}</a> |
+		<a href="{admin_import_href}?newsletter_id={newsletter_id}&table=newsletters_emails">{IMPORT_MSG}</a> | 
+		<a id="export_emails" href="{admin_export_href}?newsletter_id={newsletter_id}&table=newsletters_emails">{EXPORT_MSG}</a> | 
+		<a id="delete_emails" href="{admin_newsletter_emails_href}?newsletter_id={newsletter_id}" onClick="return deleteEmails('delete_emails');">{DELETE_SELECTED_MSG}</a> 
+
+	</td>
+</tr>
+</table>	
+</form>
+<br>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>
+

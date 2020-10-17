@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {RELATED_PRODUCTS_TITLE} ::..</title>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+
+
+<script language="JavaScript">
+<!--
+
+	function changeOrder(column, order)
+	{
+		var columnObject = document.items.related_items;
+		var selectedIndex = columnObject.selectedIndex;
+		var incrementIndex = (order == 'up') ? -1 : 1;
+
+		if(selectedIndex == -1) {
+			alert('Please select link');
+		} else {
+			var selectedValue = columnObject.options[selectedIndex].value;
+			var selectedText = columnObject.options[selectedIndex].text;
+			if((order == 'up' && selectedIndex != 0) ||
+				(order == 'down' && selectedIndex != (columnObject.length - 1))) {
+				columnObject.options[selectedIndex].value = columnObject.options[selectedIndex + incrementIndex].value;
+				columnObject.options[selectedIndex].text = columnObject.options[selectedIndex + incrementIndex].text;
+				columnObject.options[selectedIndex + incrementIndex].value = selectedValue;
+				columnObject.options[selectedIndex + incrementIndex].text = selectedText;
+				columnObject.options[selectedIndex].selected = false;
+				columnObject.options[selectedIndex + incrementIndex].selected = true;
+			}
+		}
+	}
+
+	function addValues()
+	{
+		var totalOptions = document.items.available_items.length;
+		for(var i = 0; i < totalOptions; i++) {
+			if(document.items.available_items.options[i].selected == true) {
+				var optionValue = document.items.available_items.options[i].value;
+				var optionText = document.items.available_items.options[i].text;
+				var optionNumber = document.items.related_items.length;
+				document.items.available_items.options[i] = null;
+				document.items.related_items.options[optionNumber] = new Option(optionText, optionValue);
+				totalOptions--; i--;
+			}
+		}
+	}
+
+	function removeValues()
+	{
+		var totalOptions = document.items.related_items.length;
+		for(var i = 0; i < totalOptions; i++) {
+			if(document.items.related_items.options[i].selected == true) {
+				var optionValue = document.items.related_items.options[i].value;
+				var optionText = document.items.related_items.options[i].text;
+				var optionNumber = document.items.available_items.length;
+				document.items.related_items.options[i] = null;
+				document.items.available_items.options[optionNumber] = new Option(optionText, optionValue);
+				totalOptions--; i--;
+			}
+		}
+	}
+
+	function selectValues()
+	{
+		var totalOptions = document.items.related_items.length;
+		var relatedIDs = "";
+		for(var i = 0; i < totalOptions; i++) {
+			document.items.related_items.options[i].selected = true;
+			if(i > 0) relatedIDs += ","
+			relatedIDs += document.items.related_items.options[i].value;
+		}
+		document.items.related_ids.value = relatedIDs;
+	}
+
+//-->
+</script>
+</head>
+
+<body class="bodyDboard">
+{admin_header}
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{RELATED_PRODUCTS_TITLE}</div>
+<div class="BlockContent">
+
+	<form action="{admin_article_category_items_related_href}" name="items" method="POST" onSubmit="selectValues();">
+	<input type="hidden" name="operation" value="save">
+	<input type="hidden" name="category_id" value="{category_id}">
+	<input type="hidden" name="related_ids" value="">
+  	<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+  	<table width="100%" border="0" cellspacing="1" cellpadding="4">
+		<tr align="center" class="middle">
+			<td width="45%">{AVAILABLE_PRODUCTS_MSG}</td>
+			<td width="10%">{OPERATIONS_MSG}</td>
+			<td width="45%">{RELATED_PRODUCTS_TITLE}</td>
+		</tr>
+		<tr align="center" class="usual">
+			<td>
+				<select name="available_items" MULTIPLE size="20" style="width: 300px;"><!-- begin available_items -->
+					<option value="{related_id}">{related_name}<!-- end available_items -->
+					<option>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+				</select>
+			</td>
+			<td>
+				<input class="submit" type="button" name="add" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addValues();"><br><br>
+				<input class="submit" type="button" name="remove" value="<- {REMOVE_BUTTON}" onClick="removeValues();">
+			</td>
+			<td>
+				<table border="0" cellpadding="2" cellspacing="0">
+				<tr>
+					<td>
+						<select name="related_items" MULTIPLE size="20" style="width: 300px;"><!-- begin related_items -->
+							<option value="{related_id}">{related_name}<!-- end related_items -->
+							<option>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+						</select>
+					</td>
+					<td valign="top">
+						<a href="#" onClick="changeOrder('left', 'up');return false;" onDblClick="changeOrder('left', 'up');return false;"><img src="../images/move_up.gif" border="0" width="16" height="16" alt="{MOVE_MSG} Up"></a><br>
+						<img src="../images/tr.gif" border="0" width="2" height="2"><br>
+						<a href="#" onClick="changeOrder('left', 'down');return false;" onDblClick="changeOrder('left', 'down');return false;"><img src="../images/move_down.gif" border="0" width="16" height="16" alt="{MOVE_MSG} Down"></a><br>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+		<tr align="right" class="middle">
+			<td colspan="3">
+				<input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.items.operation.value='save'">&nbsp; &nbsp;
+				<input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.items.operation.value='cancel'">
+			</td>
+		</tr>
+	</table>
+	</form>
+
+</div>
+</div>
+
+<script language="JavaScript">
+<!--
+
+	document.items.available_items.options[document.items.available_items.length - 1] = null;
+	document.items.related_items.options[document.items.related_items.length - 1] = null;
+
+//-->
+</script>
+
+{admin_footer}
+</body>
+</html>

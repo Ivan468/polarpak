@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {ADMIN_PAGES_MSG} ::..</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+function clearSearch() {
+		document.search_pages.search_page.value = "";
+		document.search_pages.submit();
+
+	}
+</script>
+</head>
+
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+	<div class="Block">
+	<form name="search_pages" method="GET">
+		<div class="AdminSearch">
+			<div id="item_advanced_search" class="leftNavNonActive">
+				<a href="#" class="leftNavTitle">{SEARCH_TITLE}</a>
+				<div class="innerDiv">
+					<input class="field" type="text" name="search_page" id="search_page" value="{search_page}">
+					<span class="button"><input class="submit" type="submit" value="Search"></span>
+					<span class="button"><input class="submit" type="button" value="Clear" onclick="clearSearch();"></span>
+				</div>
+			</div>
+		</div>
+	</form>
+	</div>
+
+
+<div class="Block">
+<div class="BlockTitle">{WEB_PAGES_MSG}</div>
+<div class="BlockContent">
+
+<table width="100%" border="0" cellpadding="6" cellspacing="1" align="center">
+<tr class="middle" align="center">
+	<td>{sorter_page_id}</td>
+	<td>{sorter_page_title}</td>
+	<td>{sorter_page_code}</td>
+	<td>{sorter_is_showing}</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+</tr><!-- BEGIN records -->
+<tr align="center" class="usual">
+	<td>{page_id}</td>
+	<td align="left">{page_title}</td>
+	<td align="left">{page_code}</td>
+	<td>{is_showing}</td>
+	<td><a href="{admin_page_href}?page_id={page_id}">{EDIT_PAGE_MSG}</a></td>
+	<td><a href="{admin_cms_page_layout_href}?page_code=custom_page&key_code={page_id}&rp={rp_url}">{CUSTOM_LAYOUT_MSG}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr>
+	<td colspan="6" class="usual">{NO_RECORDS}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="6">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_page_href}">{NEW_PAGE_MSG}</a>
+	</td>
+</tr>
+</table>
+	
+</div>
+</div>
+
+
+{admin_footer}
+</body>
+</html>

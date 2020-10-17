@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{ADMINISTRATION_MSG} :: {DOWNLOAD_LINKS_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header}
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{DOWNLOAD_LINKS_MSG}</div>
+<div class="BlockContent">
+
+<table align="center" cellspacing="1" cellpadding="6" border="0" width=100%><!-- begin sorters -->
+<tr class="middle" align="center">
+	<td>{sorter_download_id}</td>
+	<td>{sorter_item_name}</td>                         
+	<td>{FILENAME_MSG}</td>                         
+	<td>{DOWNLOAD_URL_MSG}</td>                         
+	<td>{sorter_activated}</td>                         
+	<td>
+	</td>                         
+</tr><!-- end sorters --><!-- begin records -->
+<tr class="usual" align="center">
+	<td>{download_id}</td>
+	<td align="left">{item_name}</td>                         
+	<td align="left">{file_name}</td>                         
+	<td><a href="{download_url}">{DOWNLOAD_TITLE} URL</a></td>                         
+	<td>{activated}</td>                         
+	<td><a href="{admin_order_link_href}?download_id={download_id}&order_id={order_id}">{VIEW_MSG}/{EDIT_MSG}</a></td>                         
+</tr><!-- end records --><!-- begin no_records -->
+<tr>
+	<td colspan="6" class="usual">{NO_FILES_MSG}</td>
+</tr><!-- end no_records -->
+<tr class="middle">
+	<td colspan="6"><a href="{admin_order_link_href}?order_id={order_id}">{ADD_LINK_MSG}</a></td>
+</tr>
+</table>
+
+</div>
+</div>
+
+<!-- begin message_sent --><div class="messagebg">{MESSAGE_SENT_MSG}</div><!-- end message_sent -->
+
+<div class="Block">
+<div class="BlockTitle">{MESSAGE_MSG} {EMAIL_FROM_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_order_links_href}" name="admin_order_links" method="POST">
+<input type="hidden" name="operation" value="send">
+<input type="hidden" name="order_id" value="{order_id}">
+
+<!-- BEGIN errors --><div align="center" class="errorbg">{errors_list}</div><!-- END errors -->
+<table align="center" cellspacing="1" cellpadding="6" border="0" width=100%>
+<tr class="usual">
+	<td>{EMAIL_TO_MSG} *</td>
+	<td>
+		<input type="text" name="message_to" value="{message_to}" size="60" maxlength="255">
+		<a href="#" onClick="document.admin_order_links.message_to.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td width="20%">{EMAIL_FROM_MSG} *</td>
+	<td>
+		<input type="text" name="message_from" value="{message_from}" size="60" maxlength="255">
+		<a href="#" onClick="document.admin_order_links.message_from.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td>
+		<input type="text" name="message_cc" value="{message_cc}" size="60" maxlength="255">
+		<a href="#" onClick="document.admin_order_links.message_cc.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td>
+		<input type="text" name="message_bcc" value="{message_bcc}" size="60" maxlength="255">
+		<a href="#" onClick="document.admin_order_links.message_bcc.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td>
+		<input type="text" name="message_reply_to" value="{message_reply_to}" size="60" maxlength="255">
+		<a href="#" onClick="document.admin_order_links.message_reply_to.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td>
+		<input type="text" name="message_return_path" value="{message_return_path}" size="60" maxlength="255">
+		<a href="#" onClick="document.admin_order_links.message_return_path.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td>{EMAIL_SUBJECT_MSG}</td>
+	<td>
+		<input type="text" name="message_subject" value="{message_subject}" size="60" maxlength="255">
+		<a href="#" onClick="document.admin_order_links.message_subject.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>                         
+</tr>
+<tr class="usual">
+	<td>{EMAIL_MESSAGE_TYPE_MSG}</td>
+	<td><!-- begin message_type -->
+		<input type="radio" name="message_type" id="message_type{message_type_value}" {message_type_checked} value="{message_type_value}">
+		<label for="message_type{message_type_value}">{message_type_description}</label><!-- end message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td colspan="2">
+		<textarea name="message_body" rows="10" cols="100">{message_body}</textarea>
+		<a href="#" onClick="document.admin_order_links.message_body.value='';return false;">{CLEAR_BUTTON}</a>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="Send"></span>
+		<span class="button"><input class="submit" type="reset" value="Reset"></span>
+	</td>
+</tr>
+</table>
+</form>
+
+</div>
+</div>       
+
+{admin_footer}
+</body>
+</html>

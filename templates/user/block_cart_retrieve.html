@@ -1,0 +1,34 @@
+	<form name="record" action="{cart_retrieve_href}">
+	<input type="hidden" name="operation" value="retrieve" />
+	<input type="hidden" name="rnd" value="{random_value}" />
+	<input type="hidden" name="rp" value="{rp}" />
+	<br />
+	<table cellspacing="0" class="padding4px" width="95%" align="center">
+	<tr>
+		<td colspan="2">{RETRIEVE_CART_INFO_MSG}<br /></td>
+	</tr><!-- begin errors -->
+	<tr>
+		<td></td>
+		<td><div class="errorbg">{errors_list}</div></td>
+	</tr><!-- end errors -->
+	<tr>
+		<td align="right">{CART_NO_FIELD}&nbsp;</td>
+		<td><input type="text" class="text" name="cart_id" value="{cart_id}" /></td>
+	</tr>
+	<tr>
+		<td align="right">{CART_NAME_FIELD}&nbsp;</td>
+		<td><input type="text" class="text" name="cart_name" value="{cart_name}" /></td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td>
+			<input class="submit" type="submit" value="{RETRIEVE_CART_BUTTON}" onclick="document.record.operation.value='retrieve'" />
+			<input class="cancel" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'" />
+		</td>
+	</tr>
+	<tr>
+		<!-- td colspan="2" class="comment"><br />{RETRIEVE_CART_NOTE_MSG}<br /></td -->
+	</tr>
+	</table>
+	<br />
+	</form>

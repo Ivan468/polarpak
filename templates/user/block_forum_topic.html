@@ -1,0 +1,342 @@
+<!-- begin before_block --><!-- begin global_errors --><div class="area bk-error" align="center">{errors_list}</div><br /><!-- end global_errors --><!-- end before_block -->
+
+<script type="text/javascript" src="js/icons.js"></script>
+<script type="text/javascript" src="js/attachments.js"></script>
+<script type="text/javascript" src="js/forum.js"></script>
+
+	<!-- begin topic_info -->
+	<table cellspacing="1" width="100%" class="padding6px">
+	<tr valign="top">
+		<td width="22%" class="middlebg">{TOPIC_ADDED_BY_FIELD}</td>
+		<td class="usualbg"><span class="{thread_user_class}">{thread_user_name}</span></td>
+	</tr>
+	<tr valign="top">
+		<td class="middlebg">{TOPIC_ADDED_DATE_FIELD}</td>
+		<td class="usualbg">{thread_added}</td>
+	</tr>
+	<tr valign="top">
+		<td class="middlebg">{TOPIC_UPDATED_FIELD}</td>
+		<td class="usualbg">{thread_updated}</td>
+	</tr>
+	<tr valign="top">
+		<td class="middlebg">{TOPIC_NAME_FIELD}</td>
+		<td class="usualbg">{topic}</td>
+	</tr><!-- begin topic_attachments -->
+	<tr valign="top">
+		<td class="middlebg">{ATTACHMENTS_MSG}</td>
+		<td class="usualbg">{attachments_files}</td>
+	</tr><!-- end topic_attachments -->
+	<tr valign="top">
+		<td colspan="2" class="usualbg">
+			<div id="message_block_0">
+				{topic_description}
+				<input type="hidden" id="original_message_0" value="{original_topic}" /><!-- begin message_modified -->
+				<div class="forumModified">
+					{FORUM_MESSAGE_LAST_MODIFIED_MSG} {date_modified}
+				</div><!-- end message_modified -->
+				<div align="right"><!-- begin message_edit_link -->
+					<a href="#" onclick="editMessage('{message_id}'); return false;">{EDIT_MSG}</a><!-- end message_edit_link -->
+				</div>
+			</div>
+			<div id="message_edit_0" style="display: none;"></div>
+		</td>
+	</tr>
+	</table>
+	<!-- end topic_info -->
+
+	<!-- begin message_form -->
+	<a name="message_form"></a>
+	<form action="{forum_thread_href}#message_form" name="message" method="post">
+	<input type="hidden" name="rnd" value="{rnd}" />
+	<input type="hidden" name="thread_id" value="{thread_id}" />
+	<input type="hidden" name="attachments_url" value="{user_forum_attachments_url}" />
+	<input type="hidden" name="action" value="save" />
+	<input type="hidden" name="page" value="{page}" />
+	<input type="hidden" name="u" value="{u}" />
+
+	<!-- begin topic_preview-->
+	<div class="bk-intro">
+		<div class="sub-head">{PREVIEW_TITLE}</div>
+		<div class="sub-body">{message_text}</div>
+	</div><br/><!-- end topic_preview-->
+
+		<div class="bk-intro">
+			<div class="sub-head">{TOPIC_MESSAGE_TITLE}</div>
+
+			<div class="field msg-asterisk">
+				{ASTERISK_MSG}
+			</div>
+
+			<!-- BEGIN errors -->
+			<div class="errorbg">{errors_list}</div><!-- END errors -->
+
+			<!-- begin user_name_block -->
+			<div class="field fd-name {user_name_class}">
+				<div class="before"></div>
+				<div class="name">
+					{TOPIC_NICKNAME_FIELD} <i class="asterisk">*</i>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="user_name" value="{user_name}" maxlength="64" />
+				</div>
+				<div class="after"></div>
+			</div><!-- end user_name_block --><!-- begin user_email_block -->
+			<div class="field fd-email {user_email_class}">
+				<div class="before"></div>
+				<div class="name">
+					{TOPIC_EMAIL_FIELD} <i class="asterisk">*</i>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="user_email" value="{user_email}" maxlength="64" />
+				</div>
+				<div class="after"></div>
+			</div><!-- end user_email_block -->
+
+			<!-- begin attachments_block -->
+			<div class="field fd-attachments {attachments_class}">
+				<div class="before"></div>
+				<div class="name">
+					<a href="#" onclick="attachFiles(document.message);return false;">{ATTACHMENTS_MSG}</a>
+					<a href="#" onclick="attachFiles(document.message);return false;"><img src="images/clip.gif" align="top" width="16" height="16" /></a>
+				</div>
+				<div class="control">
+					<div id="attachmentsBlock" style="{attachments_class}">
+						<a href="#" onclick="attachFiles(document.message);return false;">{ATTACHED_FILES_MSG}</a>:&nbsp;
+						&nbsp;<span id="attachedFiles">{attached_files}</span>
+					</div>
+				</div>
+				<div class="after"></div>
+			</div><!-- end attachments_block -->
+
+			<div class="field fd-description {description_class}">
+				<div class="before"></div>
+				<div class="name">
+					{TOPIC_MESSAGE_FIELD} <span class="required">*</span><!-- begin icons_block -->
+					<div align="center">
+						<br />{EMOTICONS_MSG}
+						<table cellspacing="3" cellpadding="0"><!-- begin icons_rows -->
+							<tr><!-- begin icons_cols -->
+								<td><a href="#" onclick="insertAtCaret('{icon_code_js}', document.message.message_text);return false;"><img src="{icon_src}" {icon_size} alt="{icon_alt}" /></a></td><!-- end icons_cols -->
+							</tr><!-- end icons_rows -->
+						</table><!-- begin icons_more_link -->
+						<br /><a href="#" onclick="openIconsWindow('{icon_select_href}', document.message.message_text);return false;">{VIEW_MORE_EMOTICONS_MSG}</a><!-- end icons_more_link -->
+					</div><!-- end icons_block -->
+				</div>
+				<div class="control">
+					<!-- begin allow_bbcode_message -->
+					<script type='text/javascript' src='./js/bbcodes.js'></script>
+<div style="padding-bottom:2px">
+	<span class="submit"><input class="submit" type="button" title="Bold" value="b" onclick="add_tag('b','bld','message_text')" id="bld"/></span>
+	<span class="submit"><input class="submit" type="button" title="Italic" value="i" onclick="add_tag('i','itl','message_text')" id="itl"/></span>
+	<span class="submit"><input class="submit" type="button" title="Underline"  value="u" onclick="add_tag('u','unl','message_text')" id="unl"/></span>
+	<span>
+		<select class="text" onchange="set_font(this.options[this.selectedIndex].value,'size','message_text');this.selectedIndex=0;">
+			<option value='0'>SIZE</option>
+			<option value='6'>6 pt</option>
+			<option value='7'>7 pt</option>
+			<option value='8'>8 pt</option>
+			<option value='9'>9 pt</option>
+			<option value='10'>10 pt</option>
+			<option value='11'>11 pt</option>
+			<option value='12'>12 pt</option>
+			<option value='13'>13 pt</option>
+			<option value='14'>14 pt</option>
+			<option value='15'>15 pt</option>
+			<option value='16'>16 pt</option>
+			<option value='17'>17 pt</option>
+			<option value='18'>18 pt</option>
+			<option value='19'>19 pt</option>
+			<option value='20'>20 pt</option>
+			<option value='21'>21 pt</option>
+			<option value='22'>22 pt</option>
+		</select>
+	</span>
+	<span>
+		<select class="text" onchange="set_font(this.options[this.selectedIndex].value,'font','message_text','');this.selectedIndex=0;">
+			<option value='0'>FAMILY</option>
+			<option value='Arial'>Arial</option>
+			<option value='Times'>Times</option>
+			<option value='Courier'>Courier</option>
+			<option value='Impact'>Impact</option>
+			<option value='Geneva'>Geneva</option>
+			<option value='Optima'>Optima</option>
+		</select>
+	</span>
+	<span>
+		<select class="text" onchange="set_font(this.options[this.selectedIndex].value, 'color','message_text','');this.selectedIndex=0;">
+			<option value='0'>COLOR</option>
+			<option value='blue' style='color:blue'>Blue</option>
+			<option value='red' style='color:red'>Red</option>
+			<option value='purple' style='color:purple'>Purple</option>
+			<option value='orange' style='color:orange'>Orange</option>
+			<option value='yellow' style='color:yellow'>Yellow</option>
+			<option value='gray' style='color:gray'>Gray</option>
+			<option value='green' style='color:green'>Green</option>
+		</select>
+	</span>
+	<span class="submit"><input class="submit" type="button" title="URL" value="http://" onclick="add_url('message_text')" id="url" /></span>
+	<span class="submit"><input class="submit" type="button" title="Image" value="img" onclick="add_image('message_text')" id="img" /></span>
+	<span class="submit"><input class="submit" type="button" title="Quote" value="quote" onclick="add_tag('quote','quote','message_text')" id="quote" /></span>
+	<span class="submit"><input class="submit" type="button" title="Code" value="code" onclick="add_tag('code','code','message_text')" id="codes" /></span>
+	<span class="submit"><input class="submit" type="button" title="List" value="list" onclick="add_list('message_text')" id="list"/></span>
+	<span class="submit"><input class="submit" type="button" value="/" title="Close all opened codes" onclick="closeall('message_text');"/></span>
+	<input type="hidden" id="tagcount" value="0" />
+</div>
+					<!-- end allow_bbcode_message -->
+						<textarea class="field" rows="15" cols="60" id="message_text" name="message_text" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{message_text}</textarea>
+				</div>
+				<div class="after"></div>
+			</div>
+
+			<!-- begin validation_number_block -->
+			<div class="field fd-validation {validation_class}">
+				<div class="before"></div>
+				<div class="name">
+					{VALIDATION_CODE_FIELD} <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					<input class="field" type="text" name="validation_number" size="4" value="{validation_number}" />
+					&nbsp;<img src="validation_image.php" align="absmiddle" />
+				</div>
+				<div class="after"></div>
+			</div><!-- end validation_number_block -->
+
+			<div class="field fd-submit {submit_class}">
+				<div class="before"></div>
+				<div class="name">
+				</div>
+				<div class="control">
+					<span class="submit"><input class="submit" type="submit" name="button" value="{TOPIC_MESSAGE_BUTTON}" /></span>
+					<span class="submit"><input class="submit" type="submit" name="button" value="{PREVIEW_BUTTON}" /></span>
+					<span class="submit"><input class="submit" type="button" value="{CLEAR_BUTTON}" onclick="document.message.message_text.value=''" /></span>
+					<span class="submit"><input class="submit" type="reset" value="{RESET_BUTTON}" /></span>
+				</div>
+				<div class="after"></div>
+			</div>
+
+		</div>
+	</form>
+	<!-- end message_form -->
+
+	<table cellpadding="0" cellspacing="0" width="100%"><!-- BEGIN records -->
+	<tr valign="top"><!-- BEGIN user_info_left -->
+		<td width="100" class="forumMessageLeft" align="center" valign="top">
+			<div class="padding4px {forum_user_class}">{message_user_name}</div>
+			<div class="padding4px"><!-- BEGIN user_image_block --><img src="{personal_image}" {image_size} alt="{message_user_name}" /><!-- END user_image_block --></div>
+		</td><!-- END user_info_left -->
+		<td class="forumMessageRight">
+
+		<table cellpadding="5" cellspacing="0" width="100%">
+		<tr valign="top">
+			<td class="forumMessageTop">
+				<div class="floatright articleDate">{date_added}</div>
+				<!-- BEGIN user_info_top --><div class="{forum_user_class}">{message_user_name}</div><!-- END user_info_top -->
+			</td>
+		</tr><!-- begin message_attachments -->
+		<tr valign="top">
+			<td class="forumAttachments">{attachments_files}</td>
+		</tr><!-- end message_attachments -->
+		<tr valign="top">
+			<td class="usualbg">
+				<div id="message_block_{message_id}">
+					{message_text}
+					<input type="hidden" id="original_message_{message_id}" value="{original_message}" /><!-- begin message_modified -->
+					<div class="forumModified">{FORUM_MESSAGE_LAST_MODIFIED_MSG} {date_modified}</div><!-- end message_modified -->
+					<div align="right"><!-- begin message_edit_link -->
+						<a href="#" onclick="editMessage('{message_id}'); return false;">{EDIT_MSG}</a><!-- end message_edit_link -->
+					</div>
+				</div>
+				<div id="message_edit_{message_id}" style="display: none;"></div>
+			</td>
+		</tr>
+		</table>
+
+		</td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+	</tr><!-- END records -->
+	</table>
+
+
+
+<!-- begin navigator_block -->
+<div><br />&nbsp;{navigator}&nbsp;</div><br />
+<!-- end navigator_block -->
+
+<br />
+{message_form_bottom}
+
+<div id="message_edit_block" style="display: none;">
+<form action="{forum_thread_href}" name="message_edit" method="post">
+<input type="hidden" name="rnd" value="{rnd}" />
+<input type="hidden" name="operation" value="update" />
+<input type="hidden" name="thread_id" value="{thread_id}" />
+<input type="hidden" name="message_id" value="" />
+<input type="hidden" name="page" value="{page}" />
+					<!-- begin allow_bbcode -->
+						<script type='text/javascript' src='./js/bbcodes.js'></script>
+<div style="padding-bottom:2px">
+	<span class="submit"><input class="submit" type="button" title="Bold" value="b" onclick="add_tag('b','bld','text_edit')" id="bld"/></span>
+	<span class="submit"><input class="submit" type="button" title="Italic" value="i" onclick="add_tag('i','itl','text_edit')" id="itl"/></span>
+	<span class="submit"><input class="submit" type="button" title="Underline"  value="u" onclick="add_tag('u','unl','text_edit')" id="unl"/></span>
+	<span>
+		<select class="text" onchange="set_font(this.options[this.selectedIndex].value,'size','text_edit');this.selectedIndex=0;">
+			<option value='0'>SIZE</option>
+			<option value='6'>6 pt</option>
+			<option value='7'>7 pt</option>
+			<option value='8'>8 pt</option>
+			<option value='9'>9 pt</option>
+			<option value='10'>10 pt</option>
+			<option value='11'>11 pt</option>
+			<option value='12'>12 pt</option>
+			<option value='13'>13 pt</option>
+			<option value='14'>14 pt</option>
+			<option value='15'>15 pt</option>
+			<option value='16'>16 pt</option>
+			<option value='17'>17 pt</option>
+			<option value='18'>18 pt</option>
+			<option value='19'>19 pt</option>
+			<option value='20'>20 pt</option>
+			<option value='21'>21 pt</option>
+			<option value='22'>22 pt</option>
+		</select>
+	</span>
+	<span>
+		<select class="text" onchange="set_font(this.options[this.selectedIndex].value,'font','text_edit','');this.selectedIndex=0;">
+			<option value='0'>FAMILY</option>
+			<option value='Arial'>Arial</option>
+			<option value='Times'>Times</option>
+			<option value='Courier'>Courier</option>
+			<option value='Impact'>Impact</option>
+			<option value='Geneva'>Geneva</option>
+			<option value='Optima'>Optima</option>
+		</select>
+	</span>
+	<span>
+		<select class="text" onchange="set_font(this.options[this.selectedIndex].value, 'color','text_edit','');this.selectedIndex=0;">
+			<option value='0'>COLOR</option>
+			<option value='blue' style='color:blue'>Blue</option>
+			<option value='red' style='color:red'>Red</option>
+			<option value='purple' style='color:purple'>Purple</option>
+			<option value='orange' style='color:orange'>Orange</option>
+			<option value='yellow' style='color:yellow'>Yellow</option>
+			<option value='gray' style='color:gray'>Gray</option>
+			<option value='green' style='color:green'>Green</option>
+		</select>
+	</span>
+	<span class="submit"><input class="submit" type="button" title="URL" value="http://" onclick="add_url('text_edit')" id="url" /></span>
+	<span class="submit"><input class="submit" type="button" title="Image" value="img" onclick="add_image('text_edit')" id="img" /></span>
+	<span class="submit"><input class="submit" type="button" title="Quote" value="quote" onclick="add_tag('quote','quote','text_edit')" id="quote" /></span>
+	<span class="submit"><input class="submit" type="button" title="Code" value="code" onclick="add_tag('code','code','text_edit')" id="codes" /></span>
+	<span class="submit"><input class="submit" type="button" title="List" value="list" onclick="add_list('text_edit')" id="list"/></span>
+	<span class="submit"><input class="submit" type="button" value="/" title="Close all opened codes" onclick="closeall('text_edit');"/></span>
+	<input type="hidden" id="tagcount" value="0" />
+</div>
+					<!-- end allow_bbcode -->
+	<textarea class="field" rows="10" cols="60" name="text_edit" id="text_edit"></textarea>
+	<br />
+		<span class="submit"><input class="submit" type="submit" value="{UPDATE_BUTTON}" /></span>
+		<span class="submit"><input class="submit" type="button" value="{CANCEL_BUTTON}" onclick="cancelMessageEdit();" /></span>
+</form>
+</div>

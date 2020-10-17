@@ -1,0 +1,144 @@
+<div class="voucher-events">
+
+	<div class="bk-back"><a class="link lk-back" href="{user_vouchers_href}">{BACK_MSG}</a></div>
+	<div class="clear"></div>
+
+		<!-- BEGIN errors -->
+		<div class="errors">{errors_list}</div><!-- END errors -->
+
+		<form name="transfer" action="{user_voucher_send_href}" method="post">
+		<input type="hidden" name="operation" value="send"/>
+		<input type="hidden" name="voucher_id" value="{voucher_id}"/>
+			<!-- begin transfer_form -->
+
+			<div class="field fd-amount">
+				<div class="before"></div>
+				<div class="name">
+					{VOUCHER_AMOUNT_MSG}
+				</div>
+				<div class="control">
+					{voucher_amount}
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- begin transfer_fee_desc_block -->
+			<div class="field fd-fee">
+				<div class="before"></div>
+				<div class="name">
+					{TRANSFER_FEE_MSG}
+				</div>
+				<div class="control">
+					{transfer_fee_desc}
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- end transfer_fee_desc_block -->
+			<div class="field fd-amount">
+				<div class="before"></div>
+				<div class="name">
+					{TRANSFER_AMOUNT_MSG}
+				</div>
+				<div class="control">
+					<input class="field" type="text" name="transfer_amount" value="{transfer_amount}" size="10" maxlength="16">
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-receiver">
+				<div class="before"></div>
+				<div class="name">
+					{RECEIVER_EMAIL_MSG}
+				</div>
+				<div class="control">
+					<input class="field" type="text" name="transfer_email" value="{transfer_email}" size="32" maxlength="128">
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-buttons">
+				<div class="before"></div>
+				<div class="name"></div>
+				<div class="control">
+					<input class="submit" type="submit" value="{SEND_BUTTON}" onclick="document.transfer.operation.value='send'" /> 
+					<input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.transfer.operation.value='cancel'" /> 
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- end transfer_form -->
+
+			<!-- begin confirm_form -->
+
+			<div class="message">{TRANSFER_CODE_DESC}</div>
+	
+			<div class="field fd-receiver">
+				<div class="before"></div>
+				<div class="name">
+					{VOUCHER_RECEIVER_MSG}
+				</div>
+				<div class="control">
+					{receiver_name} (<a href="mailto:{receiver_email}">{receiver_email}</a>)
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-amount">
+				<div class="before"></div>
+				<div class="name">
+					{TRANSFER_AMOUNT_MSG}
+				</div>
+				<div class="control">
+					{receiver_amount}
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- begin transfer_fee_block -->
+			<div class="field fd-fee">
+				<div class="before"></div>
+				<div class="name">
+					{TRANSFER_FEE_MSG}
+				</div>
+				<div class="control">
+					{transfer_fee}
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- end transfer_fee_block -->
+			<div class="field fd-valid">
+				<div class="before"></div>
+				<div class="name">
+					{CODE_VALID_TILL_MSG}
+				</div>
+				<div class="control">
+					{code_valid_till}
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-code">
+				<div class="before"></div>
+				<div class="name">
+					{TRANSFER_CODE_MSG}
+				</div>
+				<div class="control">
+					<input class="field" type="text" name="confirm_code" value="{confirm_code}" size="24" maxlength="32">
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-buttons">
+				<div class="before"></div>
+				<div class="name"></div>
+				<div class="control">
+					<input class="submit" type="submit" value="{CONFIRM_TRANSFER_MSG}" onclick="document.transfer.operation.value='confirm'" /> 
+					<input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.transfer.operation.value='cancel'" /> 
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- END confirm_form -->
+
+			<!-- begin transfer_finished -->
+			<div class="message">{transfer_message}</div>
+			<!-- end transfer_finished -->
+		
+	</form>
+
+
+
+	</table>	
+
+</div>

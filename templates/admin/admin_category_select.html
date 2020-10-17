@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{SELECT_CATEGORY_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/win_select.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/init.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/blocks.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/ajax.js"></script>
+<script language="JavaScript">
+<!--
+function loadCategories(categoryId)
+{
+	var catObjName = "c_" + categoryId;
+	var scObjName = "sc_" + categoryId;
+	var scObj = document.getElementById(scObjName);
+	if (scObj) {
+		var imgObj = document.getElementById("img_" + categoryId);
+		if (scObj.style.display == "none") {
+			scObj.style.display = "block";
+			if (imgObj) { imgObj.src = "../images/icons/minus.gif"; }
+		} else {
+			scObj.style.display = "none";
+			if (imgObj) { imgObj.src = "../images/icons/plus.gif"; }
+		}
+	} else {
+		var listType = document.form_list.list_type.value;
+		var url = "admin_category_select.php?ajax=1&category_id="+encodeURIComponent(categoryId);
+		if (listType) {
+			url += "&list_type="+encodeURIComponent(listType);
+		}
+		vaSpin(catObjName); // show loading progress
+		callAjax(url, categoriesLoaded, categoryId);
+	}
+}
+
+function categoriesLoaded(categoriesHTML, categoryId)
+{
+	var catObjName = "c_" + categoryId;
+	var catObj= document.getElementById(catObjName);
+	vaStopSpin(catObjName);
+	catObj.innerHTML += categoriesHTML;
+	var imgObj = document.getElementById("img_" + categoryId);
+	if (imgObj) { 
+		imgObj.src = "../images/icons/minus.gif"; 
+	}
+}
+
+function selectCategory(categoryId)
+{
+	var path = document.getElementById("path_" + categoryId).value;
+	var categoryName = document.getElementById("name_" + categoryId).value;
+	var pathName = "";
+	var pathIds = path.split(",");
+	for (var p = 0; p < pathIds.length; p++) {
+		var pathId = pathIds[p];
+		if (pathId) {
+			var nameObj = document.getElementById("name_" + pathId);
+			if (nameObj) {
+				pathName += nameObj.value + " > ";
+			}
+		}
+	}
+	pathName += categoryName;
+	
+	selectItem(categoryId, pathName);
+}
+//-->
+</script>
+</head>
+
+<body class="popup">
+
+<form action="{admin_category_select_href}" name="form_list">
+<input type="hidden" name="operation" value="1">
+<input type="hidden" name="form_name" value="{form_name}">
+<input type="hidden" name="field_name" value="{field_name}">
+<input type="hidden" name="id_name" value="{id_name}">
+<input type="hidden" name="selection_type" value="{selection_type}">
+<input type="hidden" name="list_type" value="{list_type}">
+
+	<table cellspacing="1" cellpadding="6" border="0" width="100%" align="center">
+	<tr class="middle" align="center">
+		<td colspan="3"><a href="javascript:closeWindowSelect();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+	</tr>
+	<tr class="usual" align="center">
+		</td>
+	</tr>
+	<tr class="usual">
+		<td align="left">
+			<!-- BEGIN categories_block --> 
+			<ul class="categories" id="sc_{parent_id}">
+				<!-- BEGIN categories -->
+				<li class="{category_class}" id="c_{category_id}"><!-- begin category_image -->
+					<a href="{list_url}" onclick="{onclick}"><img id="img_{category_id}" class="category_img" src="{src}" {width} {height} alt="{alt}" border="0" /></a><!-- end category_image -->
+					<input type="hidden" id="path_{category_id}" value="{category_path}" />
+					<input type="hidden" id="name_{category_id}" value="{category_name_hidden}" />
+					{category_name}
+					<a class="title" href="#" onclick="selectCategory('{category_id}');return false;">{SELECT_MSG}</a>
+					{subcategories}
+				</li><!-- END categories -->
+			</ul>
+			<!-- END categories_block --> 
+		</td>
+	</tr>
+	<tr class="middle" align="center">
+		<td colspan="3"><a href="javascript:closeWindowSelect();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+	</tr>
+	</table>
+
+</form>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {EDIT_BOOKMARK_MSG} ::..</title>
+	<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+	<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="bodySettings">
+	{admin_header}
+	{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_BOOKMARK_MSG}</div>
+<div class="BlockContent">
+
+	<!-- begin msg -->
+	<div class="messagebg">{BOOKMARK_ADDED_MSG}</div><!-- end msg --><!-- begin errors -->
+	<div class="errorbg">{errors_list}</div><!-- end errors -->
+
+	<form action="{admin_bookmark_href}" name="record" method="POST">
+	<input type="hidden" name="operation"   value="save">
+	<input type="hidden" name="bookmark_id" value="{bookmark_id}">
+	<table border="0" cellpadding="6" cellspacing="1" width="100%">
+	
+	<tr class="middle">
+		<td colspan="2">{ADD_BOOKMARK_MSG}</td>
+	</tr>
+	
+	<tr class="usual">
+		<td>{ADMIN_TITLE_MSG}:</td>
+		<td><input class="field" id="title" type="text" size="120" name="title" value="{title}"></td>
+	</tr>
+	<tr class="usual">
+		<td>{ADMIN_URL_SHORT_MSG}:</td>
+		<td><input class="field" id="url" type="text" size="120" name="url" value="{url}"></td>
+	</tr>
+	<tr class="usual">
+		<td>{IMAGE_MSG}:</td>
+		<td><input class="field" type="text" size="120" name="image_path" value="{image_path}"></td>
+	</tr>
+	<tr class="usual">
+		<td>{ADMIN_NOTE_MSG}:</td>
+		<td><textarea name="notes" cols="120" rows="3">{notes}</textarea></td>
+	</tr>
+	<tr class="usual">
+		<td><label for="is_start_page">{IS_START_PAGE_MSG}</label>:</td>
+		<td><input type="checkbox" name="is_start_page" id="is_start_page" {is_start_page} value="1"></td>
+	</tr>
+	<tr class="usual">
+		<td><label for="is_popup">{IS_POPUP_MSG}</label>:</td>
+		<td><input type="checkbox" name="is_popup" id="is_popup" {is_popup} value="1"></td>
+	</tr>
+	<tr class="middle">
+		<td>&nbsp;</td>
+		<td><!-- begin add_button -->
+			<span class="button"><input class="submit" type="submit" value="{ADD_NEW_MSG}" onclick="document.record.operation.value='save'"></span><!-- end add_button --><!-- begin update_button -->
+			<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onclick="document.record.operation.value='save'"></span><!-- end update_button --><!-- begin delete -->
+			<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- end delete -->
+			<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+		</td>
+	</tr>
+	</table>
+	</form>
+
+</div>
+</div>
+
+{admin_footer}
+
+</body>
+</html>

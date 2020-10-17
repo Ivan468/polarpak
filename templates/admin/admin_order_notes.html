@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {ORDER_NOTES_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header}
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{ORDER_NOTES_MSG}</div>
+<div class="BlockContent">
+
+<table align="center" cellspacing="1" cellpadding="6" border="0" width=100%><!-- begin sorters -->
+<tr class="middle" align="center">
+	<td>{sorter_note_id}</td>
+	<td>{sorter_note_title}</td>                         
+	<td>{sorter_show_for_user}</td>                         
+	<td>{sorter_note_date}</td>                         
+	<td>&nbsp;</td>                         
+</tr><!-- end sorters --><!-- begin records -->
+<tr class="usual" align="center">
+	<td>{note_id}</td>
+	<td align="left">{note_title}</td>                         
+	<td>{show_for_user}</td>                         
+	<td>{note_date}</td>                         
+	<td><a href="{admin_order_note_href}?note_id={note_id}&order_id={order_id}">{VIEW_MSG}/{EDIT_MSG}</a></td>                         
+</tr><!-- end records --><!-- begin no_records -->
+<tr class="usual">
+	<td colspan="5">{NO_NOTES_AVAILABLE_MSG}</td>
+</tr><!-- end no_records -->
+<tr class="middle">
+	<td colspan="5"><a href="{admin_order_note_href}?order_id={order_id}">Add {ADMIN_NOTE_MSG}</a></td>
+</tr>
+</table>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

@@ -1,0 +1,27 @@
+{head_tags}
+
+<div id="popupFrame" class="popupFrame">
+
+	<div class="frameHeader">
+		<div class="frameClose" onclick="hidePopupBlock();">{CLOSE_WINDOW_MSG}<img src="images/icons/frame-close.gif" width="19" height="19" align="top" /></div>
+		<div class="frameTitle">{meta_title}</div>
+	</div>
+
+	<div class="frameContent">
+
+		<!-- begin layout_message -->
+		<div class="frameMessage">{message_desc}</div><!-- end layout_message -->
+		<!-- begin layout_error -->
+		<div class="frameError">{error_desc}</div><!-- end layout_error -->
+
+		<div class="centerStyle" style="{middle_style}">
+			<div class="centerStylePadding">
+				{middle}
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+{hidden_blocks}

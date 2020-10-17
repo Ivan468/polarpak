@@ -1,0 +1,22 @@
+	<table cellspacing="1" width="100%" class="table-data"><!-- begin sorters -->
+	<tr class="middlebg" align="center">
+		<td>{sorter_id}</td>
+		<td>{sorter_payment_name}</td>
+		<td>{sorter_total}</td>
+		<td>{sorter_date}</td>
+		<td>&nbsp;</td>
+	</tr><!-- end sorters --><!-- BEGIN records -->
+	<tr class="usualbg" valign="top" align="center">
+		<td>{payment_id}</td>
+		<td align="left">&nbsp;{payment_name}</td>
+		<td align="right">&nbsp;{payment_total}&nbsp;</td>
+		<td>&nbsp;{date_paid}&nbsp;</td>
+		<td>&nbsp;<a href="{user_payment_href}?payment_id={payment_id}">{VIEW_DETAILS_MSG}</a>&nbsp;</td>
+	</tr><!-- END records --><!-- BEGIN no_records -->
+	<tr class="usualbg">
+		<td colspan="5">{NO_COMMISSION_PAYMENTS_MSG}</td>
+	</tr><!-- END no_records --><!-- begin navigator_block -->
+	<tr class="middlebg">
+		<td colspan="5" align="right">{navigator}</td>
+	</tr><!-- end navigator_block -->
+	</table>	

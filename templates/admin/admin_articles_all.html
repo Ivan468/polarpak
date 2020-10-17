@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ARTICLES_AND_CATEGORIES_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="javascript">
+function clearSearch()
+{
+	var searchForm = document.search;
+	var topCategories = searchForm.top_categories.value;
+	searchForm.s.value = '';
+	searchForm.sa.selectedIndex = 0;
+	searchForm.st.selectedIndex = 0;
+	if (topCategories != "") {
+		var ids = topCategories.split(",");
+		for (var i = 0; i < ids.length; i++) {
+			var topId = ids[i];
+			searchForm.elements["sca_"+topId].checked = false;
+		}
+	}
+}
+</script>
+</head>
+
+<body class="bodyDboard">
+{admin_header}
+{block_leftside_breadcrumbs}
+
+<div class="Block">
+	<form action="{admin_articles_all_href}" name="search" method="GET">
+	<input type="hidden" name="top_categories" value="{top_categories}"/>
+	<div class="AdminSearch">
+		<div id="item_advanced_search" class="leftNavNonActive">
+			<a href="#" class="leftNavTitle">{SEARCH_TITLE}</a>
+			<a href="#" class="leftNavArr" onclick="overhid('item_advanced_search'); return false;">{ADVANCED_SEARCH_TITLE}</a>
+			<ul>
+				<li>
+					<span class="title">{CATEGORY_MSG}</span>
+					<div class="control"><!-- BEGIN sca -->						
+						<input type="checkbox" {sca_checked} name="sca_{sca_index}" id="sca_{sca_index}" value="{sca_value}">
+						<label for="sca_{sca_index}">{sca_description}</label><br/><!-- END sca -->
+					</div>
+				</li>
+
+				<li>
+					<span class="title">{TYPE_MSG}</span> <select name="sa"><!-- BEGIN sa -->
+						<option {sa_selected} value="{sa_value}">{sa_description}<!-- end sa -->
+					</select>
+				</li>
+
+				<li>
+						<span class="title">{STATUS_MSG}</span> <select name="st"><!-- begin st -->
+						<option {st_selected} value="{st_value}">{st_description}<!-- end st -->
+					</select></li>
+			</ul>
+			<div class="innerDiv">
+				<span class="title">{KEYWORDS_MSG}</span> 
+				<input class="field" type="text" name="s" value="{s}">
+				<input class="submit" type="submit" name="search" value="{SEARCH_TITLE}">
+				<input class="submit" type="submit" name="search" onclick="clearSearch();" value="{CLEAR_BUTTON}">
+			</div>
+		</div>
+	</div>
+</form>
+</div>
+
+<div class="CategoriesNav">
+
+	<div class="Block">
+	<div class="BlockTitle">{AVAILABLE_CATEGORIES_MSG}</div>
+	<div class="BlockContent">
+
+		<table width="100%" border="0" cellspacing="1" cellpadding="6"><!-- begin categories_header -->
+		<tr class="middle">
+			<td>{CATEGORY_NAME_MSG}</td>
+			<td>&nbsp;</td>
+		</tr><!-- END categories_header --><!-- BEGIN articles_categories -->
+		<tr class="usual">
+			<td>
+				<a class="title" href="{admin_articles_href}?category_id={row_category_id}">{category_name}</a>
+				<div class="small"><a href="{admin_article_images_href}?category_id={row_category_id}&rp={rp_url}">{IMAGES_MSG}</a></div>
+				<div class="small"><a href="{admin_article_links_href}?category_id={row_category_id}&rp={rp_url}">{LINKS_TITLE}</a></div>
+				<div class="small"><a href="{admin_article_category_items_related_href}?category_id={row_category_id}">{ADMIN_RELATED_PRODUCTS_TITLE}</a></div>
+			</td>
+			<td align="center"><b><a href="{admin_articles_category_href}?category_id={row_category_id}">{EDIT_MSG}</a></b></td>
+		</tr><!-- END articles_categories --><!-- BEGIN no_categories -->
+		<tr class="usual">
+			<td colspan="2"><b>'{tree_current_name}'</b> {CATEGORY_DOESNT_HAVE_MSG}.</td>
+		</tr><!-- END no_categories -->
+		<tr class="middle">
+			<td colspan="2">
+				<a href="admin_articles_category.php">{NEW_CATEGORY_MSG}</a>
+				<!-- BEGIN categories_order_link -->
+				| <a href="{admin_articles_categories_href}?parent_category_id=0">{CHANGE_ORDER_MSG}</a>
+				<!-- END categories_order_link -->
+			</td>
+		</tr>
+		</table>
+
+	</div>
+	</div>
+	
+</div>
+<div class="ItemsList">
+
+<!-- begin items_block -->
+	<div class="Block">
+	<div class="BlockTitle">
+		<div class="BlockTitleRight">
+			<img class="settings" src="../images/icons/settings.png" width="32" height="32" onclick="settingsFrame('settings-{category_id}');" />
+			<div class="settings-frame" id="settings-{category_id}">
+				<div><a href="{admin_articles_category_href}?category_id={category_id}">{SETTINGS_MSG}</a></div>
+				<div><a href="{admin_cms_page_layout_href}?page_code=articles_list&key_code={category_id}&key_type=category&rp={rp_url}">{LIST_PAGE_LAYOUT_MSG}</a></div>
+				<div><a href="{admin_cms_page_layout_href}?page_code=article_details&key_code={category_id}&key_type=category&rp={rp_url}">{DETAILED_PAGE_LAYOUT_MSG}</a></div>
+				<div><a href="{admin_cms_page_layout_href}?page_code=article_reviews&key_code={category_id}&key_type=category&rp={rp_url}">{REVIEWS_LAYOUT_MSG}</a></div>
+				<div><a href="{admin_articles_reviews_href}?art_cat_id={category_id}">{ARTICLES_REVIEWS_MSG}</a></div>
+				<div><a href="{admin_tell_friend_href}?art_cat_id={category_id}&type=articles">{TELL_FRIEND_TITLE}</a></div>
+			</div>
+
+		</div>
+
+		<b>{tree_current_name}</b><!-- begin s_d --> matching the term(s) '<b>{s}</b>'<!-- end s_d -->
+	</div>
+	<div class="BlockContent">
+
+		<table width="99%" border="0" cellspacing="1" cellpadding="6"><!-- begin items_header -->
+		<tr class="middle">
+			<td>{ADMIN_TITLE_MSG}</td>
+			<td align="center">{STATUS_MSG}</td>
+			<!-- begin article_date_header_column -->
+			<td align="center">{DATE_MSG}</td>
+			<!-- end article_date_header_column -->
+		</tr><!-- end items_header --><!-- BEGIN items_list -->
+		<tr class="usual" align="center" valign="top">
+			<td align="left">
+				<a class="title" href="{admin_article_href}?category_id={article_category_id}&article_id={article_id}">{article_title}</a> &nbsp; &nbsp; 
+				<a href="{admin_article_href}?category_id={article_category_id}&article_id={article_id}">{EDIT_MSG}</a>
+				<div class="small">
+					<a href="{admin_article_items_related_href}?category_id={article_category_id}&article_id={article_id}">{ADMIN_RELATED_PRODUCTS_TITLE}</a> |
+					<a href="{admin_article_related_href}?category_id={article_category_id}&article_id={article_id}">{RELATED_ARTICLES_MSG}</a> |<!--begin related_forums_priv-->
+					<a href="{admin_article_forums_related_href}?category_id={article_category_id}&article_id={article_id}">{RELATED_FORUMS_MSG}</a> |<!--end related_forums_priv-->
+					<a href="{admin_articles_assign_href}?category_id={article_category_id}&article_id={article_id}">{ASSIGN_CATEGORIES_MSG}</a>
+				</div>
+			</td>
+			<td align="center" valign="center">{article_status}</td>
+			<!-- begin article_date_column -->
+			<td align="center" valign="center">{article_date}</td>
+			<!-- end article_date_column -->
+		</tr><!-- END items_list --><!-- BEGIN no_items -->
+		<tr class="usual">
+			<td colspan="3">'<b>{tree_current_name}</b>' {CATEGORY_DOESNT_HAVE_ARTICLES_MSG}</td>
+		</tr><!-- END no_items -->
+		<tr class="middle">
+			<td colspan="3">
+				<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+				<a href="{admin_article_href}?category_id={category_id}">{ADD_NEW_MSG}</a>
+				<!-- BEGIN articles_order_link -->
+				| <a href="{admin_articles_href}?category_id={category_id}">{SHOW_MORE_MSG}</a>
+				| <a href="{admin_articles_order_href}?parent_category_id={category_id}">{CHANGE_ORDER_MSG}</a>
+				<!-- END articles_order_link -->
+			</td>
+		</tr>
+		</table>
+
+	</div>
+	</div>
+<!-- end items_block -->
+
+	<div class="Block BlockNotes">
+	<div class="BlockTitle">{ADMIN_NOTE_MSG}</div>
+	<div class="BlockContent">
+		<ul class=cat>
+			<li class=nob><b>{TO_FIND_OR_VIEW_ARTICLES_MSG}</b><br>{NAVIGATE_IN_CATEGORIES_ARTICLES_MSG}<br><br>
+			<li class=nob><b>{TO_ADD_SUB_CATEGORY_ARTICLE_MSG}</b><br>{FOLLOW_INSTRUCTIONS_ARTICLES_MSG}
+		</ul>
+	</div>
+	</div>
+
+</div>
+
+{admin_footer}
+</body>
+</html>

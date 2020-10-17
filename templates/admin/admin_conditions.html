@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html><head><title>{CONDITIONS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/win_select.js"></script>
+</head>
+<body class="bodySettings pg-conditions">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{CONDITIONS_MSG}</div>
+<div class="BlockContent">
+
+<form name="list" action="{admin_conditions_href}">
+
+	<div class="search-form">
+		<div class="body">
+			<input size="40" type="text" name="sw" value="{sw}">
+			<input class="submit" type="submit" name="search" value="{SEARCH_BUTTON}">
+			<input class="submit" type="submit" name="search" value="{CLEAR_BUTTON}" onClick="document.list.sw.value = '';">
+		</div>
+	</div>
+
+<input type="hidden" name="form_name" value="{form_name}">
+<input type="hidden" name="items_field" value="{items_field}">
+<input type="hidden" name="items_object" value="{items_object}">
+<input type="hidden" name="item_template" value="{item_template}">
+<input type="hidden" name="selection_type" value="{selection_type}">
+<input type="hidden" name="win_type" value="{win_type}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+	
+<table border="0" cellspacing="1" cellpadding="6" width="100%"><!-- begin sorters -->
+<tr align="center" class="middle">
+	<td>{sorter_condition_id}</td>
+	<td>{sorter_condition_name}</td>
+	<td>{sorter_order}</td>
+	<td>&nbsp;</td><!-- begin select_column -->
+	<td>&nbsp;</td><!-- end select_column -->
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="usual" align="center">
+	<td>{condition_id}</td>
+	<td align="left">{condition_name}</td>
+	<td>{sort_order}</td>
+	<td><a href="{admin_condition_edit_url}">{EDIT_MSG}</a></td><!-- begin select_cell -->
+	<td class="select-cell" onclick="{onclick}">{SELECT_MSG}</td><!-- end select_cell -->
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="{colspan}">{NO_RECORDS}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="{colspan}">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_condition_new_url}">{ADD_NEW_MSG}</a>
+	</td>
+</tr>
+</table>	
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

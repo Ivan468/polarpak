@@ -1,0 +1,25 @@
+	<table cellspacing="1" class="table-data" width="100%"><!-- begin sorters -->
+	<tr class="middlebg" align="center">
+		<td>{sorter_property_id}</td>
+		<td>{sorter_property_name}</td>
+		<td>{sorter_property_type_id}</td>
+		<td>&nbsp;</td>
+	</tr><!-- end sorters --><!-- begin records -->
+	<tr class="usualbg">
+		<td align="center">{property_id}</td>
+		<td>{property_name}</td>
+		<td align="center">{property_type}</td>
+		<td align="center"><a href="{user_property_edit_url}">{EDIT_BUTTON}</a></td>
+	</tr><!-- end records --><!-- begin no_records -->
+	<tr class="usualbg">
+		<td colspan="4">{NO_OPTIONS_AVAILABLE_MSG}</td>
+	</tr><!-- end no_records -->
+	<tr class="middlebg">
+		<td colspan="3"><!-- begin add_option -->
+			<a href="{user_property_new_url}">{ADD_NEW_MSG}</a> | <!-- end add_option --><!-- begin add_subcomponent -->
+			<a href="{user_component_single_url}">{ADD_SUBCOMPONENT_MSG}</a> | <!-- end add_subcomponent --><!-- begin add_subcomponent_selection -->
+			<a href="{user_component_selection_url}">{ADD_SUBCOMPONENT_SELECTION_MSG}</a><!-- end add_subcomponent_selection -->
+		</td>
+		<td align="right">{navigator}</td>
+	</tr>
+	</table>

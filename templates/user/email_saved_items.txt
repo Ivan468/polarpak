@@ -1,0 +1,9 @@
+------------------------------------------------------<!-- begin text_saved_items -->
+{item_name}<!-- begin text_saved_items_item_code -->
+{PROD_CODE_MSG}: {item_code}<!-- end text_saved_items_item_code --><!-- begin text_saved_items_manufacturer_code -->
+{MANUFACTURER_CODE_MSG}: {manufacturer_code}<!-- end text_saved_items_manufacturer_code -->	
+{item_properties}
+[{price}] x [{quantity}] = [{item_total}] 
+------------------------------------------------------<!-- end text_saved_items -->
+{GOODS_TOTAL_MSG}: {goods_total} 
+------------------------------------------------------

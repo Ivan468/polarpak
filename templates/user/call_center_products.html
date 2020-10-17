@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{PRODUCT_SELECTION_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="js/init.js"></script>
+<script type="text/javascript" src="js/ajax.js"></script>
+<script type="text/javascript" src="js/blocks.js"></script>
+<script type="text/javascript" src="js/shopping.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+var requiredProperty = "{REQUIRED_PROPERTY_MSG}";
+var msgMinMax = "{MIN_MAX_VALUE_MSG}";
+var addProduct = "{CONFIRM_ADD_PRODUCT_MSG}";
+var confirmAdd = "0";
+
+function clearSearch() {
+	document.products.cart.value = "";
+	document.products.sw.value = "";
+	document.products.submit();
+}
+
+function closeWindow()
+{
+	window.opener.focus();
+	window.close();
+}
+
+function keyUpHandler(event) {
+	if (!event) var event = window.event;
+
+	if (event.keyCode) code = event.keyCode;
+	else if (event.which) code = event.which;
+
+	if (code == 27) {
+		hidePopupBlock();
+	}
+}
+
+document.onkeyup = keyUpHandler;
+//]]>
+</script>
+</head>
+
+<body class="popup">
+
+
+<form name="products" method="post" action="{call_center_products_href}">
+<input type="hidden" name="type" value="call" />
+<input type="hidden" name="rnd" value="{rnd}" />
+<input type="hidden" name="cart" value="" />
+<input type="hidden" name="redirect_to_cart" value="3" />
+<input type="hidden" name="start_index" value="1" />
+<input type="hidden" name="item_index" value="" />
+<input type="hidden" name="items_indexes" value="{items_indexes}" />
+
+<table cellspacing="1" cellpadding="6" width="100%">
+<tr class="middle">
+	<td colspan="6" align="center"><a href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+<tr>
+	<td colspan="6" class="usual" align="center">
+		<input type="text" name="sw" value="{sw}" class="search">
+		<span class="button"><input type="submit" value="{SEARCH_BUTTON}" class="submit" onClick="document.products.cart.value='';"></span>
+		<span class="button"><input type="submit" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch();"></span>
+	</td>
+</tr><!-- begin search_results -->
+<tr class="usual" align="center">
+	<td colspan="6">{found_message}</td>
+</tr><!-- end search_results --><!-- begin products_sorters -->
+<tr class="middle" align="center">
+	<td>{sorter_item_id}</td>
+	<td>{sorter_item_name}</td>
+	<td>{sorter_item_code}</td>
+	<td>{sorter_manufacturer_code}</td>
+	<td>{sorter_price}</td>
+	<td>&nbsp;</td>
+</tr><!-- end products_sorters --><!-- begin products -->
+<tr class="usual">
+	<td align="center">{item_id}</td>
+	<td><span id="msg{item_index}">{item_name}</span></td>
+	<td>{item_code}</td>
+	<td>{manufacturer_code}</td>
+	<td align="right">{price}</td>
+	<td align="center">
+		<input type="hidden" name="item_id{item_index}" value="{item_id}" />
+		<input type="hidden" name="product_params{item_index}" value="" />
+		<input type="hidden" name="product_data{item_index}" value="{}" />
+		<a id="add{item_index}" href="#" onclick="confirmBuy('products','{item_index}','cart', 'msg{item_index}'); return false;">{ADD_TO_CART_MSG}</a> 
+	</td>
+</tr><!-- end products --><!-- begin navigator_block -->
+<tr class="middle">
+	<td colspan="6" align="right">{navigator}</td>
+</tr><!-- end navigator_block -->
+<tr class="middle">
+	<td colspan="6" align="center"><a href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+</table>
+
+</form>
+
+</body>
+</html>

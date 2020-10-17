@@ -1,0 +1,199 @@
+<script type="text/javascript" src="js/icons.js"></script>
+<script type="text/javascript" src="js/attachments.js"></script>
+
+	<!-- begin topic_preview-->
+	<div class="bk-intro">
+		<div class="sub-head">{PREVIEW_TITLE}</div>
+		<div class="sub-body">{description}</div>
+	</div><br/><!-- end topic_preview-->
+
+	<!-- begin errors --><div class="errorbg" align="center">{errors_list}</div><br /><!-- end errors -->
+
+	<!-- begin forum_thanks --><div class="messagebg" align="center">{TOPIC_ADDED_MSG}</div><br /><!-- end forum_thanks -->
+
+
+	<!-- begin block_head -->{NEW_TOPIC_MSG}<!-- end block_head -->
+
+		<form action="{forum_topic_new_href}" method="post" name="forum">
+		<input type="hidden" name="forum_id" value="{forum_id}" />
+		<input type="hidden" name="attachments_url" value="{user_forum_attachments_url}" />
+		<input type="hidden" name="rnd" value="{rnd}" />
+		<input type="hidden" name="operation" value="1" />
+		<input type="hidden" name="u" value="{u}" />
+
+
+			<div class="field msg-asterisk">
+				{ASTERISK_MSG}
+			</div>
+
+			<!-- begin user_name_block -->
+			<div class="field fd-name {user_name_class}">
+				<div class="before"></div>
+				<div class="name">
+					{TOPIC_NICKNAME_FIELD} <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="user_name" value="{user_name}" maxlength="64" />
+				</div>
+				<div class="after"></div>
+			</div><!-- end user_name_block --><!-- begin user_email_block -->
+			<div class="field fd-email {user_email_class}">
+				<div class="before"></div>
+				<div class="name">
+					{TOPIC_EMAIL_FIELD} <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="user_email" value="{user_email}" maxlength="64" />
+				</div>
+				<div class="after"></div>
+			</div><!-- end user_email_block -->
+
+			<div class="field fd-topic {topic_class}">
+				<div class="before"></div>
+				<div class="name">
+					{TOPIC_NAME_FIELD} <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="topic" value="{topic}" />
+				</div>
+				<div class="after"></div>
+			</div>
+
+			<!-- begin attachments_block -->
+			<div class="field fd-attachments {attachments_class}">
+				<div class="before"></div>
+				<div class="name">
+					<a href="#" onclick="attachFiles(document.forum);return false;">{ATTACHMENTS_MSG}</a>
+					<a href="#" onclick="attachFiles(document.forum);return false;"><img src="images/clip.gif" align="top" alt="attachment" /></a>
+				</div>
+				<div class="control">
+					<div id="attachmentsBlock" style="{attachments_class}">
+						<a href="#" onclick="attachFiles(document.forum);return false;">{ATTACHED_FILES_MSG}</a>:&nbsp;
+						&nbsp;<span id="attachedFiles">{attached_files}</span>
+					</div>
+				</div>
+				<div class="after"></div>
+			</div><!-- end attachments_block -->
+
+
+			<div class="field fd-description {description_class}">
+				<div class="before"></div>
+				<div class="name">
+					{TOPIC_MESSAGE_FIELD} <span class="required">*</span><!-- begin icons_block -->
+					<div align="center">
+						<br />{EMOTICONS_MSG}
+						<table cellspacing="3" cellpadding="0"><!-- begin icons_rows -->
+							<tr><!-- begin icons_cols -->
+								<td><a href="#" onclick="insertAtCaret('{icon_code_js}', document.forum.description);return false;"><img src="{icon_src}" {icon_size} alt="{icon_alt}" /></a></td><!-- end icons_cols -->
+							</tr><!-- end icons_rows -->
+						</table><!-- begin icons_more_link -->
+						<br /><a href="#" onclick="openIconsWindow('{icon_select_href}', document.forum.description);return false;">{VIEW_MORE_EMOTICONS_MSG}</a><!-- end icons_more_link -->
+					</div><!-- end icons_block -->
+				</div>
+				<div class="control">
+
+					<!-- begin allow_bbcode -->
+						<script type='text/javascript' src='./js/bbcodes.js'></script>
+						<div style="padding-bottom:2px">
+							<span class="submit"><input class="submit" type="button" title="Bold" value="b" onclick="add_tag('b','bld','description')" id="bld"/></span>
+							<span class="submit"><input class="submit" type="button" title="Italic" value="i" onclick="add_tag('i','itl','description')" id="itl"/></span>
+							<span class="submit"><input class="submit" type="button" title="Underline"  value="u" onclick="add_tag('u','unl','description')" id="unl"/></span>
+							<span>
+								<select class="text" onchange="set_font(this.options[this.selectedIndex].value,'size','description','');this.selectedIndex=0;">
+									<option value='0'>SIZE</option>
+									<option value='6'>6 pt</option>
+									<option value='7'>7 pt</option>
+									<option value='8'>8 pt</option>
+									<option value='9'>9 pt</option>
+									<option value='10'>10 pt</option>
+									<option value='11'>11 pt</option>
+									<option value='12'>12 pt</option>
+									<option value='13'>13 pt</option>
+									<option value='14'>14 pt</option>
+									<option value='15'>15 pt</option>
+									<option value='16'>16 pt</option>
+									<option value='17'>17 pt</option>
+									<option value='18'>18 pt</option>
+									<option value='19'>19 pt</option>
+									<option value='20'>20 pt</option>
+									<option value='21'>21 pt</option>
+									<option value='22'>22 pt</option>
+								</select>
+							</span>
+							<span>
+								<select class="text" onchange="set_font(this.options[this.selectedIndex].value,'font','description','');this.selectedIndex=0;">
+									<option value='0'>FAMILY</option>
+									<option value='Arial'>Arial</option>
+									<option value='Times'>Times</option>
+									<option value='Courier'>Courier</option>
+									<option value='Impact'>Impact</option>
+									<option value='Geneva'>Geneva</option>
+									<option value='Optima'>Optima</option>
+								</select>
+							</span>
+							<span>
+								<select class="text" onchange="set_font(this.options[this.selectedIndex].value, 'color','description','');this.selectedIndex=0;">
+									<option value='0'>COLOR</option>
+									<option value='blue' style='color:blue'>Blue</option>
+									<option value='red' style='color:red'>Red</option>
+									<option value='purple' style='color:purple'>Purple</option>
+									<option value='orange' style='color:orange'>Orange</option>
+									<option value='yellow' style='color:yellow'>Yellow</option>
+									<option value='gray' style='color:gray'>Gray</option>
+									<option value='green' style='color:green'>Green</option>
+								</select>
+							</span>
+							<span class="submit"><input class="submit" type="button" title="URL" value="http://" onclick="add_url('description')" id="url" /></span>
+							<span class="submit"><input class="submit" type="button" title="Image" value="img" onclick="add_image('description')" id="img" /></span>
+							<span class="submit"><input class="submit" type="button" title="Quote" value="quote" onclick="add_tag('quote','quote','description')" id="quote" /></span>
+							<span class="submit"><input class="submit" type="button" title="Code" value="code" onclick="add_tag('code','code','description')" id="codes" /></span>
+							<span class="submit"><input class="submit" type="button" title="List" value="list" onclick="add_list('description')" id="list"/></span>
+							<span class="submit"><input class="submit" type="button" value="/" title="Close all opened codes" onclick="closeall('description');"/></span>
+							<input type="hidden" id="tagcount" value="0" />
+						</div>
+					<!-- end allow_bbcode -->
+					<textarea class="field" id="description" name="description" rows="15" cols="60" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{description}</textarea>
+				</div>
+				<div class="after"></div>
+			</div>
+
+
+			<div class="field fd-description {description_class}">
+				<div class="before"></div>
+				<div class="name">
+					{TOPIC_NOTIFY_FIELD} 
+				</div>
+				<div class="control">
+					<input type="checkbox" {email_notification} name="email_notification" value="1" />
+				</div>
+				<div class="after"></div>
+			</div>
+
+			<!-- begin validation_number_block -->
+			<div class="field fd-validation {validation_class}">
+				<div class="before"></div>
+				<div class="name">
+					{VALIDATION_CODE_FIELD} <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					<input class="field" type="text" name="validation_number" size="4" value="{validation_number}" />
+					&nbsp;<img src="validation_image.php" align="absmiddle" />
+				</div>
+				<div class="after"></div>
+			</div><!-- end validation_number_block -->
+
+			<div class="field fd-submit {submit_class}">
+				<div class="before"></div>
+				<div class="name">
+				</div>
+				<div class="control">
+					<input class="submit" type="submit" name="button" value="{ADD_TOPIC_BUTTON}" />
+					<input class="submit" type="submit" name="button" value="{PREVIEW_BUTTON}" />
+					<input class="submit" type="button" value="{CLEAR_BUTTON}" onclick="document.forum.description.value=''" />
+					<input class="submit" type="reset" value="{RESET_BUTTON}" />
+				</div>
+				<div class="after"></div>
+			</div>
+
+		</form>
+

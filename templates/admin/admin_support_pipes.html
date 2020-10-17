@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html><head><title>{EMAIL_PIPES_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header}
+{admin_breadcrumb}
+
+<div class="Block">
+<div class="BlockTitle">{EMAIL_PIPES_MSG}</div>
+<div class="BlockContent">
+
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr align="center" class="middle">
+	<td>{sorter_pipe_id}</td>
+	<td>{sorter_incoming_email}</td>
+	<td>{sorter_dep_name}</td>
+	<td>{sorter_type_name}</td>
+	<td>{sorter_product_name}</td>
+	<td>&nbsp;</td>
+</tr><!-- BEGIN records -->
+<tr class="usual" align="center">
+	<td>{pipe_id}</td>
+	<td align="left">{incoming_email}</td>
+	<td>{dep_name}</td>
+	<td>{type_name}</td>
+	<td>{product_name}</td>
+	<td><a href="{admin_support_pipe_href}?pipe_id={pipe_id}">{EDIT_MSG}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="6">{NO_RECORDS}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="6">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_support_pipe_href}">{ADD_NEW_MSG}</a>
+	</td>
+</tr>
+</table>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

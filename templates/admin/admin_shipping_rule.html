@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html><head><title>{SHIPPING_RULE_MSG} :: {EDIT_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+
+	var countries = new Array();
+	var selectedCountries = new Array(); // <!-- BEGIN countries -->
+	countries["{country_id}"] = "{country_name}"; // <!-- END countries -->	// <!-- BEGIN selected_countries -->
+	selectedCountries["{country_id}"] = 1; // <!-- END selected_countries -->
+
+	function initValues()
+	{
+		clearOptions();
+		setOptions();
+		countryRestriction();
+	}
+
+	function setOptions()
+	{
+		for(var countryCode in countries) {
+			var optionNumber = (selectedCountries[countryCode] == 1) ? document.record.selected.length : document.record.not_selected.length;
+			if(selectedCountries[countryCode])
+				document.record.selected.options[optionNumber] = new Option(countries[countryCode], countryCode);
+			else
+				document.record.not_selected.options[optionNumber] = new Option(countries[countryCode], countryCode);
+		}
+	}
+
+	function clearOptions()
+	{
+		var totalOptions = document.record.not_selected.length;
+		for(var i = totalOptions - 1; i >= 0; i--)
+			document.record.not_selected.options[i] = null;
+
+		var totalOptions = document.record.selected.length;
+		for(var i = totalOptions - 1; i >= 0; i--)
+			document.record.selected.options[i] = null;
+	}
+
+	function addValues()
+	{
+		var totalOptions = document.record.not_selected.length;
+		for(var i = 0; i < totalOptions; i++)
+			if(document.record.not_selected.options[i].selected == true)
+				selectedCountries[document.record.not_selected.options[i].value] = 1;
+
+		clearOptions();
+		setOptions();
+	}
+
+	function removeValues()
+	{
+		var totalOptions = document.record.selected.length;
+
+		for(var i = 0; i < totalOptions; i++)
+			if(document.record.selected.options[i].selected == true)
+				selectedCountries[document.record.selected.options[i].value] = 0;
+
+		clearOptions();
+		setOptions();
+	}
+
+	function selectValues()
+	{
+		var totalOptions = document.record.selected.length;
+		var countriesValues = "";
+		for(var i = 0; i < totalOptions; i++) {
+			document.record.selected.options[i].selected = true;
+			if(i > 0) countriesValues += ","
+			countriesValues += document.record.selected.options[i].value;
+		}
+		document.record.countries.value = countriesValues;
+	}
+
+	function countryRestriction()
+	{
+		var isCountriesAll = document.record.countries_all.checked;
+		if (isCountriesAll) {
+			document.record.not_selected.disabled = true;
+			document.record.selected.disabled = true;
+			document.record.add.disabled = true;
+			document.record.remove.disabled = true;
+		} else {
+			document.record.not_selected.disabled = false;
+			document.record.selected.disabled = false;
+			document.record.add.disabled = false;
+			document.record.remove.disabled = false;
+		}	
+	}
+
+//-->
+</script>
+</head>
+<body class="commonbg" onLoad="initValues();">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_SHIPPING_RULE_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_shipping_rule_href}" name="record" onSubmit="selectValues();" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="shipping_rule_id" value="{shipping_rule_id}">
+<input type="hidden" name="countries" value="">
+<input type="hidden" name="page" value="{page}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="usual">
+	<td valign="top">{SHIPPING_RULE_MSG} *</td>
+	<td><textarea cols="80" rows="3" name="shipping_rule_desc">{shipping_rule_desc}</textarea></td>
+</tr>
+<tr class="usual">
+	<td colspan="2">
+		<input type="checkbox" name="hide_no_ship_item" id="hide_no_ship_item" {hide_no_ship_item} value="1">
+		<label for="hide_no_ship_item">{HIDE_PRODUCT_NO_SHIPPING_MSG}</label>
+	</td>
+</tr>	
+
+<tr class="usual">
+	<td colspan="2">
+		<input type="checkbox" name="countries_all" id="countries_all" {countries_all} onClick="countryRestriction();" value="1">
+		<label for="countries_all">{ALLOW_PRODUCT_DELIVERY_MSG}</label>
+	</td>
+</tr>	
+</table>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr align="center" class="middle">
+	<td width="45%">{AVAILABLE_COUNTRIES_MSG}</td>
+	<td width="10%">{OPERATIONS_MSG}</td>
+	<td width="45%">{TYPE_FOR_COUNTRIES_NOTE}</td>
+</tr>	
+<tr align="center" class="usual">
+	<td>
+		<select name="not_selected" MULTIPLE size="10" style="width: 250px;">
+			<option>{AVAILABLE_COUNTRIES_MSG}
+		</select>
+	</td>
+	<td>
+		<span class="button"><input class="submit" type="button" name="add" value="&nbsp;&nbsp; Add  -> &nbsp;&nbsp;" onClick="addValues();"></span>
+		<br><br>
+		<span class="button"><input class="submit" type="button" name="remove" value="<- Remove" onClick="removeValues();"></span>
+	</td>
+	<td>
+		<select name="selected" MULTIPLE size="10" style="width: 250px;">
+			<option>{SELECTED_COUNTRIES_MSG}
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td align="right" colspan="3">
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</form>	
+</table>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

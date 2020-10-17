@@ -1,0 +1,49 @@
+	<!-- begin errors_block -->
+	<table align="center" width="600" cellspacing="0" cellpadding="0">
+	<tr><td>
+		<div class="errorbg" align="center">{download_errors}</div>
+	</td></tr>
+	</table>
+	<!-- end errors_block -->
+	<br />
+
+	<!-- begin terms_form -->
+
+	<form name="download" action="{download_href}" method="post">
+	<input type="hidden" name="operation" value="download" />
+	<input type="hidden" name="download_id" value="{download_id}" />
+	<input type="hidden" name="release_id" value="{release_id}" />
+	<input type="hidden" name="path_id" value="{path_id}" />
+	<input type="hidden" name="order_item_id" value="{order_item_id}" />
+	<input type="hidden" name="vc" value="{vc}" />
+
+
+	<table width="600" cellspacing="0" cellpadding="3" align="center">
+	<tr> 
+		<td class="title">{item_name}</td>
+	</tr>
+	<tr> 
+		<td valign="top">
+			<!-- begin item_image --><img class="item-image" align="left" name="item_image" src="{image_src}" {image_size} hspace="10" alt="{image_alt}" /><!-- end item_image -->
+			{item_desc}
+		</td>
+	</tr>
+	<tr> 
+		<td class="title">{TERMS_MSG}</td>
+	</tr>
+	<tr> 
+		<td valign="top" align="center">
+  
+			<div class="terms">{terms_text}</div>
+  
+		</td>
+	</tr>
+	<tr> 
+		<td><input type="checkbox" name="terms_agreed" value="1" />{TERMS_USER_DESC}</td>
+	</tr>
+	<tr> 
+		<td><span class="submit"><input type="submit" class="submit" name="download" value="{DOWNLOAD_BUTTON}" /></span></td>
+	</tr>
+	</table>
+	</form>
+	<!-- end terms_form -->

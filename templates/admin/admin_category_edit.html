@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{CATEGORY_EDIT_MSG}</title>
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/win_select.js"></script>
+<script language="JavaScript">
+<!--
+	var parentCategoryName = "[Top]";
+	var removeButton = "{REMOVE_BUTTON}";
+
+	var items = new Array(); // global array for all selected items
+	var itemTypes = new Array(); // <!-- BEGIN selected_item_types_js -->
+	itemTypes["{item_type_id}"] = new Array("{item_type_name_js}"); // <!-- END selected_item_types_js -->
+	items["items_types_ids"] = itemTypes;
+
+	function checkItemsAll(windowUrl, formName, fieldName, idName, selectionType)
+	{
+		var formObj = document.record;
+		var untickMsg = formObj.items_types_all_untick_msg.value;
+		var itemsAll = formObj.items_types_all.checked;
+		if (itemsAll) {
+			alert(untickMsg);
+		} else {
+			openWindowSelect(windowUrl, formName, fieldName, idName, selectionType)
+		}
+	}
+
+	function clickItemsAll()
+	{
+		var formObj = document.record;
+		var itemsAll = formObj.items_types_all.checked;
+		var typeObj = document.getElementById("a_select_product_type");
+		if (itemsAll) {
+			typeObj.className = "disabled";
+		} else {
+			typeObj.className = "title";
+		}
+	}
+
+	function openWindow(pagename, filetype)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+	}
+
+	function setFileName(filename, filetype)
+	{
+		var siteUrl = '{image_site_url}';
+
+		if(filename != "" && filetype == "category")
+		{
+			document.record.image.value = siteUrl + "images/categories/" + filename;
+			document.record.image.focus();
+		} else if(filename != "" && filetype == "category_small") {
+			document.record.image.value = siteUrl + "images/categories/small/" + filename;
+			document.record.image.focus();
+		} else if(filename != "" && filetype == "category_large") {
+			document.record.image_large.value = siteUrl + "images/categories/large/" + filename;
+			document.record.image_large.focus();
+		}
+	}
+	
+	function setCode(column, code)
+	{
+		var fieldName = "column_code_" + column;
+		var fieldObj = document.record.elements[fieldName];
+		if (fieldObj && code && code != "") {
+			var fieldValue = fieldObj.value;
+			if (fieldValue && fieldValue != "") {
+				fieldValue += ",";
+			}
+			fieldValue += code;
+			fieldObj.value = fieldValue;
+		}
+	}
+	
+	function checkSelectValue(val)
+	{
+		if (val >= 0){
+			var gmcSelect = document.record.google_base_type_id,
+				text = gmcSelect.options[gmcSelect.selectedIndex].text;
+				gmcMsg="{GMC_CONFIRM_MESSAGE}";
+
+			if(confirm(gmcMsg.replace("%%OPTION_VALUE%%", text))){
+				gmcSelect.value = val;
+			}
+			else{
+				gmcSelect.value = -1;
+			}
+		}
+	}
+//-->
+</script>
+<script language="JavaScript" type= "text/javascript" src="../js/list_fields.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/access_table.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/tips.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/editor.js"></script>
+<script language="JavaScript">
+<!--
+var list_fields_names = new Array('sites');
+//-->
+</script>
+{CKEditor_tag}
+</head>
+<body class="bodyDboard">
+{admin_header}
+{block_leftside_breadcrumbs}
+
+<!-- BEGIN success -->
+<div class="messagebg">{success_message}</div><!-- END success --><!-- BEGIN errors -->
+<div class="errorbg">{errors_list}</div><!-- END errors -->
+
+	<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+		<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+	</ul>
+
+<div class="Form">
+<div class="FormContent">
+
+<form action="{admin_category_edit_href}" name="record"  onSubmit="selectListFieldsAll(); submit_editor(Array('editor_sd','editor_fd'));" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="category_id" value="{category_id}">
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="sites" value="">
+<input type="hidden" name="apply" value="">
+
+<div id="general_data" class="tab-data {general_class}">
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+	<tr class="middle">
+		<td colspan="2">{ADMIN_GENERAL_MSG}</td>
+	</tr>
+	<tr class="usual">
+		<td><label for="is_showing">{SHOW_ON_SITE_FIELD}</label></td>
+		<td><input type="checkbox" name="is_showing" id="is_showing" {is_showing} value="1"></td>
+	</tr>
+	<tr class="usual">
+		<td>{CATEGORY_ORDER_MSG} *</td>
+		<td><input type="text" class="field" name="category_order" value="{category_order}" size="10" maxlength="10"></td>
+	</tr>
+	<tr class="usual">
+		<td>{TOTAL_VIEWS_MSG}</td>
+		<td><input readonly class="field" type="text" name="total_views" value="{total_views}" size="10" maxlength="10"></td>
+	</tr>
+	<tr class="usual">
+		<td>{CATEGORY_NAME_MSG} *</td>
+		<td><input type="text" class=field name="category_name" value="{category_name}" size="80" maxlength="255"></td>
+	</tr>
+	<!-- BEGIN friendly_url_block -->
+	<tr class="usual">
+		<td>{FRIENDLY_URL_MSG}</td>
+		<td><input class="field" type="text" name="friendly_url" value="{friendly_url}" size="80" maxlength="255"></td>
+	</tr><!-- END friendly_url_block -->
+	<tr class="usual">
+		<td rowspan="2">{LIST_CSS_CLASS_MSG}</td>
+		<td>
+			<input type="text" class="field" name="admin_list_class" value="{admin_list_class}" size="60"> ({ADMIN_BACK_END_VIEW_MSG})
+		</td>
+	</tr>
+	<tr class="usual">
+		<td>
+			<input type="text" class="field" name="user_list_class" value="{user_list_class}" size="60"> ({USER_FRONT_END_VIEW_MSG})
+		</td>
+	</tr>
+	<tr class="usual">
+		<td>{PARENT_CATEGORY_MSG}</td>
+		<td>
+			<input type="hidden" name="parent_category_id" value="{parent_category_id}"/>
+
+			<span style="font-weight: bold;" id="parent_category">{parent_category_desc} <a style="{parent_category_remove_style}" class="smallButton" href="#" onClick="clearParentCategory('record', 'parent_category_id', 'parent_category'); return false;">{REMOVE_BUTTON}</a></span>
+
+			<span style="display: none;" id="parent_category_hidden">[parent_category_desc] <a class="smallButton" href="#" onClick="clearParentCategory('record', 'parent_category_id', 'parent_category'); return false;">{REMOVE_BUTTON}</a></span>
+
+			<a class="smallButton" href="#" onClick="openWindowSelect('{admin_category_select_href}', 'record', 'parent_category_id', 'parent_category', 'parent_category'); return false;">{SELECT_CATEGORY_MSG}</a>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td>{REDIRECT_TO_CATEGORY_MSG}</td>
+		<td>
+			<input type="hidden" name="redirect_category_id" value="{redirect_category_id}"/>
+
+			<span style="font-weight: bold; {redirect_category_style}" id="redirect_category">{redirect_category_desc} <a class="smallButton" href="#" onClick="clearControlValue('record', 'redirect_category_id', 'redirect_category'); return false;">{REMOVE_BUTTON}</a></span>
+
+			<span style="display: none;" id="redirect_category_hidden">[redirect_category_desc] <a class="smallButton" href="#" onClick="clearControlValue('record', 'redirect_category_id', 'redirect_category'); return false;">{REMOVE_BUTTON}</a></span>
+
+			<a class="smallButton" href="#" onClick="openWindowSelect('{admin_category_select_href}', 'record', 'redirect_category_id', 'redirect_category', 'control'); return false;">{SELECT_CATEGORY_MSG}</a>
+		</td>
+	</tr>
+
+	<tr class="usual">
+		<td>{SHORT_DESCRIPTION_MSG}</td>
+		<td>{editor_error}
+			<textarea class="text" id="sd" name="short_description" style="display: block; width: 560px; height: 75px;">{short_description}</textarea>
+			<!-- begin sd_ext_editor -->
+			<script type="text/javascript">
+				var sdEditor = CKEDITOR.replace('sd');{ckfinder}
+			</script><!-- end sd_ext_editor -->
+			<!-- begin sd_int_editor -->
+			<script language= "JavaScript" type= "text/javascript">
+			<!--
+				var editor_sd = new VA_HTMLeditor('content_sd','../','{html_editor}');
+				editor_sd.text_field_name = 'short_description';
+				editor_sd.formname = 'record';
+				editor_sd.css_file = '{css_file}';
+				editor_sd.editor_type = 'category_editor';
+				editor_sd.displayEditor('editor_sd', 560, 75);
+			//-->
+			</script><!-- end sd_int_editor -->
+		</td>
+	</tr>
+	<tr class="usual">
+		<td>{FULL_DESCRIPTION_MSG}</td>
+		<td>{editor_error}
+			<textarea class="text" id="fd" name="full_description" style="display: block; width: 560px; height: 170px;">{full_description}</textarea>
+			<!-- begin fd_ext_editor -->
+			<script type="text/javascript">
+				var fdEditor = CKEDITOR.replace('fd');{ckfinder}
+			</script><!-- end fd_ext_editor -->
+			<!-- begin fd_int_editor -->
+			<script language= "JavaScript" type= "text/javascript">
+			<!--
+				var editor_fd = new VA_HTMLeditor('content_fd','../','{html_editor}');
+				editor_fd.text_field_name = 'full_description';
+				editor_fd.formname = 'record';
+				editor_fd.css_file = '{css_file}';
+				editor_fd.editor_type = 'category_editor';
+				editor_fd.displayEditor('editor_fd', 560, 170);
+			//-->
+			</script><!-- end fd_int_editor -->
+		</td>
+	</tr>
+	<tr class="usual">
+		<td><label for="show_sub_products">{SUBCATEGORIES_PRODUCTS_MSG}</label></td>
+		<td>
+			<input type="checkbox" name="show_sub_products" id="show_sub_products" {show_sub_products} value="1">
+			({SUBCATEGORIES_PRODUCTS_NOTE})
+		</td>
+	</tr>
+	<tr class="usual">
+		<td><label for="allowed_post_subcategories">{ALLOWED_POST_SUB_MSG}</label></td>
+		<td colspan="3">
+			<input type="checkbox" name="allowed_post_subcategories" id="allowed_post_subcategories" {allowed_post_subcategories} value="1">
+			({ALLOWED_POST_SUB_NOTE})
+		</td>
+	</tr>
+	<tr class="usual">
+		<td>{GOOGLE_BASE_PRODUCT_TYPE_MSG}</td>
+		<td>
+			<select name="google_base_type_id" onChange="checkSelectValue(this.value);"><!-- begin google_base_type_id -->
+				<option {google_base_type_id_selected} value="{google_base_type_id_value}">{google_base_type_id_description}<!-- end google_base_type_id -->
+			</select>
+		</td>
+	</tr>				
+	<tr class="middle">
+		<td colspan="2">{IMAGES_MSG}</td>
+	</tr>
+	<tr class="usual">
+		<td>{IMAGE_SMALL_MSG}</td>
+		<td>
+			<input class="field" type="text" name="image" value="{image}" size="80" maxlength="255">
+			&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'category_small')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+			&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'category_small')"><b>{SELECT_IMAGE_MSG}</b></a>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td>{IMAGE_SMALL_ALT_MSG}</td>
+		<td><input class="field" type="text" name="image_alt" value="{image_alt}" size="80" maxlength="255"></td>
+	</tr>
+	<tr class="usual">
+		<td>{IMAGE_LARGE_MSG}</td>
+		<td>
+			<input class="field" type="text" name="image_large" value="{image_large}" size="80" maxlength="255">
+			&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'category_large')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+			&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'category_large')"><b>{SELECT_IMAGE_MSG}</b></a>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td>{IMAGE_LARGE_ALT_MSG}</td>
+		<td><input class="field" type="text" name="image_large_alt" value="{image_large_alt}" size="80" maxlength="255"></td>
+	</tr>
+	<tr class="middle">
+		<td colspan="2">{PROD_APPEARANCE_MSG}</td>
+	</tr>
+	<tr class="usual">
+		<td>{PRODUCTS_LIST_TEMPLATES_MSG}</td>
+		<td>
+			<input class="field" type="text" name="list_template" value="{list_template}" size="50" maxlength="255">
+			&nbsp;({PRODUCTS_LIST_TEMPLATES_NOTE})
+		</td>
+	</tr>
+	<tr class="middle">
+		<td>&nbsp;</td>
+		<td><!-- BEGIN save -->
+			<input class="submit" type="submit" value="{save_button}" onCLick="vaFormOperation(this, 'save'); document.record.apply.value=0; "></span>
+			<input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1;"></span><!-- END save --><!-- BEGIN delete -->
+			<input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+			<input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+		</td>
+	</tr>
+</table>
+</div>
+
+
+<div id="meta_data" class="tab-data {meta_class}">
+	<table width="100%" border="0" cellspacing="1" cellpadding="6">
+	<tr class="middle">
+		<td colspan="2">{META_DATA_MSG}</td>
+	</tr>
+	<tr class="usual">
+		<td>{A_TITLE_MSG}</td>
+		<td><input class="field" type="text" name="a_title" value="{a_title}" size="80" maxlength="255"></td>
+	</tr>
+	<tr class="usual">
+		<td>{META_TITLE_MSG}</td>
+		<td><input class="field" type="text" name="meta_title" value="{meta_title}" size="80" maxlength="255"></td>
+	</tr>
+	<tr class="usual">
+		<td>{META_KEYWORDS_MSG}</td>
+		<td><input class="field" type="text" name="meta_keywords" value="{meta_keywords}" size="80" maxlength="255"></td>
+	</tr>
+	<tr class="usual">
+		<td>{META_DESCRIPTION_MSG}</td>
+		<td><textarea name="meta_description" cols="80" rows="3">{meta_description}</textarea></td>
+	</tr>
+	<tr class="middle">
+		<td>&nbsp;</td>
+		<td>{save}</td>
+	</tr>
+	</table>
+</div>
+
+<div id="site_nav_data" class="tab-data {site_nav_class}">
+	<table width="100%" border="0" cellspacing="1" cellpadding="6">
+	<tr class="middle">
+		<td colspan="2">{HEADER_MENU_MSG}</td>
+	</tr>
+	<tr class="usual">
+		<td><label for="header_menu_show">{SHOW_IN_HEADER_MENU_MSG}</label></td>
+		<td><input type="checkbox" name="header_menu_show" id="header_menu_show" {header_menu_show} value="1"></td>
+	</tr>
+	<tr class="usual">
+		<td>{MENU_ORDER_MSG}</td>
+		<td><input class="field" type="text" name="header_menu_order" value="{header_menu_order}" size="10" maxlength="255"></td>
+	</tr>
+	<tr class="usual">
+		<td>{MENU_CSS_CLASS_MSG}</td>
+		<td><input class="field" type="text" name="header_menu_class" value="{header_menu_class}" size="80" maxlength="255"></td>
+	</tr>
+	<tr class="middle">
+		<td colspan="2">{NAVIGATION_BAR_MSG}</td>
+	</tr>
+	<tr class="usual">
+		<td><label for="nav_bar_show">{SHOW_IN_NAV_BAR_MSG}</label></td>
+		<td><input type="checkbox" name="nav_bar_show" id="nav_bar_show" {nav_bar_show} value="1"></td>
+	</tr>
+	<tr class="usual">
+		<td>{MENU_ORDER_MSG}</td>
+		<td><input class="field" type="text" name="nav_bar_order" value="{nav_bar_order}" size="10" maxlength="255"></td>
+	</tr>
+	<tr class="usual">
+		<td>{MENU_CSS_CLASS_MSG}</td>
+		<td><input class="field" type="text" name="nav_bar_class" value="{nav_bar_class}" size="80" maxlength="255"></td>
+	</tr>
+	<tr class="middle">
+		<td>&nbsp;</td>
+		<td>{save}</td>
+	</tr>
+	</table>
+</div>
+
+<!-- cutom tabs block -->
+<div id="categories_tabs_data" class="tab-data {categories_tabs_class}">
+
+<input type="hidden" name="number_categories_tabs" value="{number_categories_tabs}">
+<table border="0" cellpadding="6" cellspacing="1" align="center" width="100%">
+<tr class="middle" align="center">
+	<td>#</td>
+	<td>{ADMIN_ORDER_MSG}</td>
+	<td>{TITLE_MSG}</td>
+	<td>{DESCRIPTION_MSG}</td>
+	<td>{HIDE_MSG}</td>
+	<td>{DELETE_BUTTON}</td>
+</tr><!-- begin categories_tabs --><!-- begin categories_tabs_errors -->
+<tr class="usual" align="center">
+	<td>&nbsp;</td>
+	<td colspan="5" class="errorbg">{errors_list}</td>
+	<td>&nbsp;</td>	
+</tr><!-- end categories_tabs_errors -->
+<tr class="usual" valign="top" align="center">
+	<td>
+		{row_number} 
+		<input type="hidden" name="tab_id_{categories_tabs_number}" value="{tab_id}">
+	</td>
+	<td><input class="field" size="6" type="text" name="tab_order_{categories_tabs_number}" value="{tab_order}"> </td>
+	<td><input class="field" size="30" type="text" name="tab_title_{categories_tabs_number}" value="{tab_title}"> </td>
+	<td><textarea name="tab_desc_{categories_tabs_number}" cols="80" rows="3">{tab_desc}</textarea></td>
+	<td><input type="checkbox" name="hide_tab_{categories_tabs_number}" {hide_tab} value="1"></td>
+	<td align="center"><input type="checkbox" name="categories_tabs_delete_{categories_tabs_number}" {categories_tabs_delete} value="1"></td>
+</tr><!-- END categories_tabs -->
+<tr class="usual">
+	<td colspan="6" align="right">{ADD_MORE_QST} <span class="button"><input class="submit" type="submit" value=" {ADD_BUTTON} " onClick="document.record.operation.value='more_categories_tabs';"></span></td>
+</tr>
+<tr class="middle">
+	<td colspan="6" align="right">{save}</td>
+</tr>
+	</table>	
+</div>
+<!-- custom tabs end -->
+
+
+<!-- select product types -->
+<div id="item_types_data" class="tab-data {item_types_class}">
+	<table cellspacing="1" cellpadding="4" border="0" width="100%">
+	<tr class="usual">
+		<td colspan="2">
+			<input type="hidden" name="items_types_ids" value="{items_types_ids}" />
+			<input type="hidden" name="items_types_all_untick_msg" value="{ALLOW_ALL_PRODUCT_TYPES_DESC}" />
+			<input type="checkbox" name="items_types_all" id="items_types_all" {items_types_all} value="1" onclick="clickItemsAll();" />
+			<label for="items_types_all">{ALLOW_ALL_PRODUCT_TYPES_MSG} ({ALLOW_ALL_PRODUCT_TYPES_DESC})</label>
+		</td>
+	</tr>	
+
+	<tr class="usual">
+		<td colspan="2">
+			<ul id="selectedItemTypes"><!-- BEGIN selected_item_types -->
+				<li class="selectedCategory">{item_type_name} - <a href="#" onClick="removeItem('{item_type_id}', 'record', 'items_types_ids', 'selectedItemTypes'); return false;">{REMOVE_BUTTON}</a></li><!-- END selected_item_types -->
+			</ul>
+			<a id="a_select_product_type" class="{items_types_all_a_class}" href="#" onClick="checkItemsAll('{admin_item_types_select_href}', 'record', 'items_types_ids', 'selectedItemTypes', 'multiple'); return false;">{SELECT_PROD_TYPE_MSG}</a>
+		</td>
+	</tr>
+	<tr class="middle">
+		<td colspan="2">
+			<span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+<div id="sites_data" class="tab-data {sites_class}">
+	{sites_table}
+	<table cellspacing="1" cellpadding="6" border="0" width="100%">
+	<tr class="usual">
+		<td colspan="3">
+			<input type="checkbox" name="save_nested_sites" id="save_nested_sites" value="1">
+			<label for="save_nested_sites">{SAVE_SITE_SETTINGS_SUB_MSG}</label>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td colspan="3">
+			<input type="checkbox" name="save_products_sites" id="save_products_sites" value="1">
+			<label for="save_products_sites">{SAVE_SITE_SETTINGS_CAT_MSG}</label>
+	 	</td>
+	</tr>
+	<tr class="usual">
+		<td colspan="3">
+			<input type="checkbox" name="save_nested_products_sites" id="save_nested_products_sites" value="1">
+			<label for="save_nested_products_sites">{SAVE_SITE_SETTINGS_PRODUCTS_MSG}</label>
+		</td>
+	</tr>
+	<tr class="middle">
+		<td align="right">{save}</td>
+	</tr>
+	</table>
+</div>
+
+<div id="subscriptions_data" class="tab-data {subscriptions_class}">
+	{subscriptions_table}
+	<table cellspacing="1" cellpadding="6" border="0" width="100%">
+	<tr class="usual">
+		<td colspan="3">
+			<input type="checkbox" name="save_nested_subscriptions" id="save_nested_subscriptions" value="1">
+			<label for="save_nested_subscriptions">{SAVE_SUBSCRIPTIONS_SETTINGS_SUB_MSG}</label>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td colspan="3">
+			<input type="checkbox" name="save_products_subscriptions" id="save_products_subscriptions" value="1">
+			<label for="save_products_subscriptions">{SAVE_SUBSCRIPTIONS_SETTINGS_CAT_MSG}</label>
+	 	</td>
+	</tr>
+	<tr class="usual">
+		<td colspan="3">
+			<input type="checkbox" name="save_nested_products_subscriptions" id="save_nested_products_subscriptions" value="1">
+			<label for="save_nested_products_subscriptions">{SAVE_SUBSCRIPTIONS_SETTINGS_PRODUCTS_MSG}</label>
+		</td>
+	</tr>
+	<tr class="middle">
+		<td align="right">{save}</td>
+	</tr>
+	</table>
+</div>
+
+<!-- table view settings block -->
+<div id="table_view_data" class="tab-data {table_view_class}">
+<!-- BEGIN quantity_prices_errors --><div class="errorbg">{errors_list}</div><!-- END quantity_prices_errors -->
+<input type="hidden" name="cc_number" value="{cc_number}">
+<table border="0" cellpadding="6" cellspacing="1" align="center" width="100%">
+<tr class="usual">
+	<td colspan="6">
+		{TABLE_VIEW_TYPE_MSG}: &nbsp;
+		<select name="table_view"><!-- begin table_view -->
+			<option {table_view_selected} value="{table_view_value}">{table_view_description}<!-- end table_view -->
+		</select>
+		<br><br>
+	</td>
+</tr>
+<tr class="middle" align="center">
+	<td>#</td>
+	<td>{ADMIN_ORDER_MSG}</td>
+	<td>{CSS_CLASS_MSG}</td>
+	<td>{TITLE_MSG}</td>
+	<td>{CODE_MSG}</td>
+	<td>{HTML_MSG}</td>
+	<td>{DELETE_BUTTON}</td>
+</tr>
+<!-- begin categories_columns --><!-- begin categories_columns_errors -->
+<tr class="usual" align="center">
+	<td>&nbsp;</td>
+	<td colspan="5" class="errorbg">{errors_list}</td>
+	<td>&nbsp;</td>	
+</tr><!-- end categories_columns_errors -->
+<tr class="usual" align="center" valign="top">
+	<td>
+		{row_number} 
+		<input type="hidden" name="column_id_{categories_columns_number}" value="{column_id}">
+	</td>
+	<td><input class="field" size="3" type="text" name="column_order_{categories_columns_number}" value="{column_order}"></td>
+	<td><input class="field" size="16" type="text" name="column_class_{categories_columns_number}" value="{column_class}"></td>
+	<td><input class="field" size="24" type="text" name="column_title_{categories_columns_number}" value="{column_title}"></td>
+	<td>
+		<input class="field" size="36" type="text" name="column_code_{categories_columns_number}" value="{column_code}">
+		&nbsp;<a href="#" onClick="optionsWindow('{admin_column_code_href}?column={categories_columns_number}');">{SELECT_MSG}</a>&nbsp;
+	</td>
+	<td><textarea name="column_html_{categories_columns_number}" cols="40" rows="2">{column_html}</textarea></td>
+	<td><input type="checkbox" name="categories_columns_delete_{categories_columns_number}" {categories_columns_delete} value="1"></td>
+</tr><!-- END categories_columns -->
+<tr class="usual">
+	<td colspan="7" align="right">{ADD_MORE_COLUMNS_QST} <span class="button"><input class="submit" type="submit" value=" {ADD_BUTTON} " onClick="document.record.operation.value='more_categories_columns';"></span></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td colspan="6">
+		{save}
+	</td>
+</tr>
+</table>	
+</div>
+<!-- table view settings end -->
+
+
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+<script language="JavaScript">
+<!--
+	checkListFieldsAll();
+//-->
+</script>
+</body>
+</html>

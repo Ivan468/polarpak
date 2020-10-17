@@ -1,0 +1,75 @@
+<script type="text/javascript">
+//<![CDATA[
+	var selectCountryFirst = "{SELECT_COUNTRY_FIRST_MSG}";
+	var noStatesForCountry = "{NO_STATES_FOR_COUNTRY_MSG}";
+	var site_url = "{site_url}";
+	var states = {states_json};
+//]]>
+</script>
+
+	<form action="{profiles_list_href}" name="search_form" method="get">
+	<input type="hidden" name="operation" value="search" />
+
+		<div class="field">
+			<div class="name">
+				{PROFILE_TYPE_FIELD} <span class="required">*</span>
+			</div>
+			<div class="control">
+				<select class="text" name="profile_type_id"><!-- begin profile_type_id -->
+					<option {profile_type_id_selected} value="{profile_type_id_value}">{profile_type_id_description}</option><!-- end profile_type_id -->
+				</select>
+			</div>
+		</div>
+		<div class="field">
+			<div class="name">
+				{LOOKING_TYPE_FIELD} <span class="required">*</span>
+			</div>
+			<div class="control">
+				<select class="text" name="looking_type_id"><!-- begin looking_type_id -->
+					<option {looking_type_id_selected} value="{looking_type_id_value}">{looking_type_id_description}</option><!-- end looking_type_id -->
+				</select>
+			</div>
+		</div>
+		<!-- begin country_id_block -->
+		<div class="field">
+			<div class="name">
+				{COUNTRY_FIELD} <span class="required">{country_id_required}</span>
+			</div>
+			<div class="control">
+				<select class="text" id="country_id_{pb_id}" name="country_id" onChange="updateStates('{pb_id}', 'personal');" ><!-- begin country_id -->
+					<option {country_id_selected} value="{country_id_value}">{country_id_description}</option><!-- end country_id -->
+				</select>
+			</div>
+		</div><!-- end country_id_block --><!-- begin state_id_block -->
+		<div class="field">
+			<div class="name">
+				{STATE_FIELD} <span id="state_id_required_{pb_id}" style="{state_id_required_style}" class="required">{state_id_required}</span>
+			</div>
+			<div class="control">
+				<select class="text" id="state_id_{pb_id}" style="{state_id_control_style}" name="state_id"><!-- begin state_id -->
+					<option {state_id_selected} value="{state_id_value}">{state_id_description}</option><!-- end state_id -->
+				</select>
+				<span class="comments" style="{state_id_comments_style}" id="state_id_comments_{pb_id}">{state_id_comments}</span>
+			</div>
+		</div><!-- end state_id_block --><!-- begin city_block -->
+		<div class="field">
+			<div class="name">
+				{CITY_FIELD} <span class="required">{city_required}</span>
+			</div>
+			<div class="control">
+				<input class="text" type="text" name="city" value="{city}" size="40" maxlength="128" />
+			</div>
+		</div><!-- end city_block --><!-- begin postal_code_block -->
+		<div class="field">
+			<div class="name">
+				{ZIP_FIELD} <span class="required">{postal_code_required}</span>
+			</div>
+			<div class="control">
+				<input class="text" type="text" name="postal_code" value="{postal_code}" size="10" maxlength="16" />
+			</div>
+		</div><!-- end postal_code_block -->
+		<div class="buttons">
+				<input class="submit" type="submit" value="{SEARCH_BUTTON}" />
+				<input class="submit" type="button" value="{CLEAR_BUTTON}" onclick="clearFields();" />
+		</div>
+	</form>

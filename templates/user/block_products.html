@@ -1,0 +1,116 @@
+	<form name="products_{pb_id}" method="post" action="#products_{pb_id}">
+	<input type="hidden" name="pb_id" value="{pb_id}" />
+	<input type="hidden" name="type" value="offer" />
+	<input type="hidden" name="rnd" value="{rnd}" />
+	<input type="hidden" name="cart" value="ADD" />
+	<input type="hidden" name="saved_type_id" value="" />
+	<input type="hidden" name="redirect_to_cart" value="{redirect_to_cart}" />
+	<input type="hidden" name="multi_add" value="0" />
+	<input type="hidden" name="start_index" value="{start_index}" />
+	<input type="hidden" name="item_index" value="" />
+	<input type="hidden" name="sc_params" value="{sc_params}" />
+	<input type="hidden" name="items_indexes" value="{items_indexes}" />
+	{hidden_parameters}
+
+		<!-- BEGIN sc_message --><div class="bk-message">{message_desc}</div><!-- END sc_message -->
+		<!-- BEGIN sc_errors --><div class="bk-errors">{errors_desc}</div><!-- END sc_errors -->
+
+		<div class="{slider_class}" data-js="{data_js}" data-pb-id="{pb_id}" data-slider-type="{slider_type}" data-transition-delay="{transition_delay}" data-transition-duration="{transition_duration}" style="{data_style}">
+
+			<div class="products {columns_class}" id="data_{pb_id}" style="{data_width_style}">
+				<!-- BEGIN products_rows -->
+				<!-- BEGIN products_cols -->
+				<div class="col {column_class}">
+
+					<div class="product">
+
+						<input type="hidden" name="item_id{form_id}" value="{item_id}" />
+						<input type="hidden" name="tax_percent{form_id}" value="{tax_percent}" />
+						<input type="hidden" name="product_params{form_id}" value="{product_params}" />
+						<input type="hidden" name="product_data{form_id}" value="{product_data}" />
+
+      			<!-- begin product_rating -->
+						<div class="product-rating {rating_class}"><i class="ico-rating" title="{rating_value}"></i><span class="rating-value">{rating_value}</span></div><!-- end product_rating -->
+
+						<div class="before-image">
+							<h2 class="product-name"><a class="product-name {product_new_class} {restricted_class}" href="{details_url}" title="{a_title}">{item_name}</a></h2>
+						</div>
+
+
+      			<!-- begin product_image -->
+						<div class="image-block">
+							<a href="{details_url}" title="{a_title}"><img class="product-image" {image_js} src="{src}" alt="{alt}" /></a>
+						</div><!-- end product_image -->
+
+						<div class="after-image">
+							<h2 class="product-name"><a class="product-name {product_new_class} {restricted_class}" href="{details_url}" title="{a_title}">{item_name}</a></h2>
+						</div>
+
+						<div class="buy-block">
+							<div class="prices">
+								<!-- begin price_block -->
+								<div id="price_block{form_id}" class="{price_block_class}"><span class="caption">{PRICE_MSG}</span><span id="price{form_id}" class="price">{price_control}</span><span class="price-note">{price_note}</span> <span class="tax">{tax_price}</span></div><!-- end price_block -->
+								<!-- begin sales -->
+								<div class="price-sale"><span class="caption">{SALE_PRICE_MSG}</span><span id="sales_price{form_id}" class="price">{sales_price_control}</span><span class="price-note">{price_note}</span> <span class="tax">{tax_sales}</span></div><!-- end sales -->
+								<!-- begin save -->
+								<div class="price-save"><span class="caption">{YOU_SAVE_MSG}</span><span class="price">{you_save}</span> <span class="percent">({discount_percent}%)</span></div><!-- end save -->
+								<!-- begin points_price_block -->
+								<div class="points-price"><span class="caption">{POINTS_PRICE_MSG}</span><span class="points">{points_price}</span></div><!-- end points_price_block -->
+								<!-- begin reward_points_block -->
+								<div class="points-reward"><span class="caption">{REWARD_POINTS_MSG}</span><span class="points">{reward_points}</span></div><!-- end reward_points_block -->
+								<!-- begin reward_credits_block -->
+								<div class="credits-reward"><span class="caption">{REWARD_CREDITS_MSG}</span><span class="credits">{reward_credits}</span></div><!-- end reward_credits_block -->
+							</div>
+				  
+							<!-- begin quantity -->
+							<div class="product-qty"><span class="caption">{PROD_QTY_COLUMN}</span><span class="qty-control">{quantity_control}</span></div><!-- end quantity -->	
+				  
+							<div class="buttons">
+								<!-- begin buy_button -->
+								<a class="button bn-buy" id="add{form_id}" href="{buy_href}" rel="nofollow"><span>{BUY_NOW_MSG}</span></a> 
+								<!-- end buy_button -->
+								<!-- begin cart_add_button -->
+								<a class="button bn-add" id="add{form_id}" href="{buy_href}" onclick="{buy_onclick}"><span>{ADD_TO_CART_MSG}</span></a> 
+								<!-- end cart_add_button -->
+								<!-- begin cart_add_disabled -->
+								<a class="button bn-disabled" title="{PRODUCT_OUT_STOCK_MSG}" onclick="alert('{out_stock_alert}');"><span>{ADD_TO_CART_MSG}</span></a> 
+								<!-- end cart_add_disabled -->
+								<!-- begin view_button -->
+								<a class="button bn-view" id="view{form_id}" href="{basket_href}?rp={rp_url}"><span>{VIEW_CART_MSG}</span></a> 
+								<!-- end view_button -->
+								<!-- begin checkout_button -->
+								<a class="button bn-checkout" id="checkout{form_id}" href="{checkout_href}?rp={rp_url}"><span>{GOTO_CHECKOUT_MSG}</span></a>
+								<!-- end checkout_button -->
+								<!-- begin wishlist_button -->
+								<a class="button bn-wishlist" id="wishlist{form_id}" href="{wishlist_href}" onclick="return confirmBuy('products_{pb_id}', '{form_id}', 'wishlist', 'wishlist{form_id}');"><span>{ADD_TO_WISHLIST_MSG}</span></a> 
+								<!-- end wishlist_button -->
+							</div>
+						</div>
+
+						<!-- begin desc_block -->
+						<div class="product-desc">
+							<!-- begin short_description -->
+							<div class="desc desc-short">{desc_text}</div><!-- end short_description -->
+							<!-- begin full_description -->
+							<div class="desc desc-full">{desc_text}</div><!-- end full_description -->
+						</div>
+						<!-- end desc_block -->
+
+						<!-- begin more_button -->
+						<a class="button bn-more" href="{details_url}" title="{a_title}"><span>{READ_MORE_MSG}</span></a><!-- end more_button -->
+
+						<div class="clear"></div>
+
+					</div>
+
+				</div>
+				<!-- END products_cols -->
+				<!-- END products_rows -->
+				<div class="clear"></div>
+			</div>
+		</div>
+
+		<!-- begin navigator_block -->
+		<div class="navigator br-solid">{navigator}</div><!-- end navigator_block -->
+
+	</form>

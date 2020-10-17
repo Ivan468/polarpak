@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{ADMINISTRATION_MSG} :: {SELECT_SHIPPING_MODULE_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/shippings.js"></script>
+<script language="JavaScript">
+<!--
+
+function clearSearch() {
+	document.shippings_list.sw.value = "";
+	document.shippings_list.submit();
+}
+
+//-->
+</script>
+</head>
+
+<body class="popup">
+
+<form action="{admin_shipping_module_select_href}" name="shippings_list">
+<input type="hidden" name="operation" value="1">
+<input type="hidden" name="form_name" value="{form_name}">
+<input type="hidden" name="field_name" value="{field_name}">
+<input type="hidden" name="selection_type" value="{selection_type}">
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle" align="center">
+	<td colspan="5">
+		<a href="javascript:closeShippingsWindow();"><b>{CLOSE_WINDOW_MSG}</b></a>
+	</td>
+</tr>
+<tr>
+	<td colspan="5" class="usual" align="center">
+		<input type="text" name="sw" value="{sw}" class="search">&nbsp;
+		<span class="button"><input type="submit" value="{SEARCH_BUTTON}" class="submit"></span>
+		<span class="button"><input type="submit" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch()"></span>
+	</td>
+</tr><!-- begin search_results -->
+<tr>
+	<td colspan="5" class="usual" align="center">{found_message}</td>
+</tr><!-- end search_results --><!-- begin shippings_sorters -->
+<tr class="middle" align="center">
+	<td>{sorter_module_id}</td>
+	<td>{sorter_module_name}</td>
+	<td>{IS_ACTIVE_MSG}</td>
+	<td>{IS_DEFAULT}</td>
+	<td>&nbsp;</td>
+</tr><!-- end shippings_sorters --><!-- begin shippings -->
+<tr class="usual">
+	<td align="center">{module_id}</td>
+	<td>{shipping_module}</td>
+	<td align="center">{module_active}</td>
+	<td align="center">{module_default}</td>
+	<td align="center" class="small"><a href="javascript:selectShipping('{module_id}', '{shipping_module_js}');">{SELECT_MSG}</a></td>
+</tr><!-- end shippings --><!-- begin navigator_block -->
+<tr class="middle">
+	<td colspan="5" align="right">{navigator}</td>
+</tr><!-- end navigator_block -->
+<tr class="middle" align="center">
+	<td colspan="5"><a href="javascript:closeShippingsWindow();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+</table>
+
+</form>
+
+</body>
+</html>

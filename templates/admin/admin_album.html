@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html><head><title>{ALBUM_MSG} :: {EDIT_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/calendar.js"></script>
+<script language="JavaScript" type="text/javascript" src="../js/win_select.js"></script>
+<script language="JavaScript">
+<!--
+
+	function openWindow(pagename, filetype)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype, 'uploadWindow', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+	}
+
+	function setFileName(filename, filetype)
+	{
+		var siteUrl = '{image_site_url}';
+		if (filename != "" && filetype == "album_tiny") {
+			document.record.image_tiny.value = siteUrl + "images/albums/tiny/" + filename;
+			document.record.image_tiny.focus();
+		} else if (filename != "" && filetype == "album_small") {
+			document.record.image_small.value = siteUrl + "images/albums/small/" + filename;
+			document.record.image_small.focus();
+		} else if (filename != "" && filetype == "album_large") {
+			document.record.image_large.value = siteUrl + "images/albums/large/" + filename;
+			document.record.image_large.focus();
+		} else if (filename != "" && filetype == "album_super") {
+			document.record.image_super.value = siteUrl + "images/albums/super/" + filename;
+			document.record.image_super.focus();
+		}
+	}
+
+//-->
+</script>
+
+</head>
+<body class="bodySettings pg-album">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_album_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="album_id" value="{album_id}">
+<input type="hidden" name="sw" value="{sw}">
+<input type="hidden" name="form_name" value="{form_name}">
+<input type="hidden" name="items_field" value="{items_field}">
+<input type="hidden" name="items_object" value="{items_object}">
+<input type="hidden" name="item_template" value="{item_template}">
+<input type="hidden" name="selection_type" value="{selection_type}">
+<input type="hidden" name="win_type" value="{win_type}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="page" value="{page}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+	<table border="0" cellspacing="1" cellpadding="6" width="100%">
+	<tr class="usual">
+		<td>{NAME_MSG}	*</td>
+		<td><input class="field" type="text" size="80" name="album_name" value="{album_name}"></td>
+	</tr>
+	<tr class="usual">
+		<td>{TYPE_MSG}</td>
+		<td><input class="field" type="text" size="80" name="album_type" value="{album_type}"></td>
+	</tr>
+	<!-- begin album_date_block -->
+	<tr class="usual">
+		<td>{DATE_MSG} {album_date_required}</td>
+		<td>
+			<input class="field" type="text" name="album_date" value="{album_date}" size="20" maxlength="60">
+			<a href="#"
+				onClick="setDateField(document.record.album_date, '{date_edit_format}');
+				top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+			<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+			({USE_FOLLOWING_FORMAT_MSG} <b>{date_format}</b>)
+		</td>
+	</tr><!-- end album_date_block -->
+
+<!-- BEGIN friendly_url_block -->
+<tr class="usual">
+	<td>{FRIENDLY_URL_MSG}</td>
+	<td><input class="field" type="text" name="friendly_url" value="{friendly_url}" size="80" maxlength="255"></td>
+</tr>
+<!-- END friendly_url_block -->
+<tr class="usual">
+	<td>{AUTHORS_MSG}</td>
+	<td>
+		<input type="hidden" name="authors" value="{authors}" />
+
+		<ul id="selectedAuthors" class="authors"><!-- BEGIN selected_authors --><!-- END selected_authors --></ul>
+		<a class="author-select" onClick='jsonWindow({"url": "{admin_authors_href}", "win_name": "subWindowSelect", "params": {"form_name": "record", "items_field": "authors", "items_object": "selectedAuthors", "item_template": "author_template", "selection_type": "multiple", "win_type": "popup"}}); return false;'>{SELECT_MSG}</a>
+  
+		<ul id="author_template" style="display: none;">
+			<!-- begin author_template -->
+			<li id="author{author_id}">
+				<div class="name">{author_name}</div>
+				<div class="remove" onclick='jsonRemoveItem({"form_name": "record", "items_field": "authors", "items_object": "selectedAuthors", "item_object": "author{author_id}", "id": "{author_id}"});'></div>
+				<div class="separator">, </div>
+				<div class="clearboth"></div>
+			</li>
+			<!-- end author_template -->
+		</ul>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_TINY_MSG}</td>
+	<td>
+		<input class="field" type="text" name="image_tiny" value="{image_tiny}" size="80" maxlength="255"> 
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'album_tiny')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'album_tiny')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_SMALL_MSG}</td>
+	<td>
+		<input class="field" type="text" name="image_small" value="{image_small}" size="80" maxlength="255"> 
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'album_small')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'album_small')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_LARGE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="image_large" value="{image_large}" size="80" maxlength="255"> 
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'album_large')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'album_large')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_SUPER_MSG}</td>
+	<td>
+		<input class="field" type="text" name="image_super" value="{image_super}" size="80" maxlength="255"> 
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'album_super')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'album_super')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<!-- begin short_description_block -->
+<tr class="usual">
+	<td>{SHORT_DESCRIPTION_MSG}</td>
+	<td><textarea name="short_description" cols="80" rows="4">{short_description}</textarea></td>
+</tr><!-- end short_description_block --><!-- begin full_description_block -->
+<tr class="usual">
+	<td>{FULL_DESCRIPTION_MSG}</td>
+	<td><textarea name="full_description" cols="80" rows="10">{full_description}</textarea></td>
+</tr><!-- end full_description_block -->
+<tr class="middle">
+	<td>
+	</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="Delete" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="Cancel" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

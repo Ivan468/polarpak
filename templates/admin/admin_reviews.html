@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{PRODUCTS_REVIEWS_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" src="../js/admin.js"></script>
+<script language="JavaScript" src="../js/select.js"></script>
+<script language="JavaScript" src="../js/calendar.js"></script>
+<script>
+
+	function deleteMode(reviewId)
+	{
+		var reConfirm = /confirm-mode/g;
+		var deleteObj = document.getElementById("delete-"+reviewId);
+		var className = deleteObj.className;
+		if (reConfirm.test(className)) {
+			className = className.replace(/confirm-mode/gi, "").trim();
+			deleteObj.className = className;
+		} else {
+			deleteObj.className += " confirm-mode";
+		}
+	}
+
+	function deleteReview(reviewId)
+	{
+		var deleteObj = document.getElementById("delete-"+reviewId);
+		vaSpin(deleteObj);
+
+		var url = "admin_reviews.php?ajax=1&operation=remove_reviews&reviews_ids=" + encodeURIComponent(reviewId);
+		callAjax(url, deleteReviewResponse);
+	}
+
+	function deleteReviewResponse(response)
+	{
+		var data;
+		try { 
+			data = JSON.parse(response); 
+		} catch(e){
+			alert("Bad response: " + response);
+			return;
+		}
+		var removedIds = data["review_ids"];
+		var ids = removedIds.split(",");
+		for (var i = 0; i < ids.length; i++) {
+			var reviewId = ids[i];
+			var deleteObj = document.getElementById("delete-"+reviewId);
+			var rowObj = vaParent(deleteObj, "TR");
+			vaStopSpin(deleteObj);
+			vaRemoveRow(rowObj);
+		}
+		// send request to load new reviews after delete some rows
+		loadReviews();
+	}
+
+	function loadReviews()
+	{
+		var listObj = document.querySelector("[data-type='reviews']");
+		var filterUrl = listObj.getAttribute("data-filter-url");
+		filterUrl += (filterUrl.indexOf("?") == -1) ? "?" : "&";
+		filterUrl += "ajax=1&operation=load";
+
+		var reviewIds = "";
+		var reviews = document.querySelectorAll("[data-review]");
+		for (var i = 0; i < reviews.length; i++) {
+			if (reviewIds != "") { reviewIds += ","; }
+			reviewIds += reviews[i].getAttribute("data-review");
+		}          
+		filterUrl += "&existed_ids=" + encodeURIComponent(reviewIds);
+		callAjax(filterUrl, loadReviewsResponse);
+	}
+
+	function loadReviewsResponse(response)
+	{
+		var data;
+		try { 
+			data = JSON.parse(response); 
+		} catch(e){
+			alert("Bad response: " + response);
+			return;
+		}
+		var listObj = document.querySelector("[data-type='reviews']");
+		var footObj = listObj.querySelector("[data-type='foot']");
+		var reviews = data["reviews"];
+		for (var reviewId in reviews) {
+			var reviewData = reviews[reviewId];
+			footObj.insertAdjacentHTML("beforebegin", reviewData);
+			//tableObj.insertAdjacentHTML("beforeend", reviewData);
+		}
+	}
+
+
+	function statusMode(reviewId)
+	{
+		var reChange = /change-mode/g;
+		var statusObj = document.getElementById("status-"+reviewId);
+		var className = statusObj.className;
+		if (reChange.test(className)) {
+			className = className.replace(/change-mode/gi, "").trim();
+			statusObj.className = className;
+		} else {
+			statusObj.className += " change-mode";
+		}
+	}
+
+	function statusChange(newObj)
+	{
+		var reviewObj = vaParent(newObj, "data-review");
+		var reviewId = reviewObj.getAttribute("data-review");
+		statusMode(reviewId); // hide status drop-down
+
+		// check if new status was selected
+		var newValue = newObj.getAttribute("data-value");
+		var activeObj = reviewObj.querySelector(".active-status");
+		var activeValue = activeObj.getAttribute("data-value"); 
+		if (newValue != activeValue) {
+			// start spin and send request to change status
+			var statusObj = document.getElementById("status-"+reviewId);
+			vaSpin(statusObj);
+
+			var url = "admin_reviews.php?ajax=1&operation=update_status&reviews_ids=" + encodeURIComponent(reviewId)+"&status_id=" + encodeURIComponent(newValue);
+			callAjax(url, statusChangeResponse);
+		}
+	}
+
+	function statusChangeResponse(response)
+	{
+		var data;
+		try { 
+			data = JSON.parse(response); 
+		} catch(e){
+			alert("Bad response: " + response);
+			return;
+		}
+		var reviewIds = data["review_ids"];
+		var statusId = data["status_id"];
+		var statusName = data["status_name"];
+		var statusClass = data["status_class"];
+		var ids = reviewIds.split(",");
+		for (var i = 0; i < ids.length; i++) {
+			var reviewId = ids[i];
+			var statusObj = document.getElementById("status-"+reviewId);
+			vaStopSpin(statusObj);
+
+			var activeObj = statusObj.querySelector(".active-status");
+			activeObj.setAttribute("data-value", statusId); 
+			activeObj.innerHTML = statusName;
+			statusObj.className = "review-status " + statusClass;
+
+			var changeObj = statusObj.querySelector(".change-status");
+			var statusValues = changeObj.querySelectorAll("[data-type='description']");
+			for (var v = 0; v < statusValues.length; v++) {
+				var valueObj = statusValues[v]; 
+				var currentValue = valueObj.getAttribute("data-value"); 
+				if (currentValue == statusId) {
+					valueObj.className = "status-selected";
+				} else {
+					valueObj.className = "";
+				}
+			}
+
+		}
+
+	}
+
+	function clearSearch() {
+		document.search_form.s_ne.value = "";
+		document.search_form.s_sd.value = "";
+		document.search_form.s_ed.value = "";
+		document.search_form.s_rt.selectedIndex = 0;
+		document.search_form.s_rc[0].checked = true;
+		document.search_form.s_ap[0].checked = true;
+	
+		document.search_form.submit();
+	}
+
+	function allReviews()
+	{
+		var checkedStatus = document.reviews.all_reviews.checked;
+		var reviewsNumber = document.reviews.reviews_number.value;
+		for (var i = 1; i <= reviewsNumber; i++) {
+			document.reviews.elements["id_" + i].checked = checkedStatus;
+		}
+		checkReviews();
+	}
+
+	function updateReviews(operation)
+	{
+		var reviewId = ""; var itemId = "";
+		var reviewsIds = ""; var itemsIds = "";
+		var reviewsNumber = document.reviews.reviews_number.value;
+		var totalReviews = 0;
+		for (var i = 1; i <= reviewsNumber; i++) {
+			if (document.reviews.elements["id_" + i].checked) {
+				totalReviews++;
+				reviewId = document.reviews.elements["id_" + i].value;
+				itemId = document.reviews.elements["item_id_" + i].value;
+				if(totalReviews > 1) { reviewsIds += ","; itemsIds += ","; }
+				reviewsIds += reviewId;
+				itemsIds += itemId;
+			}
+		}
+		var reviewsControl = document.update_reviews.status_id;
+		document.update_reviews.reviews_ids.value = reviewsIds;
+		document.update_reviews.items_ids.value = itemsIds;
+		if (totalReviews == 0) {
+			alert("{SELECT_REVIEWS_FIRST_MSG}")
+		} else if (operation == "update_status") {
+			var confirmStatusChange = "{REVIEWS_STATUS_CONFIRM_MSG}";
+			confirmStatusChange = confirmStatusChange.replace("\{status_name\}", reviewsControl.options[reviewsControl.selectedIndex].text);
+			if (reviewsControl.options[reviewsControl.selectedIndex].value == "") {
+				alert("{SELECT_REVIEWS_STATUS_MSG}");
+			} else if (confirm(confirmStatusChange)) {
+				document.update_reviews.operation.value = "update_status";
+				document.update_reviews.submit();
+			}
+		} else if (operation == "remove_reviews") {
+			var confirmReviewsDelete = "{REVIEWS_DELETE_CONFIRM_MSG}";
+			confirmReviewsDelete = confirmReviewsDelete.replace("\{total_reviews\}", totalReviews);
+			if (confirm(confirmReviewsDelete)) {
+				document.update_reviews.operation.value = "remove_reviews";
+				document.update_reviews.submit();
+			}
+		}
+	} 
+	
+	function checkReviews()
+	{
+		var reviewId = "";
+		var reviewsIds = "";
+		var reviewsNumber = document.reviews.reviews_number.value;
+		var totalSelected = 0;
+		for (var i = 1; i <= reviewsNumber; i++) {
+			if (document.reviews.elements["id_" + i].checked) {
+				document.getElementById("tr_review_" + i).className += " row-selected";
+				totalSelected++;
+				reviewId = document.reviews.elements["id_" + i].value;
+				if(reviewsIds != "") { reviewsIds += ","; }
+				reviewsIds += reviewId;
+			} else {
+				document.getElementById("tr_review_" + i).className = mas[i];
+			}
+		}
+	}
+
+
+	var select_form = new select();
+	select_form.object_name = 'select_form';
+	select_form.name_prefix = 'id_';
+	select_form.formname = 'reviews';
+	select_form.final_action = 'checkReviews();';
+	select_form.create_event_click();
+//-->
+</script>
+</head>
+<body class="page pg-reviews"  onload="start_event_select();">
+{admin_header} 
+<script language= "JavaScript" type= "text/javascript">
+<!--
+	function start_event_select(){
+		create_event_listener(select_form);
+		var reviewsNumber = document.reviews.reviews_number.value;
+		mas = new Array();
+		for (var i = 1; i <= reviewsNumber; i++) {
+			mas[i] = document.getElementById("tr_review_" + i).className;
+		}
+	}
+//-->
+</script>
+{block_leftside_breadcrumbs}
+
+<div class="overHidd">
+	<div class="Block floatLeft">
+	<div class="BlockTitle">{SEARCH_TITLE}</div>
+	<div class="BlockContent">
+		<form action="{admin_reviews_href}" name="search_form">
+		<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+		<table border="0" cellpadding="4" cellspacing="1">
+			<tr class="usual">
+				<td>{BY_NAME_EMAIL_MSG}:</td>
+				<td><input type="text" name="s_ne" value="{s_ne}" class="search"></td>
+			</tr>
+			<tr class="usual">
+				<td>{FROM_DATE_MSG} ({date_edit_format}):</td>
+				<td>
+					<input type="text" name="s_sd" value="{s_sd}" class="search">
+					<a href="#"
+						onClick="setDateField(document.search_form.s_sd, '{date_edit_format}');
+						top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+					<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+				</td>
+			</tr>
+			<tr class="usual">
+				<td>{TO_DATE_MSG} ({date_edit_format}):</td>
+				<td>
+					<input type="text" name="s_ed" value="{s_ed}" class="search">
+					<a href="#"
+						onClick="setDateField(document.search_form.s_ed, '{date_edit_format}');
+						top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+					<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+				</td>
+			</tr>
+			<tr class="usual">
+				<td>{BY_RATING_MSG}:</td>
+				<td>
+					<select name="s_rt" class="search"><!-- BEGIN s_rt -->
+						<option {s_rt_selected} value="{s_rt_value}">{s_rt_description}<!-- END s_rt -->
+					</select>
+				</td>
+			</tr>
+			<tr class="usual">
+				<td>{IMPRESSION_MSG}:</td>
+				<td>
+					<select name="s_rc" class="search"><!-- BEGIN s_rc -->
+						<option {s_rc_selected} value="{s_rc_value}">{s_rc_description}<!-- END s_rc -->
+					</select>
+				</td>
+			</tr>
+			<tr class="usual">
+				<td>{STATUS_MSG}:</td>
+				<td>
+					<select name="s_ap" class="search"><!-- BEGIN s_ap -->
+						<option {s_ap_selected} value="{s_ap_value}">{s_ap_description}<!-- END s_ap -->
+					</select>
+				</td>
+			</tr>
+			<tr class="middle">
+				<td>&nbsp;</td>
+				<td>
+					<span class="button"><input type="submit" value="Search" class="submit"></span>
+					<span class="button"><input type="button" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch()"></span>
+				</td>
+			</tr>
+		</table>
+		</form>
+	</div>
+	</div>
+
+	<div class="Block floatRight">
+	<div class="BlockTitle">{STATS_MSG}</div>
+	<div class="BlockContent">
+		<table cellpadding="4" cellspacing="1" border="0">
+		<tr class="middle" align="center">
+			<td>&nbsp;</td><!-- begin stats_titles -->
+			<td><a href="{admin_reviews_href}?s_sd={start_date}&s_ed={end_date}">{stat_title}</a></td><!-- end stats_titles -->
+		</tr><!-- begin types_stats -->
+		<tr class="usual" align="center">
+			<td align="left"><a href="{admin_reviews_href}?s_ap={type_id}">{type_name}</a></td>
+			<!-- begin stats_periods -->
+			<td>{period_reviews}</td><!-- end stats_periods -->
+		</tr><!-- end types_stats -->
+		<tr class="middle" align="center">
+			<td align="right">{TOTAL_MSG}:</td>
+			<!-- begin stats_totals -->
+			<td>{period_total}</td><!-- end stats_totals -->
+		</tr>
+		</table>
+	</div>
+	</div>
+</div>
+
+<div class="Block">
+<div class="BlockTitle">{PRODUCTS_REVIEWS_MSG}</div>
+<div class="BlockContent">
+
+<form data-js="multicheck" data-multi="data-type" name="reviews" action="{admin_reviews_href}" method="POST" data-type="reviews" data-filter-url="{filter_url}">
+<input type="hidden" name="reviews_number" value="{reviews_number}">
+
+<table class="table-clear" border="0" cellpadding="6" cellspacing="1" width="100%"><!-- begin sorters -->
+<tr class="middle" align="center">
+	<td width="10px" class="checkbox"><label><input type="checkbox" name="all_reviews" value="1" onClick="allReviews();"></label></td>
+	<td>{sorter_review_id}</td>
+	<td>{ADMIN_REVIEW_MSG}</td>
+	<td>{REVIEW_BY_USER_MSG} / {sorter_date_added}</td>
+	<td>{sorter_status}</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="row" id="tr_review_{review_index}" valign="top" data-review="{review_id}">
+	<td class="checkbox">
+		<label><input type="checkbox" name="id_{review_index}" value="{review_id}" onClick="checkReviews();"></label>
+		<input type="hidden" name="item_id_{review_index}" value="{item_id}">
+	</td>
+	<td align="center">{review_id}</td>
+	<td class="review-data" align="left">
+		<i title="{rating_desc}" class="ico-stars {rating_class}"></i>
+		<div class="review-product"><!-- begin item_block -->
+		<a class="product" title="{VIEW_ON_LIVE_MSG}" href="{site_product_url}"><span>{item_name}</span> <i class="ico ico-view"></i></a><!-- end item_block -->
+		<!-- begin item_na -->
+		{NOT_AVAILABLE_MSG}<!-- end item_na -->
+		</div>
+		<!-- begin summary_block -->
+		<div class="review-summary">{summary}</div><!-- end summary_block -->
+		<!-- begin comments_block -->
+		<div class="review-comments"><span class="review-type">{review_type}</span>
+			{comments}<!-- begin comments_more_block --><span class="comments-more" data-js="expand"><span class="more-text">{comments_more}</span><span class="more-link">... <a data-type="expand">{MORE_MSG} </a></span> <a class="less-link" data-type="expand"> {LESS_MSG}</a></span><!-- end comments_more_block -->
+		</div><!-- end comments_block -->
+
+		<!-- begin parent_review -->
+		<div class="parent-review"><span class="review-type">{parent_type}</span>
+			{parent_comments}<!-- begin parent_comments_more_block --><span class="comments-more" data-js="expand"><span class="more-text">{parent_comments_more}</span><span class="more-link">... <a data-type="expand">{MORE_MSG} </a></span> <a class="less-link" data-type="expand"> {LESS_MSG}</a></span><!-- end parent_comments_more_block -->
+		</div><!-- end parent_review -->
+
+	</td>
+	<td align="left">
+		<div class="review-user {review_user_class}">
+			<span class="user-name">{review_user_name}</span> <span class="user-type">{review_user_type}</span>
+			<!-- begin verified_buyer_block --><span class="verified-buyer" title="{VERIFIED_BUYER_MSG}"></span><!-- end verified_buyer_block -->
+
+			<!-- begin review_user_email_block -->
+			<span class="user-email">&lt;<a href="mailto:{review_user_email}">{review_user_email}</a>&gt;</span>
+			<!-- end review_user_email_block -->
+		</div>
+		<div class="review-added">
+			<span class="review-on">{REVIEW_ON_DATE_MSG}</span>
+			<span class="review-date">{date_added}</span>
+		</div>
+
+	</td>
+	<td align="center" class="review-status {status_class}" id="status-{review_id}" data-status="{review_id}">
+		<div class="active-status" onclick="statusMode({review_id});" data-value="{status_key}">{review_status}</div>
+		<div class="change-status">
+			<!-- begin change_statuses -->
+			<div onclick="statusChange(this);" class="{change_class}" data-value="{change_key}" data-type="description">{change_name}</div><!-- end change_statuses -->
+		</div>
+	</td>
+	<td align="center" class="review-edit">
+		<a class="ico ico-edit" href="{admin_review_url}" title="{EDIT_REVIEW_MSG}"></a>
+		<a class="ico ico-reply" href="{admin_review_reply_url}" title="{REPLY_BUTTON}"></a>
+	</td>
+	<td align="center" class="review-delete" id="delete-{review_id}">
+		<div class="delete-confirm">
+			<a class="ico ico-yes" onclick="deleteReview({review_id});" title="{YES_MSG}"></a>
+			<a class="ico ico-no" onclick="deleteMode({review_id});" title="{NO_MSG}"></a>
+		</div>
+		<div class="delete-option">
+			<a class="ico ico-trash" onclick="deleteMode({review_id});" title="{DELETE_BUTTON}"></a>
+		</div>
+	</td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr>
+	<td colspan="7" class="usual">{NO_REVIEWS_FOUND_MSG}</td>
+</tr><!-- END no_records -->
+<tr class="middle" data-type="foot">
+	<td colspan="7" align="right"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></td>
+</tr>
+</table>	
+</form>
+
+</div>
+</div>
+
+<form name="update_reviews" action="{admin_reviews_href}" method="POST">
+<input type="hidden" name="operation" value="">
+<input type="hidden" name="reviews_ids" value="">
+<input type="hidden" name="items_ids" value="">
+<input type="hidden" name="s_ne" value="{s_ne}">
+<input type="hidden" name="s_sd" value="{s_sd}">
+<input type="hidden" name="s_ed" value="{s_ed}">
+<input type="hidden" name="s_rt" value="{s_rt_search}">
+<input type="hidden" name="s_rc" value="{s_rc_search}">
+<input type="hidden" name="s_ap" value="{s_ap_search}">
+
+<select name="status_id"><!-- begin status_values -->
+	<option {status_values_selected} value="{status_values_value}">{status_values_description}<!-- end status_values -->
+</select> 
+<span class="button"><input class="submit" type="button" value="{UPDATE_STATUS_MSG}" onClick="updateReviews('update_status');"></span>
+<span class="button"><input class="submit" type="button" value="{REMOVE_SELECTED_MSG}" onClick="updateReviews('remove_reviews');"></span>
+</form>
+<br>
+
+{admin_footer}
+</body>
+</html>
+                               	

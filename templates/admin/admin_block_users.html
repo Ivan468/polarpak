@@ -1,0 +1,29 @@
+<div class="Block">
+<div class="BlockTitle">{SITE_USERS_MSG} <!-- begin s_title --> matching the term(s) '<b>{s}</b>'<!-- end s_title -->:</div>
+<div class="BlockContent">
+		<table border="0" cellspacing="1" cellpadding="6" width="99%">
+		<tr class="middle" align="center">
+			<td align="left"><b>{ADMIN_USER_MSG}</b></td>
+			<td>{TYPE_MSG}</td>
+			<td>{IS_APPROVED_MSG}</td>
+		</tr><!-- BEGIN items_list -->
+		<tr class="{row_style}" align="center" valign="top" id="tr_product_{item_index}">
+			<td align="left">
+				<a class="title" href="{admin_user_href}?user_id={user_id}">{title}</a> &nbsp; &nbsp; 
+				<a class="small" href="{admin_user_href}?user_id={user_id}">{EDIT_MSG}</a>
+				<div class="small">
+					<a class="small" href="mailto:{email}">{email}</a> |
+					<a class="small" href="{admin_user_login_href}?user_id={user_id}">{LOGIN_DETAILS_MSG}</a>
+				</div>
+			</td>
+			<td align="right">{type_name}</td>
+			<td>{is_approved}</td>
+		</tr><!-- END items_list -->
+		<tr class="middle" align="center">
+			<td align="left" colspan="5">
+				<a href="{admin_users_href}?s_ne={s}">Show all ({total_records})</a>
+			</td>
+		</tr>
+		</table>
+</div>
+</div>

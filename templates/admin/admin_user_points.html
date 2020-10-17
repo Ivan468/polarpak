@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{POINTS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" src="../js/calendar.js"></script>
+<script language="JavaScript">
+<!--
+	function clearSearch() {
+		document.search_form.points_sd.value = "";
+		document.search_form.points_ed.value = "";
+		document.search_form.points_tp[0].checked = true;
+	
+		document.search_form.submit();
+
+	}
+//-->
+</script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr valign="top">
+		<td>
+
+		<div class="Block floatLeft">
+		<div class="BlockTitle">Search</div>
+		<div class="BlockContent">
+			<form action="{admin_user_points_href}" name="search_form">
+			<input type="hidden" name="user_id" value="{user_id}">
+			<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+			<table border="0" cellpadding="4" cellspacing="1">
+				<tr class="usual">
+					<td>{FROM_DATE_MSG} ({date_edit_format}):</td>
+					<td>
+						<input type="text" name="points_sd" value="{points_sd}" class="search">
+						<a href="#"
+							onClick="setDateField(document.search_form.points_sd, '{date_edit_format}');
+							top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+					<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+					</td>
+				</tr>
+				<tr class="usual">
+					<td>{TO_DATE_MSG} ({date_edit_format}):</td>
+					<td>
+						<input type="text" name="points_ed" value="{points_ed}" class="search">
+						<a href="#"
+							onClick="setDateField(document.search_form.points_ed, '{date_edit_format}');
+							top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+					<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+					</td>
+				</tr>
+				<tr class="usual">
+					<td>{TYPE_MSG}:</td>
+					<td><!-- BEGIN points_tp -->
+						<input type="radio" name="points_tp" id="points_tp{points_tp_value}" {points_tp_checked} value="{points_tp_value}"><label for="points_tp{points_tp_value}">{points_tp_description}</label><!-- END points_tp -->
+					</td>
+				</tr>
+				<tr class="middle">
+					<td>&nbsp;</td>
+					<td>
+						<span class="button"><input type="submit" value="Search" class="submit"></span>
+						<span class="button"><input type="button" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch()"></span>
+					</td>
+				</tr>
+			</table>
+			</form>
+		</div>
+		</div>
+
+		</td>
+		<td>
+
+		<div class="Block floatRight">
+		<div class="BlockTitle">{POINTS_STATS_MSG}</div>
+		<div class="BlockContent">
+			<table cellpadding="4" cellspacing="1" border="0">
+				<tr class="middle" align="center">
+					<td>&nbsp;</td>
+					<td><a href="{admin_user_points_href}?user_id={user_id}&points_sd={today_date}&points_ed={today_date}">{TODAY_MSG}</a></td>
+					<td><a href="{admin_user_points_href}?user_id={user_id}&points_sd={yesterday_date}&points_ed={yesterday_date}">{YESTERDAY_MSG}</a></td>
+					<td><a href="{admin_user_points_href}?user_id={user_id}&points_sd={week_date}&points_ed={today_date}">{LAST_SEVEN_DAYS_MSG}</a></td>
+					<td><a href="{admin_user_points_href}?user_id={user_id}&points_sd={month_date}&points_ed={today_date}">{THIS_MONTH_FMSG}</a></td>
+				</tr>
+				<!-- begin types_stats -->
+				<tr class="usual" align="right">
+					<td align="left"><a href="{admin_users_points_href}?user_id={user_id}&points_tp={type_id}">{type_name}</a>&nbsp;</td>
+					<td>{points_today}</td>
+					<td>{points_yesterday}</td>
+					<td>{points_week}</td>
+					<td>{points_month}</td>
+				</tr><!-- end types_stats -->
+				<tr class="middle" align="right">
+					<td>{TOTAL_MSG}:&nbsp;</td>
+					<td>{points_total_today}</td>
+					<td>{points_total_yesterday}</td>
+					<td>{points_total_week}</td>
+					<td>{points_total_month}</td>
+				</tr>
+			</table>
+		</div>
+		</div>
+
+		</td>
+	</tr>
+</table>
+
+<br>
+
+<div class="Block">
+<div class="BlockTitle">{POINTS_MSG}</div>
+<div class="BlockContent">
+
+<form name="points" action="{admin_user_points_href}" method="POST">
+<table border="0" cellspacing="1" cellpadding="6" width="100%"><!-- begin sorters -->
+<tr align="center" class="middle" valign="top">
+	<td>{sorter_order_id}</td>
+	<td>{sorter_points_amount}</td>
+	<td>{sorter_date_added}</td>
+	<td>{sorter_points_type}</td>
+	<td>&nbsp;</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="{row_style}" align="center">
+	<td><!-- begin order_link -->
+		<a href="{admin_order_href}?order_id={order_id}">{order_id}</a><!-- end order_link -->
+	</td>
+	<td align="right">{points_amount}</td>
+	<td>{date_added}</td>
+	<td>{points_type}</td>
+	<td><a href="{admin_user_point_url}">{EDIT_MSG}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="6">{NO_RECORDS_MSG}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="6">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_user_point_new_url}">{ADD_POINTS_MSG}</a>
+	</td>
+</tr>
+</table>	
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

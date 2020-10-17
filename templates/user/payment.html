@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{meta_language}" lang="{meta_language}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{CHECKOUT_PAYMENT_TITLE}</title>
+<base href="{absolute_url}" />
+<!-- begin amazon_widget -->
+<script type="text/javascript" src="{widget_url}"></script><!-- end amazon_widget -->
+</head>
+<body class="commonbg">
+
+<!-- begin errors -->
+<div align="center">{errors_list}</div><!-- end errors -->
+
+<!-- begin submit_payment -->
+<form action="{payment_url}" name="payment" method="{submit_method}"><!-- begin parameters -->
+<input type="hidden" name="{parameter_name}" value="{parameter_value}" /><!-- end parameters -->
+<div align="center" style="font-family: tahoma, arial, sans-serif; color: navy; ">
+{GOTO_PAYMENT_MSG}<br /><br />
+<input type="submit" value="{CONTINUE_BUTTON}" style="border: 1px solid gray; background-color: #e0e0e0; font-family: tahoma, arial, sans-serif; height: 20px; color: #333333; font-weight: bold;" />
+</div>
+</form>
+
+<script type="text/javascript">
+document.payment.submit();
+</script>
+<!-- end submit_payment -->
+
+<!-- begin amazon_button -->
+{GOTO_PAYMENT_MSG}<br /><br />
+<div id="AmazonPayButton"/>
+
+<script type="text/javascript">
+//window.onAmazonPaymentsReady = 
+
+function vaAmazonInit() {
+	OffAmazonPayments.Button("AmazonPayButton", "{seller_id}", {
+		type: "hostedPayment",
+		hostedParametersProvider: function(done){
+			done({amazon_params});
+    },
+		onError: function(err) {
+			alert(err.getErrorMessage());
+		}
+  });
+	var but = document.querySelector("#AmazonPayButton img");
+	//if (but) { but.click(); }
+}
+
+window.addEventListener("load", vaAmazonInit, false);
+</script><!-- end amazon_button -->
+
+
+
+<!-- begin stripe_payment -->
+<div style="text-align: center; ">
+{GOTO_PAYMENT_MSG}<br /><br />
+
+<form action="{return_url}" method="POST">
+  <script
+    src="https://checkout.stripe.com/checkout.js" <!-- begin stripe_parameters -->
+    {parameter_name}="{parameter_value}"<!-- end stripe_parameters --> 
+		class="stripe-button">
+  </script>
+</form>
+</div>
+
+<script>
+window.addEventListener("load", function(){ var butObj = document.querySelector("button"); if(butObj) { butObj.click(); } }, false);
+</script>
+<!-- end stripe_payment -->
+
+
+<!-- begin stripe_v3_payment -->
+<div style="text-align: center; ">
+{GOTO_PAYMENT_MSG}<br /><br />
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+var stripe = Stripe('{publishable_key}');
+stripe.redirectToCheckout({
+  sessionId: '{stripe_session_id}'
+}).then(function (result) {
+	alert(result.error.message);
+  // If `redirectToCheckout` fails due to a browser or network
+  // error, display the localized error message to your customer
+  // using `result.error.message`.
+});
+</script>
+
+</div>
+<!-- end stripe_v3_payment -->
+
+
+</body>
+</html>

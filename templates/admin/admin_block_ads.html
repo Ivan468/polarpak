@@ -1,0 +1,33 @@
+<div class="Block">
+<div class="BlockTitle">{ADS_TITLE} in {product_category_name}<!-- begin s_title --> matching the term(s) '<b>{s}</b>'<!-- end s_title -->:</div>
+<div class="BlockContent">
+		<table border="0" cellspacing="1" cellpadding="6" width="99%">
+		<tr class="middle" align="center">
+			<td align="left">{ADMIN_TITLE_MSG}</td>
+			<td nowrap>{PRICE_MSG}</td>
+			<td nowrap>{QTY_MSG}</td>
+			<td nowrap>{STATUS_MSG}</td>
+		</tr><!-- BEGIN items_list -->
+		<tr class="{row_style}" align="center" valign="top" id="tr_product_{item_index}">
+			<td align="left">
+				<a class="title" href="{admin_ads_edit_href}?category_id={ad_category_id}&item_id={item_id}">{item_name}</a> &nbsp; &nbsp; 
+				<a class="small" href="{admin_ads_edit_href}?category_id={ad_category_id}&item_id={item_id}">{EDIT_MSG}</a>
+				<div class="small">
+					<a class="small" href="{admin_ads_properties_href}?category_id={ad_category_id}&item_id={item_id}">{CUSTOM_PROPERTIES_MSG}</a> |
+					<a class="small" href="{admin_ads_features_href}?category_id={ad_category_id}&item_id={item_id}">{AD_SPECIFICATION_MSG}</a> |
+					<a class="small" href="{admin_ads_assign_href}?category_id={ad_category_id}&item_id={item_id}">{CATEGORIES_TITLE}</a> |
+					<a class="small" href="{admin_ads_images_href}?category_id={ad_category_id}&item_id={item_id}">{IMAGES_MSG}</a>
+				</div>
+			</td>
+			<td align="right">{price}</td>
+			<td>{stock_level}</td>
+			<td>{status}</td>
+		</tr><!-- END items_list -->
+		<tr class="middle" align="center">
+			<td align="left" colspan="4">
+				<a href="{admin_ads_href}?s={s}">Show all ({total_records})</a>
+			</td>
+		</tr>
+		</table>
+</div>
+</div>

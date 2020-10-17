@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{meta_language}" lang="{meta_language}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{UPLOAD_TITLE}</title>
+<link rel="stylesheet" href="{css_file}" type="text/css" />
+<script type="text/javascript" src="js/upload.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+function selectPhoto()
+{
+	var photoId = document.upload.photo_id.value;
+	if (window.opener) {
+		if (photoId != "") {
+			window.opener.setPhoto(photoId);
+		}
+		window.opener.focus();
+	}
+	window.close();
+
+}
+
+//]]>
+</script>
+</head>
+<body class="popup" onload="checkOpenerImages();">
+
+<form name="upload" action="{photo_upload_href}" enctype="multipart/form-data" method="post">
+<input type="hidden" name="operation" value="upload" />
+<input type="hidden" name="photo_type" value="{photo_type}" />
+<input type="hidden" name="type" value="{type}" />
+<input type="hidden" name="photo_id" value="{photo_id}" />
+<table width="100%" cellspacing="1" cellpadding="0" align="center" class="headerbg">
+<tr><td class="headerbg"> 
+
+	<table cellspacing="0" cellpadding="3" width="100%" align="center">
+	<tr>
+		<td colspan="3" class="middlebg" align="center">
+			<a href="javascript:window.close();"><b>{CLOSE_WINDOW_MSG}</b></a>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" class="usualbg">
+		<br />
+		</td>
+	</tr><!-- BEGIN errors -->
+	<tr>
+		<td align="center" class="usualbg">
+			<div class="errorbg"><b>{errors_list}</b></div>
+		</td>
+	</tr><!-- END errors --><!-- BEGIN before_upload -->
+	<tr>
+		<td class="usualbg">
+			<table><tr><td>&nbsp;&nbsp;&nbsp;{UPLOAD_SELECT_MSG}<br />
+			</td></tr>
+			<tr><td>
+				<table cellspacing="3"><tr>
+				<td>&nbsp;&nbsp;&nbsp;<input class="" size="40" type="file" name="newfile" />&nbsp;&nbsp;</td>
+				<td><span class="submit"><input class="submit" type="submit" name="submit" value="{UPLOAD_BUTTON}" /></span></td>
+				</tr></table>
+			</td></tr></table>
+		</td>
+	</tr>
+
+	<!-- END before_upload --><!-- BEGIN after_upload -->
+	<tr>
+		<td class="usualbg" align="center">
+			{UPLOADED_FILE_MSG}
+<script type="text/javascript">
+//<![CDATA[
+selectPhoto();
+//]]>
+</script>
+		</td>
+	</tr><!-- END after_upload -->
+
+	<tr>
+		<td colspan="3" class="usualbg">
+		<br />
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" class="middlebg" align="center">
+			<a href="javascript:window.close();"><b>{CLOSE_WINDOW_MSG}</b></a>
+		</td>
+	</tr>
+	</table>
+
+</td></tr></table>
+</form>
+                      
+</body>
+</html>

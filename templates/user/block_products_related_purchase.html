@@ -1,0 +1,32 @@
+	<!-- BEGIN rpp_rows -->
+	<div class="row {columns_class}">
+		<!-- BEGIN rpp_cols -->
+		<div class="col">
+			<a class="product-name {product_new_class} {restricted_class}" href="{details_url}" title="{a_title}">{item_name}</a>
+
+			<!-- begin rpp_image --><a href="{details_url}" title="{a_title}"><img class="product-image" src="{src}" {width} {height} alt="{alt}" align="left" /></a><!-- end rpp_image -->
+
+					<!-- begin rpp_price_block -->
+					<div class="{price_block_class}"><span class="caption">{PRICE_MSG}</span><span class="price">{rpp_price}</font> <span class="tax">{rpp_tax_price}</span></div>
+					<!-- end rpp_price_block -->
+					<!-- begin rpp_sales -->
+					<div class="price-sale"><span class="caption">{SALE_PRICE_MSG}</span><font class="price">{rpp_sales_price}</font> <span class="tax">{rpp_tax_sales}</span></div>
+					<!-- end rpp_sales -->
+					<!-- begin rpp_availability -->
+					{PROD_AVAILABILITY_MSG}: {shipping_time_desc}
+					<!-- end rpp_availability -->
+					<!-- begin rpp_desc -->
+					<div align="justify">
+						{desc_text}
+					</div><!-- end rpp_desc -->
+					<br/><a class="button bn-more" href="{details_url}" title="{a_title}"><span>{READ_MORE_MSG}</span></a>
+
+		</div>
+		<!-- END rpp_cols -->
+		<div class="clear"></div>
+	</div>
+	<!-- END rpp_rows -->
+
+	<!-- begin rpp_navigator_block -->
+	<div class="navigator">{rpp_navigator}</div>
+	<!-- end rpp_navigator_block -->

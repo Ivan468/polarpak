@@ -1,0 +1,117 @@
+	<form name="products_{pb_id}" method="post" action="#pb_{pb_id}">
+	<input type="hidden" name="pb_id" value="{pb_id}" />
+	<input type="hidden" name="type" value="offer" />
+	<input type="hidden" name="rnd" value="{rnd}" />
+	<input type="hidden" name="cart" value="ADD" />
+	<input type="hidden" name="saved_type_id" value="" />
+	<input type="hidden" name="redirect_to_cart" value="{redirect_to_cart}" />
+	<input type="hidden" name="multi_add" value="{multi_add}" />
+	<input type="hidden" name="start_index" value="{start_index}" />
+	<input type="hidden" name="item_index" value="" />
+	<input type="hidden" name="sc_params" value="{sc_params}" />
+	<input type="hidden" name="items_indexes" value="{items_indexes}" /><!-- begin form_params -->
+	<input type="hidden" name="{param_name}" value="{param_value}" /><!-- end form_params -->
+	{hidden_parameters}
+
+		<!-- BEGIN item_added --><div class="messagebg" align="center">{added_message}</div><!-- END item_added -->
+		<!-- BEGIN sc_errors --><div class="errorbg" align="center">{errors_list}</div><!-- END sc_errors -->
+
+		<div data-js="{data_js}" data-cols="{slider_columns}" data-column-width="{slider_column_width}" data-column-height="{slider_column_height}" data-pb-id="{pb_id}" data-slider-type="{slider_type}" data-transition-delay="{transition_delay}" data-transition-duration="{transition_duration}" class="bk-data" style="{slider_style}">
+			<div data-sliding="1" class="products {columns_class}" id="data_{pb_id}" style="{sliding_style}">
+				<!-- BEGIN items_rows -->
+				<!-- BEGIN items_cols -->
+				<div data-slide-col="1" class="col {column_class}" style="{column_style}">
+
+					<div class="product br-solid">
+
+						<div class="before-image">
+							<h2 class="product-name"><a class="product-name {product_new_class} {restricted_class}" href="{details_url}" title="{a_title}">{item_name}</a></h2>
+						</div>
+						<!-- begin small_image -->
+						<div class="image-block">
+							<a href="{details_url}" title="{a_title}"><img {image_offer_js} class="product-image" src="{src}" alt="{alt}" /></a>
+						</div><!-- end small_image -->
+						<div class="after-image">
+							<h2 class="product-name"><a class="product-name {product_new_class} {restricted_class}" href="{details_url}" title="{a_title}">{item_name}</a></h2>
+						</div>
+
+						<div class="buy-block">
+							<div class="prices">
+								<!-- begin sp_price_block -->
+								<div class="{price_block_class}"><span class="caption">{PRICE_MSG}</span><span class="price">{sp_price}</span> <span class="tax">{sp_tax_price}</span></div><!-- end sp_price_block -->
+								<!-- begin sp_sales -->
+								<div class="price-sale"><span class="caption">{SALE_PRICE_MSG}</span><span class="price">{sp_sales_price}</span> <span class="tax">{sp_tax_sales}</span></div><!-- end sp_sales -->			  
+								<!-- begin points_price_block -->
+								<div class="points-price"><span class="caption">{POINTS_PRICE_MSG}</span><span class="points">{points_price}</span></div><!-- end points_price_block -->
+								<!-- begin reward_points_block -->
+								<div class="points-reward"><span class="caption">{REWARD_POINTS_MSG}</span><span class="points">{reward_points}</span></div><!-- end reward_points_block -->
+								<!-- begin reward_credits_block -->
+								<div class="credits-reward"><span class="caption">{REWARD_CREDITS_MSG}</span><span class="credits">{reward_credits}</span></div><!-- end reward_credits_block -->
+							</div>
+					  
+							<!-- begin quantity -->
+							<div class="quantity">{PROD_QTY_COLUMN}: {quantity_control}</div><!-- end quantity -->	
+					  
+							<div class="buttons">
+					  
+							<!-- begin in_cart -->
+							<a class="in-cart {hidden_class}" id="in-cart{index}" href="{basket_href}?rp={rp_url}" title="{IN_CART_MSG}"><span>{IN_CART_MSG}</span></a><!-- end in_cart -->
+					  
+							<!-- begin cart_add_button -->
+							<a class="button bn-add" id="add{index}" href="{buy_href}" onclick="return confirmBuy('products_{pb_id}','{index}','cart', 'add{index}');"><span>{ADD_TO_CART_MSG}</span></a> 
+							<!-- end cart_add_button -->
+							<!-- begin cart_add_disabled -->
+							<a class="button bn-disabled" title="{PRODUCT_OUT_STOCK_MSG}" onclick="alert('{out_stock_alert}');">{ADD_TO_CART_MSG}</a> 
+							<!-- end cart_add_disabled -->
+							<!-- begin view_button -->
+							<a class="button bn-view" id="view{index}" href="{basket_href}?rp={rp_url}"><span>{VIEW_CART_MSG}</span></a> 
+							<!-- end view_button -->
+							<!-- begin checkout_button -->
+							<a class="button bn-checkout" id="checkout{index}" href="{checkout_href}?rp={rp_url}"><span>{GOTO_CHECKOUT_MSG}</span></a>
+							<!-- end checkout_button -->
+							<!-- begin wishlist_button -->
+							<a class="button bn-wishlist" id="wishlist{index}" href="{wishlist_href}" onclick="return confirmBuy('products_{pb_id}', '{index}', 'wishlist', 'wishlist{index}');"><span>{ADD_TO_WISHLIST_MSG}</span></a> 
+							<!-- end wishlist_button -->
+							</div>
+						</div>
+
+						<div class="desc">
+							{special_offer}
+						</div>
+
+						<!-- begin more_button -->
+						<a class="button bn-more" href="{details_url}" title="{a_title}"><span>{READ_MORE_MSG}</span></a><!-- end more_button -->
+
+						<div class="clear"></div>
+
+					</div>
+
+				</div>
+				<!-- END items_cols -->
+				<!-- END items_rows -->
+				<div class="clear"></div>
+			</div>
+		</div>
+
+			<!-- begin navigator_block -->
+			<div class="navigator br-solid">{navigator}</div><!-- end navigator_block -->
+
+	</form>
+
+<!-- begin after_block -->
+<div id="popupBox" class="popupTooltip">
+	<!--BEGIN so_boxes -->				
+	<div class="soPopupContent" id="so_{item_id}">
+							
+		<a class="bigtitle" href="{details_url}">{item_name}</a>
+		<div class="soPopupImg">
+		<!-- begin box_image --><img src="{src}" {width} {height} alt="{alt}" /><!-- end box_image -->
+		</div>
+		<div class="soText">
+			{box_desc}
+		</div>	
+						
+		</div>
+	<!--END so_boxes -->
+</div>
+<!-- end after_block -->

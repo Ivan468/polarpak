@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {MULTIPLY_COUPON_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+
+<body class="bodyDboard">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{MULTIPLY_COUPON_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_coupon_multiply_href}" name="record" method="POST">
+<input type="hidden" name="s" value="{s}">
+<input type="hidden" name="s_a" value="{s_a}">
+<input type="hidden" name="operation" value="mutiply">
+<input type="hidden" name="coupon_id" value="{coupon_id}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+	<tr class="middle">
+		<td colspan="2">{COUPON_INFO_MSG}</td>
+	</tr>
+	<tr class="usual">
+		<td width="30%">{COUPON_CODE_MSG}</td>
+		<td width="70%">{coupon_code}</td>
+	</tr>
+	<tr class="usual">
+		<td>{COUPON_TITLE_MSG}</td>
+		<td>{coupon_title}</td>
+	</tr>
+	<tr class="usual">
+		<td>{DISCOUNT_AMOUNT_MSG}</td>
+		<td>{discount_amount} {discount_type}</td>
+	</tr>
+	<tr class="middle">
+		<td colspan="2">{COUPON_INFO_MSG}</td>
+	</tr>
+	<tr class="usual">
+		<td>{TIMES_TO_MULTIPLY_MSG} *</td>
+		<td><input class="field" type="text" name="multiply_times" size="10" maxlength="10" value="{multiply_times}"></td>
+	</tr>
+	<tr class="usual" valign="top">
+		<td>
+			{NEW_COUPON_CODE_MASK_MSG}
+			<div class="small"><span class="message">*</span> - {RANDOM_SYMBOL_MSG}</div>
+			<div class="small"><span class="message">#</span> - {SEQUENCE_NUMBER_MSG}</div>
+			<div class="small"><span class="message">&#123;coupon_code&#125</span> - {CURRENT_COUPON_CODE_MSG}</div>
+		</td>
+		<td><input class="field" type="text" name="new_coupon_code_mask" size="30" maxlength="30" value="{new_coupon_code_mask}"></td>
+	</tr>
+	<tr class="middle">
+		<td>&nbsp;</td>
+		<td>
+			<span class="button"><input class="submit" type="submit" value="{MULTIPLY_MSG}" onCLick="document.record.operation.value='multiply'"></span>
+			<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+		</td>
+	</tr>
+</table>
+
+</form>	
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

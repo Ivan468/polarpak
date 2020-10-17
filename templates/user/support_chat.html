@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{meta_language}" lang="{meta_language}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{SUPPORT_TITLE}</title>
+<link rel="stylesheet" href="{css_file}" type="text/css" />
+<link rel="stylesheet" href="styles/chat.css" type="text/css" />
+<script type="text/javascript" src="js/ajax.js"></script>
+<script type="text/javascript" src="js/chat.js"></script>
+</head>
+
+<body class="popup" onload="initChat();">
+
+<!-- begin chat_register_form -->
+<div style="padding: 10px;">
+
+<form action="{support_chat_href}" name="chat_register" method="post">
+<input type="hidden" name="operation" value="new_chat" />
+
+<!-- begin errors -->
+<br /><div class="errorbg">{errors_list}</div><br />
+<!-- end errors -->
+
+<table width="400" cellspacing="0" cellpadding="0" align="center"><!-- begin user_name_block -->
+<tr class="formRow">
+	<td class="fieldName">
+		{NAME_MSG} *
+	</td>
+	<td class="fieldText"> 
+		<input type="text" name="user_name" value="{user_name}" size="40" style="width: 300px;"/>
+	</td>
+</tr><!-- end user_name_block --><!-- begin user_email_block -->
+<tr class="formRow">
+	<td class="fieldName"> 
+		{EMAIL_FIELD} *
+	</td>
+	<td class="fieldText"> 
+		<input type="text" name="user_email" value="{user_email}" size="40" style="width: 300px;"/>
+	</td>
+</tr><!-- end user_email_block -->
+<tr class="formRow">
+	<td colspan="2" class="fieldWide"> 
+		{CHAT_QUESTION_MSG} *
+	</td>
+</tr>
+<tr class="formRow">
+	<td colspan="2" class="fieldWide"> 
+		<textarea name="user_message" cols="45" rows="5" style="width: 400px;">{user_message}</textarea></td>
+	</td>
+</tr>
+<tr class="formRow">
+	<td colspan="2" class="fieldWide" align="center"> 
+		<input class="submitWide" type="submit" value="Start Chat" />
+	</td>
+</tr>
+</table>
+
+
+</form>
+
+</div>
+<!-- end chat_register_form -->
+
+
+<!-- begin chat_room -->
+<div class="closeChat">
+	<a href="{support_chat_href}?operation=close" onclick="return confirm('{CLOSE_CHAT_QST}');">{CLOSE_CHAT_MSG}</a>
+</div>
+
+<div class="chatMessages" id="chatMessages">
+<!-- begin messages -->
+<div id="message_{message_id}" class="{message_class}">
+<div class="start"></div>
+<div class="time">{message_time}</div>
+<div class="name" title="{author_name}">{author_short}</div>
+<div class="text">{message_text}</div>
+<div class="end"></div>
+</div><!-- end messages -->
+
+</div>
+
+<div class="chatForm">
+<form name="chat_message" action="{support_chat_href}">
+
+<table cellspacing="0" cellpadding="0">
+<tr>
+	<td>
+		<input type="hidden" name="ajax" value="1" />
+		<input type="hidden" name="operation" value="new_message" />
+		<input type="hidden" name="last_message_id" value="{last_message_id}" />
+		<textarea name="new_message" class="newMessage" {new_message_disabled} cols="50" rows="4"></textarea>
+	</td>	
+	<td>
+		<input name="send_message" class="sendMessage" {send_message_disabled} type="button" value="{SEND_BUTTON}" onclick="sendMessage();" />
+	</td>
+</tr>
+</table>
+</form>
+</div>
+<!-- end chat_room -->
+
+
+<!-- begin support_offline -->
+<div class="chat-offline" onclick="moveToOffline('{support_url}');">
+	{SUPPORT_OFFLINE_DESC}
+</div>
+<!-- end support_offline -->
+
+
+</body>
+</html>

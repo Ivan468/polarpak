@@ -1,0 +1,29 @@
+<div class="Block">
+<div class="BlockTitle">{ARTICLES_TITLE} in {product_category_name}<!-- begin s_title --> matching the term(s) '<b>{s}</b>'<!-- end s_title -->:</div>
+<div class="BlockContent">
+		<table border="0" cellspacing="1" cellpadding="6" width="99%">
+		<tr class="middle" align="center">
+			<td align="left">{ADMIN_TITLE_MSG}</td>
+			<td nowrap>{STATUS_MSG}</td>
+		</tr><!-- BEGIN items_list -->
+		<tr class="{row_style}" align="center" valign="top" id="tr_product_{item_index}">
+			<td align="left">
+				<a class="title" href="{admin_article_href}?category_id={article_category_id}&article_id={article_id}">{article_title}</a> &nbsp; &nbsp; 
+				<a href="{admin_article_href}?category_id={article_category_id}&article_id={article_id}">{EDIT_MSG}</a>
+				<div class="small">
+					<a href="{admin_article_items_related_href}?category_id={article_category_id}&article_id={article_id}">{ADMIN_RELATED_PRODUCTS_TITLE}</a> |
+					<a href="{admin_article_related_href}?category_id={article_category_id}&article_id={article_id}">{RELATED_ARTICLES_MSG}</a> |<!--begin related_forums_priv-->
+					<a href="{admin_article_forums_related_href}?category_id={article_category_id}&article_id={article_id}">{RELATED_FORUMS_MSG}</a> |<!--end related_forums_priv-->
+					<a href="{admin_articles_assign_href}?category_id={article_category_id}&article_id={article_id}">{ASSIGN_CATEGORIES_MSG}</a>
+				</div>
+			</td>
+			<td align="center" valign="center">{article_status}</td>
+		</tr><!-- END items_list -->
+		<tr class="middle" align="center">
+			<td align="left" colspan="3">
+				<a href="{admin_articles_all_href}?s={s}">Show all ({total_records})</a>
+			</td>
+		</tr>
+		</table>
+</div>
+</div>

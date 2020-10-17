@@ -1,0 +1,557 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{EDIT_ARTICLE_MSG}</title>
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/win_select.js"></script>
+<script language="JavaScript" src="../js/calendar.js"></SCRIPT> 
+<script language="JavaScript">
+<!--
+	var removeButton = "{REMOVE_BUTTON}";
+
+	function openWindow(pagename, filetype)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+	}
+
+	function setFileName(filename, filetype, fileIndex, siteUrl)
+	{
+		if(filename != "")
+		{
+			if(filetype == "article_tiny") {
+				document.record.image_tiny.value = siteUrl + "images/articles/tiny/" + filename;
+				document.record.image_tiny.focus();
+			} else if(filetype == "article_small") {
+				document.record.image_small.value = siteUrl + "images/articles/small/" + filename;
+				document.record.image_small.focus();
+			} else if(filetype == "article_large") {
+				document.record.image_large.value = siteUrl + "images/articles/large/" + filename;
+				document.record.image_large.focus();
+			} else if(filetype == "article_super") {
+				document.record.image_super.value = siteUrl + "images/articles/super/" + filename;
+				document.record.image_super.focus();
+			}
+			else if(filetype == "article_video")
+			{
+				if (filename.lastIndexOf(".flv") > 0){
+					document.record.stream_video.value = "../video/article/" + filename;
+				} else {
+					document.record.stream_video.value = siteUrl + "video/article/" + filename;
+				}
+				document.record.stream_video.focus();
+			}
+			else if(filetype == "preview_video")
+			{
+				document.record.stream_video_preview.value = siteUrl + "images/video/preview/" + filename;
+				document.record.stream_video_preview.focus();
+			}
+		}
+	}
+//-->
+</script>
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+<script language= "JavaScript" type= "text/javascript" src= "../js/editor.js"></script>
+{CKEditor_tag}
+</head>
+
+<body class="bodyDboard">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<form action="{article_href}" name="record" method="POST" onSubmit="submit_editor(Array('editor_hd','editor_hl','editor_sd','editor_fd'));">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="article_id" value="{article_id}">
+<input type="hidden" name="category_id" value="{category_id}">
+<input type="hidden" name="va_module" value="articles">
+<input type="hidden" name="total_views" value="{total_views}">
+<input type="hidden" name="rating" value="{rating}">
+
+<input type="hidden" name="apply" value="0">
+<input type="hidden" name="tab" value="{tab}">
+
+<!-- BEGIN success --><div class="messagebg">{success_message}</div><!-- END success -->
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+	<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+		<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+	</ul>
+
+<div class="Form clearBoth">
+<div class="FormContent">
+
+<div id="general_data" class="tab-data {general_class}">
+	<table width="100%" border="0" cellspacing="1" cellpadding="6">
+		<tr class="usual">
+			<td colspan="2" align="right" class="small">{ASTERISK_MSG}</td>
+		</tr>
+		
+		<tr class="middle">
+			<td colspan="2" class="middle">{GENERAL_INFO_MSG}</td>
+		</tr>
+		<tr class="usual">
+			<td>{ADMIN_ORDER_NUMBER_MSG} <i class="{article_order_class}"></i></td>
+			<td><input class="field" type="text" name="article_order" value="{article_order}" size="10" maxlength="10"></td>
+		</tr>
+		<tr class="usual">
+			<td>{STATUS_MSG} <i class="{status_id_class}"></i></td>
+			<td>
+				<select name="status_id">
+					<!-- BEGIN status_id --><option {status_id_selected} value="{status_id_value}">{status_id_description}<!-- END status_id -->
+				</select>
+			</td>
+		</tr>
+		<tr class="usual">
+			<td>{LANGUAGE_MSG}</td>
+			<td>
+				<select name="language_code">
+					<!-- BEGIN language_code --><option {language_code_selected} value="{language_code_value}">{language_code_description}<!-- END language_code -->
+				</select>
+			</td>
+		</tr>
+		<!-- begin article_date_block -->
+		<tr class="usual">
+			<td>{DATE_MSG} <i class="{article_date_class}"></i></td>
+			<td>
+				<input class="field" type="text" name="article_date" value="{article_date}" size="20" maxlength="60">
+				<a class="calendar" 
+					onClick="setDateField(document.record.article_date, '{article_date_format}');
+					top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;"><i></i></a>
+				({USE_FOLLOWING_FORMAT_MSG} <b>{article_date_format}</b>)
+			</td>
+		</tr><!-- end article_date_block --><!-- begin date_end_block -->
+		<tr class="usual">
+			<td>{DATE_END_MSG} <i class="{date_end_class}"></i></td>
+			<td>
+				<input class="field" type="text" name="date_end" value="{date_end}" size="20" maxlength="60">
+				<a class="calendar" 
+					onClick="setDateField(document.record.date_end, '{date_end_format}');
+					top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;"><i></i></a>
+				({USE_FOLLOWING_FORMAT_MSG} <b>{date_end_format}</b>)
+			</td>
+		</tr><!-- end date_end_block --><!-- begin article_title_block -->
+		<tr class="usual">
+			<td>{ADMIN_TITLE_MSG} <i class="{article_title_class}"></i></td>
+			<td><input class="field" type="text" name="article_title" value="{article_title}" size="80" maxlength="255"></td>
+		</tr><!-- end article_title_block --><!-- begin article_comment_block -->
+		<tr class="usual">
+			<td>{COMMENT_MSG} <i class="{article_comment_class}"></i></td>
+			<td><input class="field" type="text" name="article_comment" value="{article_comment}" size="80" maxlength="255"></td>
+		</tr><!-- end article_comment_block --><!-- BEGIN friendly_url_block -->
+		<tr class="usual">
+			<td>{FRIENDLY_URL_MSG}</td>
+			<td><input class="field" type="text" name="friendly_url" value="{friendly_url}" size="80" maxlength="255"></td>
+		</tr><!-- END friendly_url_block --><!-- BEGIN authors_block -->
+		<tr class="usual">
+			<td>{AUTHORS_MSG}</td>
+			<td>
+				<input type="hidden" name="authors" value="{authors}" />
+    
+				<ul id="selectedAuthors" class="authors"><!-- BEGIN selected_authors --><!-- END selected_authors --></ul>
+				<a class="author-select" onClick='jsonWindow({"url": "{admin_authors_href}", "params": {"form_name": "record", "items_field": "authors", "items_object": "selectedAuthors", "item_template": "author_template", "selection_type": "multiple", "win_type": "popup"}}); return false;'>{SELECT_MSG}</a>
+      
+				<ul id="author_template" style="display: none;">
+					<!-- begin author_template -->
+					<li id="author{author_id}">
+						<div class="name">{author_name}</div>
+						<div class="remove" onclick='jsonRemoveItem({"form_name": "record", "items_field": "authors", "items_object": "selectedAuthors", "item_object": "author{author_id}", "id": "{author_id}"});'></div>
+						<div class="separator">, </div>
+						<div class="clearboth"></div>
+					</li>
+					<!-- end author_template -->
+				</ul>
+			</td>
+		</tr><!-- END authors_block -->
+		<!-- BEGIN albums_block -->
+		<tr class="usual">
+			<td>{ALBUMS_MSG}</td>
+			<td>
+				<input type="hidden" name="albums" value="{albums}" />
+    
+				<ul id="selectedAlbums" class="albums"><!-- BEGIN selected_albums --><!-- END selected_albums --></ul>
+				<a class="album-select" onClick='jsonWindow({"url": "{admin_albums_href}", "params": {"form_name": "record", "items_field": "albums", "items_object": "selectedAlbums", "item_template": "album_template", "selection_type": "multiple", "win_type": "popup"}}); return false;'>{SELECT_MSG}</a>
+      
+				<ul id="album_template" style="display: none;">
+					<!-- begin album_template -->
+					<li id="album{album_id}">
+						<div class="name">{album_name}</div>
+						<div class="remove" onclick='jsonRemoveItem({"form_name": "record", "items_field": "albums", "items_object": "selectedAlbums", "item_object": "album{album_id}", "id": "{album_id}"});'></div>
+						<div class="separator">, </div>
+						<div class="clearboth"></div>
+					</li>
+					<!-- end album_template -->
+				</ul>
+			</td>
+		</tr><!-- END albums_block -->
+		<!-- BEGIN author_title -->
+		<tr class="middle">
+			<td colspan="2" class="middle">{AUTHOR_INFO_MSG}</td>
+		</tr><!-- END author_title --><!-- begin author_name_block -->
+		<tr class="usual">
+			<td>{AUTHOR_NAME_MSG} {author_name_required}</td>
+			<td><input class="field" type="text" name="author_name" value="{author_name}" size="80" maxlength="255"></td>
+		</tr><!-- end author_name_block --><!-- begin author_email_block -->
+		<tr class="usual">
+			<td>{AUTHOR_EMAIL_MSG} {author_email_required}</td>
+			<td><input class="field" type="text" name="author_email" value="{author_email}" size="80" maxlength="255"></td>
+		</tr><!-- end author_email_block -->
+		<!-- begin author_url_block -->
+		<tr class="usual">
+			<td>{AUTHOR_URL_MSG} {author_url_required}</td>
+			<td><input class="field" type="text" name="author_url" value="{author_url}" size="80" maxlength="255"></td>
+		</tr><!-- end author_url_block -->
+		<tr class="usual">
+			<td><label for="allowed_rate">{ALOOW_RATE_MSG}</label></td>
+			<td><input type="checkbox" name="allowed_rate" id="allowed_rate" {allowed_rate} value="1"></td>
+		</tr>		
+		<!-- begin link_url_block -->
+		<tr class="middle">
+			<td colspan="2">{LINK_URL_MSG}</td>
+		</tr>	
+		<tr class="usual">
+			<td>{LINK_URL_MSG} {link_url_required}</td>
+			<td><input class="field" type="text" name="link_url" value="{link_url}" size="80" maxlength="255"></td>
+		</tr><!-- end link_url_block -->
+		<!-- begin link_title_block -->
+		<tr class="usual">
+			<td>{TITLE_MSG}</td>
+			<td><input class="field" type="text" name="link_title" value="{link_title}" size="80" maxlength="255"></td>
+		</tr><!-- end link_title_block --><!-- begin download_url_block -->
+		<tr class="usual">
+			<td>{DOWNLOAD_URL_MSG} {download_url_required}</td>
+			<td><input class="field" type="text" name="download_url" value="{download_url}" size="80" maxlength="255"></td>
+		</tr><!-- end download_url_block -->
+		<tr class="middle">
+			<td>&nbsp;</td>
+			<td>
+				<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save';"></span><!-- BEGIN delete -->
+				<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+				<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+				<span class="button"><input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1"></span>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="desc_data" class="tab-data {desc_class}">
+		<table width="100%" border="0" cellspacing="1" cellpadding="6">
+		<tr class="middle">
+			<td colspan="2" class="middle">{DESCRIPTIONS_MSG}</td>
+		</tr>
+		<!-- begin highlights_block -->
+		<tr class="usual">
+			<td>{HIGHLIGHTS_MSG} {highlights_required}</td>
+			<td>{editor_error}
+				<textarea class="text" id="hl" name="highlights" cols="120" rows="6">{highlights}</textarea>
+				<!-- begin hl_ext_editor -->
+				<script type="text/javascript">
+					var hlEditor = CKEDITOR.replace('hl');{ckfinder}
+				</script><!-- end hl_ext_editor -->
+				<!-- begin hl_int_editor -->
+				<script language= "JavaScript" type= "text/javascript">
+				<!--
+					var editor_hl = new VA_HTMLeditor('content_hl','../','{html_editor}');
+					editor_hl.text_field_name = 'highlights';
+					editor_hl.formname = 'record';
+					editor_hl.css_file = '{css_file}';
+					editor_hl.editor_type = 'article_editor';
+					editor_hl.displayEditor('editor_hl', 565, 100);
+				//-->
+				</script><!-- end hl_int_editor -->
+			</td>
+		</tr><!-- end highlights_block -->
+		<!-- begin short_description_block -->
+		<tr class="usual">
+			<td>{SHORT_DESCRIPTION_TEXT_MSG} {short_description_required}</td>
+			<td>{editor_error}
+				<textarea class="text" id="sd" name="short_description" cols="120" rows="6">{short_description}</textarea>
+				<!-- begin sd_ext_editor -->
+				<script type="text/javascript">
+					var sdEditor = CKEDITOR.replace('sd');{ckfinder}
+				</script><!-- end sd_ext_editor -->
+				<!-- begin sd_int_editor -->
+				<script language= "JavaScript" type= "text/javascript">
+				<!--
+					var editor_sd = new VA_HTMLeditor('content_sd','../','{html_editor}');
+					editor_sd.text_field_name = 'short_description';
+					editor_sd.formname = 'record';
+					editor_sd.css_file = '{css_file}';
+					editor_sd.editor_type = 'article_editor';
+					editor_sd.displayEditor('editor_sd', 565, 100);
+				//-->
+				</script><!-- end sd_int_editor -->
+			</td>
+		</tr><!-- end short_description_block -->
+		<!-- begin keywords_block -->
+		<tr class="usual">
+			<td>{KEYWORDS_MSG} {keywords_required}</td>
+			<td><textarea name="keywords" cols="120" rows="2">{keywords}</textarea></td>
+		</tr><!-- end keywords_block --><!-- begin notes_block -->
+		<tr class="usual">
+			<td>{NOTES_MSG} {notes_required}</td>
+			<td><textarea name="notes" cols="120" rows="5">{notes}</textarea></td>
+		</tr><!-- end notes_block -->
+		<!-- BEGIN tags_block -->
+		<tr class="usual">
+			<td>{TAGS_MSG}</td>
+			<td>
+				<input type="hidden" name="tags" value="{tags}" />
+    
+				<ul id="selectedtags" class="tags"><!-- BEGIN selected_tags --><!-- END selected_tags --></ul>
+				<a class="tag-select" onClick='jsonWindow({"url": "{admin_tags_href}", "params": {"form_name": "record", "items_field": "tags", "items_object": "selectedtags", "item_template": "tag_template", "selection_type": "multiple", "win_type": "popup"}}); return false;'>{SELECT_MSG}</a>
+      
+				<ul id="tag_template" style="display: none;">
+					<!-- begin tag_template -->
+					<li id="tag{tag_id}">
+						<div class="name">{tag_name}</div>
+						<div class="remove" onclick='jsonRemoveItem({"form_name": "record", "items_field": "tags", "items_object": "selectedtags", "item_object": "tag{tag_id}", "id": "{tag_id}"});'></div>
+						<div class="separator">, </div>
+						<div class="clearboth"></div>
+					</li>
+					<!-- end tag_template -->
+				</ul>
+			</td>
+		</tr><!-- END tags_block -->
+		<!-- begin full_description_block -->
+		<tr class="middle">
+			<td colspan="2">&nbsp;{FULL_DESCRIPTION_MSG}</td>
+		</tr>
+		<!-- begin is_html_block -->
+		<tr class="usual">
+			<td>{FULL_DESCRIPTION_MODE_MSG}</td>
+			<td valign="bottom"><!-- begin is_html -->
+				<input type="radio" name="is_html" id="is_html{is_html_value}" {is_html_checked} value="{is_html_value}">
+				<label for="is_html{is_html_value}">{is_html_description}</label><!-- end is_html -->
+    		</td>
+		</tr><!-- end is_html_block -->
+		<tr class="usual">
+			<td>{FULL_DESCRIPTION_TEXT_MSG} {full_description_required}</td>
+			<td>{editor_error}
+				<textarea class="text" id="fd" name="full_description" cols="120" rows="25">{full_description}</textarea>
+				<!-- begin fd_ext_editor -->
+				<script type="text/javascript">
+					var fdEditor = CKEDITOR.replace('fd');{ckfinder}
+				</script><!-- end fd_ext_editor -->
+				<!-- begin fd_int_editor -->	
+				<script language= "JavaScript" type= "text/javascript">
+				<!--
+					var editor_fd = new VA_HTMLeditor('content_fd','../','{html_editor}');
+					editor_fd.text_field_name = 'full_description';
+					editor_fd.formname = 'record';
+					editor_fd.css_file = '{css_file}';
+					editor_fd.editor_type = 'article_editor';
+					editor_fd.displayEditor('editor_fd', 565, 200);
+				//-->
+				</script><!-- end fd_int_editor -->
+			</td>
+		</tr><!-- end full_description_block -->
+		<tr class="middle">
+			<td>&nbsp;</td>
+			<td>
+				<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save';"></span><!-- BEGIN delete -->
+				<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+				<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+				<span class="button"><input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1"></span>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="images_data" class="tab-data {images_class}">
+		<div id="uploadZone">
+			<div class="images-preview">
+				{images_preview}
+			</div>
+			<div class="images-list">
+				{images_list}
+				{images_upload}
+			</div>
+			{images_functions}
+			<div class="clear"></div>
+		</div id="uploadZone">
+	</div>
+
+	<div id="hot_data" class="tab-data {hot_class}">
+		<table width="100%" border="0" cellspacing="1" cellpadding="6">
+		<tr class="usual">
+			<td><label for="is_hot">{HOT_ARTICLE_MSG}</label><br>({SHOWN_ON_MAIN_PAGE_NOTE})</td>
+			<td><input type="checkbox" name="is_hot" id="is_hot" {is_hot} value="1"></td>
+		</tr>
+		<tr class="usual">
+			<td>{ADMIN_ORDER_MSG}</td>
+			<td><input class="field" type="text" size="10" name="hot_order" value="{hot_order}"></td>
+		</tr>
+		<tr class="usual">
+			<td>{HOT_DESCRIPTION_TEXT_MSG}<br></td>
+			<td>{editor_error}
+				<textarea class="text" id="hd" name="hot_description" cols="80" rows="8">{hot_description}</textarea>
+				<!-- begin hd_ext_editor -->
+				<script type="text/javascript">
+					var hdEditor = CKEDITOR.replace('hd');{ckfinder}
+				</script><!-- end hd_ext_editor -->
+				<!-- begin hd_int_editor -->
+				<script language= "JavaScript" type= "text/javascript">
+				<!--
+					var editor_hd = new VA_HTMLeditor('content_hd','../','{html_editor}');
+					editor_hd.text_field_name = 'hot_description';
+					editor_hd.formname = 'record';
+					editor_hd.css_file = '{css_file}';
+					editor_hd.editor_type = 'article_editor';
+					editor_hd.displayEditor('editor_hd', 565, 100);
+				//-->
+				</script><!-- end hd_int_editor -->
+			</td>
+		</tr>
+		<tr class="middle">
+			<td>&nbsp;</td>
+			<td>
+				<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save';"></span>
+				<span class="button"><input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1"></span>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="stream_data" class="tab-data {stream_class}">
+		<table width="100%" border="0" cellspacing="1" cellpadding="6">
+		<!-- begin youtube_video_block -->
+		<tr class="middle">
+			<td colspan="2">{YOUTUBE_VIDEO_MSG}</td>
+		</tr>
+		<tr class="usual">
+			<td>{YOUTUBE_VIDEO_MSG}</td>
+			<td>
+				<input class="field" type="text" name="youtube_video" value="{youtube_video}" size="60" maxlength="255"> 
+				<span class="comment">({EG_MSG}: MYSVMgRr6pw)</span>
+				<!-- &lt;iframe width="560" height="315" src="https://www.youtube.com/embed/MYSVMgRr6pw" frameborder="0"&gt;&lt;/iframe&gt; -->
+			</td>
+		</tr>
+		<!-- end youtube_video_block -->
+		<!-- begin youtube_video_width_block -->
+		<tr class="usual">
+			<td>{YOUTUBE_VIDEO_MSG} ({WIDTH_MSG} x {HEIGHT_MSG})</td>
+			<td>
+				<input class="field" type="text" name="youtube_video_width" value="{youtube_video_width}" size="5" maxlength="5"> x <!-- end youtube_video_width_block --><!-- begin youtube_video_height_block --><input class="field" type="text" name="youtube_video_height" value="{youtube_video_height}" size="5" maxlength="5">
+			</td>
+		</tr>
+		<!-- end youtube_video_height_block -->
+		<!-- begin stream_video_block -->
+		<tr class="middle">
+			<td colspan="2">{STREAM_VIDEO_MSG}</td>
+		</tr>
+		<tr class="usual">
+			<td>{STREAM_VIDEO_MSG}</td>
+			<td>
+				<input class="field" type="text" name="stream_video" value="{stream_video}" size="60" maxlength="255"> 
+				&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'article_video')"><b>Upload video</b></a>|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'article_video')"><b>Select video</b></a>
+			</td>
+		</tr>
+		<!-- end stream_video_block -->
+		<!-- begin stream_video_width_block -->
+		<tr class="usual">
+			<td>{STREAM_VIDEO_MSG} ({WIDTH_MSG} x {HEIGHT_MSG})</td>
+			<td>
+				<input class="field" type="text" name="stream_video_width" value="{stream_video_width}" size="5" maxlength="5"> x <!-- end stream_video_width_block --><!-- begin stream_video_height_block --><input class="field" type="text" name="stream_video_height" value="{stream_video_height}" size="5" maxlength="5">
+			</td>
+		</tr>
+		<!-- end stream_video_height_block -->
+		<!-- begin stream_video_preview_block -->
+		<tr class="usual">
+			<td>{PREVIEW_BUTTON}</td>
+			<td>
+				<input class="field" type="text" name="stream_video_preview" value="{stream_video_preview}" size="60" maxlength="255"> 
+				&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'preview_video')"><b>{UPLOAD_IMAGE_MSG}</b></a>|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'preview_video')"><b>{SELECT_IMAGE_MSG}</b></a>
+			</td>
+		</tr>
+		<!-- end stream_video_preview_block -->
+		<tr class="middle">
+			<td>&nbsp;</td>
+			<td>
+				<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save';"></span><!-- BEGIN delete -->
+				<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+				<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+				<span class="button"><input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1"></span>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+
+	<div id="meta_data" class="tab-data {meta_class}">
+		<table width="100%" border="0" cellspacing="1" cellpadding="6">
+		<tr class="middle">
+			<td colspan="2" class="middle">{META_DATA_MSG}</td>
+		</tr>
+		<tr class="usual">
+			<td>{META_TITLE_MSG}</td>
+			<td><input class="field" type="text" name="meta_title" value="{meta_title}" size="80" maxlength="255"></td>
+		</tr>
+		<tr class="usual">
+			<td>{META_KEYWORDS_MSG}</td>
+			<td><input class="field" type="text" name="meta_keywords" value="{meta_keywords}" size="80" maxlength="255"></td>
+		</tr>
+		<tr class="usual">
+			<td>{META_DESCRIPTION_MSG}</td>
+			<td><textarea name="meta_description" cols="80" rows="3">{meta_description}</textarea></td>
+		</tr>
+		<tr class="middle">
+			<td>&nbsp;</td>
+			<td>
+				<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save';"></span><!-- BEGIN delete -->
+				<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+				<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+				<span class="button"><input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1"></span>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="rss_data" class="tab-data {rss_class}">
+		<table width="100%" border="0" cellspacing="1" cellpadding="6">
+		<tr class="middle">
+			<td colspan="2" class="middle">{REMOTE_RSS_MSG}</td>
+		</tr>
+		<tr class="usual">
+			<td><label for="is_remote_rss">{IS_REMOTE_RSS_MSG}</label></td>
+			<td><input type="checkbox" name="is_remote_rss" id="is_remote_rss" {is_remote_rss} value="1"></td>
+		</tr>	
+		<tr class="usual">
+			<td>{DETAILS_REMOTE_LINK_MSG}</td>
+			<td><input class="field" type="text" name="details_remote_url" value="{details_remote_url}" size="80" maxlength="255"></td>
+		</tr>
+		<tr class="middle">
+			<td>&nbsp;</td>
+			<td>
+				<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save';"></span><!-- BEGIN delete -->
+				<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+				<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+				<span class="button"><input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1"></span>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="stats_data" class="tab-data {stats_class}">
+		<table width="100%" border="0" cellspacing="1" cellpadding="6">
+		<tr class="middle">
+			<td colspan="2" class="middle">{ADMIN_STATISTIC_MSG}</td>
+		</tr>
+		<tr class="usual">
+			<td width="100">{TOTAL_VIEWS_MSG}</td>
+			<td class="small">{total_views}</td>
+		</tr>
+		<tr class="usual">
+			<td>{RATING_MSG}</td>
+			<td class="small">{rating}</td>
+		</tr>
+		</table>
+	</div>
+
+</div>
+</div>
+</form>
+
+	
+{admin_footer}
+</body>
+</html>

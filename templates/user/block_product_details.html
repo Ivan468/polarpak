@@ -1,0 +1,283 @@
+		<!-- begin block_head -->
+		<h1 class="{product_new_class}">{block_title}</h1>
+		<!-- end block_head -->
+
+		<!-- begin no_item --><div class="no-product"><div class="errorbg">{NO_PRODUCT_MSG}</div></div><!-- end no_item -->
+
+		<!-- BEGIN item -->
+
+		<!-- BEGIN item_added --><div class="messagebg" align="center">{added_message}</div><!-- END item_added -->
+		<!-- BEGIN sc_errors --><div class="errorbg" align="center">{errors_list}</div><!-- END sc_errors -->
+
+		<form name="products_{pb_id}" action="{product_details_href}" method="post">
+		<input type="hidden" name="pb_id" value="{pb_id}" />
+		<input type="hidden" name="type" value="details" />
+		<input type="hidden" name="tab" value="{tab}" />
+		{hidden_parameters}
+		<input type="hidden" name="rp" value="{rp}" />
+		<input type="hidden" name="rnd" value="{rnd}" />
+		<input type="hidden" name="cart" value="ADD" />
+		<input type="hidden" name="redirect_to_cart" value="{redirect_to_cart}" />
+		<input type="hidden" name="multi_add" value="0" />
+		<input type="hidden" name="saved_type_id" value="" />
+		<input type="hidden" name="start_index" value="{start_index}" />
+		<input type="hidden" name="item_index" value="" />
+		<input type="hidden" name="items_indexes" value="{items_indexes}" />
+		<input type="hidden" name="sc_params" value="{sc_params}" />
+
+		<input type="hidden" name="item_id{form_id}" value="{item_id}" />
+		<input type="hidden" name="tax_percent{form_id}" value="{tax_percent}" />
+		<input type="hidden" name="product_params{form_id}" value="{product_params}" />
+		<input type="hidden" name="product_data{form_id}" value="{product_data}" />
+
+		<div class="image-block">
+			<!-- begin big_image -->
+			<div class="main-image"><img class="main-image" src="{src}" data-image-enlarged="{image_super}" data-zoom-width="{image_zoom_width}" data-zoom-height="{image_zoom_height}" onclick="{image_onclick}" onmouseover="{image_onmouseover}" onmousemove="{image_onmousemove}" id="image_{form_id}" name="image_{form_id}" alt="{alt}" /></div><!-- end big_image -->
+			{product_previews_under_large}
+			<!-- begin main_images -->
+			<div class="top-images"><!-- begin main_images_rows --><!-- begin main_images_cols -->
+			<a href="{image_super}" target="_blank" onclick="{image_click_js}" onmouseover="{rollover_js}"><img src="{image_small}" {image_size} alt="{image_alt}" /></a>
+			<!-- end main_images_cols --><!-- end main_images_rows --></div><div class="clear"></div>
+			<!-- end main_images -->
+			<!-- begin super_image --><a class="link-super" id="super_link_{form_id}" href="{src}" title="{item_name}" onclick="{open_large_image_function}" style="{super_link_style}">{PROD_SUPER_IMAGE_MSG}</a><!-- end super_image -->
+			<!-- begin manufacturer_image -->
+			<div class="manf-image"><img src="{manufacturer_image_src}" alt="{manufacturer_image_alt}" /></div><!-- end manufacturer_image -->
+		</div>
+
+		<div class="buy-block">
+			<!-- begin highlights_block -->
+			<div class="highlights">
+				<div class="highlights-title">{PROD_HIGHLIGHT_MSG}</div>
+				<div class="highlights-desc">{highlights}</div>
+			</div><!-- end highlights_block -->
+
+			<div class="prices {price_type_class}">
+				<!-- begin price_block -->
+				<div id="price_block{form_id}" class="{price_block_class}"><span class="caption">{PRICE_MSG}</span><span id="price{form_id}" class="price">{price_control}</span><span class="price-note">{price_note}</span> <span class="tax">{tax_price}</span></div><!-- end price_block -->
+				<!-- begin sales -->
+				<div class="price-sale"><span class="caption">{SALE_PRICE_MSG}</span><span id="sales_price{form_id}" class="price">{sales_price_control}</span><span class="price-note">{price_note}</span> <span class="tax">{tax_sales}</span></div><!-- end sales -->
+				<!-- begin save -->
+				<div class="price-save"><span class="caption">{YOU_SAVE_MSG}</span><span class="price">{you_save}</span> <span class="percent">({discount_percent}%)</span></div><!-- end save -->
+
+				<!-- begin price_matrix -->
+				<div class="matrix">
+					<div class="matrixQty">
+						<div class="matrixTitle">{QTY_MSG}</div><!-- begin matrix_quantities -->
+						<div class="matrixItem">{matrix_quantity}</div><!-- end matrix_quantities -->
+					</div>
+					<div class="matrixPrice">
+						<div class="matrixTitle">{PRICE_MSG}</div><!-- begin matrix_prices -->
+						<div class="matrixItem priceBlock"><span class="price">{matrix_price}</span> <span class="tax">{matrix_tax_price}</span></div><!-- end matrix_prices -->
+					</div>
+					<div class="clearboth"></div>
+				</div>
+				<!-- end price_matrix -->
+
+				<!-- begin points_price_block -->
+				<div class="points-price"><span class="caption">{POINTS_PRICE_MSG}</span><span id="points_price{form_id}" class="points">{points_price}</span></div><!-- end points_price_block -->
+				<!-- begin reward_points_block -->
+				<div class="points-reward"><span class="caption">{REWARD_POINTS_MSG}</span><span id="reward_points{form_id}" class="points">{reward_points}</span></div><!-- end reward_points_block -->
+				<!-- begin reward_credits_block -->
+				<div class="credits-reward"><span class="caption">{REWARD_CREDITS_MSG}</span><span id="reward_credits{form_id}" class="credits">{reward_credits}</span></div><!-- end reward_credits_block -->
+
+				<!-- begin item_code_block -->
+				<div class="product-code"><span class="caption">{PROD_CODE_MSG}</span><span class="code">{item_code}</span></div><!-- end item_code_block -->	
+				<!-- begin manufacturer_code_block -->
+				<div class="manf-code"><span class="caption">{MANUFACTURER_CODE_MSG}</span><span class="code">{manufacturer_code}</span></div><!-- end manufacturer_code_block -->	
+
+				<!-- begin product_preview -->
+				<div class="product-preview"><span class="caption">{PROD_PREVIEW_MSG}</span><a class="preview-link" href="{preview_url}" onclick="return openPreviewWin('{preview_url}', {preview_width}, {preview_height});">{PROD_PREVIEW_CLICK_MSG}</a></div><!-- end product_preview -->
+				<!-- begin properties_block -->
+				<div id="properties{form_id}" class="properties"><!-- begin properties -->
+					<div id="{property_block_id}" class="property {property_class}" style="{property_style}"><span class="name">{property_name}</span> <span class="control">{property_control}</span></div><!-- end properties -->
+				</div><!-- end properties_block -->
+				<!-- begin stock_level_block -->
+				<div id="block_sl{form_id}" class="stock-level" style="{sl_style}">{STOCK_LEVEL_MSG}: <span id="sl{form_id}" class="stock_level">{stock_level}</span></div><!-- end stock_level_block -->	
+
+				<!-- begin quantity -->
+				<div class="product-qty"><span class="caption">{PROD_QTY_COLUMN}</span><span class="qty-control">{quantity_control}</span></div><!-- end quantity -->	
+			</div>
+
+			<div class="buttons">
+
+				<!-- begin in_cart -->
+				<a class="in-cart {hidden_class}" id="in-cart{form_id}" href="{basket_href}?rp={rp_url}" title="{IN_CART_MSG}"><span>{IN_CART_MSG}</span></a><!-- end in_cart -->
+				<!-- begin buy_button -->
+				<a class="button bn-buy" id="add{form_id}" href="{buy_href}" rel="nofollow"><span>{BUY_NOW_MSG}</span></a> 
+				<!-- end buy_button -->
+				<!-- begin cart_add_button -->
+				<a class="button bn-add" id="add{form_id}" href="{buy_href}" onclick="{buy_onclick}"><span>{ADD_TO_CART_MSG}</span></a> 
+				<!-- end cart_add_button -->
+				<!-- begin cart_add_disabled -->
+				<a class="button bn-disabled" title="{PRODUCT_OUT_STOCK_MSG}" onclick="alert('{out_stock_alert}');"><span>{ADD_TO_CART_MSG}</span></a> 
+				<!-- end cart_add_disabled -->
+				<!-- begin view_button -->
+				<a class="button bn-view" id="view{form_id}" href="{basket_href}?rp={rp_url}"><span>{VIEW_CART_MSG}</span></a> 
+				<!-- end view_button -->
+				<!-- begin checkout_button -->
+				<a class="button bn-checkout" id="checkout{form_id}" href="{checkout_href}?rp={rp_url}"><span>{GOTO_CHECKOUT_MSG}</span></a>
+				<!-- end checkout_button -->
+				<!-- begin compare_button -->
+				<a class="button bn-compare" id="compare{form_id}" href="{compare_href}" onclick="return confirmBuy('products_{pb_id}','{form_id}','compare', 'compare{form_id}');"><span>{COMPARE_MSG}</span></a> 
+				<!-- end compare_button -->
+				<!-- begin wishlist_button -->
+				<a class="button bn-wishlist" id="wishlist{form_id}" href="{wishlist_href}" onclick="return confirmBuy('products_{pb_id}', '{form_id}', 'wishlist', 'wishlist{form_id}');"><span>{ADD_TO_WISHLIST_MSG}</span></a> 
+				<!-- end wishlist_button -->
+				<!-- begin shipping_button -->
+				<a class="button bn-shipping" id="shipping{form_id}" href="{buy_href}" onclick="return confirmBuy('products_{pb_id}', '{form_id}', 'shipping', 'shipping{form_id}');"><span>{SHIPPING_CALCULATOR_MSG}</span></a> 
+				<!-- end shipping_button -->
+
+				<a class="button bn-print" href="{product_print_href}?item_id={item_id}"><span>{PRINTER_FRIENDLY_MSG}</span></a>
+				<a class="button bn-tell" onclick="window.open('{tell_friend_href}','tell_friend','toolbar=no,scrollbars=yes,resizable=no,width=625,height=400');return false;" href="{tell_friend_href}"><span>{TELL_FRIEND_TITLE}</span></a>
+
+			</div>
+
+			<div class="shipping-data">
+				<!-- begin shipping_free --><div class="shipping-free">{FREE_SHIPPING_MSG}</div><!-- end shipping_free -->
+				<!-- begin condition_block --><div class="condition"><span class="caption">{CONDITION_MSG}</span><span class="desc-value">{condition_name}</span></div><!-- end condition_block -->
+				<!-- begin availability --><div class="availability" id="block_sm{form_id}" style="{sm_style}"><span class="caption">{PROD_AVAILABILITY_MSG}</span><span class="desc-time" id="sm{form_id}">{shipping_time_desc}</span></div><!-- end availability -->
+				<!-- BEGIN shipping_block --><div class="shipping-rule"><span class="caption">{PROD_SHIPPING_MSG}</span><span class="desc-rule">{shipping_rule_desc}</span></div><!-- END shipping_block -->
+				<!-- BEGIN weight_block --><div class="product-weight"><span class="caption">{PROD_WEIGHT_MSG}</span><span class="weight">{weight}</span></div><!-- END weight_block -->
+			</div>
+
+		</div>
+		</form>
+		<!-- END item -->
+
+		<div class="clear"></div>
+
+		<!-- begin tabs_block -->
+		<ul class="tabs" data-form="products_{pb_id}" data-js="tabs"><!-- BEGIN tabs -->
+			<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}">{tab_title}</a></li><!-- END tabs -->
+		</ul>
+		<!-- end tabs_block -->
+
+		<!-- begin description_block -->
+		<div id="desc_data" class="tab-data {desc_class}">
+			<!-- begin description -->
+			<div class="product-desc">
+				<div class="desc desc-short">{full_description}</div>
+			</div><!-- end description -->
+			<!-- BEGIN notes_block --><div class="product-note"><span class="caption">{PROD_NOTE_MSG}</span><span>{notes}</span></div><!-- END notes_block -->
+			<div class="clear"></div>
+		</div>
+		<!-- end description_block -->
+
+		<!-- begin specification_block -->
+		<div id="spec_data" class="tab-data {spec_class}"><!-- begin groups -->
+			<div class="specification">
+				<div class="groupTitle"><b>{group_name}</b></div><!-- begin features -->
+				<div class="feature">
+					<div class="featureName">{feature_name}</div>
+					<div class="featureValue">{feature_value}</div>
+					<div class="clearboth"></div>
+				</div><!-- end features -->
+			</div><!-- end groups -->
+		</div>
+		<!-- end specification_block -->
+
+		<!-- begin images_block -->
+		<div id="images_data" class="tab-data {images_class}">
+
+			<div class="sep-active">
+				<div><img name="rollover_image" src="{rollover_image}" /></div>
+				<div><a id="rollover_super" style="{rollover_super_style}" href="{rollover_super_src}" title="" onclick="{rollover_super_click}">{PROD_SUPER_IMAGE_MSG}</a></div>
+			</div>
+			<div class="sep-images">
+				<!-- begin images_rows --><!-- begin images_cols -->
+				<div class="sep-image">
+					<div class="sep-title">{image_title}</div>
+					<a href="{image_super}" target="_blank" onclick="{image_click_js}" onload="alert('{image_large}')" onmouseover="{rollover_js}"><img src="{image_small}" {image_size} /></a>
+					<div class="sep-desc">{image_description}</div>
+				</div>
+				<!-- end images_cols --><!-- end images_rows -->
+			</div>
+			<div class="clear"></div>
+
+		</div>
+		<!-- end images_block -->
+		
+		<!-- begin previews_block -->
+		<div id="previews_data" class="tab-data {previews_class}">
+			{product_previews_tab}
+		</div>
+		<!-- end previews_block -->
+		
+		
+
+		<!-- begin accessories_block -->
+		<div id="accessories_data" class="tab-data accessories {accessories_columns_class} {accessories_class}">
+
+			<!-- begin accessories_rows -->
+			<!-- begin accessories_cols -->
+			<div class="col {column_class}">
+
+				<div class="product">
+
+					<div class="before-image">
+						<h2 class="product-name"><a class="product-name {product_new_class} {restricted_class}" 
+							href="{accessory_details_url}" title="{accessory_a_title}">{accessory_name}</a></h2>
+					</div>
+			  
+      		<!-- begin accessory_image -->
+					<div class="image-block">
+						<a href="{accessory_details_url}" title="{a_title}"><img class="image accessory-image" src="{src}" alt="{alt}" /></a>
+					</div><!-- end accessory_image -->
+			  
+					<div class="after-image">
+						<h2 class="product-name"><a class="product-name {product_new_class} {restricted_class}" 
+							href="{accessory_details_url}" title="{accessory_a_title}">{accessory_name}</a></h2>
+					</div>
+			  
+			  
+					<!-- begin accessory_price_block -->
+					<div class="prices">
+						<div class="price-main">
+							<span class="caption">{PRICE_MSG}</span><span class="price">{accessory_price}</span> 
+							<span class="tax">{accessory_tax_price}</span>
+						</div>
+					</div><!-- end accessory_price_block -->
+			  
+					<!-- begin accessory_desc_block -->
+					<div class="product-desc">
+						<!-- begin accessory_short_description -->
+						<div class="desc desc-short">{desc_text}</div><!-- end accessory_short_description -->
+						<!-- begin accessory_full_description -->
+						<div class="desc desc-full">{desc_text}</div><!-- end accessory_full_description -->
+						<!-- begin accessory_highlights -->
+						<div class="desc desc-highlights">{desc_text}</div><!-- end accessory_highlights -->
+						<!-- begin accessory_special_offer -->
+						<div class="desc desc-special">{desc_text}</div><!-- end accessory_special_offer -->
+
+					</div>
+					<!-- end accessory_desc_block -->
+			  
+					<!-- begin accessory_more_button -->
+					<a class="button bn-more" href="{accessory_details_url}" title="{accessory_a_title}"><span>{READ_MORE_MSG}</span></a><!-- end accessory_more_button -->
+
+				</div>
+			</div>
+			<!-- end accessories_cols -->
+			<!-- end accessories_rows -->
+			<div class="clear"></div>
+
+		</div>
+		<!-- end accessories_block -->
+
+		<!-- begin reviews_tab -->
+		<div id="reviews_data" class="tab-data {reviews_class}">
+			{block_reviews}
+		</div>
+		<!-- end reviews_tab -->
+
+		<!-- begin questions_tab -->
+		<div id="questions_data" class="tab-data {questions_class}">
+			{block_questions}
+		</div>
+		<!-- end questions_tab -->
+
+		<!-- begin items_tabs -->
+		<div id="tab{tab_id}_data" class="tab-data {data_class}">
+			{tab_desc}
+		</div>
+		<!-- end items_tabs -->

@@ -1,0 +1,38 @@
+<div class="Block">
+<div class="BlockTitle">{PRODUCTS_MSG} in {product_category_name}<!-- begin s_title --> matching the term(s) '<b>{s}</b>'<!-- end s_title -->:</div>
+<div class="BlockContent">
+		<table width="99%" border="0" cellspacing="1" cellpadding="6">
+		<tr class="middle" align="center">
+			<td align="left">{PROD_TITLE_COLUMN}</td>
+			<td nowrap>{PRICE_MSG}</td>
+			<td nowrap>{QTY_MSG}</td>
+		</tr><!-- BEGIN items_list -->
+		<tr class="{row_style}" align="center" valign="top" id="tr_product_{item_index}">
+			<td align="left"><!-- BEGIN update_products_priv -->
+				<a class="title" href="{admin_product_href}?category_id={category_id}&item_id={item_id}">{item_name}</a> &nbsp; 
+				{item_codes} &nbsp; 
+				<a href="{admin_product_href}?category_id={category_id}&item_id={item_id}">{product_edit_msg}</a><!-- END update_products_priv --><!-- BEGIN read_only_products_priv -->
+				<span class="title">{item_name}</span> &nbsp; 
+				{item_codes}<!-- END read_only_products_priv -->
+				<div class="small"><!-- BEGIN product_prices_priv -->
+					<a class="small" href="{admin_item_prices_href}?category_id={category_id}&item_id={item_id}">{PRICES_MSG}</a><!-- END product_prices_priv --><!-- BEGIN product_images_priv --> {product_images_delimiter} 
+					<a class="small" href="{admin_item_images_href}?category_id={category_id}&item_id={item_id}">{IMAGES_MSG}</a><!-- END product_images_priv --><!-- BEGIN product_properties_priv --> {product_properties_delimiter} 
+					<a class="small" href="{admin_properties_href}?category_id={category_id}&item_id={item_id}">{OPTIONS_AND_COMPONENTS_MSG}</a><!-- END product_properties_priv --><!-- BEGIN product_features_priv --> {product_features_delimiter} 
+					<a class="small" href="{admin_item_features_href}?category_id={category_id}&item_id={item_id}">{PROD_SPECIFICATION_MSG}</a><!-- END product_features_priv --><!-- BEGIN product_related_priv --> {product_related_delimiter} 
+					<a class="small" href="{admin_item_related_href}?category_id={category_id}&item_id={item_id}">{RELATED_TITLE}</a><!-- END product_related_priv --><!-- BEGIN product_categories_priv --> {product_categories_delimiter} 
+					<a class="small" href="{admin_item_categories_href}?category_id={category_id}&item_id={item_id}">{CATEGORIES_TITLE}</a><!-- END product_categories_priv --><!-- BEGIN product_accessories_priv --> {product_accessories_delimiter} 
+					<a class="small" href="{admin_item_accessories_href}?category_id={category_id}&item_id={item_id}">{PROD_ACCESSORIES_MSG}</a><!-- END product_accessories_priv --><!-- BEGIN product_releases_priv --> {product_releases_delimiter} 
+					<a class="small" href="{admin_releases_href}?category_id={category_id}&item_id={item_id}">{RELEASES_TITLE}</a><!-- END product_releases_priv -->
+				</div>
+			</td>
+			<td align="right">{price}</td>
+			<td>&nbsp;{stock_level}</td>
+		</tr><!-- END items_list -->
+		<tr class="middle" align="center">
+			<td align="left" colspan="3">
+				<a href="{admin_items_list_href}?s={s}">Show all ({total_records})</a>
+			</td>
+		</tr>
+		</table>
+</div>
+</div>

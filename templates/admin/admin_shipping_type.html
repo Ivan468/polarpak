@@ -1,0 +1,391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{EDIT_SHIPPING_TYPE_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/list_fields.js"></script>
+<script language="JavaScript">
+<!--
+var list_fields_names = new Array('countries','states','sites','user_types');
+
+function postalMatchChanged(pcObj)
+{
+	if (pcObj.checked) {
+		if (pcObj.value == 0) {
+			document.record.postal_codes.setAttribute("readonly", "readonly");
+		} else {
+			document.record.postal_codes.removeAttribute("readonly");
+		}
+	}
+}
+
+	function openWindow(pagename, filetype)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+  }
+	function setFileName(filename, filetype)
+	{
+		var siteUrl = '{site_url}';
+		if(filename != "" && filetype == "shipping_small") {
+			document.record.image_small.value = siteUrl + "images/shipping/small/" + filename;
+			document.record.image_small.focus();
+		} else if(filename != "" && filetype == "shipping_large") {
+			document.record.image_large.value = siteUrl + "images/shipping/large/" + filename;
+			document.record.image_large.focus();
+		}
+	}
+
+</script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+	<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+	<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+		<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+	</ul>
+
+<div class="Form clearBoth">
+<div class="">
+
+<form action="{admin_shipping_type_href}" name="record" onSubmit="selectListFieldsAll();" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="shipping_type_id" value="{shipping_type_id}">
+<input type="hidden" name="shipping_module_id" value="{shipping_module_id}">
+<input type="hidden" name="page" value="{page}">
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="user_types" value="">
+<input type="hidden" name="sites" value="">
+<input type="hidden" name="countries" value="">
+<input type="hidden" name="states" value="">
+
+<div id="general_data" class="tab-data {general_class}">
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="usual">
+	<td><label for="is_active">{IS_ACTIVE_MSG}</label></td>
+	<td><input type="checkbox" name="is_active" id="is_active" {is_active} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{SHIPPING_ORDER_MSG} *</td>
+	<td><input class="field" type="text" size="10" name="shipping_order" value="{shipping_order}"></td>
+</tr>
+<tr class="usual">
+	<td>{ESTIMATED_SHIPPING_TIME_MSG}</td>
+	<td><input class="field" type="text" size="10" name="shipping_time" value="{shipping_time}"> &nbsp; ({USED_TO_ESTIMATE_NOTE})</td>
+</tr>
+<tr class="usual">
+	<td>{SHIPPING_CODE_MSG}</td>
+	<td><input class="field" type="text" size="80" name="shipping_type_code" value="{shipping_type_code}"></td>
+</tr>
+<tr class="usual">
+	<td>{SHIPPING_DESCRIPTION_MSG} *</td>
+	<td><input class="field" type="text" size="80" name="shipping_type_desc" value="{shipping_type_desc}"></td>
+</tr>
+<tr class="usual">
+	<td>{PARAMETERS_LIST_MSG}</td>
+	<td>
+		<textarea class="field" cols="80" rows="3" name="shipping_parameters">{shipping_parameters}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td rowspan="2">{ORDER_ROW_CSS_CLASS_MSG}</td>
+	<td>
+		<input type="text" class="field" name="admin_order_class" value="{admin_order_class}" size="60"> ({ADMIN_BACK_END_VIEW_MSG})
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		<input type="text" class="field" name="user_order_class" value="{user_order_class}" size="60"> ({USER_FRONT_END_VIEW_MSG})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{QUANTITY_MSG}</td>
+	<td>
+		{MINIMUM_MSG} <input class="field" type="text" size="10" name="min_quantity" value="{min_quantity}">
+		&nbsp;{MAXIMUM_MSG} <input class="field" type="text" size="10" name="max_quantity" value="{max_quantity}">
+	</td>
+</tr>
+<tr class="usual">
+	<td>{GOODS_TOTAL_MSG}</td>
+	<td>
+		{MINIMUM_MSG} <input class="field" type="text" size="10" name="min_goods_cost" value="{min_goods_cost}">
+		&nbsp;{MAXIMUM_MSG} <input class="field" type="text" size="10" name="max_goods_cost" value="{max_goods_cost}">
+	</td>
+</tr>
+<tr class="usual">
+	<td>{GOODS_WITH_DISCOUNT_MSG}</td>
+	<td>
+		{MINIMUM_MSG} <input class="field" type="text" size="10" name="min_discounted_cost" value="{min_discounted_cost}">
+		&nbsp;{MAXIMUM_MSG} <input class="field" type="text" size="10" name="max_discounted_cost" value="{max_discounted_cost}">
+	</td>
+</tr>
+
+<tr class="usual">
+	<td>{TOTAL_PRODUCTS_WEIGHT_MSG} (<b>{weight_measure}</b>)</td>
+	<td>
+		{MINIMUM_MSG} <input class="field" type="text" size="10" name="min_weight" value="{min_weight}">
+		&nbsp;{MAXIMUM_MSG} <input class="field" type="text" size="10" name="max_weight" value="{max_weight}">
+	</td>
+</tr>
+<tr class="usual">
+	<td>{TARE_WEIGHT_MSG} (<b>{weight_measure}</b>)</td>
+	<td><input class="field" type="text" size="10" name="tare_weight" value="{tare_weight}"></td>
+</tr>
+<tr class="usual">
+	<td rowspan="2">{SHIPPING_COST_MSG}</td>
+	<td>
+		{PER_ORDER_MSG} <input class="field" type="text" size="10" name="cost_per_order" value="{cost_per_order}">
+		&nbsp;{FOR_EACH_PRODUCT_MSG} <input class="field" type="text" size="10" name="cost_per_product" value="{cost_per_product}">
+		&nbsp;{PER_WEIGHT_MSG} (<b>{weight_measure}</b>) <input class="field" type="text" size="10" name="cost_per_weight" value="{cost_per_weight}">
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		<input type="checkbox" name="ignore_items_shipping_cost" id="ignore_items_shipping_cost" {ignore_items_shipping_cost} value="1">
+		<label for="ignore_items_shipping_cost">{IGNORE_PROD_SHIPPING_COST_MSG}</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="is_taxable">{IS_SHIPPINGTAXABLE_MSG}</label></td>
+	<td><input type="checkbox" name="is_taxable" id="is_taxable" {is_taxable} value="1"></td>
+</tr>
+<tr class="middle">
+	<td></td>
+	<td align="left">
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="images_data" class="tab-data {images_class}">
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle">
+	<td colspan="2">{IMAGES_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_SMALL_MSG}</td>
+	<td>
+		<input class="field" type="text" size="50" maxlength="255" name="image_small" value="{image_small}">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'shipping_small')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'shipping_small')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_SMALL_ALT_MSG}</td>
+	<td><input class="field" type="text" size="50" maxlength="255" name="image_small_alt" value="{image_small_alt}"></td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_LARGE_MSG}</td>
+	<td>
+		<input class="field" type="text" size="50" maxlength="255" name="image_large" value="{image_large}">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'shipping_large')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'shipping_large')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_LARGE_ALT_MSG}</td>
+	<td><input class="field" type="text" size="50" maxlength="255" name="image_large_alt" value="{image_large_alt}"></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td><span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+
+<div id="countries_data" class="tab-data {countries_class}">
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="usual">
+	<td colspan="3">
+		<input type="checkbox" name="countries_all" id="countries_all" {countries_all} onClick="checkListFields('countries');" value="1">
+		<label for="countries_all">{USE_TYPE_COUNTRIES_MSG}</label>
+	</td>
+</tr>	
+<tr align="center" class="middle">
+	<td width="45%">{AVAILABLE_COUNTRIES_MSG}</td>
+	<td width="10%">{OPERATIONS_MSG}</td>
+	<td width="45%">{TYPE_FOR_COUNTRIES_NOTE}</td>
+</tr>	
+<tr align="center" class="usual">
+	<td>
+		<select name="available_countries" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_countries -->
+				<option value="{country_id}">{country_name}<!-- end available_countries -->
+		</select>
+	</td>
+	<td>
+		<span class="button"><input class="submit" type="button" name="add_countries" value="&nbsp;&nbsp; {ADD_BUTTON} -> &nbsp;&nbsp;" onClick="addListFields('countries');"></span>
+		<br><br>
+		<span class="button"><input class="submit" type="button" name="remove_countries" value="<- Remove" onClick="removeListFields('countries');"></span>
+	</td>
+	<td>
+		<select name="selected_countries" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_countries -->
+				<option value="{country_id}">{country_name}<!-- end selected_countries -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="3"><span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+
+<div id="states_data" class="tab-data {states_class}">
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="usual">
+	<td colspan="3">
+		<input type="checkbox" name="states_all" id="states_all" {states_all} onClick="checkListFields('states');" value="1">
+		<label for="states_all">{USE_ALL_STATES_MSG}</label>
+	</td>
+</tr>	
+<tr align="center" class="middle">
+	<td width="45%">{AVAILABLE_STATES_MSG}</td>
+	<td width="10%">{OPERATIONS_MSG}</td>
+	<td width="45%">{TYPE_FOR_STATES_NOTE}</td>
+</tr>	
+<tr align="center" class="usual">
+	<td>
+		<select name="available_states" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_states -->
+			<option value="{state_id}">{state_name}<!-- end available_states -->
+		</select>
+	</td>
+	<td>
+		<span class="button"><input class="submit" type="button" name="add_states" value="&nbsp;&nbsp; {ADD_BUTTON} -> &nbsp;&nbsp;" onClick="addListFields('states');"></span>
+		<br><br>
+		<span class="button"><input class="submit" type="button" name="remove_states" value="<- {REMOVE_BUTTON}" onClick="removeListFields('states');"></span>
+	</td>
+	<td>
+		<select name="selected_states" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_states -->
+			<option value="{state_id}">{state_name}<!-- end selected_states -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="3"><span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+
+<div id="postcodes_data" class="tab-data {postcodes_class}">
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="usual">
+	<td>{MATCH_TYPE_MSG}</td>
+	<td><!-- begin postal_match_type -->
+		<input type="radio" onchange="postalMatchChanged(this);" name="postal_match_type" id="postal_match_type{postal_match_type_value}" {postal_match_type_checked} value="{postal_match_type_value}">
+		<label for="postal_match_type{postal_match_type_value}">{postal_match_type_description}</label><br/><!-- end postal_match_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{ZIP_FIELD}</b><br /><br />
+		<div class="comment">({EG_MSG} 500, 501, 502)</div>
+	</td>
+	<td valign="top">
+		<textarea class="field" cols="60" rows="10" {postal_codes_readonly} name="postal_codes">{postal_codes}</textarea>
+	</td>
+</tr>
+<tr class="middle">
+	<td></td>
+	<td><span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+
+<div id="user_types_data" class="tab-data {user_types_class}">
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="usual">
+	<td colspan="3">
+		<input type="checkbox" name="guest_access" id="guest_access" {guest_access} value="1">
+		<label for="guest_access">{SHOW_FOR_UNREGISTERED_USERS_MSG}</label>
+	</td>
+</tr>	
+<tr class="usual">
+	<td colspan="3">
+		<input type="checkbox" name="user_types_all" id="user_types_all" {user_types_all} onClick="checkListFields('user_types');" value="1">
+		<label for="user_types_all">{USE_TYPE_ALL_USER_TYPES_MSG}</label>
+	</td>
+</tr>	
+<tr align="center" class="middle">
+	<td width="45%"><b>{AVAILABLE_USER_TYPES_MSG}</b></td>
+	<td width="10%"><b>{OPERATIONS_MSG}</b></td>
+	<td width="45%"><b>{TYPE_FOR_USER_TYPES_NOTE}</b></td>
+</tr>	
+<tr align="center" class="usual">
+	<td>
+		<select name="available_user_types" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_user_types -->
+			<option value="{type_id}">{type_name}<!-- end available_user_types -->
+		</select>
+	</td>
+	<td>    
+		<span class="button"><input class="submit" readonly type="button" name="add_user_types" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('user_types');"></span>
+		<br><br>
+		<span class="button"><input class="submit" type="button" name="remove_user_types" value="<- {REMOVE_BUTTON}" onClick="removeListFields('user_types');"></span>
+	</td>
+	<td>    
+		<select name="selected_user_types" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_user_types -->
+			<option value="{type_id}">{type_name}<!-- end selected_user_types -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="3"><span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+
+
+<!-- begin sitelist-->
+<div id="sites_data" class="tab-data {sites_class}">
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="usual">
+	<td colspan="3">
+		<input type="checkbox" name="sites_all" id="sites_all" {sites_all} onClick="checkListFields('sites');" value="1">
+		<label for="sites_all">{USE_TYPE_SITES_MSG}</label>
+	</td>
+</tr>
+<tr align="center" class="middle">
+	<td width="45%"><b>{AVAILABLE_SITES_MSG}</b></td>
+	<td width="10%"><b>{OPERATIONS_MSG}</b></td>
+	<td width="45%"><b>{USE_ITEM_SITES_MSG}</b></td>
+</tr>
+<tr align="center" class="usual">
+	<td>
+		<select name="available_sites" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_sites -->
+			<option value="{site_id}">{site_name}<!-- end available_sites-->
+		</select>
+	</td>
+	<td>
+		<span class="button"><input class="submit" readonly type="button" name="add_sites" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('sites');"></span>
+		<br><br>
+		<span class="button"><input class="submit" type="button" name="remove_sites" value="<- {REMOVE_BUTTON}" onClick="removeListFields('sites');"></span>
+	</td>
+	<td>
+		<select name="selected_sites" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_sites -->
+			<option value="{site_id}">{site_name}<!-- end selected_sites -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="3"><span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+<!-- end sitelist-->
+</form>	
+
+</div>
+</div>
+
+
+{admin_footer}
+<script language="JavaScript">
+<!--
+	checkListFieldsAll();
+//-->
+</script>
+</body>
+</html>

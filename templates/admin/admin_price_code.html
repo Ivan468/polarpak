@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {PRICE_CODE_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{PRICE_CODE_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_price_code_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="price_id" value="{price_id}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="usual">
+	<td>{TITLE_MSG} {price_title_required}</td>
+	<td><input class="field" type="text" name="price_title" size="50" maxlength="64" value="{price_title}"></td>
+</tr>
+<tr class="usual">
+	<td>{PRICE_MSG} {price_amount_required}</td>
+	<td><input class="field" type="text" name="price_amount" size="50" value="{price_amount}"></td>
+</tr>
+<tr class="usual">
+	<td>{DESCRIPTION_MSG}</td>
+	<td><textarea cols="60" rows="5" name="price_description">{price_description}</textarea></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

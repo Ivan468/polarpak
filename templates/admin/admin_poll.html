@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {EDIT_POLL_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_POLL_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_poll_href}" name="record" method="post">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="poll_id" value="{poll_id}">
+<input type="hidden" name="more_options" value="0">
+<input type="hidden" name="number_options" value="{number_options}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="usual">
+	<td><label for="is_active">{IS_ACTIVE_MSG}</label></td>
+	<td colspan="3"><input type="checkbox" {is_active} name="is_active" id="is_active" value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{POLL_TYPE_MSG} *</td>
+	<td colspan="3"><!-- begin poll_type -->
+		<input type="radio" name="poll_type" id="poll_type{poll_type_value}" {poll_type_checked} value="{poll_type_value}">
+		<label for="poll_type{poll_type_value}">{poll_type_description}</label><!-- end poll_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{POLL_QUESTION_MSG} *</td>
+	<td colspan="3"><textarea name="question" cols="100" rows="5">{question}</textarea></td>
+</tr>
+<tr class="usual">
+	<td>{POLL_ADDED_MSG} *</td>
+	<td colspan="3">
+		<div class="small"><input type="text" name="date_added" value="{date_added}" size="16"> 
+		({USE_FOLLOWING_FORMAT_MSG} <b>{date_edit_format}</b>)</div>		
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="4">{POLL_CHOICES_MSG}</td>
+</tr>
+<tr align="center" class="usual">
+	<td>#</td>
+	<td>{POLL_CHOICES_MSG}</td>
+	<td>{DEFAULT_MSG}</td>
+	<td>{DELETE_BUTTON}</td>
+</tr><!-- begin options --><!-- begin options_errors -->
+<tr class="usual" align="center">
+	<td>&nbsp;</td>
+	<td colspan="2">
+		<div class="errorbg">{errors_list}</div>
+	</td>
+	<td>&nbsp;</td>	
+</tr><!-- end options_errors -->
+<tr class="usual" align="center">
+	<td>
+		{row_number} 
+		<input type="hidden" name="poll_option_id_{options_number}" value="{poll_option_id}">
+		<input type="hidden" name="poll_id_{options_number}" value="{poll_id}">
+	</td>
+	<td align="left"><textarea name="option_description_{options_number}" cols="100" rows="3">{option_description}</textarea></td>
+	<td><input type="checkbox" name="is_default_value_{options_number}" {is_default_value} value="1"></td>
+	<td><input type="checkbox" name="options_delete_{options_number}" {options_delete} value="1"></td>
+</tr><!-- end options -->
+<tr class="usual">
+	<td>&nbsp;</td>
+	<td colspan="3" align="right">
+		{ADD_MORE_CHOICES_MSG} <span class="button"><input class="submit" type="submit" value={ADD_BUTTON} onClick="document.record.more_options.value=1"></span>
+	</td>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td colspan="3">
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onCLick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+
+</form>
+
+</div>
+</div>
+	
+{admin_footer}
+</body>
+</html>

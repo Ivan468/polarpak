@@ -1,0 +1,33 @@
+		<table cellspacing="1" width="100%" class="table-data"><!-- begin sorters -->
+		<tr class="middlebg" align="center">
+			<td>{TYPE_MSG}</td>
+			<td>{CC_TYPE_FIELD}</td>
+			<td>{CC_NUMBER_FIELD}</td>
+			<td>{CC_EXPIRY_DATE_FIELD}</td>
+			<td>{ACTIVE_MSG}</td>
+			<td>{DEFAULT_MSG}</td>
+			<td>&nbsp;</td>
+		</tr><!-- end sorters --><!-- begin records -->
+		<tr class="usualbg" valign="top" align="center">
+			<td>{payment_type}</td>
+			<td>{cc_type}</td>
+			<td>{cc_number}</td>
+			<td>{cc_expiry_date}</td>
+			<td>{is_active}</td>
+			<td>{is_default}</td>
+			<td id="butTd">
+				<a href="{user_psd_update_href}?psd_id={psd_id}">{EDIT_MSG}</a>
+			</td>
+		</tr><!-- end records --><!-- begin no_records -->
+		<tr class="usualbg">
+			<td>{NO_RECORDS_MSG}</td>
+		</tr><!-- end no_records -->
+		</table>	
+		<table cellspacing="1" width="100%" class="table-data">
+		<tr class="middlebg">
+			<td><!-- begin add_new_links -->
+				{link_separator} <a href="{user_psd_new_url}">{ADD_NEW_MSG} ({payment_type})</a><!-- end add_new_links -->
+			</td><!-- begin navigator_block -->
+			<td align="right">{navigator}</td><!-- end navigator_block -->
+		</tr>
+		</table>

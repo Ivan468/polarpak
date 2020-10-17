@@ -1,0 +1,893 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {EDIT_PRODUCT_MSG} {OPTION_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="../js/files.js"></script>
+<script type="text/javascript" src="../js/win_select.js"></script>
+<script type="text/javascript" src="../js/list_fields.js"></script>
+<script language="JavaScript">
+<!--
+	var list_fields_names = new Array('sites');
+	var removeButton = "{REMOVE_BUTTON}";
+
+	var optionsValues = new Array();
+	//<!-- begin parent_options -->
+	optionsValues[{property_id}] = new Array();//<!-- end parent_options -->
+	//<!-- begin options_values -->
+	optionsValues[{property_id}][{value_id}] = "{value_title}";//<!-- end options_values -->
+
+	var files = new Array(); // <!-- BEGIN selected_files_js -->
+	files["{file_id}"] = new Array("{file_title_js}");// <!-- END selected_files_js -->
+
+	function changeParentValues()
+	{
+		var formObj = document.record;
+		var propertyObj = formObj.parent_property_id;
+		var valueObj = formObj.parent_value_id;
+		var totalOptions = valueObj.length;
+		// clear options first
+		for (var i = totalOptions - 1; i >= 0; i--) {
+			valueObj.options[i] = null;
+		}
+		var parentId = propertyObj.options[propertyObj.selectedIndex].value;
+		if (parentId && optionsValues[parentId]) {
+			var optionValues = optionsValues[parentId];
+			valueObj.options[valueObj.length] = new Option("", "");
+			for (valueId in optionValues) {
+				valueObj.options[valueObj.length] = new Option(optionValues[valueId], valueId);
+			}
+		}
+		var valueBlockObj = document.getElementById("parent_value_id_block");
+		if(valueObj.options.length <= 1) {
+			valueBlockObj.style.display = "none";
+		} else {
+			valueBlockObj.style.display = "block";
+		}
+	}
+	
+	function updateStockProperty(optionNumber)
+	{
+		var useStockLevel = document.record.elements["use_stock_level_" + optionNumber];
+		var hideOffLimits = document.record.elements["hide_out_of_stock_" + optionNumber];
+
+		if (!useStockLevel.checked) {
+			hideOffLimits.checked = false;
+		}
+	}
+
+	function checkUseStock(optionNumber)
+	{
+		var useStockLevel = document.record.elements["use_stock_level_" + optionNumber];
+		var hideOffLimits = document.record.elements["hide_out_of_stock_" + optionNumber];
+
+		if (!useStockLevel.checked) {
+			hideOffLimits.checked = false;
+			alert("{CHECK_STOCK_USE_JS}");
+		}
+	}
+
+	function changeControlType()
+	{
+		var formObj = document.record;
+		var controlType = formObj.control_type.options[formObj.control_type.selectedIndex].value;
+		var optionValuesObj = document.getElementById("option_values");
+		var optionSizesObj = document.getElementById("option_sizes");
+		if (controlType == "CHECKBOXLIST" || controlType == "LISTBOX" || controlType == "RADIOBUTTON" || controlType == "TEXTBOXLIST" || controlType == "IMAGE_SELECT") {
+			optionValuesObj.style.display = "block"
+			optionSizesObj.style.display = "none"
+		} else if (controlType == "WIDTH_HEIGHT") {
+			optionSizesObj.style.display = "block"
+			optionValuesObj.style.display = "none"
+		} else {
+			// other controls - LABEL, TEXTAREA, TEXTBOX, IMAGEUPLOAD
+			optionValuesObj.style.display = "none"
+			optionSizesObj.style.display = "none"
+		}
+	}
+
+	function changePercentageType()
+	{
+		var formObj = document.record;
+		var percentageType = formObj.percentage_price_type.options[formObj.percentage_price_type.selectedIndex].value;
+		var percentagePropertyObj = document.getElementById("percentage_property_id");
+		if (percentageType == "2" || percentageType == "3") {
+			percentagePropertyObj.style.display = "inline"
+		} else {
+			percentagePropertyObj.style.display = "none"
+		}
+	}
+
+
+	function clearComment(inputObj)
+	{
+		if (inputObj.className == "unitsComment" || inputObj.className == "priceComment") {
+			inputObj.value = "";
+			inputObj.className = "";
+		}
+	}
+
+	function clearCommentValues()
+	{
+		var unitsObjs = document.getElementsByClassName("unitsComment");
+		for (var o = 0; o < unitsObjs.length; o++) {
+			unitsObjs[o].value = "";
+		}
+		var priceObjs = document.getElementsByClassName("priceComment");
+		for (var o = 0; o < priceObjs.length; o++) {
+			priceObjs[o].value = "";
+		}
+	}
+
+	function restoreComment(inputObj, commentType)
+	{
+		if (inputObj.value == "") {
+			if (commentType == "units") {
+				inputObj.value = document.record.units_desc.value;
+				inputObj.className = "unitsComment";
+			} else {
+				inputObj.value = document.record.price_desc.value;
+				inputObj.className = "priceComment";
+			}
+		}
+	}
+
+	function updateUnits()
+	{
+		var unitsDesc = "";
+		for (var u = 0; u < document.record.length_units.length; u++) {
+			if (document.record.length_units[u].checked) {	
+				unitsDesc = document.record.length_units[u].value;
+			}
+		}
+		document.record.units_desc.value = unitsDesc;
+		var unitsObjs = document.getElementsByClassName("unitsComment");
+		for (var o = 0; o < unitsObjs.length; o++) {
+			unitsObjs[o].value = unitsDesc;
+		}
+	}
+
+	function deleteColumn(wIndex) {
+		var formObj = document.record;
+		var tableObj = document.getElementById("sizes_table");
+		for (var h = 0; h < tableObj.rows.length - 1; h++) {
+			tableObj.rows[h].deleteCell(wIndex);
+		}
+		var totalRows = parseInt(formObj.total_height_rows.value);
+		var totalCols = parseInt(formObj.total_width_cols.value) - 1;
+		formObj.total_width_cols.value = totalCols;
+		
+		for (var w = wIndex; w <= totalCols; w++) {
+			var cellObj = tableObj.rows[0].cells[w];
+			var imgObj = cellObj.getElementsByTagName("img")[0];
+			imgObj.onclick = new Function("deleteColumn('"+w+"')");	
+			// update name for width control
+			var inputObj = cellObj.getElementsByTagName("input")[0];
+			inputObj.name = "size_width_" + w;
+			// update name for cells
+			for (var h = 1; h < tableObj.rows.length - 1; h++) {
+				cellObj = tableObj.rows[h].cells[w];
+				inputObj = cellObj.getElementsByTagName("input")[0];
+				inputObj.name = "size_price_" + w + "_" + h;
+			}
+		}
+	}
+
+	function deleteRow(hIndex) {
+		var formObj = document.record;
+		var tableObj = document.getElementById("sizes_table");
+		tableObj.deleteRow(hIndex);
+
+		var totalCols = parseInt(formObj.total_width_cols.value);
+		var totalRows = parseInt(formObj.total_height_rows.value) - 1;
+		formObj.total_height_rows.value = totalRows;
+
+		for (var h = hIndex; h <= totalRows; h++) {
+			var cellObj = tableObj.rows[h].cells[0];
+			var imgObj = cellObj.getElementsByTagName("img")[0];
+			imgObj.onclick = new Function("deleteRow('"+h+"')");
+
+			// update name for height control
+			var inputObj = cellObj.getElementsByTagName("input")[0];
+			inputObj.name = "size_height_" + h;
+			// update name for cells
+			for (var w = 1; w <= totalCols; w++) {
+				cellObj = tableObj.rows[h].cells[w];
+				inputObj = cellObj.getElementsByTagName("input")[0];
+				inputObj.name = "size_price_" + w + "_" + h;
+			}
+
+		}
+	}
+
+	function addRow()
+	{
+		var formObj = document.record;
+		var tableObj = document.getElementById("sizes_table");
+		var totalRows = parseInt(formObj.total_height_rows.value) + 1;
+		formObj.total_height_rows.value = totalRows;
+		var totalCols = parseInt(formObj.total_width_cols.value);
+		var rowObj = tableObj.insertRow(totalRows);
+		var heightCellObj = document.getElementById("height_cell");
+		var priceCellObj = document.getElementById("price_cell");
+		var cellHTML = "";
+
+		for (var w = 0; w <= totalCols; w++) {
+			var cellObj = rowObj.insertCell(w);
+			if (w == 0) {
+				cellHTML = heightCellObj.innerHTML;
+				cellHTML = cellHTML.replace(/\{hindex\}/g, totalRows);
+				cellObj.innerHTML = cellHTML;
+				cellObj.className = "heightCell";
+			} else {
+				cellHTML = priceCellObj.innerHTML;
+				cellHTML = cellHTML.replace(/\{windex\}/g, w);
+				cellHTML = cellHTML.replace(/\{hindex\}/g, totalRows);
+				cellObj.innerHTML = cellHTML;
+				cellObj.className = "priceCell";
+			}
+		}
+	}
+
+	function addColumn()
+	{
+		var formObj = document.record;
+		var tableObj = document.getElementById("sizes_table");
+		var totalCols = parseInt(formObj.total_width_cols.value) + 1;
+		formObj.total_width_cols.value = totalCols;
+		var totalRows = parseInt(formObj.total_height_rows.value);
+
+		var widthCellObj = document.getElementById("width_cell");
+		var priceCellObj = document.getElementById("price_cell");
+		var cellHTML = "";
+
+		for (var h = 0; h <= totalRows; h++) {
+			var cellObj = tableObj.rows[h].insertCell(totalCols);
+			if (h == 0) {
+				cellHTML = widthCellObj.innerHTML;
+				cellHTML = cellHTML.replace(/\{windex\}/g, totalCols);
+				cellObj.innerHTML = cellHTML;
+				cellObj.className = "widthCell";
+			} else {
+				cellHTML = priceCellObj.innerHTML;
+				cellHTML = cellHTML.replace(/\{windex\}/g, totalCols);
+				cellHTML = cellHTML.replace(/\{hindex\}/g, h);
+				cellObj.innerHTML = cellHTML;
+				cellObj.className = "priceCell";
+			}
+		}
+	}
+
+// Size & Width upload function
+  function uploadSizesFile(files) {
+		if (files.length > 0) {
+			var file = files[0];
+			// read file content 
+	    var reader = new FileReader();
+			reader.onload = function(evt) { readSizesFile(evt); };  
+			reader.readAsText(file);
+
+		} else {
+			alert("{NO_FILE_UPLOADED_MSG}");
+		}
+	}
+
+	function readSizesFile(evt)
+	{
+		var fileContent = evt.target.result;
+		var formObj = document.record;
+		var totalCols = parseInt(formObj.total_width_cols.value);
+		var totalRows = parseInt(formObj.total_height_rows.value);
+		var delimiter = formObj.sizes_file_delimiter.value;
+		if (delimiter == "") { delimiter = ","; }
+
+		for (var c = totalCols; c > 0; c--) {
+			deleteColumn(c);
+		}
+		for (var r = totalRows; r > 0; r--) {
+			deleteRow(r);
+		}
+
+		var csvRows = fileContent.split(/\r\n\|\r|\n/);
+		for (r = 0; r < csvRows.length; r++) {
+			totalRows = parseInt(formObj.total_height_rows.value);
+			if (r > 0 && r > totalRows) { addRow(); }
+			var csvRow = csvRows[r];
+			var rowData = csvRow.split(delimiter);
+			var inputObj;
+			for (c = 0; c < rowData.length; c++) {
+				totalCols = parseInt(formObj.total_width_cols.value);
+				if (c > 0 && c > totalCols) { addColumn(); }
+				if (r == 0 && c > 0) {
+					inputObj = formObj.elements["size_width_"+c];
+				} else if (c == 0 && r > 0) {
+					inputObj = formObj.elements["size_height_"+r];
+				} else if (r > 0 && c > 0) {
+					inputObj = formObj.elements["size_price_"+c+"_"+r];
+				}
+				if (inputObj && rowData[c] != "") {
+					inputObj.value = rowData[c];
+					inputObj.className = "";
+				}
+			}
+		}
+	}
+
+
+  function selectSizesFiles(evt) {
+		var files = evt.target.files; 
+
+		uploadSizesFile(files);
+  }
+
+  function dropSizesFiles(evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+
+    var files = evt.dataTransfer.files
+
+		uploadSizesFile(files);
+  }
+
+  function dragSizesFiles(evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+    evt.dataTransfer.dropEffect = 'copy'; // show this is a copy.
+  }
+
+	function setFileName(imageName, fileType, imageIndex, siteUrl)
+	{
+		var formObj = document.record;
+		if (fileType == 'tiny_image' ||  fileType == 'image_tiny' || fileType == 'tiny') {
+			formObj.elements['image_tiny_'+imageIndex].value = siteUrl + 'images/tiny/' + imageName;
+		} else if (fileType == 'small_image' ||  fileType == 'image_small' || fileType == 'small') {
+			formObj.elements['image_small_'+imageIndex].value = siteUrl + 'images/small/' + imageName;
+		} else if (fileType == 'large_image' ||  fileType == 'image_large' || fileType == 'large' || fileType == 'big_image' ||  fileType == 'image_big' || fileType == 'big') {
+			formObj.elements['image_large_'+imageIndex].value = siteUrl + 'images/big/' + imageName;
+		} else if (fileType == 'super_image' ||  fileType == 'image_super' || fileType == 'super') {
+			formObj.elements['image_super_'+imageIndex].value = siteUrl + 'images/super/' + imageName;
+		}
+
+	}
+
+// set sizes upload listeners
+window.onload = function() {
+	var dropZone = document.getElementById("sizes_upload");
+	dropZone.addEventListener('dragover', dragSizesFiles, false);
+	dropZone.addEventListener('drop', dropSizesFiles, false);
+	var browseObj = document.getElementById("sizes_file");
+	browseObj.addEventListener('change', selectSizesFiles, false);
+}
+
+//-->
+</script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<div id="tabs"><!-- BEGIN tabs_rows -->
+	<ul id="{row_id}" class="tabRow"><!-- BEGIN tabs -->
+		<li id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+	</ul><!-- END tabs_rows -->
+</div>
+
+
+<div class="Form clearBoth">
+<div class="FormContent">
+
+<form action="{admin_property_href}" name="record" onSubmit="clearCommentValues();selectListFieldsAll();" method="post">
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="category_id" value="{category_id}">
+<input type="hidden" name="property_id" value="{property_id}">
+<input type="hidden" name="item_id" value="{item_id}">
+<input type="hidden" name="item_type_id" value="{item_type_id}">
+<input type="hidden" name="sites" value="">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="page" value="{page}">
+<input type="hidden" name="more_properties" value="0">
+<input type="hidden" name="number_properties" value="{number_properties}">
+<input type="hidden" name="price_desc" value="{price_desc}">
+<input type="hidden" name="units_desc" value="{units_desc}">
+
+<div id="data_general" style="{general_style}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="2">{ADMIN_GENERAL_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="show_for_user">{SHOW_FOR_USER_MSG}</label></td>
+	<td><input type="checkbox" name="show_for_user" id="show_for_user" {show_for_user} value="1"></td>
+</tr>
+<tr class="usual">
+	<td><label for="required">{OPTION_REQUIRED_MSG}</label></td>
+	<td><input type="checkbox" {required} name="required" id="required" value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{OPTION_ORDER_MSG} *</td>
+	<td><input class="field" type="text" name="property_order" value="{property_order}" size="12"></td>
+</tr>
+<tr class="usual">
+	<td>{CODE_MSG}</td>
+	<td><input class="field" type="text" name="property_code" value="{property_code}" size="12"></td>
+</tr>
+<tr class="usual">
+	<td>{OPTION_NAME_MSG} *</td>
+	<td>
+		<input class="field" type="text" name="property_name" value="{property_name}" size="60">
+		<input type="checkbox" name="hide_name" id="hide_name" {hide_name} value="1">
+		<label for="hide_name">{HIDE_PROPERTY_NAME_MSG}</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{OPTION_HINT_MSG}</td>
+	<td>
+		<input class="field" type="text" name="property_hint" value="{property_hint}" size="60">
+		<span class="small">({OPTION_HINT_DESC})</span>
+	</td>
+</tr><!-- BEGIN usage_type_block -->
+<tr class="usual">
+	<td>{ASSIGN_OPTION_MSG} *</td>
+	<td>
+		<select name="usage_type"><!-- begin usage_type -->
+			<option {usage_type_selected} value="{usage_type_value}">{usage_type_description}<!-- end usage_type -->
+		</select>
+	</td>
+
+</tr><!-- END usage_type_block -->
+<tr class="usual">
+	<td nowrap>{OPTION_CONTROL_MSG} *</td>
+	<td>
+		<select name="control_type" onchange="changeControlType();" onkeyup="changeControlType();"><!-- begin control_type -->
+			<option {control_type_selected} value="{control_type_value}">{control_type_description}<!-- end control_type -->
+		</select>
+		<span class="small">({CONTROL_TYPE_USE_DESC})</span>
+	</td>
+</tr><!-- BEGIN parent_property_block -->
+<tr class="usual" valign="top">
+	<td>{PARENT_OPTION_MSG}</td>
+	<td>
+		<select name="parent_property_id" onChange="changeParentValues();"><!-- begin parent_property_id -->
+			<option {parent_property_id_selected} value="{parent_property_id_value}">{parent_property_id_description}<!-- end parent_property_id -->
+		</select>
+		<span class="small">({PARENT_OPTION_DESC})</span>
+		<div id="parent_value_id_block" style="{parent_value_style} padding: 4px 0 0 0;">
+			&mdash; <select name="parent_value_id"><!-- begin parent_value_id -->
+				<option {parent_value_id_selected} value="{parent_value_id_value}">{parent_value_id_description}<!-- end parent_value_id -->
+			</select>
+			<span class="small">({PARENT_OPTION_VALUE_DESC})</span>
+		</div>
+	</td>
+</tr><!-- END parent_property_block -->
+<tr class="usual" valign="top">
+	<td>{PRICE_MSG}</td>
+	<td>
+		<select name="property_price_type"><!-- begin property_price_type -->
+			<option {property_price_type_selected} value="{property_price_type_value}">{property_price_type_description}<!-- end property_price_type -->
+		</select>
+		&nbsp;{PRICE_MSG} 
+		&nbsp;<input class="field" type="text" name="additional_price" value="{additional_price}" size="10"> 
+		&nbsp;{PROD_TRADE_PRICE_MSG} 
+		&nbsp;<input class="field" type="text" name="trade_additional_price" value="{trade_additional_price}" size="10"> 
+	</td>
+</tr>
+<tr class="usual" valign="top">
+	<td>{PERCENTAGE_PRICE_TYPE_MSG}</td>
+	<td>
+		<select onchange="changePercentageType();" onkeyup="changePercentageType();" name="percentage_price_type"><!-- begin percentage_price_type -->
+			<option {percentage_price_type_selected} value="{percentage_price_type_value}">{percentage_price_type_description}<!-- end percentage_price_type -->
+		</select>
+
+		<select id="percentage_property_id" name="percentage_property_id" style="{percentage_property_id_style}"><!-- begin percentage_property_id -->
+			<option {percentage_property_id_selected} value="{percentage_property_id_value}">{percentage_property_id_description}<!-- end percentage_property_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usual" valign="top">
+	<td>{DISCOUNT_MSG}</td>
+	<td>
+		<select name="free_price_type"><!-- begin free_price_type -->
+			<option {free_price_type_selected} value="{free_price_type_value}">{free_price_type_description}<!-- end free_price_type -->
+		</select>
+		&nbsp;<input class="field" type="text" name="free_price_amount" value="{free_price_amount}" size="10"> 
+	</td>
+</tr>
+<tr class="usual" valign="top">
+	<td>{MAX_LIMIT_MSG}</td>
+	<td>
+		<select name="max_limit_type"><!-- begin max_limit_type -->
+			<option {max_limit_type_selected} value="{max_limit_type_value}">{max_limit_type_description}<!-- end max_limit_type -->
+		</select>
+		&nbsp;<input class="field" type="text" name="max_limit_length" value="{max_limit_length}" size="10"> 
+	</td>
+</tr>
+<tr class="usual">
+	<td>{OPTION_TEXT_MSG}</td>
+	<td>
+		<input class="field" type="text" name="property_description" value="{property_description}" size="60"> 
+		<span class="small">({ONLY_FOR_LABEL_MSG})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{BLOCK_CSS_CLASS_MSG}</td>
+	<td>
+		<input class="field" type="text" name="property_class" value="{property_class}" size="60"> 
+	</td>
+</tr>
+<tr class="usual">
+	<td>{OPTION_STYLE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="property_style" value="{property_style}" size="60"> 
+		<div class="small">({OPTION_STYLE_NOTE}, {EG_MSG} 'text-transform: uppercase;')</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{SHOW_OPTION_MSG}</td>
+	<td>
+		<div class="floatLeft half25"><input type="checkbox" {use_on_list} name="use_on_list" id="use_on_list" value="1">
+		<label for="use_on_list">{ON_PROD_LIST_MSG}</label></div>
+		<div class="floatLeft half25"><input type="checkbox" {use_on_details} name="use_on_details" id="use_on_details" value="1">
+		<label for="use_on_details">{ON_PROD_DETAILS_MSG}</label></div>
+		<div class="floatLeft half25"><input type="checkbox" {use_on_table} name="use_on_table" id="use_on_table" value="1">
+		<label for="use_on_table">{ON_TABLE_VIEW_MSG}</label></div>
+		<div class="floatLeft half25"><input type="checkbox" {use_on_grid} name="use_on_grid" id="use_on_grid" value="1">
+		<label for="use_on_grid">{ON_GRID_VIEW_MSG}</label></div>
+	</td>
+</tr>
+</table>
+
+<div id="option_values" style="{option_values_style}">
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="8">{OPTIONS_VALUES_MSG}</td>
+</tr>
+<tr align="center" valign="top" class="usual">
+	<td class="small"><b>{ID_MSG}</b></td>
+	<td class="small"><b>{DESCRIPTION_AND_CODE_MSG}</b></td>
+	<td class="small"><b>{PRICES_MSG}</b></td>
+	<td class="small"><b>{STOCK_LEVEL_MSG}<br/>& {PROD_WEIGHT_MSG}</b></td>
+	<td class="small"><b>{IMAGES_MSG}</b></td>
+	<td class="small"><b>{DOWNLOADABLE_FILES_MSG}</b></td>
+	<td class="small"><b>{OPTIONS_MSG}</b></td>
+</tr>
+<!-- begin properties --><!-- begin properties_errors -->
+<tr class="usual" align="center">
+	<td colspan="7">
+		<div class="errorbg">{errors_list}</div>
+	</td>
+</tr><!-- end properties_errors -->
+<tr class="usual" align="center" valign="top">
+	<td>{item_property_id}</td>
+	<td align="right">
+		<input type="hidden" name="item_property_id_{properties_number}" value="{item_property_id}">
+		<input type="hidden" name="property_id_{properties_number}" value="{property_id}">
+		{VALUE_MSG} <input class="field" type="text" name="property_value_{properties_number}" value="{property_value}" size="30"><br>
+		{SORT_ORDER_MSG} <input class="field" type="text" name="value_order_{properties_number}" value="{value_order}" size="15"><br>
+		{PROD_CODE_MSG} <input class="field" type="text" name="item_code_{properties_number}" value="{item_code}" size="15"><br>
+		{MANUFACTURER_CODE_MSG} <input class="field" type="text" name="manufacturer_code_{properties_number}" value="{manufacturer_code}" size="15">
+	</td>
+	<td align="right">
+		{SELLING_MSG} <input class="field" type="text" name="additional_price_{properties_number}" value="{additional_price}" size="6" maxlength="10" style="text-align:right;"><br>
+		{PROD_TRADE_PRICE_MSG} <input class="field" type="text" name="trade_additional_price_{properties_number}" value="{trade_additional_price}" size="6" maxlength="10" style="text-align:right;"><br>
+		<a title="{OPTION_PERCENTAGE_PRICE_DESC}" onClick="alert('{OPTION_PERCENTAGE_PRICE_JS}')" style="cursor: pointer;">{PERCENTAGE_MSG}</a> <input class="field" type="text" name="percentage_price_{properties_number}" value="{percentage_price}" size="6" maxlength="10" style="text-align:right;"><br>
+		{BUYING_MSG} <input class="field" type="text" name="buying_price_{properties_number}" value="{buying_price}" size="6" maxlength="10" style="text-align:right;">
+	</td>
+	<td align="right" nowrap>
+				{QTY_MSG} <input class="field" type="text" name="stock_level_{properties_number}" value="{stock_level}" size="5" maxlength="10"><br/>
+				<label for="use_stock_level_{properties_number}" title="{ACTIVATE_STOCK_CONTROL_MSG}">{USE_MSG}</label> 
+				<input type="checkbox" name="use_stock_level_{properties_number}" id="use_stock_level_{properties_number}" {use_stock_level} value="1" onClick="updateStockProperty('{properties_number}')">
+				<a title="{ACTIVATE_STOCK_CONTROL_MSG}" onClick="alert('{ACTIVATE_CONTROL_CHECKBOX_JS}')" style="cursor: pointer;"><img src="images/question.gif" border="0" align="top" alt=""></a>
+				<label for="hide_out_of_stock_{properties_number}" title="{HIDE_IF_OUT_STOCK_MSG}">{HIDE_MSG}</label> 
+				<input type="checkbox" name="hide_out_of_stock_{properties_number}" id="hide_out_of_stock_{properties_number}" {hide_out_of_stock} value="1" onClick="checkUseStock('{properties_number}')">
+				<a title="{HIDE_IF_OUT_STOCK_MSG}" onClick="alert('{HIDE_OPTION_VALUE_JS}')" style="cursor: pointer;"><img src="images/question.gif" border="0" align="top" alt=""></a><br/>
+				{PROD_WEIGHT_MSG} <input class="field" type="text" name="additional_weight_{properties_number}" value="{additional_weight}" size="5" maxlength="10"><br/>
+				{ACTUAL_WEIGHT_MSG} <input class="field" type="text" name="actual_weight_{properties_number}" value="{actual_weight}" size="5" maxlength="10">
+	</td>
+	<td align="right">
+		<nobr>{TINY_MSG} <input class="field" type="text" name="image_tiny_{properties_number}" value="{image_tiny}" size="15">
+		&nbsp;<img class="editIcon" onclick="jsonWindow({'url': '{admin_upload_href}', 'params': {'filetype': 'tiny_image', 'image_index': '{properties_number}', 'control_name': ''}});" src="../images/icons/upload.png" width="16" height="16" border="0" title="{UPLOAD_IMAGE_MSG}" />
+		&nbsp;<img class="editIcon" onclick="jsonWindow({'url': '{admin_select_href}', 'params': {'filetype': 'tiny_image', 'image_index': '{properties_number}', 'control_name': ''}});" src="../images/icons/image.png" width="16" height="16" border="0" title="{SELECT_IMAGE_MSG}" />
+		</nobr><br/>
+		<nobr>{SMALL_MSG} <input class="field" type="text" name="image_small_{properties_number}" value="{image_small}" size="15">
+		&nbsp;<img class="editIcon" onclick="jsonWindow({'url': '{admin_upload_href}', 'params': {'filetype': 'small_image', 'image_index': '{properties_number}', 'control_name': ''}});" src="../images/icons/upload.png" width="16" height="16" border="0" title="{UPLOAD_IMAGE_MSG}" />
+		&nbsp;<img class="editIcon" onclick="jsonWindow({'url': '{admin_select_href}', 'params': {'filetype': 'small_image', 'image_index': '{properties_number}', 'control_name': ''}});" src="../images/icons/image.png" width="16" height="16" border="0" title="{SELECT_IMAGE_MSG}" />
+		</nobr><br/>
+		<nobr>{LARGE_MSG} <input class="field" type="text" name="image_large_{properties_number}" value="{image_large}" size="15">
+		&nbsp;<img class="editIcon" onclick="jsonWindow({'url': '{admin_upload_href}', 'params': {'filetype': 'big_image', 'image_index': '{properties_number}', 'control_name': ''}});" src="../images/icons/upload.png" width="16" height="16" border="0" title="{UPLOAD_IMAGE_MSG}" />
+		&nbsp;<img class="editIcon" onclick="jsonWindow({'url': '{admin_select_href}', 'params': {'filetype': 'big_image', 'image_index': '{properties_number}', 'control_name': ''}});" src="../images/icons/image.png" width="16" height="16" border="0" title="{SELECT_IMAGE_MSG}" />
+		</nobr><br/>
+		<nobr>{SUPERSIZED_MSG} <input class="field" type="text" name="image_super_{properties_number}" value="{image_super}" size="15">
+		&nbsp;<img class="editIcon" onclick="jsonWindow({'url': '{admin_upload_href}', 'params': {'filetype': 'super_image', 'image_index': '{properties_number}', 'control_name': ''}});" src="../images/icons/upload.png" width="16" height="16" border="0" title="{UPLOAD_IMAGE_MSG}" />
+		&nbsp;<img class="editIcon" onclick="jsonWindow({'url': '{admin_select_href}', 'params': {'filetype': 'super_image', 'image_index': '{properties_number}', 'control_name': ''}});" src="../images/icons/image.png" width="16" height="16" border="0" title="{SELECT_IMAGE_MSG}" />
+		</nobr><br/>
+	</td>
+	<td align="left">
+		<input type="hidden" name="download_files_ids_{row_number}" value="{download_files_ids}">
+
+		<span id="block_download_files_ids_{row_number}"><!-- BEGIN selected_files -->
+			<b>{file_title}</b> - <a href="#" onClick="removeFile('{file_id}', 'record', 'download_files_ids_{row_number}'); return false;">{REMOVE_BUTTON}</a><br><!-- END selected_files -->
+		</span>
+
+		<!-- begin select_file_link -->
+		<a href="#" onClick="openFilesWindow('{admin_files_select_href}?item_id={item_id}&item_type_id={item_type_id}&type=options', 'record', 'download_files_ids_{row_number}'); return false;">{SELECT_MSG}</a><!-- end select_file_link -->
+
+	</td>
+	<td align="right">                                                                        
+		<nobr><label for="is_default_value_{properties_number}">{DEFAULT_MSG}</label> <input type="checkbox" name="is_default_value_{properties_number}" id="is_default_value_{properties_number}" {is_default_value} value="1" /></nobr><br/>
+		<nobr><label for="hide_value_{properties_number}">{HIDE_MSG}</label> <input type="checkbox" name="hide_value_{properties_number}" id="hide_value_{properties_number}" {hide_value} value="1" /></nobr><br/>
+		<nobr><label for="properties_delete_{properties_number}">{DELETE_BUTTON}</label> <input type="checkbox" id="properties_delete_{properties_number}" name="properties_delete_{properties_number}" {properties_delete} value="1" /></nobr>
+	</td>
+	<td>
+	</td>
+</tr><!-- end properties -->
+<tr class="usual">
+	<td colspan="7" align="right">
+		{ADD_MORE_OPTIONS_QST} <span class="button"><input class="submit" type="submit" value={ADD_BUTTON} onClick="document.record.more_properties.value=1"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+<div id="option_sizes" style="{option_sizes_style}">
+<input type="hidden" name="total_width_cols" value="{total_width_cols}"/>
+<input type="hidden" name="total_height_rows" value="{total_height_rows}"/>
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td>{WIDTH_AND_HEIGHT_MSG}</td>
+</tr>
+<tr class="usual" valign="top">
+	<td>
+		<div class="measurementUnits">
+			{MEASUREMENT_UNITS_MSG}<br/>
+			<!-- BEGIN length_units -->
+			<input onclick="updateUnits();" type="radio" name="length_units" id="length_units{length_units_value}" {length_units_checked} value="{length_units_value}">
+			<label for="length_units{length_units_value}">{length_units_description}</label><!-- END length_units -->
+		</div>
+
+		<div id="sizes_upload" class="sizesUpload">
+			Drop files here or select them manually<br/>
+			<input type="file" id="sizes_file" >
+			{DELIMITED_BY_MSG} <input  type="text" name="sizes_file_delimiter" style="width: 20px; font-weight: bold; text-align: center;" value="{sizes_file_delimiter}">
+		</div>
+
+		<div id="uploaded_images" style="display: none;"></div>
+
+		<div id="upload_template" style="display: none;">
+			<div id="file[index]" class="uploadFile"> 
+				<div class="uploadBox"> 
+					<div class="fileInfo" id="fileInfo[index]">[filename] - [filesize] bytes (<span id="uploaded[index]">0%</span>)</div>
+					<div class="uploadProgress" id="progress[index]"></div>
+				</div>
+			</div>
+		</div>
+
+	</td>
+</tr>
+</table>
+
+<table id="sizes_table" cellspacing="1" cellpadding="5" border="0">
+<tr>
+	<td class="headerCell">
+		<table cellspacing="0" cellpadding="1">
+		<tr>
+			<td></td>
+			<td align="right" ><b>{WIDTH_MSG}</b></td>
+			<td><img src="../images/icons/pointer_right.gif" width="16" height="16"/></td>
+		</tr>
+		<tr>
+			<td style="border-top: solid 1px gray;"><img src="../images/icons/pointer_down.gif" width="16" height="16"/></td>
+			<td style="border-top: solid 1px gray;"><b>{HEIGHT_MSG}</b></td>
+			<td style="border-top: solid 1px gray;"></td>
+		</tr>
+		</table>
+	</td>
+	<!-- begin size_width -->
+	<td class="widthCell {error_class}">
+		<!-- begin width_cell -->
+		<img src="../images/icons/delete_ico.gif" style="padding-bottom: 5px;" onclick="deleteColumn({windex});"><br />
+		<input class="{input_class}" onfocus="clearComment(this);" onblur="restoreComment(this, 'units')" type="text" name="size_width_{windex}" value="{width_value}" size="6" style="width:60px;" />
+		<!-- end width_cell -->
+	</td>
+	<!-- end size_width -->
+	<td class="addColumn">
+		<a onclick="addColumn();">{ADD_BUTTON}</a><br/>
+		<img src="../images/icons/pointer_down.gif" width="16" height="16"/>
+	</td>
+</tr>
+<!-- begin size_rows -->
+<tr>
+	<td class="heightCell {error_class}">
+		<!-- begin height_cell -->
+		<img src="../images/icons/delete_ico.gif" onclick="deleteRow({hindex});" />
+		<input class="{input_class}" onfocus="clearComment(this);" onblur="restoreComment(this, 'units')"  type="text" name="size_height_{hindex}" value="{height_value}" size="6" />
+		<!-- end height_cell -->
+	</td>
+	<!-- begin size_cols -->
+	<td class="priceCell {error_class}">
+		<!-- begin price_cell -->
+		<input class="{input_class}" onfocus="clearComment(this);" onblur="restoreComment(this, 'currency')" type="text" name="size_price_{windex}_{hindex}" value="{price_value}" size="6"><!-- end price_cell -->
+	</td><!-- end size_cols -->
+</tr>
+<!-- end size_rows -->
+<tr>
+	<td class="addRow">
+		<img src="../images/icons/pointer_right.gif" width="16" height="16" align="right"/>
+		<a onclick="addRow();">{ADD_BUTTON}</a>
+	</td>
+</tr>
+</table>
+</div>
+
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="buttons">
+	<td align="left">
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onCLick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+<div id="data_html" style="{html_style}">
+<table cellspacing="1" cellpadding="4" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="2">{OPTIONS_APPEARANCE_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>
+		{CONTROL_STYLE_MSG}
+		<div class="small">({CONTROL_STYLE_NOTE}, {EG_MSG} 'color: green;')</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="control_style">{control_style}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{BEFORE_TITLE_HTML_MSG}
+		<div class="small">({BEFORE_TITLE_HTML_NOTE})</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="start_html">{start_html}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{AFTER_TITLE_HTML_MSG}
+		<div class="small">({AFTER_TITLE_HTML_NOTE})</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="middle_html">{middle_html}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{BEFORE_CONTROL_HTML_MSG}
+		<div class="small">({BEFORE_CONTROL_HTML_NOTE})</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="before_control_html">{before_control_html}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{AFTER_CONTROL_HTML_MSG}
+		<div class="small">({AFTER_CONTROL_HTML_NOTE})</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="after_control_html">{after_control_html}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{END_HTML_MSG}
+		<div class="small">({END_HTML_NOTE})</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="end_html">{end_html}</textarea>
+	</td>
+</tr>
+<tr class="buttons">
+	<td>&nbsp;</td>
+	<td><span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+
+<div id="data_js" style="{js_style}">
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="2">{JAVASCRIPT_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>
+		{ONCHANGE_EVENT_MSG}
+		<div class="small">({EG_MSG} &lt;select onChange="<b>[your code here]</b>"&gt;)</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="onchange_code">{onchange_code}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{ONCLICK_EVENT_MSG}
+		<div class="small">({EG_MSG} &lt;input type="radio" onClick="<b>[your code here]</b>"&gt;)</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="onclick_code">{onclick_code}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{CONTROL_CODE_MSG}
+		<div class="small">({EG_MSG} &lt;input type="text" <b>[your code here]</b>&gt;)</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="control_code">{control_code}</textarea>
+	</td>
+</tr>
+<tr class="buttons">
+	<td>&nbsp;</td>
+	<td><span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+
+<div id="data_sites" style="{sites_style}">
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+<tr class="usual">
+	<td colspan="3">
+		<input type="checkbox" name="sites_all" id="sites_all" {sites_all} onClick="checkListFields('sites');" value="1">
+		<label for="sites_all">{SITES_ALL_MSG} ({SITES_ALL_UNTICK_MSG})</label>
+	</td>
+</tr>
+<tr align="center" class="middle">
+	<td width="45%"><b>{AVAILABLE_SITES_MSG}</b></td>
+	<td width="10%"><b>{OPERATIONS_MSG}</b></td>
+	<td width="45%"><b>{USE_ITEM_SITES_MSG}</b></td>
+</tr>
+<tr align="center" class="usual">
+	<td>
+		<select name="available_sites" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_sites -->
+			<option value="{site_id}">{site_name}<!-- end available_sites-->
+		</select>
+	</td>
+	<td>
+		<span class="button"><input class="submit" readonly type="button" name="add_sites" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('sites');"></span>
+		<br><br>
+		<span class="button"><input class="submit" type="button" name="remove_sites" value="<- {REMOVE_BUTTON}" onClick="removeListFields('sites');"></span>
+	</td>
+	<td>
+		<select name="selected_sites" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_sites -->
+			<option value="{site_id}">{site_name}<!-- end selected_sites -->
+		</select>
+	</td>
+</tr>
+<tr class="buttons">
+	<td colspan="3" >
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span>
+	</td>
+</tr>
+</table>
+</div>
+</form>
+
+</div>
+</div>
+
+<!-- begin hidden_blocks -->
+<div id="{hidden_id}" style="display: none;">{hidden_block}</div><!-- end hidden_blocks -->
+
+{admin_footer}
+
+<script>
+
+
+</script>
+</body>
+</html>

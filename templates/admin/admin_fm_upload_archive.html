@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html><head><title>{FILE_MANAGER_MSG} :: {UPLOAD_ARCHIVE_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{FILE_MANAGER_MSG}</div>
+</div>
+
+<!-- BEGIN service_messages --><div class="messagebg">{service_message}</div><!-- END service_messages -->
+<!-- BEGIN errors_block --><div class="errorbg">{errors_list}</div><!-- END errors_block -->
+<br>
+
+<ul class="tabs">
+	<li class="tab"><a href="{admin_upload_file}?op=1&dir={dir_url}">{UPLOAD_FILE_MSG}</a></li>
+	<li class="tab-active"><a href="{admin_upload_href}?op=2&dir={dir_url}">{UPLOAD_ARCHIVE_MSG}</a></li>
+</ul>
+
+			
+<div class="Form">
+<div class="FormContent no-padding">
+
+<form action="{admin_upload_href}" enctype="multipart/form-data" method="post">
+<input type="hidden" name="operation" value="upload">
+<input TYPE="hidden" name="op" value="2" />
+<input TYPE="hidden" name="dir" value="{dir}" />
+<table  border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="usual">
+	<td>
+
+		<br>
+		<div>
+		{DESTINATION_FOLDER_MSG}: <a href="{admin_fm_href}?dir={dir_url}"><b>{destination_folder}</b></a>
+		</div>
+
+		<br>
+
+		<div>
+			<input type="file" name="newfile_0" />
+		</div>
+
+		<br>
+
+		<div>
+			<!-- begin folder_structure -->
+			<input type="radio" name="folder_structure" id="folder_structure{folder_structure_value}" {folder_structure_checked} value="{folder_structure_value}">
+			<label for="folder_structure{folder_structure_value}">{folder_structure_description}</label><br><!-- end folder_structure -->
+		</div>
+		<br>
+
+	</td>
+</tr>
+<tr class="middle">
+	<td>
+		<span class="button"><input type="submit" class="submit" name="button" value="{UPLOAD_TITLE}" /></span>
+	</td>
+</tr>
+</table>
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

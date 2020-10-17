@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {PRODUCT_REGISTRATION_SETTINGS_MSG} :: {EDIT_CUSTOM_FIELD_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+	function openWindow(pagename)
+	{
+		var popupWin = window.open (pagename, 'popup', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		popupWin.focus();
+	}
+	function reloadSite(site_id){
+		document.reloadform.submit();
+	}
+//-->
+</script>
+</head>
+<body class="commonbg">
+{admin_header}
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_CUSTOM_FIELD_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_property_href}" name="record" method="post">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="apply" value="0">
+<input type="hidden" name="property_id" value="{property_id}">
+<input type="hidden" name="more_properties" value="0">
+<input type="hidden" name="number_properties" value="{number_properties}">
+
+<!-- BEGIN success --><div class="messagebg">{success_message}</div><!-- END success -->
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="usual">
+	<td>{FIELD_ORDER_MSG} *</td>
+	<td colspan="5"><input class="field" type="text" name="property_order" value="{property_order}" size="12"></td>
+</tr>
+<tr class="usual">
+	<td>{FIELD_NAME_MSG} *</td>
+	<td colspan="5"><input class="field" type="text" name="property_name" value="{property_name}" size="60"></td>
+</tr>
+<!-- begin sitelist -->
+<tr class="usual">
+	<td>{ADMIN_SITE_MSG} *</td>
+	<td colspan="5">
+		<select name="param_site_id"><!-- begin param_site_id -->
+			<option {param_site_id_selected} value="{param_site_id_value}">{param_site_id_description}<!-- end param_site_id -->
+		</select>
+	</td>
+</tr>
+<!-- end sitelist -->
+<tr class="usual">
+	<td>{DEFAULT_VALUE_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="default_value" value="{default_value}" size="60"> 
+		<span class="small">(Used for <b>Label</b>, <b>TextBox</b> and <b>TextArea</b>)</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{BLOCK_CSS_CLASS_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="property_class" value="{property_class}" size="60"> 
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FIELD_STYLE_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="property_style" value="{property_style}" size="60"> 
+		<span class="small">({OPTION_STYLE_NOTE}, {EG_MSG} 'color: blue;')</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FIELD_CONTROL_MSG} *</td>
+	<td colspan="5">
+		<select name="control_type"><!-- begin control_type -->
+			<option {control_type_selected} value="{control_type_value}">{control_type_description}<!-- end control_type -->
+		</select>
+		<span class="small">({CONTROL_TYPE_USE_DESC})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{SHOW_FIELD_MSG} *</td>
+	<td colspan="5"><!-- begin property_show -->
+		<input type="radio" name="property_show" id="property_show{property_show_value}" {property_show_checked} value="{property_show_value}">
+		<label for="property_show{property_show_value}">{property_show_description}</label><!-- end property_show -->
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="required">{FIELD_REQUIRED_MSG}</label></td>
+	<td colspan="5"><input type="checkbox" {required} name="required" id="required" value="1"></td>
+</tr>
+<!-- BEGIN tax_free_block -->
+<tr class="usual">
+	<td><label for="tax_free">{TAX_FREE_MSG}</label></td>
+	<td colspan="5"><input type="checkbox" {tax_free} name="tax_free" id="tax_free" value="1"></td>
+</tr>
+<!-- END tax_free_block -->
+<tr class="middle">
+	<td colspan="6">{OPTIONS_APPEARANCE_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{CONTROL_STYLE_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="control_style" value="{control_style}" size="60">
+		<span class="small">({CONTROL_STYLE_NOTE}, {EG_MSG} 'color: green;')</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{BEFORE_TITLE_HTML_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="before_name_html" value="{before_name_html}" size="60">
+		<span class="small">({BEFORE_TITLE_HTML_NOTE})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{AFTER_TITLE_HTML_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="after_name_html" value="{after_name_html}" size="60">
+		<span class="small">({AFTER_TITLE_HTML_NOTE})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>{BEFORE_CONTROL_HTML_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="before_control_html" value="{before_control_html}" size="60">
+		<span class="small">({BEFORE_CONTROL_HTML_NOTE})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{AFTER_CONTROL_HTML_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="after_control_html" value="{after_control_html}" size="60">
+		<span class="small">({AFTER_CONTROL_HTML_NOTE})</span>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="6">{JAVASCRIPT_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{ONCHANGE_EVENT_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="onchange_code" value="{onchange_code}" size="60">
+		<span class="small">({EG_MSG} &lt;select onChange="<b>[your code here]</b>"&gt;)</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ONCLICK_EVENT_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="onclick_code" value="{onclick_code}" size="60">
+		<span class="small">({EG_MSG} &lt;input type="radio" onClick="<b>[your code here]</b>"&gt;)</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CONTROL_CODE_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="control_code" value="{control_code}" size="60">
+		<span class="small">({EG_MSG} &lt;input type="text" <b>[your code here]</b>&gt;)</span>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="6">{REGEXP_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{VALIDATION_REGEXP_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="validation_regexp" value="{validation_regexp}" size="60">
+		<span class="small">({EG_MSG} <b>/^\d&#123;2&#125;\/\d&#123;2&#125;\/\d&#123;4&#125;$/</b>)</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{REGEXP_ERROR_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="regexp_error" value="{regexp_error}" size="60">
+		<div class="small">({EG_MSG} Field <b>&#123;field_name&#125;</b> doesn't match the following date mask <b>MM/DD/YYYY</b>)</div>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="6">{OPTIONS_VALUES_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{SQL_TO_OBTAIN_VALUES_MSG}</td>
+	<td><textarea name="options_values_sql" rows="3" cols="60">{options_values_sql}</textarea></td>
+	<td colspan="4">
+		<span class="small">({EG_MSG} <b>SELECT country_id,country_name FROM va_countries ORDER BY country_order, country_name</b>)</span>
+	</td>
+</tr>
+<tr align="center" class="middle">
+	<td>{ID_MSG}</td>
+	<td class="small">{OPTION_VALUE_MSG}</td>
+	<td class="small">{DEFAULT_MSG}</td>
+	<td class="small">{HIDE_MSG}</td>
+	<td class="small">{DELETE_BUTTON}</td>
+	<td class="small" width="150">&nbsp;</td>
+</tr><!-- begin properties --><!-- begin properties_errors -->
+<tr class="usual" align="center">
+	<td>&nbsp;</td>
+	<td colspan="4" class="errorbg">{errors_list}</td>
+	<td>&nbsp;</td>	
+</tr><!-- end properties_errors -->
+<tr class="usual" align="center">
+	<td>
+		{property_value_id}
+		<input type="hidden" name="property_value_id_{properties_number}" value="{property_value_id}">
+		<input type="hidden" name="property_id_{properties_number}" value="{property_id}">
+	</td>
+	<td align="left"><input class="field" type="text" name="property_value_{properties_number}" value="{property_value}" size="60"></td>
+	<td align="center"><input type="checkbox" name="is_default_value_{properties_number}" {is_default_value} value="1"></td>
+	<td align="center"><input type="checkbox" name="hide_value_{properties_number}" {hide_value} value="1"></td>
+	<td align="center"><input type="checkbox" name="properties_delete_{properties_number}" {properties_delete} value="1"></td>
+	<td>&nbsp;</td>
+</tr><!-- end properties -->
+<tr class="usual">
+	<td>&nbsp;</td>
+	<td colspan="4" align="right">
+		{ADD_MORE_OPTION_VALUES_QST} <span class="button"><input class="submit" type="submit" value={ADD_BUTTON} onClick="document.record.more_properties.value=1; document.record.operation.value='';"></span>
+	</td>
+	<td>&nbsp;</td>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td colspan="5">
+		<span class="button"><input class="submit" type="submit" value="{APPLY_BUTTON}" onClick="document.record.operation.value='save'; document.record.apply.value=1"></span> 
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onCLick="document.record.operation.value='delete';return confirm('Do you want delete &quot;{property_name}&quot; option?');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>
+</div>
+</div>
+	
+{admin_footer}
+</body>
+</html>
+

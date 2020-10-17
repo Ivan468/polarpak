@@ -1,0 +1,543 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {EDIT_PRODUCT_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" src="../js/calendar.js"></script>
+<script language="JavaScript">
+<!--
+	function useAll()
+	{
+		var totalColumns = document.record.total_columns.value;
+		var useAll = document.record.use_all.checked;
+		for(var i = 1; i <= totalColumns ; i++) {
+			var objectControl = eval("document.record.db_column_" + i);
+			if(objectControl) {
+				objectControl.checked = useAll;
+			}
+		}
+
+		return true;
+	}
+
+	function relatedAll()
+	{
+		var totalRelated = document.record.total_related.value;
+		var relatedAll = document.record.related_all.checked;
+		for(var i = 1; i <= totalRelated; i++) {
+			var objectControl = eval("document.record.related_column_" + i);
+			if(objectControl) {
+				objectControl.checked = relatedAll;
+			}
+		}
+
+		return true;
+	}
+
+	var clickNumber = 0;
+
+	function checkErrors()
+	{
+		var totalColumns = document.record.total_columns.value;
+		var columnsSelected = 0;
+		for(var i = 1; i <= totalColumns; i++) {
+			var columnObject = eval("document.record.db_column_" + i);
+			if (columnObject) {
+				if (columnObject.checked) {
+					columnsSelected++;
+				}
+			}
+		}
+		if (columnsSelected== 0) {
+			alert("No columns were selected. Please select at least one column.");
+			return false;
+		}
+
+		return true;
+	}
+
+
+	function openWindow(pagename, filetype, items_number)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype + '&image_index=' + items_number, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+	}
+
+	function setFileName(filename, filetype, items_number)
+	{
+		var siteUrl = '{site_url}';
+
+		if(filename != "")
+		{
+      var imagefield = 'document.record.'+filetype+'_'+items_number;
+			if(filetype == "tiny_image")
+			{
+				eval(imagefield).value = siteUrl + "images/tiny/" + filename;
+				eval(imagefield).focus();
+			}
+			else if(filetype == "small_image")
+			{
+				eval(imagefield).value = siteUrl + "images/small/" + filename;
+				eval(imagefield).focus();
+			}
+			else if(filetype == "big_image")
+			{
+				eval(imagefield).value = siteUrl + "images/big/" + filename;
+				eval(imagefield).focus();
+			}
+			else if(filetype == "super_image")
+			{
+				eval(imagefield).value = siteUrl + "images/super/" + filename;
+				eval(imagefield).focus();
+			}
+		}
+	}
+
+	function formatNumber(numberValue)
+	{
+		var numberText = new String(numberValue);
+		if(numberText.indexOf(".") == -1) {
+			numberText += ".00";
+		} else if (numberText.indexOf(".") == (numberText.length - 2)) {
+			numberText += "0";
+		} else {
+			var numberParts = numberText.split(".");
+			if(numberParts[1].length > 2) {
+				numberText = numberParts[0] + "." + numberParts[1].substring(0, 2);
+			}
+		}
+		return numberText;
+	}
+
+//-->
+</script>
+</head>
+<body class="commonbg">
+<script language= "JavaScript" type= "text/javascript" src= "../js/editor.js"></script>
+{admin_header}
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_PRODUCT_MSG}</div>
+<div class="BlockContent">
+<!-- BEGIN fields -->
+
+	<form name="record" action="{admin_products_edit_href}" method="post" onSubmit="return checkErrors();">
+	<input type="hidden" name="total_columns" value="{total_columns}">
+	<input type="hidden" name="category_id" value="{category_id}">
+	<input type="hidden" name="items_ids" value="{items_ids}">
+
+		<!-- BEGIN errors --><div class="error">&nbsp;{errors_list}</div><!-- END errors -->
+		<table cellspacing="1" cellpadding="6" border="0" align="center">
+		<tr>
+			<td colspan="4">{USE_CHECKBOXES_TO_SELECT_EDIT_MSG}</td>
+		</td>
+		<tr class="usual">
+			<td><label for="use_all">{SELECT_MSG}/{UNSELECT_ALL_MSG}</label></td>
+			<td colspan="3"><input type="checkbox" id="use_all" name="use_all" value="1" onClick="useAll();"></td>
+		</td><!-- BEGIN columns -->
+		<tr class="usual"><!-- BEGIN rows -->
+			<td><b><label for="db_column_{col}">{column_title}</label></b></td>
+			<td>
+				<input type="checkbox" {column_checked} id="db_column_{col}" name="db_column_{col}" value="{column_name}">
+				<input type="hidden" name="column_title_{col}" value="{column_title}">
+			</td><!-- END rows -->
+		</tr><!-- END columns -->
+		<tr class="middle">
+			<td colspan="4">
+				<span class="button"><input type="submit" class="submit" value=" Next "></span>
+			</td>
+		</tr>
+		</table>
+
+	</form>
+<!-- END fields -->
+<!-- BEGIN items_rows-->
+
+<form action="{admin_products_edit_href}?total_columns={total_columns}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="number_items" value="{number_items}">
+<input type="hidden" name="rp" value="{rp}">
+<input type="hidden" name="category_id" value="{category_id}">
+<input type="hidden" name="items_ids" value="{items_ids}">
+<!-- BEGIN items_errors --><div class="errorbg">{errors_list}</div><!-- END items_errors -->
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr>
+	<td align="right" colspan="2">
+	   <div class="small">{ASTERISK_MSG}</div>
+	</td>
+</tr><!-- BEGIN items-->
+<tr class="middle">
+	<td colspan="2" align="left">
+		<input type="hidden" name="item_id_{items_number}" value="{item_id}">
+		<input type="hidden" name="item_name_hid_{items_number}" value="{item_name_hid}">
+		{item_id}.&nbsp; {item_name} {item_codes} 
+	</td>
+</tr><!-- BEGIN is_showing_block -->
+<tr class="usual">
+	<td align="right"><label for="is_showing_{items_number}">{PROD_SHOWN_MSG}</label> :</td>
+	<td align="left" width="70%"><input type="checkbox" {is_showing} name="is_showing_{items_number}" id="is_showing_{items_number}" value="1"></td>
+</tr><!-- END is_showing_block --><!-- BEGIN is_approved_block -->
+<tr class="usual">
+	<td align="right">{IS_APPROVED_MSG} :</td>
+	<td align="left" width="70%"><!-- BEGIN is_approved -->
+		<input type="radio" name="is_approved_{items_number}" id="is_approved_{items_number}{is_approved_value}" {is_approved_checked} value="{is_approved_value}">
+		<label for="is_approved_{items_number}{is_approved_value}">{is_approved_description}</label><!-- END is_approved -->
+	</td>
+</tr><!-- END is_approved_block --><!-- BEGIN item_order_block -->
+<tr class="usual">
+	<td align="right">{PROD_ORDER_MSG}* :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="item_order_{items_number}" value="{item_order}" size="10" maxlength="10"></td>
+</tr><!-- END item_order_block --><!-- BEGIN item_type_id_block -->
+<tr class="usual">
+	<td align="right">{PROD_TYPE_MSG}* :</td>
+	<td align="left" width="70%">
+		<select name="item_type_id_{items_number}"><!-- begin item_type_id -->
+			<option {item_type_id_selected} value="{item_type_id_value}">{item_type_id_description}<!-- end item_type_id -->
+		</select>
+	</td>
+</tr><!-- END item_type_id_block --><!-- BEGIN item_code_block -->
+<tr class="usual">
+	<td align="right">{PROD_CODE_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="item_code_{items_number}" value="{item_code}" size="40" maxlength="255"></td>
+</tr><!-- END item_code_block --><!-- BEGIN item_name_block -->
+<tr class="usual">
+	<td align="right">{PROD_NAME_MSG}* :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="item_name_{items_number}" value="{item_name}" size="80" maxlength="255"></td>
+</tr><!-- END item_name_block --><!-- BEGIN friendly_url_block -->
+<tr class="usual">
+	<td align="right">{FRIENDLY_URL_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="friendly_url_{items_number}" value="{friendly_url}" size="80" maxlength="255"></td>
+</tr><!-- END friendly_url_block --><!-- BEGIN manufacturer_id_block -->
+<tr class="usual">
+	<td align="right">{MANUFACTURER_NAME_MSG}</td>
+	<td align="left" width="70%">
+		<select name="manufacturer_id_{items_number}"><!-- begin manufacturer_id -->
+			<option {manufacturer_id_selected} value="{manufacturer_id_value}">{manufacturer_id_description}<!-- end manufacturer_id -->
+		</select>
+	</td>
+</tr><!-- END manufacturer_id_block --><!-- BEGIN manufacturer_code_block -->
+<tr class="usual">
+	<td align="right">{MANUFACTURER_CODE_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="manufacturer_code_{items_number}" value="{manufacturer_code}" size="40" maxlength="255"></td>
+</tr><!-- END manufacturer_code_block -->
+<!-- BEGIN packages_number_block -->
+<tr class="usual">
+	<td align="right">{PACKAGES_NUMBER_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="packages_number_{items_number}" value="{packages_number}" size="20" maxlength="16"></td>
+</tr><!-- END packages_number_block -->
+<!-- BEGIN weight_block -->
+<tr class="usual">
+	<td align="right">{PROD_WEIGHT_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="weight_{items_number}" value="{weight}" size="20" maxlength="16"></td>
+</tr><!-- END weight_block -->
+
+<!-- BEGIN width_block -->
+<tr class="usual">
+	<td align="right">{WIDTH_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="width_{items_number}" value="{width}" size="20" maxlength="16"></td>
+</tr><!-- END width_block -->
+<!-- BEGIN height_block -->
+<tr class="usual">
+	<td align="right">{HEIGHT_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="height_{items_number}" value="{height}" size="20" maxlength="16"></td>
+</tr><!-- END height_block -->
+<!-- BEGIN length_block -->
+<tr class="usual">
+	<td align="right">{LENGTH_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="length_{items_number}" value="{length}" size="20" maxlength="16"></td>
+</tr><!-- END length_block -->
+
+<!-- BEGIN issue_date_block -->
+<tr class="usual">
+	<td align="right">{PROD_ISSUE_DATE_MSG} :</td>
+	<td align="left" width="70%">
+		<input class="field" type="text" name="issue_date_{items_number}" value="{issue_date}" size="20" maxlength="16">
+		<a href="#"	
+			onClick="setDateField(document.record.issue_date_{items_number}, '{date_edit_format}'); 
+			top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+		({USE_FOLLOWING_FORMAT_MSG} <b>{date_edit_format}</b>)
+	</td>
+</tr><!-- END issue_date_block --><!-- BEGIN is_compared_block -->
+<tr class="usual">
+	<td align="right"><label for="is_compared_{items_number}">{PROD_ALLOWED_COMPARISON_MSG}</label> :</td>
+	<td align="left" width="70%"><input type="checkbox" name="is_compared_{items_number}" id="is_compared_{items_number}" {is_compared} value="1"></td>
+</tr><!-- END is_compared_block --><!-- BEGIN tax_free_block -->
+<tr class="usual">
+	<td align="right"><label for="tax_free_{items_number}">{PROD_TAX_FREE_MSG}</label> :</td>
+	<td align="left" width="70%"><input type="checkbox" name="tax_free_{items_number}" id="tax_free_{items_number}" {tax_free} value="1"></td>
+</tr><!-- END tax_free_block --><!-- BEGIN language_code_block -->
+<tr class="usual">
+	<td align="right">{PROD_LANGUAGE_MSG} :</td>
+	<td align="left" width="70%">
+		<select name="language_code_{items_number}"><!-- begin language_code -->
+			<option {language_code_selected} value="{language_code_value}">{language_code_description}<!-- end language_code -->
+		</select>
+		<span class="small">({PROD_LANGUAGE_DESC})</span>
+	</td>
+</tr><!-- END language_code_block --><!-- BEGIN price_block -->
+<tr class="usual">
+	<td align="right">{PRICE_MSG}* :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="price_{items_number}" value="{price}" size="10" maxlength="16" ></td>
+</tr><!-- END price_block --><!-- BEGIN buying_price_block -->
+<tr class="usual">
+	<td align="right">{PROD_BUYING_PRICE_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="buying_price_{items_number}" value="{buying_price}" size="10" maxlength="16"></td>
+</tr><!-- END buying_price_block --><!-- BEGIN properties_price_block -->
+<tr class="usual">
+	<td align="right">{PROD_OPTIONS_PRICE_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="properties_price_{items_number}" value="{properties_price}" size="10" maxlength="16"></td>
+</tr><!-- END properties_price_block --><!-- BEGIN trade_properties_price_block -->
+<tr class="usual">
+	<td align="right">{OPTIONS_TRADE_PRICE_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="trade_properties_price_{items_number}" value="{trade_properties_price}" size="10" maxlength="16"></td>
+</tr><!-- END trade_properties_price_block --><!-- BEGIN is_sales_block -->
+<tr class="usual">
+	<td align="right"><label for="is_sales_{items_number}">{PROD_ACTIVATE_DISCOUNT_MSG}</label> :</td>
+	<td align="left" width="70%"><input type="checkbox" {is_sales} name="is_sales_{items_number}" id="is_sales_{items_number}" value="1"></td>
+</tr><!-- END is_sales_block --><!-- BEGIN sales_price_block -->
+<tr class="usual">
+	<td align="right">{PROD_DISCOUNT_PRICE_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="sales_price_{items_number}" value="{sales_price}" size="10" maxlength="10" ></td>
+</tr><!-- END sales_price_block --><!-- BEGIN trade_price_block -->
+<tr class="usual">
+	<td align="right">{PROD_TRADE_PRICE_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="trade_price_{items_number}" value="{trade_price}" size="10" maxlength="10" ></td>
+</tr><!-- END trade_price_block --><!-- BEGIN trade_sales_block -->
+<tr class="usual">
+	<td align="right">{PROD_DISCOUNT_TRADE_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="trade_sales_{items_number}" value="{trade_sales}" size="10" maxlength="10" ></td>
+</tr><!-- END trade_sales_block --><!-- BEGIN discount_percent_block -->
+<tr class="usual">
+	<td align="right">{PROD_DISCOUNT_PERCENT_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="discount_percent_{items_number}" value="{discount_percent}" size="10" maxlength="10"></td>
+</tr><!-- END discount_percent_block --><!-- BEGIN short_description_block -->
+<tr class="usual">
+	<td align="right">
+		{SHORT_DESCRIPTION_TEXT_MSG} :
+		<div class="small">(Shown when product is on the list:&nbsp;<br>
+		category list or search results)</div>
+	</td>
+	<td align="left" width="70%"><textarea name="short_description_{items_number}" cols="80" rows="3">{short_description}</textarea></td>
+</tr><!-- END short_description_block --><!-- BEGIN highlights_block -->
+<tr class="usual">
+	<td align="right">{HIGHLIGHTS_MSG} :</td>
+	<td align="left" width="70%"><textarea name="highlights_{items_number}" cols="80" rows="3">{highlights}</textarea></td>
+</tr><!-- END highlights_block --><!-- BEGIN full_desc_type_block -->
+<tr class="usual">
+	<td align="right">{FULL_DESCRIPTION_MSG} {TYPE_MSG} :</td>
+	<td align="left" width="70%"><!-- begin full_desc_type -->
+		<input type="radio" name="full_desc_type_{items_number}" id="full_desc_type_{items_number}{full_desc_type_value}" {full_desc_type_checked} value="{full_desc_type_value}">
+		<label for="full_desc_type_{items_number}{full_desc_type_value}">{full_desc_type_description}</label><!-- end full_desc_type -->
+	</td>
+</tr><!-- END full_desc_type_block --><!-- BEGIN full_description_block -->
+<tr class="usual">
+	<td align="right">{FULL_DESCRIPTION_TEXT_MSG} :</td>
+	<td align="left" width="70%"><textarea name="full_description_{items_number}" cols="80" rows="3">{full_description}</textarea></td>
+</tr><!-- END full_description_block --><!-- BEGIN meta_title_block -->
+<tr class="usual">
+	<td align="right">{META_TITLE_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="meta_title_{items_number}" value="{meta_title}" size="80" maxlength="255"></td>
+</tr><!-- END meta_title_block --><!-- BEGIN meta_keywords_block -->
+<tr class="usual">
+	<td align="right">{META_KEYWORDS_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="meta_keywords_{items_number}" value="{meta_keywords}" size="80" maxlength="255"></td>
+</tr><!-- END meta_keywords_block --><!-- BEGIN meta_description_block -->
+<tr class="usual">
+	<td align="right">{META_DESCRIPTION_MSG} :</td>
+	<td align="left" width="70%"><textarea name="meta_description_{items_number}" cols="80" rows="3">{meta_description}</textarea></td>
+</tr><!-- END meta_description_block --><!-- BEGIN is_special_offer_block -->
+<tr class="usual">
+	<td align="right"><label for="is_special_offer_{items_number}">{PROD_OFFER_ACTIVATE_MSG}</label> :</td>
+	<td align="left" width="70%"><input type="checkbox" name="is_special_offer_{items_number}" id="is_special_offer_{items_number}" {is_special_offer} value="1"></td>
+</tr><!-- END is_special_offer_block --><!-- BEGIN special_offer_block -->
+<tr class="usual">
+	<td align="right">
+		{SPECILA_OFFER_TEXT_MSG} :
+		<div class="small">({SHOWN_ON_MAIN_PAGE_MSG})</div>
+	</td>
+	<td align="left" width="70%"><textarea name="special_offer_{items_number}" cols="80" rows="3">{special_offer}</textarea></td>
+</tr><!-- END special_offer_block --><!-- BEGIN tiny_image_block -->
+<tr class="usual">
+	<td align="right">{IMAGE_TINY_MSG} :</td>
+	<td align="left" width="70%">
+		<input class="field" type="text" size="50" maxlength="255" name="tiny_image_{items_number}" value="{tiny_image}">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'tiny_image', '{items_number}')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'tiny_image', '{items_number}')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr><!-- END tiny_image_block --><!-- BEGIN tiny_image_alt_block -->
+<tr class="usual">
+	<td align="right">{IMAGE_TINY_ALT_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" size="50" maxlength="255" name="tiny_image_alt_{items_number}" value="{tiny_image_alt}"></td>
+</tr><!-- END tiny_image_alt_block --><!-- BEGIN small_image_block -->
+<tr class="usual">
+	<td align="right">{IMAGE_SMALL_MSG} :</td>
+	<td align="left" width="70%">
+		<input class="field" type="text" size="50" maxlength="255" name="small_image_{items_number}" value="{small_image}">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'small_image', '{items_number}')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'small_image', '{items_number}')"><b>{SELECT_IMAGE_MSG}</b></a>
+		<br>({IMAGE_SMALL_DESC})
+	</td>
+</tr><!-- END small_image_block --><!-- BEGIN small_image_alt_block -->
+<tr class="usual">
+	<td align="right">{IMAGE_SMALL_ALT_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" size="50" maxlength="255" name="small_image_alt_{items_number}" value="{small_image_alt}"></td>
+</tr><!-- END small_image_alt_block --><!-- BEGIN big_image_block -->
+<tr class="usual">
+	<td align="right">{IMAGE_LARGE_MSG} :</td>
+	<td align="left" width="70%">
+		<input class="field" type="text" size="50" maxlength="255" name="big_image_{items_number}" value="{big_image}">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'big_image', '{items_number}')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'big_image', '{items_number}')"><b>{SELECT_IMAGE_MSG}</b></a>
+		<br>({IMAGE_LARGE_DESC})
+	</td>
+</tr><!-- END big_image_block --><!-- BEGIN big_image_alt_block -->
+<tr class="usual">
+	<td align="right">{IMAGE_LARGE_ALT_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" size="50" maxlength="255" name="big_image_alt_{items_number}" value="{big_image_alt}"></td>
+</tr><!-- END big_image_alt_block --><!-- BEGIN super_image_block -->
+<tr class="usual">
+	<td align="right">{IMAGE_SUPER_MSG} :</td>
+	<td align="left" width="70%">
+		<input class="field" type="text" size="50" maxlength="255" name="super_image_{items_number}" value="{super_image}">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'super_image', '{items_number}')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'super_image', '{items_number}')"><b>{SELECT_IMAGE_MSG}</b></a>
+		<br>({IMAGE_SUPER_DESC})
+	</td>
+</tr><!-- END super_image_block --><!-- BEGIN template_name_block -->
+<tr class="usual">
+	<td align="right">{CUSTOM_TEMPLATE_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="template_name_{items_number}" value="{template_name}" size="50" maxlength="255"></td>
+</tr><!-- END template_name_block --><!-- BEGIN hide_add_list_block -->
+<tr class="usual">
+	<td align="right"><label for="hide_add_list_{items_number}">{HIDE_MSG} '<b>{ADD_TO_CART_MSG}</b>' button</label> :</td>
+	<td align="left" width="70%">
+		<input type="checkbox" {hide_add_list} name="hide_add_list_{items_number}" id="hide_add_list_{items_number}" value="1">
+		<span class="small">{ON_PROD_LIST_MSG}</span>
+	</td>
+</tr><!-- END hide_add_list_block --><!-- BEGIN hide_add_details_block -->
+<tr class="usual">
+	<td align="right"><label for="hide_add_details_{items_number}">{HIDE_MSG} '<b>{ADD_TO_CART_MSG}</b>' button</label> :</td>
+	<td align="left" width="70%">
+		<input type="checkbox" {hide_add_details} name="hide_add_details_{items_number}" id="hide_add_details_{items_number}" value="1">
+		<span class="small">{ON_PROD_DETAILS_MSG}</span>
+	</td>
+</tr><!-- END hide_add_details_block --><!-- BEGIN use_stock_level_block -->
+<tr class="usual">
+	<td align="right"><label for="use_stock_level_{items_number}">{USE_STOCK_MSG}</label> :</td>
+	<td align="left" width="70%"><input type="checkbox" name="use_stock_level_{items_number}" id="use_stock_level_{items_number}" {use_stock_level} value="1" ></td>
+</tr><!-- END use_stock_level_block --><!-- BEGIN stock_level_block -->
+<tr class="usual">
+	<td align="right">{STOCK_QUANTITY_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="stock_level_{items_number}" value="{stock_level}" size="10" maxlength="16"></td>
+</tr><!-- END stock_level_block --><!-- BEGIN hide_out_of_stock_block -->
+<tr class="usual">
+	<td align="right"><label for="hide_out_of_stock_{items_number}">{HIDE_OUT_STOCK_MSG}</label> :</td>
+	<td align="left" width="70%">
+		<input type="checkbox" name="hide_out_of_stock_{items_number}" id="hide_out_of_stock_{items_number}" {hide_out_of_stock} value="1">
+		({HIDE_OUT_STOCK_DESC})
+	</td>
+</tr><!-- END hide_out_of_stock_block --><!-- BEGIN disable_out_of_stock_block -->
+<tr class="usual">
+	<td align="right"><label for="disable_out_of_stock_{items_number}">{DISABLE_OUT_STOCK_MSG}</label> :</td>
+	<td align="left" width="70%">
+		<input type="checkbox" name="disable_out_of_stock_{items_number}" id="disable_out_of_stock_{items_number}" {disable_out_of_stock} value="1">
+		({DISABLE_OUT_STOCK_DESC})
+	</td>
+</tr><!-- END disable_out_of_stock_block --><!-- BEGIN downloadable_block -->
+<tr class="usual">
+	<td align="right"><label for="downloadable_{items_number}">{ADMIN_DOWNLOADABLE_MSG} (Software)</label> :</td>
+	<td align="left" width="70%">
+		<input type="checkbox" name="downloadable_{items_number}" id="downloadable_{items_number}" {downloadable} value="1">
+		<span class="small">({DOWNLOADABLE_DESC})</span>
+	</td>
+</tr><!-- END downloadable_block --><!-- BEGIN download_period_block -->
+<tr class="usual">
+	<td align="right">{DOWNLOAD_PERIOD_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="download_period_{items_number}" value="{download_period}" size="10" maxlength="10"> (days)</td>
+</tr><!-- END download_period_block --><!-- BEGIN download_path_block -->
+<tr class="usual">
+	<td align="right">{DOWNLOAD_PATH_MSG} :</td>
+	<td align="left" width="70%">
+		<input class="field" type="text" name="download_path_{items_number}" value="{download_path}" size="75">
+		<font class="small"><br>({DOWNLOAD_PATH_DESC})</font>
+	</td>
+</tr><!-- END download_path_block --><!-- BEGIN generate_serial_block -->
+<tr class="usual">
+	<td align="right"><label for="generate_serial_{items_number}">{SERIAL_GENERATE_MSG}</label> :</td>
+	<td align="left" width="70%">
+		<input type="checkbox" name="generate_serial_{items_number}" id="generate_serial_{items_number}" {generate_serial} value="1">
+		<span class="small">({SERIAL_RANDOM_GENERATE_MSG})</span>
+	</td>
+</tr><!-- END generate_serial_block --><!-- BEGIN serial_period_block -->
+<tr class="usual">
+	<td align="right">{SERIAL_PERIOD_MSG}:</td>
+	<td align="left" width="70%"><input class="field" type="text" name="serial_period_{items_number}" value="{serial_period}" size="10" maxlength="10"> (days)</td>
+</tr><!-- END serial_period_block --><!-- BEGIN activations_number_block -->
+<tr class="usual">
+	<td align="right">{ACTIVATION_MAX_NUMBER_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="activations_number_{items_number}" value="{activations_number}" size="10" maxlength="10"></td>
+</tr><!-- END activations_number_block --><!-- BEGIN shipping_in_stock_block -->
+<tr class="usual">
+	<td align="right">{IN_STOCK_AVAILABILITY_MSG} :&nbsp;&nbsp;<br>
+	</td>
+	<td align="left" width="70%">
+		<select name="shipping_in_stock_{items_number}"><!-- begin shipping_in_stock -->
+			<option {shipping_in_stock_selected} value="{shipping_in_stock_value}">{shipping_in_stock_description}<!-- end shipping_in_stock -->
+		</select>
+		&nbsp;<span class="small">({IN_STOCK_AVAILABILITY_DESC})</span>
+	</td>
+</tr><!-- END shipping_in_stock_block --><!-- BEGIN shipping_out_stock_block -->
+<tr class="usual">
+	<td align="right">{OUT_STOCK_AVAILABILITY_MSG} :</td>
+	<td align="left" width="70%">
+		<select name="shipping_out_stock_{items_number}"><!-- begin shipping_out_stock -->
+			<option {shipping_out_stock_selected} value="{shipping_out_stock_value}">{shipping_out_stock_description}<!-- end shipping_out_stock -->
+		</select>
+		&nbsp;<span class="small">({OUT_STOCK_AVAILABILITY_DESC})</span>
+	</td>
+</tr><!-- END shipping_out_stock_block --><!-- BEGIN shipping_rule_id_block -->
+<tr class="usual">
+	<td align="right">{SHIPPING_RESTRICTIONS_MSG} :</td>
+	<td align="left" width="70%">
+		<select name="shipping_rule_id_{items_number}"><!-- begin shipping_rule_id -->
+			<option {shipping_rule_id_selected} value="{shipping_rule_id_value}">{shipping_rule_id_description}<!-- end shipping_rule_id -->
+		</select>
+	</td>
+</tr><!-- END shipping_rule_id_block --><!-- BEGIN votes_block -->
+<tr class="usual">
+	<td align="right">{TOTAL_VOTES_MSG} :</td>
+	<td align="left" width="70%">
+		<input class="field" type="text" name="votes_{items_number}" value="{votes}" size="10" maxlength="10">
+		({TOTAL_VOUTES_NOTE})
+	</td>
+</tr><!-- END votes_block --><!-- BEGIN points_block -->
+<tr class="usual">
+	<td align="right">{TOTAL_POINTS_MSG} :</td>
+	<td align="left" width="70%">
+		<input class="field" type="text" name="points_{items_number}" value="{points}" size="10" maxlength="10">
+		({TOTAL_VOUTES_NOTE})
+	</td>
+</tr><!-- END points_block --><!-- BEGIN notes_block -->
+<tr class="usual">
+	<td align="right">{NOTES_MSG} :</td>
+	<td align="left" width="70%"><textarea name="notes_{items_number}" cols="80" rows="3">{notes}</textarea></td>
+</tr><!-- END notes_block --><!-- BEGIN buy_link_block -->
+<tr class="usual">
+	<td align="right">{PROD_DIRECT_LINK_MSG} :</td>
+	<td align="left" width="70%"><input class="field" type="text" name="buy_link_{items_number}" value="{buy_link}" size="80" maxlength="255"></td>
+</tr><!-- END buy_link_block --><!-- END items-->
+<tr class="middle">
+	<td colspan="2" align="right">
+		<span class="button"><input class="submit" type="submit" value={UPDATE_BUTTON} onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value=" {CANCEL_BUTTON} " onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>
+
+</div>
+</div>
+<!-- END items_rows -->
+{admin_footer}
+</body>
+</html>

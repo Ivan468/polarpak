@@ -1,0 +1,94 @@
+<script>
+function startSearch(inputObj)
+{
+	var isAjax = GetXmlHttpObject();
+	var formObj = vaParent(inputObj, "FORM");
+	var pbId = formObj.pb_id.value;
+	var popupObj = formObj.querySelector(".search-popup");
+	var productsObj = formObj.querySelector(".found-products");
+	var linkObj = popupObj.querySelector(".search-link");
+	var stringObj = popupObj.querySelector(".search-string");
+
+	// update link
+	var linkUrl = formObj.action+"?search_string="+encodeURIComponent(inputObj.value);
+	linkObj.href = linkUrl;
+	stringObj.innerHTML = inputObj.value;
+
+	// show popup and start spin
+	popupObj.className = "search-popup show-popup";
+	vaStopSpin(productsObj); // always stop spinning as it could be started before
+	vaSpin(productsObj); // start a new spinning
+
+	var url = "block.php";
+	url += "?pb_id="+encodeURIComponent(pbId);
+	url += "&sw="+encodeURIComponent(inputObj.value);
+	url += "&ajax=1";
+
+	callAjax(url, searchResults, inputObj);
+}
+
+function searchResults(data, inputObj)
+{
+	try { 
+		data = JSON.parse(data); 
+	} catch(e){
+		alert("Bad response: " + data);
+		return;
+	}
+
+	var formObj = vaParent(inputObj, "FORM");
+	var popupObj = formObj.querySelector(".search-popup");
+	var productsObj = formObj.querySelector(".found-products");
+	productsObj.scrollTop = 0; // move scroller to the top
+	var inputValue = inputObj.value;
+	// show results only when current input value the same as returned search value
+	if (inputValue == data.sw) {
+		vaStopSpin(productsObj); 
+		if (data.products) {
+			productsObj.innerHTML = data.products;
+		} else {
+			popupObj.className = "search-popup";
+		}
+	}
+}
+
+function closeSearch(closeObj)
+{
+	var popupObj = vaParent(closeObj, ".search-popup");
+	popupObj.className = "search-popup";
+}
+
+</script>
+
+	<form action="{search_href}" method="get">
+		<input type="hidden" name="pb_id" value="{pb_id}" />
+		<!-- BEGIN search_categories -->
+		<select class="search" name="category_id"><!-- begin category_id -->
+			<option {category_id_selected} value="{category_id_value}">{category_id_description}</option><!-- end category_id -->
+		</select><!-- END search_categories --><!-- begin no_search_categories -->
+		<input type="hidden" name="category_id" value="{top_id}" /><!-- end no_search_categories -->
+		<input class="search" type="text" name="search_string" autocomplete="off" value="{search_string}" />
+		<!-- input class="search field" type="text" name="search_string" autocomplete="off" value="{search_string}" oninput="startSearch(this);" / -->
+		<input class="submit" type="submit" name="search" value=" {GO_BUTTON} " />
+
+		<div class="search-popup" style="border:1px solid black;">
+			<div class="popup-top">
+				<i class="ico ico-close" onclick="closeSearch(this);"></i>
+				<div class="clear"></div>
+			</div>
+			<div class="found-products"><!-- begin found_products -->
+				<a href="{item_url}" class="found-product">
+					<div class="product-image"><img src="{tiny_image}"></div>
+					<div class="product-info">
+						<div class="product-title">{item_name}</div>
+						<div class="product-desc">{item_desc}</div>
+						<div class="price-main"><span class="caption">{PRICE_MSG}:</span> <span class="price">{item_price}</span></div>
+					</div>
+					<div class="clear"></div>
+				</div><!-- end found_products -->
+			</div>
+			<div class="popup-bottom"><a class="search-link" href="">Show all results for: "<span class="search-string"></span>"</a></div>
+		</div>
+
+		<!-- BEGIN advanced_search --><a class="advanced" href="{advanced_search_href}">{ADVANCED_SEARCH_TITLE}</a><!-- END advanced_search -->
+	</form>

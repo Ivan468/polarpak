@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {EDIT_SITE_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">Edit Site</div>
+<div class="BlockContent">
+
+<form action="{admin_site_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="param_site_id" value="{param_site_id}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="middle"> 
+	<td colspan="2">{ADMIN_GENERAL_MSG}</td>
+</tr>
+<!-- begin is_mobile_block -->
+<tr class="usual">
+	<td><label for="is_mobile">{MOBILE_VERSION_MSG}</label></td>
+	<td><input type="checkbox" name="is_mobile" id="is_mobile" {is_mobile} value="1"></td>
+</tr><!-- end is_mobile_block -->
+<!-- begin is_mobile_redirect_block -->
+<tr class="usual">
+	<td><label for="is_mobile_redirect">{REDIRECT_TO_MOBILE_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="is_mobile_redirect" id="is_mobile_redirect" {is_mobile_redirect} value="1">
+		(<label for="is_mobile_redirect">{REDIRECT_TO_MOBILE_DESC}</label>)
+	</td>
+</tr><!-- end is_mobile_redirect_block -->
+<!-- begin parent_site_id_block -->
+<tr class="usual">
+	<td>{PARENT_SITE_MSG}</td>
+	<td>
+		<select name="parent_site_id"><!-- begin parent_site_id -->
+			<option {parent_site_id_selected} value="{parent_site_id_value}">{parent_site_id_description}<!-- end parent_site_id -->
+		</select>
+	</td>
+</tr>
+<!-- end parent_site_id_block -->
+<tr class="usual">
+	<td>{SHORT_NAME_MSG} *</td>
+	<td><input class="field" type="text" size="60" name="short_name" value="{short_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{ADMIN_TITLE_MSG} *</td>
+	<td><input class="field" type="text" size="60" name="site_name" value="{site_name}"></td>
+</tr>
+<tr class="usual">
+	<td>
+		{SITE_URL_MSG} ({FRONT_END_MSG}) *
+	</td>
+	<td>
+		<input class="field" type="text" size="60" name="site_url" value="{edit_site_url}">
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">
+				{EG_MSG}: <br><b>http://www.yoursite.com/</b><br><br>
+				{SECURE_SITE_URL_MSG}: <br><b>https://www.yoursite.com/</b>
+			</div>
+		</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{SITE_URL_MSG} ({BACK_END_MSG})
+	</td>
+	<td>
+		<input class="field" type="text" size="60" name="admin_url" value="{admin_url}">
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">
+				{EG_MSG}: <br><b>http://www.yoursite.com/admin/</b><br><br>
+				{SECURE_SITE_URL_MSG}: <br><b>https://www.yoursite.com/admin/</b>
+			</div>
+		</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CSS_CLASS_MSG} ({ADMIN_SITE_MSG})</td>
+	<td><input class="field" type="text" size="60" name="site_class" value="{site_class}"></td>
+</tr>
+
+<tr class="usual">
+	<td>{DESCRIPTION_MSG}</td>
+	<td><textarea cols="60" rows="5" name="site_description">{site_description}</textarea></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td><!-- BEGIN add_button -->
+		<span class="button"><input class="submit" type="submit" value="{ADD_NEW_MSG}" onclick="document.record.operation.value='save'"></span><!-- END add_button --><!-- BEGIN update_button -->
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onclick="document.record.operation.value='save'"></span><!-- END update_button --><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+</body></html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html><head><title>{ORDERS_MSG} {ADMIN_HELP_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+
+<body class="popup">
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle" align="center">
+	<td>{HOW_TO_SETUP_EMAIL_MESSAGE}</td>
+</tr>
+<tr> 
+	<td>
+		<br>
+		<div align="center">{DYNAMIC_CONTENT_HELP_NOTE}</div>
+		<br>
+	</td>
+</tr>
+</table>
+
+<div class="title" align="center">{ADMIN_HELP_PAYMENTS_TITLE}</div>
+<br>
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="middle" align="center">
+	<td>{TAG_NAME_MSG}</td>                               	
+	<td>{TAG_DESCRIPTION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{site_url}</td><td>{SITE_URL_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{referrer}</td><td>{HTTP_REFERRER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{order_id}</td><td>{ORDER_INVOICE_NUMBER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{order_placed_date}</td><td>{PLACING_ORDER_DATE_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{user_id}</td><td>{USER_UNIQUE_IDENTIFICATOR_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{total_quantity}</td><td>{TOTAL_PRODUCTS_BASKET_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{goods_total}</td><td>{TOTAL_PRODUCTS_AMOUNT_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{total_discount}</td><td>{TOTAL_DISCOUNT_APPLIED_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{shipping_type_code}</td><td>{SHIPPING_CODE_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{shipping_type_desc}</td><td>{SHIPPING_DESCRIPTION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{shipping_cost}</td><td>{SHIPPING_COST_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{shipping_tracking_id}</td><td>{SHIPPING_TRACKING_NUMBER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{tax_percent}</td><td>{TAX_PERCENT_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{tax_name}</td><td>{TAX_TITLE_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{tax_cost}</td><td>{TAX_COST_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{order_total}</td><td>{TOTAL_ORDER_AMOUNT_MSG}</td>
+</tr><!-- begin basket_tag -->
+<tr class="usual">
+	<td>{basket}</td><td>{ALL_BASKET_INFO_MSG}</td>
+</tr><!-- end basket_tag -->
+<!-- BEGIN cart_fields -->
+<tr class="usual">
+	<td>{field_{field_id}}</td><td>{field_name}</td>
+</tr>
+<!-- END cart_fields -->
+</table>
+<br>
+
+<!-- begin merchant_info -->
+<div class="title" align="center">{MERCHANT_MSG}</div>
+<br>
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="middle" align="center">
+	<td>{TAG_NAME_MSG}</td>                               	
+	<td>{TAG_DESCRIPTION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{merchant_email}</td><td>{EMAIL_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{merchant_name}</td><td>{NAME_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{merchant_first_name}</td><td>{FIRST_NAME_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{merchant_middle_name}</td><td>{MIDDLE_NAME_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{merchant_last_name}</td><td>{LAST_NAME_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{merchant_cell_phone}</td><td>{CELL_PHONE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{merchant_items}</td><td>{MERCHANT_PRODUCTS_MSG}</td>
+</tr>
+</table>
+<br>
+<!-- end merchant_info -->
+
+<!-- begin supplier_info -->
+<div class="title" align="center">{SUPPLIER_MSG}</div>
+<br>
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="middle" align="center">
+	<td>{TAG_NAME_MSG}</td>                               	
+	<td>{TAG_DESCRIPTION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{supplier_email}</td><td>{EMAIL_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{supplier_name}</td><td>{NAME_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{supplier_items}</td><td>{SUPPLIER_PRODUCTS_MSG}</td>
+</tr>
+</table>
+<br>
+<!-- end supplier_info -->
+
+<!-- begin affiliate_info -->
+<div class="title" align="center">{AFFILIATE_MSG}</div>
+<br>
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="middle" align="center">
+	<td>{TAG_NAME_MSG}</td>                               	
+	<td>{TAG_DESCRIPTION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{affiliate_email}</td><td>{EMAIL_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{affiliate_name}</td><td>{NAME_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{affiliate_items}</td><td>{AFFILIATE_PRODUCTS_MSG}</td>
+</tr>
+</table>
+<br>
+<!-- end affiliate_info -->
+
+<!-- begin product_info -->
+<div class="title" align="center">{PRODUCT_INFO_MSG}</div>
+<br>
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="middle" align="center">
+	<td>{TAG_NAME_MSG}</td>                               	
+	<td>{TAG_DESCRIPTION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{product_name}</td><td>{PROD_NAME_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{price}</td><td>{PRICE_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{quantity}</td><td>{QUANTITY_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{short_description}</td><td>{SHORT_DESCRIPTION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{full_description}</td><td>{FULL_DESCRIPTION_MSG}</td>
+</tr>
+</table>
+<br>
+<!-- end product_info -->
+
+<!-- begin links_info -->
+<div class="title" align="center">{DOWNLOADABLE_INFO_MSG}</div>
+<br>
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="middle" align="center">
+	<td>{TAG_NAME_MSG}</td>                               	
+	<td>{TAG_DESCRIPTION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{links}</td><td>{AVAILABLE_LINKS_LIST_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{serials}</td><td>{AVAILABLE_SERIAL_LIST_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{vouchers}</td><td>{AVAILABLE_VOUCHERS_LIST_MSG}</td>
+</tr>
+</table>
+<br>
+<!-- end links_info -->
+
+
+<div class="title" align="center">{CUSTOMER_INFO_MSG}</div>
+<br>
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="middle" align="center">
+	<td colspan="2">{TAG_NAME_MSG}</td>                               	
+	<td>{TAG_DESCRIPTION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{name}</td><td>{delivery_name}</td><td>{USER_NAME_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{first_name}</td><td>{delivery_first_name}</td><td>{FIRST_NAME_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{first_name}</td><td>{delivery_middle_name}</td><td>{MIDDLE_NAME_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{last_name}</td><td>{delivery_last_name}</td><td>{LAST_NAME_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{company_name}</td><td>{delivery_company_name}</td><td>{COMPANY_NAME_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{email}</td><td>{delivery_email}</td><td>{EMAIL_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{address1}</td><td>{delivery_address1}</td><td>{STREET_FIRST_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{address2}</td><td>{delivery_address2}</td><td>{STREET_SECOND_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{address3}</td><td>{delivery_address3}</td><td>{STREET_THIRD_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{city}</td><td>{delivery_city}</td><td>{CITY_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{province}</td><td>{delivery_province}</td><td>{PROVINCE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{state}</td><td>{delivery_state}</td><td>{STATE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{zip}</td><td>{delivery_zip}</td><td>{ZIP_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{country}</td><td>{delivery_country}</td><td>{COUNTRY_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{phone}</td><td>{delivery_phone}</td><td>{PHONE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{daytime_phone}</td><td>{delivery_daytime_phone}</td><td>{DAYTIME_PHONE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{evening_phone}</td><td>{delivery_evening_phone}</td><td>{EVENING_PHONE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{cell_phone}</td><td>{delivery_cell_phone}</td><td>{CELL_PHONE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{fax}</td><td>{delivery_fax}</td><td>{FAX_FIELD}</td>
+</tr>
+<!-- BEGIN details_fields -->
+<tr class="usual">
+	<td>{field_{field_id}}</td><td colspan="2">{field_name}</td>
+</tr>
+<!-- END details_fields -->
+</table>
+<br>
+
+
+<!-- begin credit_card_info -->
+<div class="title" align="center">{CC_INFO_MSG}</div>
+<br>
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="middle" align="center">
+	<td>{TAG_NAME_MSG}</td>                               	
+	<td>{TAG_DESCRIPTION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{cc_name}</td><td>{CC_NAME_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{cc_first_name}</td><td>{FIRST_NAME_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{cc_last_name}</td><td>{LAST_NAME_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{cc_number}</td><td>{CC_NUMBER_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{cc_number_last}</td><td>{CC_FOUR_LAST_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{cc_issue_number}</td><td>{CC_ISSUE_NUMBER_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{cc_security_code}</td><td>{CC_SECURITY_CODE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{cc_type}</td><td>{CC_TYPE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{cc_start_date}</td><td>{CC_START_DATE_FIELD}</td>
+</tr>
+<tr class="usual">
+	<td>{cc_expiry_date}</td><td>{CC_EXPIRY_DATE_FIELD}</td>
+</tr>
+<!-- BEGIN payment_fields -->
+<tr class="usual">
+	<td>{field_{field_id}}</td><td>{field_name}</td>
+</tr><!-- END payment_fields -->
+</table>
+<!-- end credit_card_info -->
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle">
+	<td align="center"><a href="javascript:window.close();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+</table>
+
+</body>
+</html>

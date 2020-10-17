@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{shipping_module_name} :: {SHIPPING_METHODS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{shipping_module_name} :: {SHIPPING_METHODS_MSG}</div>
+<div class="BlockContent">
+
+<table border="0" cellspacing="1" cellpadding="6" width="100%"><!-- BEGIN sorters --> 
+<tr align="center" class="middle">
+	<td>{sorter_shipping_type_id}</td>
+	<td>{sorter_shipping_type_desc}</td>
+	<td>{sorter_is_active}</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+</tr><!-- END sorters --><!-- BEGIN records -->
+<tr class="usual" align="center">
+	<td>{shipping_type_id}</td>
+	<td align="left">{shipping_type_desc}</td>
+	<td><a class="small" href="{shipping_active_url}">{is_active}</a></td>
+	<td><a href="{admin_shipping_type_href}?shipping_type_id={shipping_type_id}">{EDIT_MSG}</a></td>
+	<td><a href="{admin_order_properties_href}?shipping_type_id={shipping_type_id}">{CUSTOM_FIELDS_MSG}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="5">{NO_RECORDS}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="5">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		&nbsp;<a href="{admin_shipping_type_href}?shipping_module_id={shipping_module_id}">{ADD_NEW_MSG}</a>
+	</td>
+</tr>
+</table>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

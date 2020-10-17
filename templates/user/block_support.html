@@ -1,0 +1,488 @@
+<!-- begin before_block --><!-- begin intro_block -->
+<div class="block bk-intro"> 
+	{intro_text}
+</div><!-- end intro_block --><!-- end before_block -->
+
+<script>
+function changeTicketDepartment(formElement)
+{
+	var formObj = vaParent(formElement, "FORM");
+	updateTicketTypes(formElement);
+	updateTicketProducts(formElement);
+	updateTicketFields(formElement);
+	orderTicketFields(formElement);
+	formObj.dep_id.focus();
+}
+function changeTicketType(formElement)
+{
+	updateTicketFields(formElement);
+}
+
+function updateTicketTypes(formElement)
+{
+	var formObj = vaParent(formElement, "FORM");
+	var depId = formObj.dep_id.value;
+
+	// populate types for selected department
+	var depTypes = [];
+	var typeObj = formObj.support_type_id;
+	var prevTypeId = typeObj.value;
+	var selectedTypeId = "";
+	var supportTypes = vaSettings["support"]["types"];
+	for (var typeId in supportTypes) {
+		var typeData = supportTypes[typeId];
+		if (typeData["deps_all"] == 1 || typeData["deps"][depId]) {
+			if (prevTypeId == typeId) { selectedTypeId = typeId; }
+			depTypes.push({id: typeId, order: typeData["order"], name: typeData["name"]});
+		}
+	}
+
+	var typeShow = vaSettings["support"]["fields"]["support_type_id"]["show"];
+	var typeRequired = vaSettings["support"]["fields"]["support_type_id"]["required"];
+	if (vaSettings["support"]["deps"] && vaSettings["support"]["deps"][depId] && vaSettings["support"]["deps"][depId]["fields"]) {
+		var depFields = vaSettings["support"]["deps"][depId]["fields"];
+		if(depFields["support_type_id"].show&& depFields["support_type_id"].show.length) { typeShow = depFields["support_type_id"].show; }
+		if(depFields["support_type_id"].required && depFields["support_type_id"].required.length) { typeRequired = depFields["support_type_id"].required; }
+	}
+
+	// update types block
+	var typeBlock = formObj.querySelector(".fd-type");
+	var typeValueObj = typeBlock.querySelector(".control-value");
+	typeValueObj.innerHTML = "";
+	var className = typeBlock.className.replace(/fd-value/gi, "").trim();
+	if (depTypes.length == 1) {
+		className += " fd-value";
+		selectedTypeId = depTypes[0].id;
+		typeValueObj.innerHTML = depTypes[0].name;
+	} else {
+		// check for default value if it wasn't selected
+		if (!selectedTypeId) {
+			for (var i = 0; i < depTypes.length; i++) {
+				var typeId = depTypes[0].id
+				if (supportTypes[typeId]["default"] == "1") {
+					selectedTypeId = typeId; break; 
+				}
+			}
+		}
+		// sort types array
+		depTypes.sort(function(a, b) { 
+			var aOrder = parseInt(a.order); var bOrder = parseInt(b.order); 
+			if (aOrder < bOrder) { return -1; }
+			if (aOrder > bOrder) { return 1;  }
+		  return 0;
+		});
+	}
+	typeBlock.className = className;
+	// unselect first value remove old list
+	var totalOptions = typeObj.options.length;
+	for (var i = totalOptions - 1; i >= 1; i--) {
+		typeObj.options[i] = null;
+	}
+	// add new department types
+	for (var i = 0; i < depTypes.length; i++) {
+		var typeSelected = (selectedTypeId == depTypes[i].id) ? true : false;
+		typeObj.options[typeObj.length] = new Option(depTypes[i].name, depTypes[i].id, false, typeSelected);
+	}
+}
+
+function updateTicketProducts(formElement)
+{
+	var formObj = vaParent(formElement, "FORM");
+	var depId = formObj.dep_id.value;
+
+	// populate products for selected department
+	var depProducts = [];
+	var productObj = formObj.support_product_id;
+	var selectedProductId = productObj.value;
+	var supportProducts = vaSettings["support"]["products"];
+	for (var productId in supportProducts) {
+		var productData = supportProducts[productId];
+		if (productData["deps_all"] == 1 || productData["deps"][depId]) {
+			depProducts.push({id: productId, order: productData["order"], name: productData["name"]});
+		}
+	}
+	// sort products array
+	depProducts.sort(function(a, b) { 
+		var aOrder = parseInt(a.order); var bOrder = parseInt(b.order); 
+		if (aOrder < bOrder) { return -1; }
+		if (aOrder > bOrder) { return 1;  }
+	  return 0;
+	});
+
+	//  remove old list
+	var totalOptions = productObj.options.length;
+	for (var i = totalOptions - 1; i >= 1; i--) {
+		productObj.options[i] = null;
+	}
+	// add new department types
+	for (var i = 0; i < depProducts.length; i++) {
+		var productSelected = (selectedProductId == depProducts[i].id) ? true : false;
+		productObj.options[productObj.length] = new Option(depProducts[i].name, depProducts[i].id, false, productSelected);
+	}
+}
+
+
+function updateTicketFields(formElement)
+{
+	var formObj = vaParent(formElement, "FORM");
+	var pbId = formObj.pb_id.value;
+	var depId = formObj.dep_id.value;
+	var typeObj = formObj.support_type_id;
+	var typesQty = typeObj.length - 1;
+	var productObj = formObj.support_product_id;
+	var productsQty = productObj.length - 1;
+
+	// update predefined fields settings accordingly to selected department
+	var fieldsBlock = formObj.querySelector(".fields");
+	var globalFields = vaSettings["support"]["fields"];
+	var depFields;
+	if (vaSettings["support"]["deps"] && vaSettings["support"]["deps"][depId] && vaSettings["support"]["deps"][depId]["fields"]) {
+		depFields = vaSettings["support"]["deps"][depId]["fields"];
+	}
+	for (var paramName in globalFields) {
+		var regExp = /^\./g;
+		var fieldClass = globalFields[paramName]["class"];
+		if (!regExp.test(fieldClass)) { 
+			fieldClass = "."+fieldClass;
+		}
+		var fieldName = globalFields[paramName]["name"];
+		var fieldShow = globalFields[paramName]["show"];
+		var fieldRequired = globalFields[paramName]["required"];
+		var fieldOrder = globalFields[paramName]["order"];
+		if (depFields) {
+			if(depFields[paramName].name && depFields[paramName].name.length) { fieldName = depFields[paramName].name; }
+			if(depFields[paramName].show && depFields[paramName].show.length) { fieldShow = depFields[paramName].show; }
+			if(depFields[paramName].required && depFields[paramName].required.length) { fieldRequired = depFields[paramName].required; }
+			if(depFields[paramName].order && depFields[paramName].order.length) { fieldOrder = depFields[paramName].order; }
+		}
+		if (paramName == "support_type_id" && typesQty == 0) {	
+			fieldShow = "0";
+		} else if (paramName == "support_product_id" && productsQty == 0) {
+			fieldShow = "0";
+		}
+
+		var fieldBlock =  fieldsBlock.querySelector(fieldClass);
+		if (fieldBlock) {
+			var className = fieldBlock.className.replace(/required/gi, "").trim();
+			className = className.replace(/hide-block/gi, "").trim();
+			className = className.trim();
+			if (fieldRequired == "1") { className += " required"; }
+			if (fieldShow == "0") { className += " hide-block"; }
+			fieldBlock.className = className;
+			fieldBlock.setAttribute("data-order", fieldOrder);
+			var nameCaption =  fieldBlock.querySelector(".name .caption");
+			nameCaption.innerHTML = fieldName;
+		}
+	}
+
+	// check what custom field we need to show
+	var blockObj = document.getElementById("pb_"+pbId);
+	if (blockObj) {
+		var typeId = formObj.support_type_id.value;
+
+		var fields = formObj.querySelectorAll(".fd-custom");
+		for (var f = 0; f < fields.length; f++) {
+			var field = fields[f];
+			var propertyDeps = field.getAttribute("data-deps");
+			var propertyTypes = field.getAttribute("data-types");
+			var propertyOrder = field.getAttribute("data-order");
+			try {
+				propertyDeps = JSON.parse(propertyDeps);
+			} catch(e) {
+				propertyDeps = {all: "all"};
+			}
+			try {
+				propertyTypes = JSON.parse(propertyTypes);
+			} catch(e) {
+				propertyTypes = {all: "all"};
+			}
+			var className = field.className.replace(/hide-block/gi, "").trim();
+			if ((!propertyDeps.all && !propertyDeps[depId]) || (!propertyTypes.all && !propertyTypes[typeId])) {
+				className += " hide-block";
+			}
+			field.className = className;
+		}
+
+		// check department intro block
+		var introObj = blockObj.querySelector("[data-intro='department']");
+		if (introObj) {
+			var regExp = /hide-block/g;
+			var dataDeps = vaSettings["support"]["deps"];
+			if (depId && dataDeps[depId] && dataDeps[depId]["intro"]) {
+				introObj.innerHTML = dataDeps[depId]["intro"];
+				if (regExp.test(introObj.className)) {
+					introObj.className = introObj.className.replace(/hide-block/gi, "").trim();
+				}
+			} else {
+				if (!regExp.test(introObj.className)) {
+					introObj.className = introObj.className + " hide-block";
+				}
+			}
+		}
+
+		// check type intro block
+		introObj = blockObj.querySelector("[data-intro='type']");
+		if (introObj) {
+			var regExp = /hide-block/g;
+			var dataTypes = vaSettings["support"]["types"];
+			if (typeId && dataTypes[typeId] && dataTypes[typeId]["intro"]) {
+				introObj.innerHTML = dataTypes[typeId]["intro"];
+				if (regExp.test(introObj.className)) {
+					introObj.className = introObj.className.replace(/hide-block/gi, "").trim();
+				}
+			} else {
+				if (!regExp.test(introObj.className)) {
+					introObj.className = introObj.className + " hide-block";
+				}
+			}
+		}
+	}
+}
+
+function orderTicketFields(formElement)
+{
+	var formObj = vaParent(formElement, "FORM");
+	var fieldsBlock = formObj.querySelector(".fields");
+	// change fields positions
+	var formFields = [];
+	var fields = fieldsBlock.querySelectorAll(".field");
+	for (var f = 0; f < fields.length; f++) {
+		var field = fields[f];
+		var fieldOrder = field.getAttribute("data-order");
+		formFields.push({obj: field, order: fieldOrder});
+	}
+	formFields.sort(function(a, b) { 
+		var aOrder = parseInt(a.order); var bOrder = parseInt(b.order); 
+		if (aOrder < bOrder) { return -1; }
+		if (aOrder > bOrder) { return 1;  }
+	  return 0;
+	});
+	for (var f = 0; f < formFields.length; f++) {
+		fieldsBlock.appendChild(formFields[f].obj);
+	}
+}
+
+
+function selectDep(depId)
+{
+	var deps = document.querySelectorAll("select[name='dep_id']");
+	for (var d = 0; d < deps.length; d++) {
+		deps[d].value = depId;
+		var inputEvent = document.createEvent('Event');
+		inputEvent.initEvent("input", false, true);
+		deps[d].dispatchEvent(inputEvent);
+		var formObj = vaParent(deps[d], "FORM");
+		var pbId = formObj.pb_id.value;
+		location.hash = "";
+		location.hash = "pb_"+pbId;
+	}
+}
+function selectType(typeId)
+{
+	var types = document.querySelectorAll("select[name='support_type_id']");
+	for (var t = 0; t < types.length; t++) {
+		types[t].value = typeId;
+		var inputEvent = document.createEvent('Event');
+		inputEvent .initEvent("input", false, true);
+		types[t].dispatchEvent(inputEvent);
+		var formObj = vaParent(types[t], "FORM");
+		var pbId = formObj.pb_id.value;
+		location.hash = "";
+		location.hash = "pb_"+pbId;
+	}
+}
+
+</script>
+
+	<div data-intro="department" class="dep-intro {dep_intro_class}">
+		{dep_intro}
+	</div>
+	<div data-intro="type" class="type-intro {type_intro_class}">
+		{type_intro}
+	</div>
+
+	<!-- begin support_error -->
+	<div class="error-block"><div class="msg-desc">{error_desc}</div></div>
+	<!-- end support_error -->
+	<!-- begin support_success -->
+	<div class="success-block"><div class="msg-desc">{success_desc}</div></div>
+	<!-- end support_success -->
+
+	<form name="support" action="{support_href}" method="post">
+	<input type="hidden" name="rnd" value="{rnd}" />
+	<input type="hidden" name="pb_id" value="{pb_id}" />
+	<input type="hidden" name="attachments_url" value="{user_support_attachments_url}" />
+	<input type="hidden" name="operation" value="save" />
+	<input type="hidden" name="support_status_id" value="1" />
+
+		<div class="field msg-asterisk">{ASTERISK_MSG}</div>
+		<div class="fields"><!-- begin support_fields --><!-- end support_fields --></div>
+
+			<!-- begin dep_id_block -->
+			<div class="field fd-dep {dep_id_class}" data-order="{dep_id_order}">
+				<div class="before"></div>
+				<div class="name">
+					<span class="caption">{SUPPORT_DEPARTMENT_FIELD}</span> <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					<select class="text" name="dep_id" oninput="changeTicketDepartment(this);"><!-- begin dep_id -->
+						<option {dep_id_selected} value="{dep_id_value}">{dep_id_description}</option><!-- end dep_id -->
+					</select>
+					<span class="control-value">{dep_id_selected_desc}</span>
+				</div>
+				<div class="after"></div>
+			</div><!-- end dep_id_block -->
+
+			<!-- begin support_type_id_block -->
+			<div class="field fd-type {support_type_id_class}" data-order="{support_type_id_order}">
+				<div class="before"></div>
+				<div class="name">
+					<span class="caption">{SUPPORT_TYPE_FIELD}</span> <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					<select class="text" name="support_type_id" oninput="changeTicketType(this);">
+					<!-- begin support_type_id --><option {support_type_id_selected} value="{support_type_id_value}">{support_type_id_description}</option><!-- end support_type_id -->
+					</select>
+					<span class="control-value">{support_type_id_selected_desc}</span>
+				</div>
+				<div class="after"></div>
+			</div><!-- end support_type_id_block -->
+
+			<!-- begin user_name_block -->
+			<div class="field fd-name {user_name_class}" data-order="{user_name_order}">
+				<div class="before"></div>
+				<div class="name">
+					<span class="caption">{CONTACT_USER_NAME_FIELD}</span> <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="user_name" value="{user_name}" maxlength="64" />
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- end user_name_block -->
+			<!-- begin user_email_block -->
+			<div class="field fd-email {user_email_class}" data-order="{user_email_order}">
+				<div class="before"></div>
+				<div class="name">
+					<span class="caption">{CONTACT_USER_EMAIL_FIELD}</span> <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="user_email" value="{user_email}" maxlength="64" />
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- end user_email_block -->
+			<!-- begin identifier_block -->
+			<div class="field fd-identifier {identifier_class}" data-order="{identifier_order}">
+				<div class="before"></div>
+				<div class="name">
+					<span class="caption">{SUPPORT_IDENTIFIER_FIELD}</span> <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="identifier" value="{identifier}" maxlength="128" />
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- end identifier_block -->
+			<!-- begin environment_block -->
+			<div class="field fd-environment {environment_class}" data-order="{environment_order}">
+				<div class="before"></div>
+				<div class="name">
+					<span class="caption">{SUPPORT_ENVIRONMENT_FIELD}</span> <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="environment" value="{environment}" maxlength="128" />
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- end environment_block -->
+			<!-- begin support_product_id_block -->
+			<div class="field fd-product {support_product_id_class}" data-order="{support_product_id_order}">
+				<div class="before"></div>
+				<div class="name">
+					<span class="caption">{SUPPORT_PRODUCT_FIELD}</span> <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					<select class="text" name="support_product_id">
+					<!-- begin support_product_id --><option {support_product_id_selected} value="{support_product_id_value}">{support_product_id_description}</option><!-- end support_product_id -->
+					</select>
+				</div>
+				<div class="after"></div>
+			</div><!-- end support_product_id_block -->
+
+			<!-- begin custom_properties -->
+			<div id="pp_block_{property_id}" class="field fd-custom {property_class}" data-property-id="{property_id}" data-order="{property_order}" data-deps="{property_deps}" data-types="{property_types}" style="{property_style}">
+				<div class="before"></div>
+				<div class="name">
+					<span class="caption">{property_name}</span> <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					{property_control} 
+				</div>
+				<div class="after"></div>
+			</div><!-- end custom_properties -->
+
+			<!-- begin summary_block -->
+			<div class="field fd-summary {summary_class}" data-order="{summary_order}">
+				<div class="before"></div>
+				<div class="name">
+					<span class="caption">{SUPPORT_SUMMARY_FIELD}</span> <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="summary" value="{summary}" maxlength="128" />
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- end summary_block -->
+
+			<!-- begin attachments_block -->
+			<div class="field fd-attachments {attachments_class}" data-order="{attachments_order}">
+				<div class="before"></div>
+				<div class="name">
+					<a class="attachments" onclick="attachFiles(document.support);"><span class="caption">{ATTACHMENTS_MSG}</span></a>  <i class="asterisk"></i> 
+				</div>
+				<div class="control">
+					<div id="attachmentsBlock" class="attached-files" style="{attached_files_style}">
+						<span class="files-list" id="attachedFiles">{attached_files}</span>
+					</div>
+				</div>
+				<div class="after"></div>
+			</div><!-- end attachments_block -->
+
+			<!-- begin description_block -->
+			<div class="field fd-description {description_class}" data-order="{description_order}">
+				<div class="before"></div>
+				<div class="name">
+					<span class="caption">{SUPPORT_DESCRIPTION_FIELD}</span> <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					<textarea name="description" rows="10">{description}</textarea>
+				</div>
+				<div class="after"></div>
+			</div>
+			<!-- end description_block -->
+
+			<!-- begin validation_number_block -->
+			<div class="field fd-validation {validation_class}">
+				<div class="before"></div>
+				<div class="name">
+					<span class="caption">{VALIDATION_CODE_FIELD}</span> <i class="asterisk"></i>
+				</div>
+				<div class="control">
+					<input class="field fd-validation" type="text" name="validation_number" size="4" value="{validation_number}" />
+					&nbsp;<img src="validation_image.php" align="absmiddle" />
+				</div>
+				<div class="after"></div>
+			</div><!-- end validation_number_block -->
+
+			<div class="field fd-submit {submit_class}">
+				<div class="before"></div>
+				<div class="name">
+				</div>
+				<div class="control">
+					<input class="submit" type="submit" value="{SUPPORT_REQUEST_BUTTON}" />
+				</div>
+				<div class="after"></div>
+			</div>
+
+	</form>

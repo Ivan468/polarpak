@@ -1,0 +1,423 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{ADMINISTRATION_MSG} :: {DOWNLOADS_SETTINGS_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+<script type="text/javascript" src="../js/admin.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/editor.js"></script>
+<script language="JavaScript">
+<!--
+	function openWindow(pagename)
+	{
+		var popupWin = window.open (pagename + "?links=1", 'popup', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		popupWin.focus();
+	}
+//-->
+</script>
+{CKEditor_tag}
+</head>
+<body class="mainbg">
+
+{admin_header}
+
+<form action="{admin_download_info_href}" name="record" method="POST" onsubmit="submit_editor(Array('editor_em','editor_sm','editor_sn_lm','editor_vm'));">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="rp" value="{rp}">
+<input type="hidden" name="tab" value="{tab}">
+<!-- begin sitelist -->
+<div class="sitelist">
+	{SELECT_SITE_MSG}&nbsp;
+	<select name="param_site_id" onchange="reloadSite(this.form)"><!-- begin param_site_id -->
+		<option {param_site_id_selected} value="{param_site_id_value}">{param_site_id_description}<!-- end param_site_id -->
+	</select>		
+</div><!-- end sitelist -->
+{block_leftside_breadcrumbs}
+
+<!-- BEGIN success_block --><div class="messagebg">{CHANGES_SAVED_MSG}</div><!-- END success_block -->
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<div id="tabs"><!-- BEGIN tabs_rows -->
+	<ul id="{row_id}" class="tabRow"><!-- BEGIN tabs -->
+		<li id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+	</ul><!-- END tabs_rows -->
+</div>
+
+<div class="Block clearBoth">
+<div class="BlockContent">
+
+<div id="data_general" style="{general_style}">
+<table border="0" cellpadding="5" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2"><b>{DOWNLOADS_SETTINGS_MSG}</b></td>
+</tr>
+<tr class="usual">
+	<td>{ADMIN_UPLOAD_DIR_MSG}</td>
+	<td><input class="field" type="text" name="downloads_admins_dir" value="{downloads_admins_dir}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>
+		{FILES_ADMIN_UPLOAD_MSG}<br>
+		({EG_MSG}: <b>*.mp3, *.zip, *.jpeg</b>)<br>
+		{FILES_ADMIN_UPLOAD_NOTE}
+	</td>
+	<td><textarea name="downloads_admins_mask" cols="80" rows="3">{downloads_admins_mask}</textarea></td>
+</tr>
+<tr class="usual">
+	<td>{USERS_UPLOAD_DIR_MSG}</td>
+	<td><input class="field" type="text" name="downloads_users_dir" value="{downloads_users_dir}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>
+		{FILES_USERS_UPLOAD_MSG}<br>
+		({EG_MSG}: <b>*.mp3, *.zip, *.jpeg</b>)
+	</td>
+	<td><textarea name="downloads_users_mask" cols="80" rows="3">{downloads_users_mask}</textarea></td>
+</tr>
+<tr class="usual">
+	<td>{MAXIMUM_DOWNLOADS_NOTE}</td>
+	<td><input class="field" type="text" name="max_downloads" value="{max_downloads}" size="10" maxlength="5"></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="data_links" style="{links_style}">
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2"><b>{DEFAULT_EMAIL_DOWNLOAD_LINKS}</b></td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_FROM_MSG}</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="links_from" value="{links_from}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>sales@yoursite.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="links_cc" value="{links_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="links_bcc" value="{links_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="links_reply_to" value="{links_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="links_return_path" value="{links_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="links_subject" value="{links_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin links_message_type -->
+		<input type="radio" name="links_message_type" id="links_message_type{links_message_type_value}" {links_message_type_checked} value="{links_message_type_value}">
+		<label for="links_message_type{links_message_type_value}">{links_message_type_description}</label><!-- end links_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{MESSAGE_MSG}</b>
+		<div class="small">
+		<br>(<a href="javascript:openWindow('{admin_order_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_SETTINGS_NOTE}
+		<br>&nbsp;{LEARN_MORE_AND_SEE_NOTE})
+		</div>
+	</td>
+	<td>{editor_error}
+	<textarea name="links_message" id="em" cols="80" rows="10">{links_message}</textarea>
+		<!-- begin em_ext_editor -->
+		<script type="text/javascript">
+			CKEDITOR.replace('em');
+		</script><!-- end em_ext_editor -->
+		<!-- begin em_int_editor -->
+		<script type= "text/javascript">
+			var editor_em = new VA_HTMLeditor('content_em','../','{html_editor}');
+			editor_em.text_field_name = 'links_message';
+			editor_em.formname = 'record';
+			editor_em.css_file = '{css_file}';
+			editor_em.editor_type = 'email_editor';
+			editor_em.displayEditor('editor_em', 560, 170);
+		</script><!-- end em_int_editor -->
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="data_serials" style="{serials_style}">
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2"><b>{DEFAULT_EMAIL_SERIAL_NUMBERS}</b></td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_FROM_MSG}</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="serials_from" value="{serials_from}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>sales@yoursite.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="serials_cc" value="{serials_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="serials_bcc" value="{serials_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="serials_reply_to" value="{serials_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="serials_return_path" value="{serials_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="serials_subject" value="{serials_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin serials_message_type -->
+		<input type="radio" name="serials_message_type" id="serials_message_type{serials_message_type_value}" {serials_message_type_checked} value="{serials_message_type_value}">
+		<label for="serials_message_type{serials_message_type_value}">{serials_message_type_description}</label><!-- end serials_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{MESSAGE_MSG}</b>
+		<div class="small">
+		<br>(<a href="javascript:openWindow('{admin_order_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_SETTINGS_NOTE}
+		<br>&nbsp;{LEARN_MORE_AND_SEE_NOTE})
+		</div>
+	</td>
+	<td>{editor_error}
+		<textarea name="serials_message" id="sm" cols="80" rows="10">{serials_message}</textarea>
+		<!-- begin sm_ext_editor -->
+		<script type="text/javascript">
+			CKEDITOR.replace('sm');
+		</script><!-- end sm_ext_editor -->
+		<!-- begin sm_int_editor -->
+		<script type= "text/javascript">
+			var editor_sm = new VA_HTMLeditor('content_sm','../','{html_editor}');
+			editor_sm.text_field_name = 'serials_message';
+			editor_sm.formname = 'record';
+			editor_sm.css_file = '{css_file}';
+			editor_sm.editor_type = 'email_editor';
+			editor_sm.displayEditor('editor_sm', 560, 170);
+		</script><!-- end sm_int_editor -->
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2"><b>{SERIAL_NUMBER_LIMIT_EMAIL_MSG}</b></td>
+</tr>
+<tr class="usual">
+	<td>
+		{SERIAL_NUMBER_LIMIT_MSG}
+	</td>
+	<td>
+		<input class="field" type="text" name="sn_limit" value="{sn_limit}" size="10" maxlength="10">
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="sn_limit_admin_notify">{SEND_NOTIFICATION_ADMIN_MSG}</label></td>
+	<td><input type="checkbox" name="sn_limit_admin_notify" id="sn_limit_admin_notify" {sn_limit_admin_notify} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_TO_MSG}</b>
+		<div class="small">
+			(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})
+		</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="sn_limit_to" value="{sn_limit_to}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>admin@yoursite.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{EMAIL_FROM_MSG}
+	</td>
+	<td>
+		<input class="field" type="text" name="sn_limit_from" value="{sn_limit_from}" size="80" maxlength="255">
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="sn_limit_cc" value="{sn_limit_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="sn_limit_bcc" value="{sn_limit_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="sn_limit_reply_to" value="{sn_limit_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="sn_limit_return_path" value="{sn_limit_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="sn_limit_subject" value="{sn_limit_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin sn_limit_message_type -->
+		<input type="radio" name="sn_limit_message_type" id="sn_limit_message_type{sn_limit_message_type_value}" {sn_limit_message_type_checked} value="{sn_limit_message_type_value}">
+		<label for="sn_limit_message_type{sn_limit_message_type_value}">{sn_limit_message_type_description}</label><!-- end sn_limit_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<div><b>{MESSAGE_MSG}</b></div>
+
+		<br>
+		<table cellspacing="1" cellpadding="2">
+		<tr class="middle"><td>{TAG_NAME_MSG}</td><td>{TAG_DESCRIPTION_MSG}</td></tr>
+		<tr><td>&#123;item_id}</td><td>{PRODUCT_ID_MSG}</td></tr>
+		<tr><td>&#123;item_name}</td><td>{PROD_NAME_MSG}</td></tr>
+		<tr><td>&#123;sn_left}</td><td>{SERIAL_NUMBERS_LEFT_MSG}</td></tr>
+		</table>
+
+	</td>
+	<td>{editor_error}
+		<textarea name="sn_limit_message" id="sn_lm" cols="80" rows="10">{sn_limit_message}</textarea>
+		<!-- begin sn_lm_ext_editor -->
+		<script type="text/javascript">
+			CKEDITOR.replace('sn_lm');
+		</script><!-- end sn_lm_ext_editor -->
+		<!-- begin sn_lm_int_editor -->
+		<script type= "text/javascript">
+			var editor_sn_lm = new VA_HTMLeditor('content_sn_lm','../','{html_editor}');
+			editor_sn_lm.text_field_name = 'sn_limit_message';
+			editor_sn_lm.formname = 'record';
+			editor_sn_lm.css_file = '{css_file}';
+			editor_sn_lm.editor_type = 'email_editor';
+			editor_sn_lm.displayEditor('editor_sn_lm', 560, 170);
+		</script><!-- end sn_lm_int_editor -->
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="data_vouchers" style="{vouchers_style}">
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2"><b>{DEFAULT_EMAIL_GIFT_VOUCHERS}</b></td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_FROM_MSG}</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="vouchers_from" value="{vouchers_from}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>sales@yoursite.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="vouchers_cc" value="{vouchers_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="vouchers_bcc" value="{vouchers_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="vouchers_reply_to" value="{vouchers_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="vouchers_return_path" value="{vouchers_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="vouchers_subject" value="{vouchers_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin vouchers_message_type -->
+		<input type="radio" name="vouchers_message_type" id="vouchers_message_type{vouchers_message_type_value}" {vouchers_message_type_checked} value="{vouchers_message_type_value}">
+		<label for="vouchers_message_type{vouchers_message_type_value}">{vouchers_message_type_description}</label><!-- end vouchers_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{MESSAGE_MSG}</b>
+		<div class="small">
+		<br>(<a href="javascript:openWindow('{admin_order_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_SETTINGS_NOTE}
+		<br>&nbsp;{LEARN_MORE_AND_SEE_NOTE})
+		</div>
+	</td>
+	<td>{editor_error}
+	<textarea name="vouchers_message" id="vm" cols="80" rows="10">{vouchers_message}</textarea>
+	<!-- begin vm_ext_editor -->
+		<script type="text/javascript">
+			CKEDITOR.replace('vm');
+		</script><!-- end vm_ext_editor -->
+		<!-- begin vm_int_editor -->
+		<script type= "text/javascript">
+			var editor_vm = new VA_HTMLeditor('content_vm','../','{html_editor}');
+			editor_vm.text_field_name = 'vouchers_message';
+			editor_vm.formname = 'record';
+			editor_vm.css_file = '{css_file}';
+			editor_vm.editor_type = 'email_editor';
+			editor_vm.displayEditor('editor_vm', 560, 170);
+		</script><!-- end vm_int_editor -->
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+</div>
+</div>
+</form>
+
+
+{admin_footer}
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {CUSTOMER_MENU_NEWSLETTERS} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+	function openSendWindow(newsletterID)
+	{
+		var sendWin = window.open ('{admin_newsletter_send_href}?newsletter_id=' + newsletterID, 'sendWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		sendWin.focus();
+	}
+//-->
+</script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{CUSTOMER_MENU_NEWSLETTERS}</div>
+<div class="BlockContent">
+
+<table border="0" cellspacing="1" cellpadding="6" width="100%"><!-- begin sorters -->
+<tr align="center" class="middle" valign="top">
+	<td>{ID_MSG}</td>
+	<td>{NAME_MSG}</td>
+	<td>{EMAILS_MSG}</td>
+	<td>{SENT_MSG}</td>
+	<td>{OPENED_MSG}</td>
+	<td>{CLICKED_MSG}</td>
+	<td>{BOUNCED_MSG}</td>
+	<td>{UNSUBSCRIBED_COLUMN}</td>
+	<td>{ORDERS_MSG} (#)</td>
+	<td>{ORDERS_MSG} ({currency_left}{currency_right})</td>
+</tr><!-- end sorters -->
+<tr>
+	<td class="label" colspan="10" align="left">&nbsp;{campaign_name}</td>
+</tr><!-- BEGIN records -->
+<tr class="usual" align="center">
+	<td >{newsletter_id}</td>
+	<td align="left"><a href="{admin_newsletter_href}?newsletter_id={newsletter_id}">{newsletter_subject}</td>
+	<td>{emails}</td>
+	<td>{sent}</td>
+	<td>{opened}</td>
+	<td>{clicked}</td>
+	<td>{bounced}</td>
+	<td>{unsubscribed}</td>
+	<td>{orders_number}</td>
+	<td>{orders_total}</td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="10">{NO_RECORDS}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="10">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		&nbsp;
+	</td>
+</tr>
+</table>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

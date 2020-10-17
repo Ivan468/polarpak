@@ -1,0 +1,33 @@
+<table cellspacing="1" width="100%" class="table-data"><!-- BEGIN search_results -->
+<tr class="usualbg"><td colspan="5">{found_message}</td></tr><!-- END search_results --><!-- begin sorters -->
+<tr class="middlebg" align="center">
+	<td align="left">{sorter_topic}</td>
+	<td>{sorter_user_name}</td>
+	<td>{sorter_views}</td>
+	<td>{sorter_replies}</td>
+	<td>{sorter_thread_updated}</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="usualbg" align="center">
+	<td align="left" width="34%"><!--begin block_topic-->
+		<img src="./images/icons/closed.gif" alt="Restricted Topic" alt="closed" align="absmiddle" /><!--end block_topic-->
+		{html_before_title}<a href="{forum_thread_href}">{topic}</a>{html_after_title}<!-- begin topic_pages_block -->
+		<div class="smallText">[ <img src="images/icons/mini_page.gif" alt="" />&nbsp;<a class="smallText" href="{forum_thread_href}">1</a><!-- begin topic_pages -->,<a class="smallText" href="{forum_thread_page_url}">{page_number}</a><!-- end topic_pages --> ]</div><!-- end topic_pages_block -->
+	</td>
+	<td width="20%"><span class="{topic_author_class}">{user_name}</span></td>
+	<td width="12%">{views}</td>
+	<td width="12%">{replies}</td>
+	<td align="left" width="22%">
+		{thread_updated}<!-- begin last_post_by_block -->
+		<br /><b>{LAST_POST_BY_SHORT_MSG}</b> <span class="{forum_user_class}">{last_post_by}</span><!-- end last_post_by_block -->
+	</td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usualbg">
+	<td colspan="5">{NO_TOPICS_MSG}</td>
+</tr><!-- END no_records -->
+<tr class="middlebg">
+	<td colspan="5">
+		<div class="floatright"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<!-- begin new_topic_block --><a href="{forum_topic_new_url}">{NEW_TOPIC_MSG}</a><!-- end new_topic_block -->&nbsp;
+	</td>
+</tr>
+</table>

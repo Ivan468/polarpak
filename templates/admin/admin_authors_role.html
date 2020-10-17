@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{AUTHOR_ROLE_MSG} :: {EDIT_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="bodySettings">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<form action="{admin_authors_role_href}" name="record" method="POST" >
+<input type="hidden" name="sites" value="{sites}">
+<input type="hidden" name="languages" value="{languages}">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="author_id" value="{author_id}">
+<input type="hidden" name="sw" value="{sw}">
+<input type="hidden" name="form_name" value="{form_name}">
+<input type="hidden" name="items_field" value="{items_field}">
+<input type="hidden" name="items_object" value="{items_object}">
+<input type="hidden" name="item_template" value="{item_template}">
+<input type="hidden" name="selection_type" value="{selection_type}">
+<input type="hidden" name="win_type" value="{win_type}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="page" value="{page}">
+<input type="hidden" name="tab" value="{tab}">
+
+	<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+		<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+	</ul>
+
+<div class="Form">
+<div class="FormContent">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<div id="general_data" class="tab-data {general_class}">
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="usual">
+	<td>{CODE_MSG} *</td>
+	<td><input class="field" type="text" size="10" name="role_code" value="{role_code}" maxlength="8"></td>
+</tr>
+<tr class="usual">
+	<td>{NAME_MSG}	*</td>
+	<td><input class="field" type="text" size="80" name="role_name" value="{role_name}"></td>
+</tr>
+<tr class="middle">
+	<td>
+	</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="Delete" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="Cancel" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

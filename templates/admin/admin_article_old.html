@@ -1,0 +1,34 @@
+		<tr class="middle">
+			<td colspan="2" class="middle">{IMAGES_MSG}</td>
+		</tr>
+		<tr class="usual">
+			<td colspan="2"><div class="small">
+				{SMALL_IMAGE_IS_SHOWN_MSG} <br>
+				{LARGE_ONE_DETAILS_PAGE_MSG}
+			</div></td>
+		</tr>
+		<tr class="usual">
+			<td valign="top">{IMAGE_SMALL_MSG} {image_small_required}</td>
+			<td>
+				<input class="field" type="text" size="60" maxlength="255" name="image_small" value="{image_small}"> 
+				&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'article_small')"><b>{UPLOAD_IMAGE_MSG}</b></a>|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'article_small')"><b>{SELECT_IMAGE_MSG}</b></a>
+			</td>
+		</tr><!-- end image_small_block -->		
+		<!-- begin image_small_alt_block -->
+		<tr class="usual">
+			<td>{IMAGE_SMALL_ALT_MSG}</td>
+			<td><input class="field" type="text" name="image_small_alt" value="{image_small_alt}" size="60" maxlength="255"></td>
+		</tr><!-- end image_small_alt_block -->
+		<!-- begin image_large_block -->
+		<tr class="usual">
+			<td>{IMAGE_LARGE_MSG} {image_large_required}</td>
+			<td>
+				<input class="field" type="text" size="60" maxlength="255" name="image_large" value="{image_large}"> 
+				&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'article_large')"><b>{UPLOAD_IMAGE_MSG}</b></a>|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'article_large')"><b>{SELECT_IMAGE_MSG}</b></a>
+			</td>
+		</tr><!-- end image_large_block -->
+		<!-- begin image_large_alt_block -->
+		<tr class="usual">
+			<td>{IMAGE_LARGE_ALT_MSG}</td>
+			<td><input class="field" type="text" name="image_large_alt" value="{image_large_alt}" size="60" maxlength="255"></td>
+		</tr><!-- end image_large_alt_block -->

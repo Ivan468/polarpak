@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html><head><title>{NEWSLETTER_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/calendar.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/editor.js"></script>
+{CKEditor_tag}
+</head>
+
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<form action="{admin_newsletter_href}" name="record" method="POST" enctype="multipart/form-data" onSubmit="submit_editor(Array('editor_nb'));">
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="newsletter_id" value="{newsletter_id}">
+<input type="hidden" name="campaign_id" value="{campaign_id}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<!-- BEGIN newsletter_filters_errors --><!-- END newsletter_filters_errors -->
+<!-- BEGIN success --><div class="messagebg">{success_message}</div><!-- END success -->
+
+
+	<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+		<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+	</ul>
+
+<div class="Form clearBoth">
+<div class="FormContent">
+
+<div id="general_data" class="tab-data {general_class}">
+<!-- BEGIN check_emails_errors_block --><div class="errorbg">{INCORRECT_EMAILS_MSG}</div><!-- END check_emails_errors_block -->
+<table width="100%" border="0" cellspacing="1" cellpadding="6" align="center">
+<tr class="middle">
+	<td colspan="2">{GENERAL_INFO_MSG}</td>
+</tr>
+<tr class="usual">
+	<td width="30%">{EMAIL_CAMPAIGN_MSG}</td>
+	<td><b>{campaign_name}</b></td>
+</tr>
+<tr class="usual">
+	<td>{TYPE_MSG} *</td>
+	<td><!-- begin newsletter_type -->
+		<input type="radio" name="newsletter_type" id="newsletter_type{newsletter_type_value}" {newsletter_type_checked} value="{newsletter_type_value}">
+		<label for="newsletter_type{newsletter_type_value}">{newsletter_type_description}</label><!-- end newsletter_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td width="30%"><label for="is_active">{IS_ACTIVE_MSG}</label></td>
+	<td><input type="checkbox" name="is_active" id="is_active" {is_active} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{DATE_MSG} *</td>
+	<td>
+		<input class="field" type="text" name="newsletter_date" value="{newsletter_date}">
+		({USE_FOLLOWING_FORMAT_MSG} <b>{datetime_format}</b>)</div>		
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{NEWSLETTER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_MESSAGE_TYPE_MSG} *</td>
+	<td><!-- begin mail_type -->
+		<input type="radio" name="mail_type" id="mail_type{mail_type_value}" {mail_type_checked} value="{mail_type_value}">
+		<label for="mail_type{mail_type_value}">{mail_type_description}</label><!-- end mail_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_FROM_MSG}</td>
+	<td><input class="field" type="text" name="mail_from" value="{mail_from}" size="75" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="mail_reply_to" value="{mail_reply_to}" size="75" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="mail_return_path" value="{mail_return_path}" size="75" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="mail_cc" value="{mail_cc}" size="75" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="mail_bcc" value="{mail_bcc}" size="75" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_SUBJECT_MSG} *</td>
+	<td><input class="field" type="text" name="newsletter_subject" value="{newsletter_subject}" size="75" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td colspan="2">{editor_error}
+		<textarea class="text" id="nl" name="newsletter_body" style="display: block; width: 900px; height: 300px;">{newsletter_body}</textarea>
+		<!-- begin nl_ext_editor -->
+		<script type="text/javascript">
+			CKEDITOR.replace( 'nl' );
+		</script><!-- end nl_ext_editor -->
+		<!-- begin nl_int_editor -->
+		<script language= "JavaScript" type= "text/javascript">
+		<!--
+			var editor_nb = new VA_HTMLeditor('content_nd','../','{html_editor}');
+			editor_nb.text_field_name = 'newsletter_body';
+			editor_nb.formname = 'record';
+			editor_nb.editor_type = 'newsletter_editor';
+			editor_nb.displayEditor('editor_nb', 604, 300);
+		//-->
+		</script><!-- end nl_int_editor -->
+		<div>
+			<input type="checkbox" name="add_unsubscribe_link" id="add_unsubscribe_link" {add_unsubscribe_link} value="1">
+			<label for="add_unsubscribe_link">add unsubscribe link</label>
+		</div>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="subscribed_data" class="tab-data {subscribed_class}">
+	<table width="100%" border="0" cellspacing="1" cellpadding="6" align="center">
+	<tr class="usual" valign="top">
+		<td><label for="subscribed_recipients">{SUBSCRIBED_CUSTOMERS_MSG}</label></td>
+		<td><input type="checkbox" name="subscribed_recipients" id="subscribed_recipients" {subscribed_recipients} value="1"></td>
+	</tr>
+	<tr class="usual" valign="top">
+		<td>
+			<div>{SITES_MSG}<div>
+			<div class="comment">({SUBSCRIBED_SITE_DESC})</div>
+		</td>
+		<td>
+			<!-- begin s_sites -->
+			<div class="floatLeft half25">
+			<label>
+			<input type="checkbox" {s_sites_checked} name="s_sites_{s_sites_index}" value="{s_sites_value}" />
+			{s_sites_description}</label>
+			</div>
+			<!-- end s_sites -->
+			<input type="hidden" name="s_sites" value="{s_sites_size}" />
+		</td>
+	</tr>
+	<tr class="middle">
+		<td>&nbsp;</td>
+		<td>
+			<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+			<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+			<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+<div id="users_data" class="tab-data {users_class}">
+	<table width="100%" border="0" cellspacing="1" cellpadding="6" align="center">
+	<tr class="usual" valign="top">
+		<td>{USER_TYPE_MSG}</td>
+		<td>
+			<!-- begin u_groups -->
+			<div class="floatLeft half25">
+				<label>
+					<input type="checkbox" {u_groups_checked} name="u_groups_{u_groups_index}" value="{u_groups_value}" />
+					{u_groups_description}
+				</label>
+			</div>
+			<!-- end u_groups -->
+			<input type="hidden" name="u_groups" value="{u_groups_size}" />
+		</td>
+	</tr>
+	<tr class="usual" valign="top">
+		<td>
+			<div>{SITES_MSG}<div>
+			<div class="comment">({USER_SITE_DESC})</div>
+		</td>
+		<td>
+			<!-- begin u_sites -->
+			<div class="floatLeft half25">
+			<label>
+			<input type="checkbox" {u_sites_checked} name="u_sites_{u_sites_index}" value="{u_sites_value}" />
+			{u_sites_description}</label>
+			</div>
+			<!-- end u_sites -->
+			<input type="hidden" name="u_sites" value="{u_sites_size}" />
+		</td>
+	</tr>
+	<tr class="middle">
+		<td>&nbsp;</td>
+		<td>
+			<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+			<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+			<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+<!--
+Additional filters options to add: 
+Product Type (and any sub types we create due to a customization (as discussed in one of my emails))
+Product Item on order (Find customer's who have purchased X item)
+Product Item not on order (Find customer's who have not purchased y item)
+By using the two Product Item filters I could find all customers who purchased x item but didn't purchases y item (all the people who ordered ecogrip cup sleeves but didn't purchase stir sticks). 
+-->
+
+
+<div id="orders_data" class="tab-data {orders_class}">
+<table width="100%" border="0" cellspacing="1" cellpadding="6" align="center">
+	<tr class="middle" valign="top">
+		<td colspan="2">{CUSTOMER_PURCHASED_PRODUCTS_MSG}</td>
+	</tr>
+	<tr class="usual" valign="top">
+		<td><nobr>{ADMIN_WHERE_STATUS_IS_MSG}</nobr></td>
+		<td>
+			<!-- begin o_os-->
+			<div class="floatLeft half25">
+			<label>
+			<input type="checkbox" {o_os_checked} name="o_os_{o_os_index}" value="{o_os_value}" />
+			{o_os_description}</label>
+			</div>
+			<!-- end o_os-->
+			<input type="hidden" name="o_os" value="{o_os_size}" />
+		</td>
+	</tr>
+	<tr class="usual" valign="top">
+		<td>
+			<div>{SITES_MSG}<div>
+			<div class="comment">({ORDER_SITE_DESC})</div>
+		</td>
+		<td>
+			<!-- begin o_sites -->
+			<div class="floatLeft half25">
+			<label>
+			<input type="checkbox" {o_sites_checked} name="o_sites_{o_sites_index}" value="{o_sites_value}" />
+			{o_sites_description}</label>
+			</div>
+			<!-- end o_sites -->
+			<input type="hidden" name="o_sites" value="{o_sites_size}" />
+		</td>
+	</tr>
+	<tr class="usual">
+		<td>{ORDER_DATE_MSG}</td>
+		<td>
+			<input type="text" name="o_sd" value="{o_sd}" class="search" placeholder="{date_edit_format}">
+				<a href="#"
+					onClick="setDateField(document.record.o_sd, '{date_edit_format}');
+					top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+				<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+			&ndash;
+			<input type="text" name="o_ed" value="{o_ed}" class="search" placeholder="{date_edit_format}">
+				<a href="#"
+					onClick="setDateField(document.record.o_ed, '{date_edit_format}');
+					top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+				<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+			<span class="comment">({FROM_DATE_MSG} - {TO_DATE_MSG})</span>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td>{STATUS_SHIPPED_MSG}</td>
+		<td>
+			<input type="text" name="os_sd" value="{os_sd}" class="search" placeholder="{date_edit_format}">
+				<a href="#"
+					onClick="setDateField(document.record.os_sd, '{date_edit_format}');
+					top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+				<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+			&ndash;
+			<input type="text" name="os_ed" value="{os_ed}" class="search" placeholder="{date_edit_format}">
+				<a href="#"
+					onClick="setDateField(document.record.os_ed, '{date_edit_format}');
+					top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+				<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td><nobr>{SHIP_TO_MSG} {COUNTRY_FIELD}</nobr></td>
+		<td>
+			<select name="o_ci" class="search" style="width: 200px;"><!-- BEGIN o_ci -->
+				<option {o_ci_selected} value="{o_ci_value}">{o_ci_description}<!-- END o_ci -->
+			</select>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td><nobr>{SHIP_TO_MSG} {STATE_FIELD}</nobr></td>
+		<td>
+			<select name="o_si" class="search" style="width: 200px;"><!-- BEGIN o_si -->
+				<option {o_si_selected} value="{o_si_value}">{o_si_description}<!-- END o_si -->
+			</select>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td>{ADMIN_ORDER_TOTAL_MSG}</td>
+		<td>
+			<input type="text" name="o_total_min" value="{o_total_min}" size="12" class="search">
+			&ndash;
+			<input type="text" name="o_total_max" value="{o_total_max}" size="12" class="search">
+		</td>
+	</tr>
+	<!-- tr class="usual">
+		<td>Grand Total</td>
+		<td>
+			<input type="text" name="o_grand_min" value="{o_grand_min}" size="12" class="search">
+			&ndash;
+			<input type="text" name="o_grand_max" value="{o_grand_max}" size="12" class="search">
+		</td>
+	</tr -->
+	<tr class="usual">
+		<td>{COUPON_CODE_MSG}</td>
+		<td>
+			<input type="text" name="o_coupon_code" value="{o_coupon_code}" size="30" class="search">
+		</td>
+	</tr><!-- BEGIN o_user_status_block -->
+	<tr class="usual">
+		<td>User Status</td>
+		<td>
+			<!-- BEGIN o_user_status -->
+			<input type="radio" name="o_user_status" id="o_user_status{o_user_status_value}" {o_user_status_checked} value="{o_user_status_value}">
+			<label for="o_user_status{o_user_status_value}">{o_user_status_description}</label><!-- END o_user_status -->
+		</td>
+	</tr><!-- END o_user_status_block -->
+	<tr class="middle" id="update_action_row" style="{update_action_style}">
+		<td colspan="2">{UPDATE_ACTION_MSG}</td>
+	</tr>
+	<tr class="usual" id="update_order_status_row" style="{update_order_status_style}">
+		<td><nobr>{UPDATE_ORDER_STATUS_MSG}</nobr></td>
+		<td>
+			<select name="o_new_os"><!-- begin o_new_os -->
+				<option {o_new_os_selected} value="{o_new_os_value}">{o_new_os_description}<!-- end o_new_os -->
+			</select>
+		</td>
+	</tr>
+			<!-- begin sitelist -->
+			<tr class="usual">
+				<td>{ADMIN_SITE_MSG}:</td>
+				<td>
+					<select name="o_sti" class="search"><!-- BEGIN o_sti -->
+						<option {o_sti_selected} value="{o_sti_value}">{o_sti_description}<!-- END o_sti -->
+					</select>
+				</td>
+			</tr><!-- end sitelist -->
+
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="admins_data" class="tab-data {admins_class}">
+	<table width="100%" border="0" cellspacing="1" cellpadding="6" align="center">
+	<tr class="usual" valign="top">
+		<td>{ADMINISTRATORS_MSG}</td>
+		<td>
+			<!-- begin a_groups -->
+			<div class="floatLeft half25">
+			<label>
+			<input type="checkbox" {a_groups_checked} name="a_groups_{a_groups_index}" value="{a_groups_value}" />
+			{a_groups_description}
+			</label></div>
+			<!-- end a_groups -->
+			<input type="hidden" name="a_groups" value="{a_groups_size}" />
+		</td>
+	</tr>
+	<tr class="middle">
+		<td>&nbsp;</td>
+		<td>
+			<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+			<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+			<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+<div id="custom_data" class="tab-data {custom_class}">
+<table width="100%" border="0" cellspacing="1" cellpadding="6" align="center">
+<tr class="usual" valign="top">
+	<td>{ADD_CUSTOM_EMAILS_MSG}</td>
+	<td>
+		<input type="file" name="custom_recipients_file" value="{custom_recipients_file}" size="60" class="submit">&nbsp;
+		<span class="button"><input class="submit" type="submit" value="{UPLOAD_BUTTON}" onclick="document.record.operation.value = 'load'"></span>
+	</td>
+</tr>
+<tr class="usual" valign="top">
+	<td>{CUSTOM_EMAILS_LIST_MSG}</td>
+	<td><textarea rows = "12" cols="70" name="custom_recipients">{custom_recipients}</textarea></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="template_data" class="tab-data {template_class}">
+<table width="100%" border="0" cellspacing="1" cellpadding="6" align="center">
+<tr class="middle">
+	<td colspan="2">{RECURRING_OPTIONS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{TEMPLATE_INTERVAL_MSG}</td>
+	<td>
+		<input class="field" type="text" name="template_interval" value="{template_interval}" size="10" maxlength="10"> &nbsp;
+		<select name="template_period"><!-- begin template_period -->
+			<option {template_period_selected} value="{template_period_value}">{template_period_description}<!-- end template_period -->
+		</select>
+		&nbsp; ({TEMPLATE_INTERVAL_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{NEWSLETTERS_LIMIT_MSG}</td>
+	<td>
+		<input class="field" type="text" name="template_newsletters_limit" value="{template_newsletters_limit}" size="10" maxlength="10">
+		({NEWSLETTERS_LIMIT_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{NEWSLETTERS_ADDED_MSG}</td>
+	<td>
+		<b>{template_newsletters_added}</b> ({NEWSLETTERS_ADDED_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{START_DATE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="template_start_date" value="{template_start_date}" size="10" maxlength="10">
+		<a href="#"
+			onClick="setDateField(document.record.template_start_date, '{date_edit_format}');
+			top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+		({TEMPLATE_START_DATE_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{END_DATE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="template_end_date" value="{template_end_date}" size="10" maxlength="10">
+		<a href="#"
+			onClick="setDateField(document.record.template_end_date, '{date_edit_format}');
+			top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+		({TEMPLATE_END_DATE_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{NEXT_DATE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="template_next_date" value="{template_next_date}" size="10" maxlength="10">
+		<a href="#"
+			onClick="setDateField(document.record.template_next_date, '{date_edit_format}');
+			top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+		({TEMPLATE_NEXT_DATE_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{LAST_DATE_MSG}</td>
+	<td>
+		{template_last_date}
+		({TEMPLATE_LAST_DATE_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FILTER_INTERVAL_MSG}</td>
+	<td>
+		<input class="field" type="text" name="template_filter_interval" value="{template_filter_interval}" size="10" maxlength="10"> &nbsp;
+		<select name="template_filter_period"><!-- begin template_filter_period -->
+			<option {template_filter_period_selected} value="{template_filter_period_value}">{template_filter_period_description}<!-- end template_filter_period -->
+		</select>
+		&nbsp; ({FILTER_INTERVAL_DESC})
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+</div>
+</div>
+
+</form>
+
+{admin_footer}
+</body></html>

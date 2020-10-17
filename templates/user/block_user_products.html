@@ -1,0 +1,29 @@
+	<table cellspacing="1" width="100%" class="table-data"><!-- begin sorters -->
+	<tr class="middlebg" align="center">
+		<td>{sorter_id}</td>
+		<td>{sorter_title}</td>
+		<td>{sorter_price}</td>
+		<td>{sorter_qty}</td>
+		<td>{STATUS_MSG}</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+	</tr><!-- end sorters --><!-- BEGIN records -->
+	<tr class="usualbg" valign="top" align="center">
+		<td>{item_id}</td>
+		<td align="left">{item_name}</td>
+		<td align="right">{price}</td>
+		<td>{quantity}</td>
+		<td>{status}</td>
+		<td><a href="{user_product_href}?item_id={item_id}">{EDIT_PRODUCT_MSG}</a></td>
+		<td><!-- begin options_block -->
+			<a href="{user_product_options_href}?item_id={item_id}">{OPTIONS_AND_COMPONENTS_MSG}</a><!-- end options_block -->
+		</td>
+	</tr><!-- END records --><!-- BEGIN no_records -->
+	<tr class="usualbg">
+		<td>{NO_PRODUCTS_MSG}</td>
+	</tr><!-- END no_records -->
+	<tr class="middlebg">
+		<td colspan="5"><a href="{user_product_href}">{ADD_NEW_MSG}</a></td>
+		<td colspan="2" align="right">&nbsp;<!-- begin navigator_block -->{navigator}<!-- end navigator_block --></td>
+	</tr>
+	</table>	

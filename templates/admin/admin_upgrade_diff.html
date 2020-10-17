@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {UPGRADE_TITLE} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/ajax.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/ajax_list_tree.js"></script>
+<script language="JavaScript">
+<!--
+function addLeafFormat(id, text, tree_name, action_object_id) {
+	
+	var return_text = "<div class='tree_leaf_button' ";
+		return_text += " onClick=\"removeListItem('" + id + "', '" + tree_name +"', '" +  action_object_id + "')\"";
+		return_text += "><img src='../images/icons/minus_small.gif'></div>";
+		return_text += "<div class=\"tree_leaf_title\"";
+		return_text += " onClick=\"selectListItem('" + id + "', '" + tree_name +"', '" +  action_object_id + "')\"";
+		return_text += " onMouseOver=\"addClassName(this, 'tree_leaf_title_hover')\"";
+		return_text += " onMouseOut=\"removeClassName(this, 'tree_leaf_title_hover')\"";
+		return_text += " >";
+	    return_text += text;
+		return_text += "</div>";
+	return return_text;
+}
+//-->
+</script>
+</head>
+
+<body class="commonbg">
+{admin_header}
+<div class="BlockTitle">{UPGRADE_TITLE}</div>
+
+<!-- begin connection_error --><div class="errorbg">{NO_XML_CONNECTION}</div><!-- end connection_error -->
+<!-- begin errors --><div class="errorbg">{errors_list}</div><!-- end errors -->
+
+
+<!-- begin results -->
+	<table  border="0" cellpadding="6" cellspacing="1" width="100%">
+		<tr class="middle">
+			<td align="center" width="33%">
+				{ONLY_LOCAL_VERSION_MSG}
+			</td>
+			<td align="center" width="34%">
+				{CHANGED_FILES_MSG}
+			</td>
+			<td align="center" width="33%">
+				{ONLY_REMOTE_VERSION_MSG}
+			</td>
+		</tr>
+		<tr class="usual">
+			<td align="left" valign="top">
+			<!-- begin folders_only_local -->
+				<ul>
+					<!-- begin folder_only_local -->
+						<li>{folder}</li>
+					<!-- end folder_only_local -->
+				</ul>
+			<!-- end folders_only_local -->
+			<!-- begin files_only_local -->
+				<ul>
+					<!-- begin file_only_local -->
+						<li>{file}</li>
+					<!-- end file_only_local -->
+				</ul>
+			<!-- end files_only_local -->
+			</td>
+			<td align="left" valign="top">
+			<!-- begin files_changed -->
+				<ul>
+					<!-- begin file_changed -->
+						<li><a href="{admin_upgrade_diff_file_href}?local={local}&remote={remote}">{file}</a></li>
+					<!-- end file_changed -->
+				</ul>
+			<!-- end files_changed -->
+			</td>
+			<td align="left" valign="top">
+			<!-- begin folders_only_remote -->
+				<ul>
+					<!-- begin folder_only_remote -->
+						<li>{folder}</li>
+					<!-- end folder_only_remote -->
+				</ul>
+			<!-- end folders_only_remote -->
+		
+			<!-- begin files_only_remote -->
+				<ul>
+					<!-- begin file_only_remote -->
+						<li>{file}</li>
+					<!-- end file_only_remote -->
+				</ul>
+			<!-- end files_only_remote -->
+			</td>		
+		</tr>
+	</table>
+	
+
+<!-- end results -->
+
+
+<form name="diff" method=post action="admin_upgrade_diff.php" onSubmit="saveListItems('compare_files', '{tree_name}', 'selected_files');">
+	<input type="hidden" name="operation" value="diff">
+	<input type="hidden" name="compare_files" value="">
+	<input type="hidden" id="{tree_name}_action_object_id" value="selected_files">
+	<input type="hidden" id="{tree_name}_action_object_type" value="ul">
+	
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td align="left">
+		{COMPARE_LOCAL_COPY_MSG} {version_number}:
+	</td>
+</tr>
+<tr class="usual">
+	<td align="left">
+		<input type="radio" name="compare_type" value="1" onClick="document.diff.folder_name.disabled = true;" {compare_type_1_checked}>
+		{AGAINST_THE_REMOTE_VERSION_MSG} {last_version}
+	</td>
+</tr>
+<tr class="usual">
+	<td align="left">
+		<input type="radio" name="compare_type" value="2" onClick="document.diff.folder_name.disabled = false;" {compare_type_2_checked}>
+		{AGAINST_THE_FOLDER_MSG}:
+		<input class="field" size="40" type="text" name="folder_name" {folder_name_disabled} value="{folder_name}">
+		({FOR_EXAMPLE_MSG}: <b>tmp_dir/vesion_dir</b>)
+	</td>
+</tr>
+<tr class="middle">
+	<td align="left">
+		{COMPARE_FILES_MSG}:
+	</td>
+</tr>
+<tr class="usual">
+	<td align="left">
+		<input type="radio" name="compare_files_type" {compare_files_type_0_checked} value="0" onclick="document.getElementById('compare_files_block').style.display = 'none';">{ALL_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td align="left">
+		<input type="radio" name="compare_files_type" {compare_files_type_1_checked} value="1" onclick="document.getElementById('compare_files_block').style.display = 'none';">{SCRIPTS_FILES_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td align="left">
+		<input type="radio" name="compare_files_type" {compare_files_type_2_checked} value="2" onclick="document.getElementById('compare_files_block').style.display = 'none';">{TEMPLATES_FILES_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td align="left">
+		<input type="radio" name="compare_files_type" {compare_files_type_3_checked} value="3" onclick="document.getElementById('compare_files_block').style.display = 'block';">{SELECTED_FILES_MSG}
+		<div id="compare_files_block" {compare_files_block_style}>
+
+				<table width="100%" border="0" cellspacing="1" cellpadding="6">
+				<tr align="center" class="middle">
+					<td width="50%">{AVAILABLE_FILES_MSG}</td>
+					<td width="50%">{SELECTED_FILES_MSG}</td>
+				</tr>
+				<tr class="usual" align="center">
+					<td align="left" valign="top">
+						<div class="tree_outer">									
+						<ul class="tree"><!-- begin files_block --><!-- begin folder_block -->
+							<li class="tree_branch">
+								<div id="{tree_name}_branch_title_{folder_js}" name="{tree_name}_branch_title_{folder_js}" class="tree_branch_title closed"
+									onClick="processBranch('{folder_js}', '{tree_name}', '{response_url}', 0)"
+									onMouseOver="addClassName(this, 'tree_branch_title_hover')"
+									onMouseOut="removeClassName(this, 'tree_branch_title_hover')"
+									>
+									{folder}
+								</div>
+								<div id='{tree_name}_branch_{folder_js}' name='{tree_name}_branch_{folder_js}' class='tree_subtree'></div>
+							</li><!-- end folder_block --><!--begin file_block--><li class='tree_leaf'>
+								<div name="{tree_name}_leaf_title_{file_js}" id="{tree_name}_leaf_title_{file_js}" class="tree_leaf_title plus"
+									onClick="processLeaf('{file_js}', '{file}', '{tree_name}')"
+									onMouseOver="addClassName(this, 'tree_leaf_title_hover')"
+									onMouseOut="removeClassName(this, 'tree_leaf_title_hover')"
+									>
+									{file}
+								</div>
+							</li><!--end file_block--><!-- end files_block -->					
+						</ul>
+						</div>
+					</td>			
+					<td align="left" valign="top">
+						<div class='tree_outer'>
+						<ul id='selected_files' class='tree'><!--begin selected_file_block-->
+							<li class="tree_leaf" id="{file_js}">
+								<div class="tree_leaf_button" onClick="removeListItem('{file_js}', '{tree_name}', 'selected_files')"><img src="../images/icons/minus_small.gif"></div>
+								<div class="tree_leaf_title" 
+									onClick="selectListItem('{file_js}', '{tree_name}', 'selected_files')" 
+									onMouseOver="addClassName(this, 'tree_leaf_title_hover')" 
+									onMouseOut="removeClassName(this, 'tree_leaf_title_hover')">
+									{file}
+								</div>
+							</li><!--end selected_file_block-->
+						</ul>
+						</div>
+					</td>
+				</tr>
+				</table>				
+		</div>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2" align="right">
+		<span class="button"><input class="submit" type="submit" value="Compare"></span>
+	</td>
+</tr>
+</table>
+</form>
+
+{admin_footer}
+</body>
+</html> 

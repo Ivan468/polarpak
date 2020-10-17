@@ -1,0 +1,79 @@
+<form action="{user_playlist_href}" name="record" method="post">
+<input type="hidden" name="pb_id" value="{pb_id}" />
+<input type="hidden" name="operation" value="save" />
+<input type="hidden" name="list_id" value="{list_id}" />
+<input type="hidden" name="rp" value="{rp}" />
+
+	<div class="form-data">
+
+		<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+		<div class="field">
+			<div class="name">
+				{NAME_MSG}
+			</div>
+			<div class="control">
+				<input class="text" type="text" name="list_name" value="{list_name}" size="60" maxlength="255" />
+			</div>
+		</div>
+		<div class="field">
+			<div class="name">
+				{DESCRIPTION_MSG}
+			</div>
+			<div class="control">
+				<textarea class="text" name="list_desc" cols="60" rows="6">{list_desc}</textarea>
+			</div>
+		</div>
+
+		<!-- begin play_type_block -->
+		<div class="field">
+			<div class="name">
+				{PLAY_TYPE_FIELD}&nbsp;
+			</div>
+			<div class="control"><!-- begin play_type -->
+				<label><input type="radio" name="play_type" {play_type_checked} value="{play_type_value}" />{play_type_description}</label><!-- end play_type -->
+			</div>
+		</div><!-- end play_type_block -->
+
+
+		<!-- begin lyrics_mode_block -->
+		<div class="field">
+			<div class="name">
+				{lyrics_mode_FIELD}&nbsp;
+			</div>
+			<div class="control"><!-- begin lyrics_mode -->
+				<label><input type="radio" name="lyrics_mode" {lyrics_mode_checked} value="{lyrics_mode_value}" />{lyrics_mode_description}</label><!-- end lyrics_mode -->
+			</div>
+		</div><!-- end lyrics_mode_block -->
+
+		<!-- begin shuffle_type_block -->
+		<div class="field">
+			<div class="name">
+				{shuffle_type_FIELD}&nbsp;
+			</div>
+			<div class="control"><!-- begin shuffle_type -->
+				<label><input type="radio" name="shuffle_type" {shuffle_type_checked} value="{shuffle_type_value}" />{shuffle_type_description}</label><!-- end shuffle_type -->
+			</div>
+		</div><!-- end shuffle_type_block -->
+
+
+		<!-- begin end_action_block -->
+		<div class="field">
+			<div class="name">
+				{end_action_FIELD}&nbsp;
+			</div>
+			<div class="control"><!-- begin end_action -->
+				<label><input type="radio" name="end_action" {end_action_checked} value="{end_action_value}" />{end_action_description}</label><!-- end end_action -->
+			</div>
+		</div><!-- end end_action_block -->
+
+		<div class="buttons"><!-- BEGIN add_button -->
+			<span class="submit"><input class="submit" type="submit" value=" {ADD_NEW_MSG} " onclick="document.record.operation.value='save'"></span><!-- END add_button --><!-- BEGIN update_button -->
+			<span class="submit"><input class="submit" type="submit" value=" {UPDATE_BUTTON} " onclick="document.record.operation.value='save'"></span><!-- END update_button --><!-- BEGIN delete -->
+			<span class="submit"><input class="submit" type="submit" value=" {DELETE_BUTTON} " onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+			<span class="submit"><input class="submit" type="submit" value=" {CANCEL_BUTTON} " onclick="document.record.operation.value='cancel'"></span>
+		</div>
+
+	</div>
+
+</form>

@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{SUBSCRIPTIONS_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+	function clearSearch() {
+		document.search_form.s_ut.selectedIndex = 0;
+		if (document.search_form.s_g) {
+			document.search_form.s_g.selectedIndex = 0;
+		}
+		document.search_form.submit();
+	}
+
+//-->
+</script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block floatLeft">
+<div class="BlockTitle">{ADMIN_FILTER_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_subscriptions_href}" name="search_form">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellpadding="4" cellspacing="1">
+	<tr class="usual">
+		<td>{USER_TYPE_MSG}:</td>
+		<td>
+			<select name="s_ut" class="search"><!-- BEGIN s_ut -->
+				<option {s_ut_selected} value="{s_ut_value}">{s_ut_description}<!-- END s_ut -->
+			</select>
+		</td>
+	</tr><!-- begin s_g_block -->
+	<tr class="usual">
+		<td>{GROUP_MSG}:</td>
+		<td>
+			<select name="s_g" class="search"><!-- BEGIN s_g -->
+				<option {s_g_selected} value="{s_g_value}">{s_g_description}<!-- END s_g -->
+			</select>
+		</td>
+	</tr><!-- end s_g_block -->
+	<tr class="middle">
+		<td>&nbsp;</td>
+		<td>
+			<span class="button"><input type="submit" value="Search" class="submit"></span>
+			<span class="button"><input type="button" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch()"></span>
+		</td>
+	</tr>
+</table>
+</form>
+
+</div>
+</div>
+
+<div class="clearBoth"></div>
+
+<div class="Block">
+<div class="BlockTitle">{USERS_TYPES_MSG}</div>
+<div class="BlockContent">
+
+<table border="0" cellspacing="1" cellpadding="6" width="100%"><!-- begin titles -->
+<tr align="center" class="middle">
+	<td>{sorter_subscription_id}</td>
+	<td>{sorter_subscription_name}</td>
+	<td>{sorter_type_name}</td>
+	<td>{sorter_group_name}</td>
+	<td>{sorter_is_active}</td>
+	<td>{sorter_is_default}</td>
+	<td>&nbsp;</td>
+</tr><!-- end titles --><!-- BEGIN records -->
+<tr class="usual" align="center">
+	<td>{subscription_id}</td>
+	<td align="left">{subscription_name}</td>
+	<td>{type_name}</td>
+	<td>{group_name}</td>
+	<td>{is_active}</td>
+	<td>{is_default}</td>
+	<td><a href="{admin_subscription_url}">{EDIT_TYPE_MSG}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="7">{NO_RECORDS}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="7">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_subscription_new_url}">{ADD_NEW_MSG}</a>
+	</td>
+</tr>
+</table>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

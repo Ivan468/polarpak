@@ -1,0 +1,26 @@
+		<table cellspacing="1" width="100%" class="table-data"><!-- begin sorters -->
+		<tr class="middlebg" align="center">
+			<td>{sorter_id}</td>
+			<td>{NAME_MSG}</td>
+			<td>{sorter_status}</td>
+			<td>{sorter_date}</td>
+			<td>{sorter_total}</td>
+			<td>&nbsp;</td>
+		</tr><!-- end sorters --><!-- begin records -->
+		<tr class="usualbg" valign="top" align="center">
+			<td>{order_id}</td>
+			<td align="left">{customer_name}</td>
+			<td>{order_status}</td>
+			<td>{order_placed_date}</td>
+			<td align="right">{items_total}</td>
+			<td id="butTd">
+				<a href="{user_merchant_order_url}">{VIEW_DETAILS_MSG}</a>
+			</td>
+		</tr><!-- end records --><!-- begin no_records -->
+		<tr class="usualbg">
+			<td colspan="6">{NO_ORDERS_MSG}</td>
+		</tr><!-- end no_records --><!-- begin navigator_block -->
+		<tr class="middlebg">
+			<td colspan="6">{navigator}</td>
+		</tr><!-- end navigator_block -->
+		</table>	

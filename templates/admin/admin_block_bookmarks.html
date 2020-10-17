@@ -1,0 +1,26 @@
+<a id="book" class="linkAsButton" style="{style_shop}" onmouseover="javascript:show('book', 'book_sub');" onmouseout="javascript:hide('book_sub');" href="{admin_bookmarks_href}"><span>{BOOKMARKS_MSG}</span></a>
+	<div id="book_sub" class="bookSubMenu" onmouseover="javascript:show('book', 'book_sub');" onmouseout="javascript:hide('book_sub');">
+		<a class="bookSub" href="{admin_bookmark_href}" id="add_bookmark" onclick="addBookmark(); return false;"><span>{ADD_BOOKMARK_MSG}</span></a><!-- begin bookmark -->
+		<a class="bookSub" href="{header_bookmark_url}" target="{target}" 
+				onmouseover="showNotes(event, {header_bookmark_id}, '{header_bookmark_notes}')" 
+				onmousemove="showNotes(event, {header_bookmark_id}, '{header_bookmark_notes}')"
+				onmouseout="hideNotes(event, {header_bookmark_id})"><img src="{src}" border="0"><span>{header_bookmark_title}</span></a>
+	<div id="notes_{header_bookmark_id}" style="display: none;"><div class="book">{header_bookmark_notes}</div></div><!-- end bookmark -->
+</div>
+
+<script type="text/javascript">
+<!--
+function addBookmark() {
+	var params = '?url=' + window.location + '&title=' + encodeURIComponent(document.title) + '&operation=save&is_ajax=1';
+	callAjax('{admin_bookmark_href}' + params, addedBookmark);
+	return false;
+}
+function addedBookmark(text) {
+	if (text == "OK") {
+		document.getElementById("book_sub").innerHTML += '<a class="bookSub" href="' + window.location + '"><span>' + document.title + '</span></a>';
+	} else {
+		alert("Some error occurred");
+	}
+}
+//-->
+</script>

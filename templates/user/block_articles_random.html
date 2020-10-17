@@ -1,0 +1,44 @@
+		<div class="articles {columns_class}">
+			<!-- BEGIN articles_rows -->
+			<!-- BEGIN articles_cols -->
+			<div class="col {column_class}">
+				<div class="article">
+
+					<h2 class="title {article_new_class} {restricted_class}"><a class="title" href="{article_url}" title="{a_title}">{article_title}</a></h2>
+
+					<!-- begin author_block -->
+					<div class="article-author">
+					<!-- begin author_name_block --><b>{author_name}</b> <!-- end author_name_block -->
+					<!-- begin author_email_block -->&lt;{author_email}&gt;<!-- end author_email_block -->
+					<!-- begin author_url_block --> <a href="{author_url}" target="_blank">{author_url}</a><!-- end author_url_block -->
+					</div>
+					<!-- end author_block -->
+
+					<!-- begin article_date_block -->
+					<div class="article-date">{article_date}</div><!-- end article_date_block -->
+
+					<div class="article-desc">
+						<!-- begin image_tiny_block -->
+						<a class="link img-tiny" href="{article_url}" title="{a_title}"><img class="image img-tiny" src="{image_tiny_src}" alt="{image_tiny_alt}" /></a><!-- end image_tiny_block -->
+						<!-- begin image_small_block -->
+						<a class="link img-small" href="{article_url}" title="{a_title}"><img class="image img-small" src="{image_small_src}" alt="{image_small_alt}" /></a><!-- end image_small_block -->
+						<!-- begin image_large_block -->
+						<a class="link img-large" href="{article_url}" title="{a_title}"><img class="image img-large" src="{image_large_src}" alt="{image_large_alt}" /></a><!-- end image_large_block -->
+						<!-- begin image_super_block -->
+						<a class="link img-super" href="{article_url}" title="{a_title}"><img class="image img-super" src="{image_super_src}" alt="{image_super_alt}" /></a><!-- end image_super_block -->
+				  
+						<!-- begin hot_description_block --><div class="desc desc-hot">{hot_description}</div><!-- end hot_description_block -->
+						<!-- begin highlights_block --><div class="desc desc-high">{highlights}</div><!-- end highlights_block -->
+						<!-- begin short_description_block --><div class="desc desc-short">{short_description}</div><!-- end short_description_block -->
+						<!-- begin full_description_block --><div class="desc desc-full">{full_description}</div><!-- end full_description_block -->
+					</div>
+
+					<a class="link link-more" href="{article_url}">{READ_MORE_MSG}</a>
+
+
+				</div>				
+			</div>				
+			<!-- END articles_cols -->
+			<!-- END articles_rows -->
+			<div class="clear"></div>
+		</div>

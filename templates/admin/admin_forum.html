@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {ADMIN_FORUM_TITLE} ::..</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+ 
+</head>
+
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<div class="CategoriesNav">
+
+	<div class="Block">
+	<form action="{admin_forum_href}" method="GET">
+		<div class="AdminSearch">
+			<div id="item_advanced_search?category_id={category_id}" class="leftNavNonActive">
+				<a href="#" class="leftNavTitle">{SEARCH_TITLE}</a>
+				<!--begin sc_block--><div class="innerDiv"><select name="{sc_field_name}"><!-- BEGIN sc -->
+					<option {sc_selected} value="{sc_value}">{sc_description}<!-- end sc -->
+				</select></div><!--end sc_block-->
+				<div class="innerDiv"><input class="field" type="text" name="s" value="{s}" style="width: 200px;"></div>
+				<div class="innerDiv"><span class="button"><input class="submit" type="submit" name="search" value="{SEARCH_TITLE}"></span></div>
+			</div>
+		</div>
+	</form>
+	</div>
+	
+	<div class="Block">
+	<div class="BlockTitle">{AVAILABLE_CATEGORIES_MSG}</div>
+	<div class="BlockContent">
+		<table width="100%" border="0" cellspacing="1" cellpadding="4"><!-- begin list_block --><!-- begin list_category -->
+			<tr class="usual"> 
+				<td><a href="{admin_forum_href}?category_id={list_category_id}"><b>{list_category_name}</b></a></td>
+				<td align=center><a href="{admin_forum_category_href}?category_id={list_category_id}">{EDIT_MSG}</a></td>
+			</tr><!-- end list_category --><!-- begin list_forum -->
+			<tr class="usual"> 
+				<td>&nbsp;&mdash;&nbsp;<a href="{admin_forum_href}?category_id={list_category_id}&forum_id={list_forum_id}}">{list_forum_name}</a></td>
+				<td align=center><a href="{admin_forum_edit_href}?category_id={list_category_id}&forum_id={list_forum_id}">{EDIT_MSG}</a></td>
+			</tr><!-- end list_forum --><!-- end list_block -->				
+			<!-- begin no_categories -->
+			<tr class="usual"> 
+				<td>&nbsp;{NO_CATEGORIES_MSG}&nbsp;</td>
+			</tr><!-- end no_categories -->
+			<tr class="middle">
+				<td colspan=2>
+					<a href="{admin_forum_category_href}">{NEW_CATEGORY_MSG}</a><!-- begin new_forum_link --><br>
+					<a href="{admin_forum_edit_href}">{NEW_FORUM_MSG}</a><!-- end new_forum_link -->
+				</td>
+			</tr>
+		</table>
+	</div>
+	</div>
+
+</div>
+<div class="ItemsList">
+{search_result}
+</div>
+
+{admin_footer}
+</body>
+</html>

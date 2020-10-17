@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html><head><title>{FILE_MANAGER_MSG} :: {UPLOAD_FILE_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{FILE_MANAGER_MSG}</div>
+</div>
+
+<!-- BEGIN service_messages --><div class="messagebg">{service_message}</div><!-- END service_messages -->
+<!-- BEGIN errors_block --><div class="errorbg">{errors_list}</div><!-- END errors_block -->
+<br>
+
+<ul class="tabs">
+	<li class="tab-active"><a href="{admin_upload_file}?op=1&dir_root={dir_url}">{UPLOAD_FILE_MSG}</a></li>
+	<li class="tab"><a href="{admin_upload_href}?op=2&dir_root={dir_url}">{UPLOAD_ARCHIVE_MSG}</a></li>
+</ul>
+
+
+<div class="Form">
+<div class="FormContent no-padding">
+<form action="{admin_upload_href}" enctype="multipart/form-data" method="post">
+<table  border="0" cellspacing="0" cellpadding="6" width="100%">
+	<tr class="usual">	
+		<td colspan="3">
+			<br>
+			<div>
+				{DESTINATION_FOLDER_MSG}: <a href="{admin_fm_href}?dir={dir_url}"><b>{destination_folder}</b></a>
+			</div>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td><input type="file" name="newfile_0" /></td>
+		<td><input type="file" name="newfile_1" /></td>
+		<td><input type="file" name="newfile_2" /></td>
+	</tr>
+	<tr class="usual">
+		<td><input type="file" name="newfile_3" /></td>
+		<td><input type="file" name="newfile_4" /></td>
+		<td><input type="file" name="newfile_5" /></td>
+	</tr>
+	<tr class="middle">
+		<td colspan="3">
+			<input TYPE="hidden" name="op" value="1" />
+			<input TYPE="hidden" name="dir" value="{dir}" />
+			<span class="button"><input  class="submit" type="submit" name="button" value="{UPLOAD_TITLE}" /></span>
+		</td>
+	</tr>
+</table>
+</form>
+
+</div>
+</div>
+{admin_footer}
+</body>
+</html>

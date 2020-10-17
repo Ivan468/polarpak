@@ -1,0 +1,546 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{html_title}</title>
+<meta name="description" content="{meta_description}">
+<meta name="keywords" content="{meta_keywords}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/admin.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/calendar.js"></script>
+<script language="JavaScript">
+<!--
+
+var prMessage = "{required_message_js}";
+
+function addPeriod()
+{
+	var formObj = document.record;
+	// get and update periods number
+	var periodsNumber = parseInt(formObj.periods_number.value);
+	if (isNaN(periodsNumber)) { periodsNumber = 0; }
+	periodsNumber++;	
+	formObj.periods_number.value = periodsNumber;
+
+	var periodsTable = document.getElementById("periods_table");
+	var periodRow = document.getElementById("period_row");
+	var periodRowHTML = periodRow.innerHTML;
+	// prepare new row
+	var rowClassName = (periodsNumber % 2 == 1) ? "row1" : "row2";
+	periodRowHTML = periodRowHTML.replace(/\{row_class\}/g, rowClassName);
+	periodRowHTML = periodRowHTML.replace(/\{period_number\}/g, periodsNumber);
+	//periodRowHTML = periodRowHTML.replaceAll("[period_number]", periodsNumber);
+
+	var	periodDiv = document.createElement("div");
+	periodDiv.id = "periodRow" + periodsNumber;
+	periodDiv.className = rowClassName;
+	periodDiv.innerHTML = periodRowHTML;
+
+	periodsTable.appendChild(periodDiv);
+
+}
+
+function removePeriod(rowNumber)
+{
+	var periodsTable = document.getElementById("periods_table");
+	var periodRow = document.getElementById("periodRow"+rowNumber);
+	periodsTable.removeChild(periodRow);
+}
+
+function checkAllDays(rowNumber)
+{
+	var formObj = document.record;
+	var daysDisabled = false;
+	var daysChecked = false;
+	if (formObj.elements["all_days_"+rowNumber].checked) {
+		daysDisabled = true;
+		daysChecked = true;
+	} 
+	for (var w = 1; w <= 7; w++) {
+		formObj.elements["day_"+w+"_"+rowNumber].disabled = daysDisabled;
+		formObj.elements["day_"+w+"_"+rowNumber].checked = daysChecked;
+	}
+}
+
+function changeLayoutType()
+{
+	var formObj = document.record;
+	var typeObj = formObj.layout_type;
+	var typeValue = typeObj.options[typeObj.selectedIndex].value;
+	var typeTemplate = formObj.layout_template;
+	if (typeValue == "cm" || typeValue == "custom") {
+		typeTemplate.style.display = "inline";
+	} else {
+		typeTemplate.style.display = "none";
+	}
+}
+
+function changeProperty()
+{
+	var formObj = document.record;
+	var selectedOptions = new Array();
+	var prIDs = formObj.properties_ids.value;
+
+	// check what options were selected and what options is active
+	var returnedValues = checkOptions();
+	var selectedOptions = returnedValues[0];
+	var activeOptions = returnedValues[1];
+
+	// hide or show property blocks
+	for (prID in activeOptions) {
+		if (formObj.elements["property_control_" + prID]) { // check if it is property control
+			var propertyBlock = document.getElementById("pr_" + prID);
+			if (activeOptions[prID]) {
+				propertyBlock.style.display = "block";				
+			} else {
+				propertyBlock.style.display = "none";				
+			}
+		}
+	}
+}
+
+function checkOptions()
+{
+	var formObj = document.record;
+	var prIDs = formObj.properties_ids.value;
+	var selectedOptions = new Array();
+	var activeOptions = new Array();
+	var returnValues = new Array();
+
+	// check all selected options
+	if (prIDs != "") {
+		var properties = prIDs.split(",");
+		for ( var i = 0; i < properties.length; i++) {
+			var prID = properties[i];
+			var prValue = ""; 
+			if (formObj.elements["property_control_" + prID]){  //P
+				var prControl = formObj.elements["property_control_" + prID].value;
+			}
+
+			if (prControl == "LISTBOX") {
+				prValue = formObj.elements["property_" + prID].options[formObj.elements["property_" + prID].selectedIndex].value;
+				if (prValue != "") {
+					selectedOptions[prID] = prValue;
+				}
+			} else if (prControl == "RADIOBUTTON") {
+				var radioControl = formObj.elements["property_" + prID];
+				if (radioControl.length) {
+					for ( var ri = 0; ri < radioControl.length; ri++) {
+						if (radioControl[ri].checked) {
+							prValue = radioControl[ri].value;
+							break;
+						}
+					}
+				} else {
+					if (radioControl.checked) {
+						prValue = radioControl.value;
+					}
+				}
+				if (prValue != "") {
+					selectedOptions[prID] = prValue;
+				}
+			} else if (prControl == "CHECKBOXLIST") {
+				if (formObj.elements["property_total_" + prID]) {
+					var totalOptions = parseInt(formObj.elements["property_total_" + prID].value);
+					for ( var ci = 1; ci <= totalOptions; ci++) {
+						if (formObj.elements["property_" + prID + "_" + ci].checked) {
+							var checkedValue = formObj.elements["property_" + prID + "_" + ci].value;
+							if (!selectedOptions[prID]) {
+								selectedOptions[prID] = new Array();
+							}
+							selectedOptions[prID][checkedValue] = 1;
+						}
+					}
+				} 
+			} else if (prControl == "TEXTBOXLIST") {
+				if (formObj.elements["property_total_" + prID]) {
+					var totalOptions = parseInt(formObj.elements["property_total_" + prID].value);
+					for ( var ci = 1; ci <= totalOptions; ci++) {
+						if (formObj.elements["property_" + prID + "_" + ci].value != "") {
+							var valueId = formObj.elements["property_value_" + prID + "_" + ci].value;
+							var valueText = formObj.elements["property_" + prID + "_" + ci].value;
+							if (!selectedOptions[prID]) {
+								selectedOptions[prID] = new Array();
+							}
+							selectedOptions[prID][valueId] = valueText;
+						}
+					}
+				} 
+			} else if (prControl == "CHECKBOX"){
+				if (formObj.elements["property_" + prID] && formObj.elements["property_" + prID].checked) {
+					prValue = formObj.elements["property_" + prID].value;
+					if (prValue != "") {
+						selectedOptions[prID] = prValue;
+					}
+				}
+			} else if (prControl == "LABEL"){
+				// get from hidden control
+				if (formObj.elements["property_" + prID]) {
+					prValue = formObj.elements["property_" + prID].value;
+					if (prValue != "") {
+						selectedOptions[prID] = prValue;
+					}
+				}
+			} else {
+				prValue = formObj.elements["property_" + prID].value;
+				if (prValue != "") {
+					selectedOptions[prID] = prValue;
+				}
+			}
+		}
+	}
+
+	// second check for active options and correct selected options if necessary
+	if (prIDs != "") {
+		do {
+			// save how many selected options we have at start
+			var startSelectedNumber = selectedOptions.length;
+			// check availability of parent options		
+			var properties = prIDs.split(",");
+			for ( var i = 0; i < properties.length; i++) {
+				var prID = properties[i];
+				if (formObj.elements["property_parent_id_" + prID]){ //P
+					var parentPropertyId = formObj.elements["property_parent_id_" + prID].value;
+				}				
+				if (formObj.elements["property_parent_value_id_" + prID]){ //P
+					var parentValueId = formObj.elements["property_parent_value_id_" + prID].value;
+				}				
+				var showProperty = true;
+				if (parentPropertyId != "") {
+					if (!selectedOptions[parentPropertyId]) {
+						showProperty = false;
+					} else if (parentValueId != "") {
+						if (!selectedOptions[parentPropertyId][parentValueId] && selectedOptions[parentPropertyId] != parentValueId) {
+							showProperty = false;
+						}
+					}
+				}
+				activeOptions[prID] = showProperty;
+				if (!showProperty) {
+					// delete from selected
+					if (selectedOptions[prID]) {
+						delete selectedOptions[prID];
+					}
+	  
+					// clear all options
+					var prControl = formObj.elements["property_control_" + prID].value;
+					if (prControl == "LISTBOX") {
+						var selectedIndex = formObj.elements["property_" + prID].selectedIndex;
+						if (selectedIndex > 0) {
+							formObj.elements["property_" + prID].options[0].selected = true;
+						}
+					} else if (prControl == "RADIOBUTTON") {
+						var radioControl = formObj.elements["property_" + prID];
+						if (radioControl.length) {
+							for ( var ri = 0; ri < radioControl.length; ri++) {
+								radioControl[ri].checked = false;
+							}
+						} else {
+							radioControl.checked = false;
+						}
+	  
+					} else if (prControl == "CHECKBOXLIST") {
+						var totalOptions = parseInt(formObj.elements["property_total_" + prID].value);
+						for ( var ci = 1; ci <= totalOptions; ci++) {
+							formObj.elements["property_" + prID + "_" + ci].checked = false;
+						}
+					} else if (prControl == "TEXTBOXLIST") {
+						var totalOptions = parseInt(formObj.elements["property_total_" + prID].value);
+						for ( var ci = 1; ci <= totalOptions; ci++) {
+							// don't erase user or default text in textbox controls
+							//formObj.elements["property_" + prID + "_" + ci].value = "";
+						}
+					} else if (prControl == "TEXTBOX" || prControl == "TEXTAREA") {
+						// don't erase user or default text in textbox controls
+						//formObj.elements["property_" + prID].value = "";
+					}
+				}
+			}
+		} while (startSelectedNumber != selectedOptions.length);
+	}
+
+	returnValues[0] = selectedOptions;
+	returnValues[1] = activeOptions;
+
+	return returnValues;
+}
+
+function saveSettings()
+{
+	var formObj = document.record;
+	// check what options were selected and what options is active
+	var returnedValues = checkOptions();
+	var selectedOptions = returnedValues[0];
+	var activeOptions = returnedValues[1];
+	var blockParams = "";	
+	var propertiesString = "";	
+	var periodsString = "";
+	// new JSON obejct
+	var jsonSettings = {"properties": {}, "periods": [], "settings": {}};
+
+	// check required options
+	for (prID in activeOptions) {
+		if (formObj.elements["property_control_" + prID]) { // check if it is property control
+			var prRequired = formObj.elements["property_required_" + prID].value;
+			var prControl = formObj.elements["property_control_" + prID].value;
+			if (prRequired == 1 && activeOptions[prID] && !selectedOptions[prID]) {
+				var propertyName = formObj.elements["property_name_" + prID].value;
+				prMessage = prMessage.replace("\{field_name\}", propertyName);
+				alert(prMessage);	
+				if (prControl != "RADIOBUTTON" && prControl != "CHECKBOXLIST" && prControl != "CHECKBOX" && prControl != "TEXTBOXLIST" && prControl != "LABEL") {
+					formObj.elements["property_" + prID].focus();
+				}
+				return false;
+			}
+		}
+	}
+
+	for (var prId in selectedOptions) {
+		var value = "";
+		var values = selectedOptions[prId];
+		if (values instanceof Array) {
+			for (var valueId in values) {
+				propertiesString += "#property#";
+				propertiesString += "type=option";
+				propertiesString += "&id=" + prId;
+				propertiesString += "&value=" + valueId;
+				// new JSON object
+				if (jsonSettings.properties.hasOwnProperty(prId)) {
+					jsonSettings.properties[prId].push(valueId);
+				} else {
+					jsonSettings.properties[prId] = new Array(valueId);
+				}
+			}
+		} else {
+			propertiesString += "#property#";
+			propertiesString += "type=option";
+			propertiesString += "&id=" + prId;
+			propertiesString += "&value=" + encodeParamValue(values);
+			// new JSON obejct
+			jsonSettings.properties[prId] = new Array(values);
+		}
+	}
+
+	var periodsNumber = parseInt(formObj.periods_number.value);
+	if (isNaN(periodsNumber)) { periodsNumber = 0; }
+	for (var p = 1; p <= periodsNumber; p++) {
+		if (formObj.elements["start_date_" + p]) {
+			var startDate = formObj.elements["start_date_" + p].value;
+			var endDate = formObj.elements["end_date_" + p].value;
+			var startTime = formObj.elements["start_time_" + p].value;
+			var endTime = formObj.elements["end_time_" + p].value;
+			var weekDays = 0;
+			if (formObj.elements["day_1_"+p].checked) { weekDays += 1; }
+			if (formObj.elements["day_2_"+p].checked) { weekDays += 2; }
+			if (formObj.elements["day_3_"+p].checked) { weekDays += 4; }
+			if (formObj.elements["day_4_"+p].checked) { weekDays += 8; }
+			if (formObj.elements["day_5_"+p].checked) { weekDays += 16; }
+			if (formObj.elements["day_6_"+p].checked) { weekDays += 32; }
+			if (formObj.elements["day_7_"+p].checked) { weekDays += 64; }
+			if (formObj.elements["all_days_"+p].checked) { weekDays = 127; }
+			propertiesString += "#property#";
+			propertiesString += "type=period";
+			propertiesString += "&start_date=" + startDate;
+			propertiesString += "&end_date=" + endDate;
+			propertiesString += "&start_time=" + startTime;
+			propertiesString += "&end_time=" + endTime;
+			propertiesString += "&week_days=" + weekDays;
+			// new JSON obejct
+			jsonSettings.periods.push({"type": "period", "start_date": startDate, "end_date": endDate, "start_time": startTime, "end_time": endTime, "week_days": weekDays});
+		}
+	}
+
+	// get layout values
+	var layoutType = formObj.layout_type.options[formObj.layout_type.selectedIndex].value;
+	var layoutTemplate = formObj.layout_template.value;
+
+	blockParams  = "tag_name=" + encodeParamValue(formObj.tag_name.value);
+	blockParams += "&layout_type=" + encodeParamValue(layoutType);
+	blockParams += "&layout_template=" + encodeParamValue(layoutTemplate);
+	blockParams += "&html_template=" + encodeParamValue(formObj.html_template.value);
+	blockParams += "&css_class=" + encodeParamValue(formObj.css_class.value);
+	blockParams += "&block_style=" + encodeParamValue(formObj.block_style.value);
+	blockParams += "&block_title=" + encodeParamValue(formObj.block_title.value);
+	// new JSON obejct
+	jsonSettings.settings = {"type": "block", "tag_name": formObj.tag_name.value, "layout_type": layoutType, "layout_template": layoutTemplate, "html_template": formObj.html_template.value, "css_class": formObj.css_class.value, "block_style": formObj.block_style.value, "block_title": formObj.block_title.value};
+
+	var frameId = formObj.frame_id.value;
+	var blockId = formObj.block_id.value;
+	var blockPosition = formObj.block_position.value;
+
+	if (!frameId || frameId == "") {
+		parent.updateBlockSettings(blockId, blockPosition, JSON.stringify(jsonSettings));
+	} else {
+		parent.updateBlockSettings(frameId, blockId, blockPosition, blockParams, propertiesString);
+	}
+	parent.hideSettingsPopup();
+}
+
+function encodeParamValue(paramValue)
+{
+	paramValue = paramValue.toString();
+	paramValue = paramValue.replace(/\\r/g, "%0D");
+	paramValue = paramValue.replace(/\\n/g, "%0A");
+	paramValue = paramValue.replace(/\'/g, "%27");
+	paramValue = paramValue.replace(/\"/g, "%22");
+	paramValue = paramValue.replace(/\&/g, "%26");
+	paramValue = paramValue.replace(/\+/g, "%2B");
+	paramValue = paramValue.replace(/\%/g, "%25");
+	paramValue = paramValue.replace(/\=/g, "%3D");
+	paramValue = paramValue.replace(/\|/g, "%7C");
+	paramValue = paramValue.replace(/\#/g, "%23");
+	return paramValue;
+}
+
+//-->
+</script>
+</head>
+
+<body class="popup" style="background: #F4F4F4;">
+
+<form name="record" action="admin_cms_block_settings.php" method="POST">
+<input type="hidden" name="frame_id" value="{frame_id}">
+<input type="hidden" name="block_id" value="{block_id}">
+<input type="hidden" name="block_position" value="{block_position}">
+<input type="hidden" name="properties_ids" value="{properties_ids}">
+<input type="hidden" name="tab" value="{tab}">
+
+<div id="tabs"><!-- BEGIN tabs_rows -->
+	<ul id="{row_id}" class="tabRow"><!-- BEGIN tabs -->
+		<li id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+	</ul><!-- END tabs_rows -->
+</div>
+<div class="Form clearBoth" style="background-color: white;">
+<div class="FormContent padding10px">
+
+	<div id="data_appearance" style="{appearance_style}">
+		{TAG_NAME_MSG}: <br/>
+		<input class="field" type="text" name="tag_name" size="60" maxlength="128" value="{tag_name}"><br>
+  
+		{BLOCK_LAYOUT_MSG}: <br/>
+		<select name="layout_type" onchange="changeLayoutType();"><!-- begin layout_type -->
+			<option {layout_type_selected} value="{layout_type_value}">{layout_type_description}<!-- end layout_type -->
+		</select>
+		<input class="field" style="{layout_template_style}" type="text" name="layout_template" size="40" maxlength="128" value="{layout_template}"/>
+		<br/>
+
+		{HTML_TEMPLATE_MSG}: <br/>
+		<input class="field" type="text" name="html_template" size="60" maxlength="128" value="{html_template}"><br>
+  
+		{BLOCK_CSS_CLASS_MSG}: <br/>
+		<input class="field" type="text" name="css_class" size="60" maxlength="128" value="{css_class}"><br>
+  
+		{BLOCK_STYLE_MSG}: <br/>
+		<textarea cols="60" rows="2" name="block_style">{block_style}</textarea><br>
+  
+		{BLOCK_TITLE_MSG}: <br/>
+		<textarea cols="60" rows="2" name="block_title">{block_title}</textarea><br><br>
+	</div>
+
+
+	<div id="data_properties" style="{properties_style}">
+		<!-- begin properties -->
+		<div id="{property_block_id}" class="property-block {property_class}" style="{property_style}"><div class="property-name">{property_name}</div><div class="property-delimiter"></div> <div class="property-value">{property_control}</div><div class="clear"></div></div><!-- end properties -->
+	</div>
+
+	<div id="data_periods" style="{periods_style}">
+		<input type="hidden" name="periods_number" value="{periods_number}">
+
+
+		<div id="periods_table">
+	    <table width="100%" cellpadding="2" cellspacing="0" border="0" style="border: solid 1px #D0D2D2; margin-bottom: 5px;">
+			<tr align="center" class="label">
+				<td width="25">
+					#
+				</td>
+				<td width="120">
+					<b>{START_DATE_MSG} <br>
+					{END_DATE_MSG}</b> <br>(YYYY-MM-DD)
+				</td>
+				<td width="80">
+					<b>{START_TIME_MSG} <br>
+					{END_TIME_MSG}</b> <br>(hh:mm)
+				<td>
+					<b>{DAYS_OF_WEEK_MSG}</b>
+				</td>
+				<td width="25">
+					&nbsp;
+				</td>
+			</tr>
+			</table>
+
+			{periods_rows}
+
+		</div>
+
+
+		<table cellspacing="0" cellpadding="0" border="0" width="100%">
+		<tr>
+			<td>
+				&nbsp;{CURRENT_TIME_MSG}: <b>{current_date}</b>
+			</td>
+			<td align="right">
+				<input type="button" value="{ADD_PERIOD_MSG}" onclick="addPeriod();">&nbsp;
+			</td>
+		</tr>
+		</table>
+		
+
+		<!-- begin period_row -->
+		<div id="{period_row_id}" class="{period_class}" style="{period_style}">
+	    <table width="100%" cellpadding="2" cellspacing="0" border="0">
+			<tr>
+				<td width="25" align="center">
+					{period_number}
+				</td>
+				<td width="120">
+					
+					<input type="text" name="start_date_{period_number}" value="{start_date}" size="10">
+					<a href="#"
+						onClick="setDateField(document.record.start_date_{period_number}, 'YYYY-MM-DD');
+						top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+					<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+					<br>
+	  
+					<input type="text" name="end_date_{period_number}" value="{end_date}" size="10">
+					<a href="#"
+						onClick="setDateField(document.record.end_date_{period_number}, 'YYYY-MM-DD');
+						top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+					<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+				</td>
+				<td width="80">
+					<input type="text" name="start_time_{period_number}" value="{start_time}" size="8">
+					<br>
+					<input type="text" name="end_time_{period_number}" value="{end_time}" size="8">
+				</td>
+				<td>
+					<input type="checkbox" name="all_days_{period_number}" {all_days} onclick="checkAllDays('{period_number}')" value="127"> {ALL_MSG}
+					<input type="checkbox" {day_disabled_1} name="day_1_{period_number}" {day_1} value="1"> {MONDAY_SHORT}
+					<input type="checkbox" {day_disabled_2} name="day_2_{period_number}" {day_2} value="2"> {TUESDAY_SHORT}
+					<input type="checkbox" {day_disabled_3} name="day_3_{period_number}" {day_3} value="4"> {WEDNESDAY_SHORT}<br>
+					<input type="checkbox" {day_disabled_4} name="day_4_{period_number}" {day_4} value="8"> {THURSDAY_SHORT}
+					<input type="checkbox" {day_disabled_5} name="day_5_{period_number}" {day_5} value="16"> {FRIDAY_SHORT}
+					<input type="checkbox" {day_disabled_6} name="day_6_{period_number}" {day_6} value="32"> {SATURDAY_SHORT}
+					<input type="checkbox" {day_disabled_7} name="day_7_{period_number}" {day_7} value="64"> {SUNDAY_SHORT}
+				</td>
+				<td width="25">
+					<a href="#" onclick="removePeriod('{period_number}');return false;"><img src="../images/remove.gif" width="16" height="16" border="0" /></a>
+				</td>
+			</tr>
+			</table>
+		</div>
+		<!-- end period_row -->
+	
+	</div>
+
+	<br/>
+	<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}"></span>
+	<span class="button"><input class="submit" type="button" value="{UPDATE_BUTTON}" onClick="saveSettings();return false;"></span>
+
+</div>
+</div>
+
+</form>
+
+</body>
+</html>

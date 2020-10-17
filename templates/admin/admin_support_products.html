@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html><head><title>{SUPPORT_PRODUCTS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+{head_tags}
+</head>
+<body class="commonbg">
+{admin_header}
+{admin_breadcrumb}
+
+<div class="Block">
+<div class="BlockTitle">{SUPPORT_PRODUCTS_MSG}</div>
+<div class="BlockContent">
+
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr align="center" class="middle">
+	<td>{sorter_product_id}</td>
+	<td>{sorter_product_name}</td>
+	<td>{sorter_product_order}</td>
+	<td>{sorter_show_for_user}</td>
+	<td>{DEPARTMENTS_MSG}</td>
+	<td>{SITES_MSG}</td>
+	<td>&nbsp;</td>
+</tr><!-- BEGIN records -->
+<tr class="usual" align="center">
+	<td>{product_id}</td>
+	<td align="left">{product_name}</td>
+	<td>{product_order}</td>
+	<td><a class="{show_for_user_class}" href="{show_for_user_url}">{show_for_user_desc}</a></td>
+	<td class="extra-cell">
+		<!-- BEGIN dep_single -->
+		{dep_name}
+		<!-- END dep_single -->
+		<!-- BEGIN dep_list -->
+		<div class="extra-summary" data-class="extra-data" data-js="expand">
+			{dep_summary} <i class="ico-extra"></i>
+		</div>
+		<div class="extra-data"><!-- BEGIN extra_deps -->
+			<div>{dep_name}</div><!-- end extra_deps -->
+		</div>
+		<!-- END dep_list -->
+	</td>
+	<td class="extra-cell">
+		<!-- BEGIN site_single -->
+		{site_name}
+		<!-- END site_single -->
+		<!-- BEGIN site_list -->
+		<div class="extra-summary" data-class="extra-data" data-js="expand">
+			{site_summary} <i class="ico-extra"></i>
+		</div>
+		<div class="extra-data"><!-- BEGIN extra_sites -->
+			<div>{site_name}</div><!-- end extra_sites -->
+		</div>
+		<!-- END site_list -->
+	</td>
+	<td><a href="{admin_support_product_url}">{EDIT_MSG}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="7">{NO_RECORDS}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="7">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_support_product_new_url}">{ADD_NEW_MSG}</a>
+	</td>
+</tr>
+</table>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

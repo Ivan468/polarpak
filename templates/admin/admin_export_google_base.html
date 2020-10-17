@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {GMC_FEED_STATS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+	<div class="Block">
+		<div class="BlockTitle">
+			{GMC_FEED_STATS_MSG}
+		</div>
+		<div class="BlockContent">
+			<table width="100%" cellspacing="1" cellpadding="6" border="0">
+				<tbody><!-- begin block_error -->
+					<div class="errorbg">
+						{error_msg}
+					</div><!-- end block_error -->
+					<!-- begin block_stats -->
+					<tr class="middle" align="center">
+						<td>{SUMMARY_STATS_MSG}:</td>
+						<td align="left">
+							<span style="font-weight:300">{GMC_FEED_GENERATED_MSG}: </span>{work_time} sec.<br />
+							<span style="font-weight:300">{GMC_COUNTRY_MSG}: </span>{country}<br />
+							<span style="font-weight:300">{FILE_SAVED_MSG} </span>{path}
+						</td>
+					</tr>
+					<tr class="row2" valign="top" align="center">
+						<td colspan="2">
+							<h2 style="{mess_style}">{mess_text}</h1>
+						</td>
+					</tr>
+					<!-- begin warnings_block -->
+					<tr class="middle" align="left">
+						<td>{ITEM_ID_MSG}</td>
+						<td colspan="1" align="left">{ERRORS_MSG}:</td>
+					</tr>
+					<!-- begin warning_item_block -->
+					<tr class="usual" valign="top" align="left">
+						<td> {id} </td>
+						<td colspan="1" align="left"><!-- begin warning_mess_block -->
+							{warning_mess}<br /><!-- end warning_mess_block -->
+						</td>
+					</tr><!-- end warning_item_block --><!-- end warnings_block --><!-- end block_stats -->
+					<tr>
+						<td>
+							<!-- begin feed_button -->
+							<span class="button"><input type="button" onclick="window.location = '{gb_file_name}'" value="{MANUALLY_DOWNLOAD_XML_FILE_MSG}" class="submit" /></span><!-- end feed_button -->
+							<span class="button"><input type="button" onclick="history.back();return false;" value="{BACK_BUTTON}" class="submit" /></span>
+							<span class="button"><input type="button" onclick="window.location = './admin_products_settings.php'" value="{PRODUCTS_SETTINGS_MSG}" class="submit" /></span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+{admin_footer}
+</body>
+</html>

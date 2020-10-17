@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {RELEASES_TITLE} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{RELEASES_TITLE}</div>
+<div class="BlockContent">
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%"><!-- begin sorters -->
+<tr class="middle" align="center">
+	<td>{sorter_release_id}</td>
+	<td>{sorter_release_date}</td>
+	<td>{sorter_release_title}</td>
+	<td>{EDIT_RELEASE_MSG}</td>
+	<td>{EDIT_RELEASE_CHANGES_MSG}</td>
+</tr><!-- end sorters --><!-- begin records -->
+<tr class="usual">
+	<td align="center">{release_id}</td>
+	<td align="center">{release_date}</td>
+	<td>{release_title}</td>
+	<td align="center"><a href="{admin_release_href}?release_id={release_id}&item_id={item_id}&category_id={category_id}">{EDIT_MSG}</a></td>
+	<td align="center"><a href="{admin_release_changes_href}?release_id={release_id}&item_id={item_id}&category_id={category_id}">{EDIT_RELEASE_CHANGES_MSG}</a></td>
+</tr><!-- end records -->
+<!-- begin no_records -->
+<tr class="usual">
+	<td colspan="5">{NO_RELEASES_FOR_THIS_PRODUCT_MSG}</td>
+</tr><!-- end no_records -->
+<tr class="middle">
+	<td colspan="5">
+		<div class="floatRight">{navigator}</div>
+		<a href="{admin_release_href}?item_id={item_id}&category_id={category_id}">{ADD_NEW_MSG}</a>
+	</td>
+</tr>
+</table>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

@@ -1,0 +1,1026 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{CMS_MSG} :: {PAGE_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="../js/admin.js"></script>
+<script language="JavaScript">
+<!--
+
+function GetXmlHttpObject()
+{
+	var xmlHttp = null;
+	try { xmlHttp=new XMLHttpRequest(); }
+	catch (e) {
+		try { 
+			xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+		} catch (e) {
+			xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	}
+	return xmlHttp;
+}
+
+function changeLayout()
+{
+	xmlHttp = GetXmlHttpObject()
+	if (xmlHttp == null) {
+		alert ("Your browser does not support AJAX!");
+		return;
+	} 
+
+	var layoutId = document.cms.layout_id.options[document.cms.layout_id.selectedIndex].value;
+
+	// disable select when layout changed 
+	var selectObj = document.getElementById("layoutSelect");
+	if (selectObj) {
+		selectObj.disabled = true;
+	}
+
+	var url = "admin_cms_layout_load.php";
+	url = url + "?layout_id=" + layoutId;
+	xmlHttp.onreadystatechange = function() { layoutStateChanged(layoutId); };  
+	xmlHttp.open("GET", url, true);
+	xmlHttp.send(null);
+
+}
+
+function changeSite()
+{
+	var formObj = document.cms;
+	formObj.operation.value = "";
+	formObj.submit();
+}
+
+
+function layoutStateChanged(layoutId) 
+{ 
+	if (xmlHttp.readyState == 4) { 
+		var responseText = xmlHttp.responseText;
+		var layoutObj = document.getElementById("pageLayout");
+		layoutObj.innerHTML = responseText;
+		// enable select after layout change
+		var selectObj = document.getElementById("layoutSelect");
+		if (selectObj) {
+			selectObj.disabled = false;
+		}
+		// reload content
+		populateFrames();
+	}
+}
+
+	function selectBlock(frameId, blockId, blockPos, blockKey)
+	{
+		var blockObj = "";
+		if (frameId == "") {
+			blockObj = document.getElementById("block_" + blockId + "_" + blockKey);
+		} else {
+			blockObj = document.getElementById("block_" + frameId + "_" + blockId + "_" + blockPos);
+		}
+		var selectedFrameId = document.cms.selected_frame.value;
+		var selectedBlockId = document.cms.selected_block.value;
+		var selectedPosition = document.cms.block_position.value;
+		var selectedKey = document.cms.selected_key.value;
+		if (frameId == selectedFrameId && blockId == selectedBlockId && selectedPosition == blockPos && selectedKey == blockKey) {
+			unselectBlock();
+		} else {
+			unselectBlock();
+			document.cms.selected_frame.value = frameId;
+			document.cms.selected_block.value = blockId;
+			document.cms.block_position.value = blockPos;
+			document.cms.selected_key.value = blockKey;
+			if (frameId == "") {
+				blockObj.className = "leftNavSubActive";
+			} else {
+				blockObj.style.color = "blue";
+				blockObj.style.fontWeight = "bold";
+			}
+		}
+	}
+
+	function moveBlock(newFrameId, movePosition)
+	{
+		var settings = getSettings();
+		var selectedFrameId = document.cms.selected_frame.value;
+		var selectedBlockId = document.cms.selected_block.value;
+		var selectedPosition = parseInt(document.cms.block_position.value);
+		var selectedKey = document.cms.selected_key.value;
+
+		if (selectedFrameId == "") {
+			if (newFrameId != "") {
+				alert('Please select block you want to move here.');
+			} else {
+				alert('Please select block you want to move up/down.');
+			}
+			return;
+		}
+
+		if (newFrameId != "") {
+			// save block to move it to the new frame
+			blockObj = settings[selectedFrameId]["blocks"][selectedPosition];
+			// delete block from the old frame
+			unselectBlock();
+			settings = deleteBlock(selectedFrameId, selectedBlockId, selectedPosition, settings);
+			populateBlocks(selectedFrameId, settings);
+			// add block to the new frame
+			settings = checkFrameSettings(newFrameId, settings);
+
+			var totalBlocks = parseInt(settings[newFrameId]["total_blocks"]);
+			settings[newFrameId]["blocks"][totalBlocks] = blockObj;
+			settings[newFrameId]["total_blocks"] = totalBlocks + 1;
+			populateBlocks(newFrameId, settings);
+		} else if (movePosition != "") {
+			var totalBlocks = parseInt(settings[selectedFrameId]["total_blocks"]);
+			var newPosition = selectedPosition + movePosition;
+			if (settings[selectedFrameId]["blocks"][newPosition]) {
+				var newPosObj = settings[selectedFrameId]["blocks"][newPosition];
+				var curPosObj = settings[selectedFrameId]["blocks"][selectedPosition];
+				settings[selectedFrameId]["blocks"][newPosition] = curPosObj;
+				settings[selectedFrameId]["blocks"][selectedPosition] = newPosObj;
+				//document.cms.block_position.value = newPosition;
+				populateBlocks(selectedFrameId, settings);
+				// select moved block again
+				selectBlock(selectedFrameId, selectedBlockId, newPosition, selectedKey);
+			}
+		}
+		generateSettings(settings); // save new settings
+	}
+
+	function checkFrameSettings(frameId, settings)
+	{
+		if (!settings[frameId]) {
+			settings[frameId] = new Array();
+			settings[frameId]["tag_name"] = frameId;
+			settings[frameId]["total_blocks"] = 0;
+			settings[frameId]["blocks"] = new Array();
+		}
+		return settings;
+	}
+
+	function unselectBlock() 
+	{
+		var selectedFrameId = document.cms.selected_frame.value;
+		var selectedBlockId = document.cms.selected_block.value;
+		var selectedPosition = document.cms.block_position.value;
+		var selectedKey = document.cms.selected_key.value;
+		if (selectedBlockId != "") {
+			document.cms.selected_frame.value = "";
+			document.cms.selected_block.value = "";
+			document.cms.block_position.value = "";
+			var blockObj = "";
+			if (selectedFrameId == "") {
+				blockObj = document.getElementById("block_" + selectedBlockId + "_" + selectedKey);
+			} else {
+				blockObj = document.getElementById("block_" + selectedFrameId + "_" + selectedBlockId + "_" + selectedPosition);
+			}
+			if (blockObj) {
+				if (selectedFrameId == "") {
+					blockObj.className = "leftNavSub";
+				} else {
+					blockObj.style.color = "black";
+					blockObj.style.fontWeight = "normal";
+				}
+			}
+		}
+	}
+
+	function addBlock(frameId)
+	{
+		var selectedBlockId = document.cms.selected_block.value;
+		var selectedKey = document.cms.selected_key.value;
+		if (selectedBlockId == "") {
+			alert("Please select some block first.");
+		} else {
+			var layoutObj = document.getElementById("frame_" + frameId);
+			var blockObj = document.getElementById("block_" + selectedBlockId + "_" + selectedKey);
+			var blockName = blockObj.innerHTML;
+			layoutObj.innerHTML += blockObj.innerHTML; 
+			unselectBlock();
+			// add to settings
+			var settings = getSettings();
+			settings = checkFrameSettings(frameId, settings);
+			var totalBlocks = parseInt(settings[frameId]["total_blocks"]);
+			settings[frameId]["blocks"][totalBlocks] = new Array();
+			settings[frameId]["blocks"][totalBlocks]["id"] = selectedBlockId;
+			settings[frameId]["blocks"][totalBlocks]["name"] = blockName;
+			settings[frameId]["blocks"][totalBlocks]["key"] = selectedKey;
+			settings[frameId]["blocks"][totalBlocks]["tag_name"] = "";
+			settings[frameId]["blocks"][totalBlocks]["layout_type"] = "";
+			settings[frameId]["blocks"][totalBlocks]["layout_template"] = "";
+			settings[frameId]["blocks"][totalBlocks]["html_template"] = "";
+			settings[frameId]["blocks"][totalBlocks]["css_class"] = "";
+			settings[frameId]["blocks"][totalBlocks]["block_style"] = "";
+			settings[frameId]["blocks"][totalBlocks]["block_title"] = "";
+			settings[frameId]["blocks"][totalBlocks]["properties"] = new Array();
+			settings[frameId]["total_blocks"] = totalBlocks + 1;
+			generateSettings(settings); // save new settings
+			populateBlocks(frameId, settings);
+		}
+	}
+
+	function deleteBlock(frameId, blockId, blockPos, settings)
+	{
+		unselectBlock();
+		var saveSettings = false;
+		if (!settings) { settings = getSettings(); saveSettings = true; }
+		blockPos = parseInt(blockPos);
+		var totalBlocks = parseInt(settings[frameId]["total_blocks"]);
+		delete settings[frameId]["blocks"][blockPos];
+		if (totalBlocks > blockPos + 1) {
+			// move all blocks up
+			for (var b = blockPos + 1; b < totalBlocks; b++) {
+				settings[frameId]["blocks"][b - 1] = settings[frameId]["blocks"][b];
+			}
+			// remove last block and update total blocks number
+			delete settings[frameId]["blocks"][totalBlocks - 1];
+		}
+		settings[frameId]["total_blocks"] = totalBlocks - 1; // decrease the number of blocks
+		if (saveSettings) {
+			generateSettings(settings); // save new settings
+			populateBlocks(frameId, settings);
+		} else {
+			return settings;
+		}
+	}
+
+
+function populateFrames()
+{
+	var settings = getSettings();
+	for (var frameId in settings) {
+		populateBlocks(frameId, settings);
+	}
+}
+
+function populateBlocks(frameId, settings)
+{
+	var frameName = settings[frameId]["name"];
+	var totalBlocks = parseInt(settings[frameId]["total_blocks"]);
+	var shownBlocks = 0; var deletedBlocks = 0;
+	var blockTemplate = document.getElementById("block_template").innerHTML;
+	var layoutObj = document.getElementById("frame_" + frameId);
+	var blocks = settings[frameId]["blocks"];
+	var frameHTML = ""; 
+	// check if there are any non-existed blocks to delete them first
+	for (var b = totalBlocks - 1; b >= 0; b--) {
+		var block = blocks[b];
+		var blockId = block["id"];
+		var blockKey = block["key"];
+		var blockName = block["name"];
+		var blockObj = document.getElementById("block_" + blockId + "_" + blockKey);
+		if (!blockObj) {
+			deletedBlocks++;
+			settings = deleteBlock(frameId, blockId, b, settings);
+		}
+	}
+
+	if (deletedBlocks > 0) {
+		generateSettings(settings); // save updated settings after removing old blocks
+		// get update data
+		totalBlocks = parseInt(settings[frameId]["total_blocks"]);
+		blocks = settings[frameId]["blocks"];
+	}
+
+
+	for (var b = 0; b < totalBlocks; b++) {
+		var block = blocks[b];
+		if (block) {
+			var blockHTML = "";
+			var blockId = block["id"];
+			var blockKey = block["key"];
+			var blockObj = document.getElementById("block_" + blockId + "_" + blockKey);
+			shownBlocks++; // number of shown blocks
+			var blockName = blockObj.innerHTML;
+			var moduleId = document.cms_blocks.elements["block_module_" + blockId + "_" + blockKey].value;
+			var moduleName = document.cms_blocks.elements["module_" + moduleId].value;
+			var idTag = "block_" + frameId + "_" + blockId + "_" + b;
+			blockHTML = blockTemplate.replace(/\{id_tag\}/g, "id=\""+idTag+"\"");
+			blockHTML = blockHTML.replace(/\{frame_id\}/g, frameId);
+			blockHTML = blockHTML.replace(/\{module_name\}/g, moduleName);
+			blockHTML = blockHTML.replace(/\{block_id\}/g, blockId);
+			blockHTML = blockHTML.replace(/\{block_position\}/g, b);
+			blockHTML = blockHTML.replace(/\{block_name\}/g, blockName);
+			blockHTML = blockHTML.replace(/\{block_key\}/g, blockKey);
+			frameHTML += blockHTML;
+		}
+	}
+	if (layoutObj) {
+		layoutObj.innerHTML = "<ul style='margin-top:0;padding-left:20px;margin-bottom:0;'>"+frameHTML+"</ul>";
+	}
+
+	// check if need to show up and down icons
+	var objUpDown = document.getElementById("frame_updown_" + frameId);
+	if (objUpDown) {
+		if (shownBlocks > 1) {
+			objUpDown.style.display = "block";
+		} else {
+			objUpDown.style.display = "none";
+		}
+	}
+
+}
+
+function generateSettings(settings)
+{
+	var settingsString = "";
+	for (var frameId in settings) {
+		settingsString += "#frame#";
+		var frameParams = settings[frameId];
+		settingsString += generateParams(frameParams);
+		var blocks = frameParams["blocks"];
+		if (blocks) {
+			// generate blocks settings
+			for (var blockPos in blocks) {
+				settingsString += "#block#";
+				var blockParams = blocks[blockPos];
+				settingsString += generateParams(blockParams);
+				var blockProperties = blockParams["properties"];
+				if (blockProperties) {
+					// generate block properties
+					for (var pi in blockProperties) {
+						settingsString += "#property#";
+						var blockProperty = blockProperties[pi];
+						settingsString += generateParams(blockProperty);
+					}
+				}
+			}
+		}
+	}
+	document.cms.sts.value = settingsString;
+}
+
+function generateParams(params)
+{
+	var paramIndex = 0; var paramsString = "";
+	for (var paramName in params) {
+		var paramValue = params[paramName];
+		if (!(paramValue instanceof Array)) {
+			if (paramIndex > 0) { paramsString += "&"; }
+			paramsString += paramName + "=" + encodeParamValue(paramValue);
+			paramIndex++;
+		}
+	}
+	return paramsString;
+}
+
+function getSettings()
+{
+	var settingsString = document.cms.sts.value;
+	var settings = new Array();
+
+	var layoutBlocks = settingsString.split("#frame#");
+
+	for (var lb = 0; lb < layoutBlocks.length; lb++) {
+		var frameParams = ""; var cmsBlocksString = "";
+		var layoutBlock = layoutBlocks[lb];
+		var signPos = layoutBlock.indexOf("#");
+		if(signPos == -1) {
+			frameParams = layoutBlock;
+			cmsBlocksString = "";
+		} else {
+			frameParams = layoutBlock.substring(0, signPos);
+			cmsBlocksString = layoutBlock.substring(signPos, layoutBlock.length);
+		}
+		frameParams = getParams(frameParams);
+		if (frameParams["tag_name"]) {
+			var frameId = frameParams["tag_name"];
+			settings[frameId] = frameParams;
+			settings[frameId]["blocks"] = new Array();
+			// check cms blocks
+			if (cmsBlocksString != "") {
+				var blockPos = 0;
+				var cmsBlocks = cmsBlocksString.split("#block#");
+				for (var b = 0; b < cmsBlocks.length; b++) {
+					var cmsBlock = cmsBlocks[b];
+					if (cmsBlock != "") {
+						var signPos = cmsBlock.indexOf("#");
+						var blockPropertiesString = "";
+						if (signPos == -1) {
+							blockParams = cmsBlock;
+						} else {
+							blockParams = cmsBlock.substring(0, signPos);
+							blockPropertiesString = cmsBlock.substring(signPos, cmsBlock.length);
+						}
+						blockParams = getParams(blockParams);
+						settings[frameId]["blocks"][blockPos] = blockParams;
+						// check block properties
+						if (blockPropertiesString != "") {
+							var propertyPos = 0; 
+							var blockProperties = blockPropertiesString.split("#property#");
+							settings[frameId]["blocks"][blockPos]["properties"] = new Array();
+							for (var p = 0; p < blockProperties.length; p++) {
+								var blockProperty = blockProperties[p];
+								if (blockProperty != "") {
+									settings[frameId]["blocks"][blockPos]["properties"][propertyPos] = getParams(blockProperty);
+									propertyPos++;
+								}
+							}
+						}
+						// increase block position
+						blockPos++;
+					}
+				}
+			}
+			
+		}
+	}
+	return settings;
+}
+
+function getParams(paramsString)
+{
+	var params = new Array();
+	var paramsPairs = paramsString.split("&");
+
+	for (var p = 0; p < paramsPairs.length; p++) {
+		var paramPair = paramsPairs[p];
+		var equalPos = paramPair.indexOf("=");
+		if(equalPos == -1) {
+			params[paramPair] = "";
+		} else {
+			var paramName = paramPair.substring(0, equalPos);
+			var paramValue = paramPair.substring(equalPos + 1, paramPair.length);
+			params[paramName] = decodeParamValue(paramValue);
+		}
+	}
+	return params;
+}
+
+function decodeParamValue(paramValue)
+{
+	paramValue = paramValue.replace(/%0D/g, "\r");
+	paramValue = paramValue.replace(/%0A/g, "\n");
+	paramValue = paramValue.replace(/%27/g, "'");
+	paramValue = paramValue.replace(/%22/g, "\"");
+	paramValue = paramValue.replace(/%26/g, "&");
+	paramValue = paramValue.replace(/%2B/g, "+");
+	paramValue = paramValue.replace(/%3D/g, "=");
+	paramValue = paramValue.replace(/%7C/g, "|");
+	paramValue = paramValue.replace(/%23/g, "#");
+	paramValue = paramValue.replace(/%25/g, "%");
+	return paramValue;
+}
+
+function encodeParamValue(paramValue)
+{
+	paramValue = paramValue.toString();
+	paramValue = paramValue.replace(/\%/g, "%25");
+	paramValue = paramValue.replace(/\\r/g, "%0D");
+	paramValue = paramValue.replace(/\\n/g, "%0A");
+	paramValue = paramValue.replace(/\'/g, "%27");
+	paramValue = paramValue.replace(/\"/g, "%22");
+	paramValue = paramValue.replace(/\&/g, "%26");
+	paramValue = paramValue.replace(/\+/g, "%2B");
+	paramValue = paramValue.replace(/\=/g, "%3D");
+	paramValue = paramValue.replace(/\|/g, "%7C");
+	paramValue = paramValue.replace(/\#/g, "%23");
+	return paramValue;
+}
+
+
+function hideSettingsPopup()
+{                              	
+	var settingsOpacity = document.getElementById("settings_opacity");
+	var settingsShadow = document.getElementById("settings_shadow");
+	var settingsPage = document.getElementById("settings_page");
+
+	settingsOpacity.style.display = "none";			
+	settingsShadow.style.display = "none";			
+	settingsPage.src = "";
+}
+
+
+function blockSettings(frameId, blockId, blockPosition)
+{
+	var settings = getSettings();
+	var blockParams = settings[frameId]["blocks"][blockPosition];
+	var paramsString = generateParams(blockParams);
+	var properties = settings[frameId]["blocks"][blockPosition]["properties"];
+	var propertiesString = "";
+
+	if (properties && properties instanceof Array) {
+		for (var pi = 0; pi < properties.length; pi++) {
+			propertiesString += "#property#";
+			var blockProperty = properties[pi];
+			propertiesString += generateParams(blockProperty);
+		}
+	}
+
+	document.settings_form.frame_id.value = frameId;
+	document.settings_form.block_id.value = blockId;
+	document.settings_form.block_position.value = blockPosition;
+	document.settings_form.block_params.value = paramsString;
+	document.settings_form.block_properties.value = propertiesString;
+
+	popupSettingsFrame();
+	document.settings_form.submit();
+}
+
+function updateBlockSettings(frameId, blockId, blockPosition, paramsString, propertiesString)
+{
+	var settings = getSettings();
+
+	var blockParams = getParams(paramsString);
+	settings[frameId]["blocks"][blockPosition]["tag_name"] = blockParams["tag_name"];
+	settings[frameId]["blocks"][blockPosition]["layout_type"] = blockParams["layout_type"];
+	settings[frameId]["blocks"][blockPosition]["layout_template"] = blockParams["layout_template"];
+	settings[frameId]["blocks"][blockPosition]["html_template"] = blockParams["html_template"];
+	settings[frameId]["blocks"][blockPosition]["css_class"] = blockParams["css_class"];
+	settings[frameId]["blocks"][blockPosition]["block_style"] = blockParams["block_style"];
+	settings[frameId]["blocks"][blockPosition]["block_title"] = blockParams["block_title"];
+
+	var blockProperties = parseBlockSettings(propertiesString, "property");
+	settings[frameId]["blocks"][blockPosition]["properties"] = blockProperties;
+
+	generateSettings(settings);
+}
+
+function parseBlockSettings(propertiesString, tagName)
+{
+	var blockProperties = new Array();
+	if (propertiesString != "") {
+		var propertyPos = 0;
+		var propertiesStrings = propertiesString.split("#property#");
+		for (var p = 0; p < propertiesStrings.length; p++) {
+			var blockProperty = propertiesStrings[p];
+			if (blockProperty != "") {
+				blockProperties[propertyPos] = getParams(blockProperty);
+				propertyPos++;
+			}
+		}
+	}
+	return blockProperties;
+}
+
+
+function popupSettingsFrame()
+{ 
+	var settingsOpacity = document.getElementById("settings_opacity");
+	var settingsShadow = document.getElementById("settings_shadow");
+
+	var pageSize = getPageSize();
+	var pageScroll = getScroll();
+	var arrayPageSizeWithScroll = getPageSizeWithScroll();
+
+	var winLeft = 5; var winTop = 5;
+	if (pageSize[0] > 620) {
+		winLeft = pageScroll[0] + (pageSize[0]-600) / 2;
+	}
+	if (pageSize[1] > 420) {
+		winTop = pageScroll[1] + (pageSize[1]-400) / 2;
+	}
+	settingsShadow.style.left = winLeft + "px";
+	settingsShadow.style.top = winTop + "px";
+
+	var opacityWidth = pageSize[0];	var opacityHeight = pageSize[1];
+	if (arrayPageSizeWithScroll[0] > opacityWidth) {
+		opacityWidth = arrayPageSizeWithScroll[0];
+	}
+	if (arrayPageSizeWithScroll[1] > opacityHeight) {
+		opacityHeight = arrayPageSizeWithScroll[1];
+	}
+	settingsOpacity.style.width = opacityWidth + "px";
+	settingsOpacity.style.height = opacityHeight + "px";
+
+	settingsShadow.style.display = "block";			
+	settingsOpacity.style.display = "block";			
+
+}
+
+function frameSettings(frameId)
+{
+	var settings = getSettings();
+	var settingsList = new Array(
+		"frame_style", 
+		"frame_class",
+		"frame_code",
+		"html_frame_start",
+		"html_before_block",
+		"html_between_blocks",
+		"html_after_block",
+		"html_frame_end"
+	);
+	
+	for(var s = 0; s < settingsList.length; s++) {
+		var settingName = settingsList[s];
+		var settingValue = "";
+		if (settings[frameId] && settings[frameId][settingName]) { // check if there any frame settings
+			settingValue = settings[frameId][settingName];
+		}
+		// set value on frame settings form
+		if (document.frame_settings.elements[settingName]) {
+			document.frame_settings.elements[settingName].value = settingValue;
+		}
+	}
+
+	document.frame_settings.frame_id.value = frameId;
+	// set frame title
+	var frameTitleObj = document.getElementById("frame_title_" + frameId);
+	var frameSettingsTitle = document.getElementById("frame_setting_title");
+	if (frameSettingsTitle) {
+		if (frameTitleObj) {
+			frameSettingsTitle.innerHTML = frameTitleObj.innerHTML;
+		} else {
+			frameSettingsTitle.innerHTML = "";
+		}
+	}
+
+	// show window with frame setting in the center
+	var settingsOpacity = document.getElementById("frameSettings_opacity");
+	var settingsShadow = document.getElementById("frameSettings_shadow");
+
+	var pageSize = getPageSize();
+	var pageScroll = getScroll();
+	var arrayPageSizeWithScroll = getPageSizeWithScroll();
+
+	var winLeft = 5; var winTop = 5;
+	if (pageSize[0] > 620) {
+		winLeft = pageScroll[0] + (pageSize[0]-600) / 2;
+	}
+	if (pageSize[1] > 420) {
+		winTop = pageScroll[1] + (pageSize[1]-400) / 2;
+	}
+
+	settingsShadow.style.left = winLeft + "px";
+	settingsShadow.style.top = winTop + "px";
+
+	var opacityWidth = pageSize[0];	var opacityHeight = pageSize[1];
+	if (arrayPageSizeWithScroll[0] > opacityWidth) {
+		opacityWidth = arrayPageSizeWithScroll[0];
+	}
+	if (arrayPageSizeWithScroll[1] > opacityHeight) {
+		opacityHeight = arrayPageSizeWithScroll[1];
+	}
+	settingsOpacity.style.width = opacityWidth + "px";
+	settingsOpacity.style.height = opacityHeight + "px";
+
+	settingsShadow.style.display = "block";			
+	settingsOpacity.style.display = "block";			
+}
+
+function saveFrameSettings()
+{
+	var frameId = document.frame_settings.frame_id.value;
+	var settings = getSettings();
+	var settingsList = new Array(
+		"frame_style", 
+		"frame_class",
+		"frame_code",
+		"html_frame_start",
+		"html_before_block",
+		"html_between_blocks",
+		"html_after_block",
+		"html_frame_end"
+	);
+	settings = checkFrameSettings(frameId, settings); // check frame settings if it wasn't initilized yet
+	for(var s = 0; s < settingsList.length; s++) {
+		var settingName = settingsList[s];
+		var settingValue = "";
+		if (document.frame_settings.elements[settingName]) {
+			settingValue = document.frame_settings.elements[settingName].value;
+		}
+		settings[frameId][settingName] = settingValue;
+	}
+
+	generateSettings(settings);
+	hideFrameSettings();
+}
+
+function hideFrameSettings()
+{
+	var settingsOpacity = document.getElementById("frameSettings_opacity");
+	var settingsShadow = document.getElementById("frameSettings_shadow");
+
+	settingsOpacity.style.display = "none";			
+	settingsShadow.style.display = "none";			
+}
+
+function pageSettings(frameId)
+{
+	// show window with page setting in the center
+	var settingsOpacity = document.getElementById("pageSettings_opacity");
+	var settingsShadow = document.getElementById("pageSettings_shadow");
+
+	var pageSize = getPageSize();
+	var pageScroll = getScroll();
+	var arrayPageSizeWithScroll = getPageSizeWithScroll();
+
+	var winLeft = 5; var winTop = 5;
+	if (pageSize[0] > 620) {
+		winLeft = pageScroll[0] + (pageSize[0]-600) / 2;
+	}
+	if (pageSize[1] > 420) {
+		winTop = pageScroll[1] + (pageSize[1]-400) / 2;
+	}
+
+	settingsShadow.style.left = winLeft + "px";
+	settingsShadow.style.top = winTop + "px";
+
+	var opacityWidth = pageSize[0];	var opacityHeight = pageSize[1];
+	if (arrayPageSizeWithScroll[0] > opacityWidth) {
+		opacityWidth = arrayPageSizeWithScroll[0];
+	}
+	if (arrayPageSizeWithScroll[1] > opacityHeight) {
+		opacityHeight = arrayPageSizeWithScroll[1];
+	}
+	settingsOpacity.style.width = opacityWidth + "px";
+	settingsOpacity.style.height = opacityHeight + "px";
+
+	settingsShadow.style.display = "block";			
+	settingsOpacity.style.display = "block";			
+}
+
+function hidePageSettings()
+{
+	var settingsOpacity = document.getElementById("pageSettings_opacity");
+	var settingsShadow = document.getElementById("pageSettings_shadow");
+
+	settingsOpacity.style.display = "none";			
+	settingsShadow.style.display = "none";			
+}
+
+function getProductParams(itemForm)
+{
+	var params = new Array();
+	var paramsList = itemForm.product_params.value; 
+	var paramsPairs = paramsList.split("#");
+	for (var p = 0; p < paramsPairs.length; p++) {
+		var paramPair = paramsPairs[p];
+		var equalPos = paramPair.indexOf("=");
+		if(equalPos == -1) {
+			params[paramPair] = "";
+		} else {
+			var paramName = paramPair.substring(0, equalPos);
+			var paramValue = paramPair.substring(equalPos + 1, paramPair.length);
+			paramValue = paramValue.replace(/%0D/g, "\r");
+			paramValue = paramValue.replace(/%0A/g, "\n");
+			paramValue = paramValue.replace(/%27/g, "'");
+			paramValue = paramValue.replace(/%22/g, "\"");
+			paramValue = paramValue.replace(/%26/g, "&");
+			paramValue = paramValue.replace(/%2B/g, "+");
+			paramValue = paramValue.replace(/%25/g, "%");
+			paramValue = paramValue.replace(/%3D/g, "=");
+			paramValue = paramValue.replace(/%7C/g, "|");
+			paramValue = paramValue.replace(/%23/g, "#");
+			params[paramName] = paramValue;
+		}
+	}
+	// check params values
+	var checkParams = new Array();
+	checkParams["base_price"] = 0;
+	checkParams["crate"] = 1;
+	for (paramName in checkParams) {
+		if (params[paramName]) {
+			params[paramName] = parseFloat(params[paramName]);
+			if (isNaN(params[paramName])) { params[paramName] = checkParams[checkParams]; }
+		} else {
+			params[paramName] = checkParams[checkParams];
+		}
+	}
+	return params;
+}
+
+function disableButton() 
+{
+	if (!document.cms.save_button.disabled) {
+		document.cms.save_button.disabled = true;
+		document.cms.save_button.className = "disabledSubmit";
+		document.cms.submit();
+	}
+
+}
+
+
+//-->
+</script>
+</head>
+
+<body class="bodySbuilder" onLoad="populateFrames();">
+
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+
+<div class="CategoriesNav">
+
+<form name="cms_blocks">
+<div class="Block cmsBlocks">
+	<div class="BlockTitle">{CMS_BLOCKS_MSG}</div>
+	<div class="BlockContent scroller"><!-- begin cms_blocks_modules -->
+		<div id="module_{module_id}" class="{module_class}">
+				<a href="#" class="leftNavTitle" onclick="overhid('module_{module_id}'); return false;">{module_name}</a>
+				<a href="#" class="leftNavArr" onclick="overhid('module_{module_id}'); return false;"><img src="images/tr.gif" alt=""></a>
+				<input type="hidden" name="module_{module_id}" value="{module_name}">
+				<ul><!-- begin cms_blocks -->
+					<input type="hidden" name="block_module_{block_id}_{block_key}" value="{module_id}">
+					<li><a class="leftNavSub" id="block_{block_id}_{block_key}" href="#" onClick="selectBlock('', {block_id}, '', '{block_key}'); return false;">{block_name}</a></li><!-- end cms_blocks -->
+				</ul>
+		</div><!-- end cms_blocks_modules -->
+	</div>
+</div>
+</form>
+
+</div>
+<div class="ItemsList">
+
+<form name="cms" action="{admin_cms_page_layout_href}" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="selected_frame" value="">
+<input type="hidden" name="selected_block" value="">
+<input type="hidden" name="selected_key" value="">
+<input type="hidden" name="block_position" value="">
+<input type="hidden" name="ps_id" value="{ps_id}">
+<input type="hidden" name="page_id" value="{page_id}">
+<input type="hidden" name="key_code" value="{key_code}">
+<input type="hidden" name="key_type" value="{key_type}">
+<input type="hidden" name="current_layout_id" value="{current_layout_id}">
+<input type="hidden" name="sts" value="{sts}">
+<input type="hidden" name="rp" value="{rp}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><br><!-- END errors -->
+<!-- BEGIN success_block --><div class="messagebg">{CHANGES_SAVED_MSG}</div><!-- END success_block -->
+
+<div class="BlockTitle">
+	<a href="{admin_cms_href}#m{module_id}">{current_module_name}</a> &gt; <a href="{admin_cms_href}#m{module_id}">{current_page_name}</a>
+	<!-- begin sub_name_block -->
+	 &gt; <a href="{sub_url}">{sub_name}</a><!-- end sub_name_block -->
+
+	<!-- begin view_on_live_block -->
+	<div class="floatRight"><a href="{on_live_url}" target="_blank">{VIEW_ON_LIVE_MSG}</a></div><!-- end view_on_live_block -->
+</div>
+
+<div class="BlockOld cms-layout PageLayoutOld">
+
+<div class="LayoutHeader">
+
+<div class="LayoutSite"><!-- begin sitelist -->
+	{SELECT_SITE_MSG}&nbsp;
+	<select name="param_site_id" onchange="changeSite()"><!-- begin param_site_id -->
+		<option {param_site_id_selected} value="{param_site_id_value}">{param_site_id_description}<!-- end param_site_id -->
+	</select><!-- end sitelist -->		
+</div>
+
+<div class="LayoutSelect">
+	{LAYOUT_MSG} 
+	<select id="layoutSelect" name="layout_id" onChange="changeLayout();"><!-- begin layout_id -->
+		<option {layout_id_selected} value="{layout_id_value}">{layout_id_description}<!-- end layout_id -->
+	</select>
+	<a href="#" onClick="pageSettings(); return false;" class="metaData">{META_DATA_MSG}</a>
+</div>
+
+<!-- begin key_rule_block -->
+<div class="LayoutType">
+	{LAYOUT_TYPE_MSG}
+	<select name="key_rule"><!-- begin key_rule -->
+		<option {key_rule_selected} value="{key_rule_value}">{key_rule_description}<!-- end key_rule -->
+	</select>
+</div>
+<!-- end key_rule_block -->
+
+</div>
+
+<div id="pageLayout">
+
+{page_layout}
+</div><br>
+<span class="button"><input name="save_button" class="submit" type="submit" value="{SAVE_BUTTON}" onClick="disableButton();"></span><br><br>
+</div>
+
+
+<div class="Block BlockNotes">
+<div class="BlockTitle">{ADMIN_NOTE_MSG}</div>
+<div class="BlockContent">
+	<table width="100%" border="0">
+	<tr valign="top"><td width="50%">
+		<ul>
+			<li class="nob" style="line-height: 16px;">
+				<img src="images/cms_add.gif" align="left" alt="Add" title="Add" hspace="5"> - {ADD_DUPLICATE_BLOCK_MSG}<br><br>
+				<img src="images/cms_remove.gif" align="left" alt="remove" title="remove" hspace="5"> - {REMOVE_BLOCK_MSG}<br><br>
+				<img src="images/cms_settings.gif" align="left" alt="settings" title="settings" hspace="5"> - {SPECIFY_BLOCK_SETTINGS_MSG}<br><br>
+			</li>
+		</ul>
+	</td><td width="50%">
+		<ul>
+			<li class="nob" style="line-height: 16px;">
+				<img src="images/cms_move.gif" align="left" alt="Move" title="Move" hspace="5"> - {MOVE_SELECTED_BLOCK_MSG}<br><br>
+				<img src="images/cms_up.gif" align="left" alt="Up" title="Up" hspace="5"> - {MOVE_BLOCK_UP_MSG}<br><br>
+				<img src="images/cms_down.gif" align="left" alt="Down" title="Down" hspace="5"> - {MOVE_BLOCK_DOWN_MSG}
+			</li>
+		</ul>
+	</td></tr></table>
+</div>
+</div>
+
+<!-- begin of page settings form -->
+<div id="pageSettings_opacity" class="pageSettings-opacity" style="display: none;" onClick="hidePageSettings();return false;"></div>
+
+<div id="pageSettings_shadow" class="pageSettings-shadow" style="display: none;">
+<div class="pageSettings-block">
+<div class="pageSettings-img-close" align="right"><a href="#" onClick="hidePageSettings();return false;"><img src="../images/icons/close.gif" border="0" alt=""></a></div>
+
+<div id="pageSettings_win" class="pageSettings-descr">
+<div class="title">{PAGE_SETTINGS_MSG}</div><br>
+
+{PAGE_CSS_CLASS_MSG}:<br>
+<input class="field" type="text" size="60" name="page_class" value="{page_class}"><br>
+
+{META_TITLE_MSG}:<br>
+<input class="field" type="text" size="60" name="meta_title" value="{meta_title}"><br>
+
+{META_KEYWORDS_MSG}:<br>
+<textarea cols="60" rows="3" name="meta_keywords">{meta_keywords}</textarea><br>
+
+{META_DESCRIPTION_MSG}:<br>
+<textarea cols="60" rows="3" name="meta_description">{meta_description}</textarea><br>
+
+
+<br>
+<span class="button"><input class="submit" type="button" value="{UPDATE_BUTTON}" onClick="hidePageSettings();"></span>
+
+</div></div></div>
+<!-- end of page settings form -->
+
+</form>
+</div>
+
+{admin_footer}
+
+<div id="block_template" style="display: none;"><!-- begin block_template -->
+<li>
+	<i title="{DELETE_BUTTON}" onClick="deleteBlock('{frame_id}', '{block_id}', '{block_position}');" class="ico-trash"></i>
+	<i title="{SETTINGS_MSG}" onClick="blockSettings('{frame_id}', '{block_id}', '{block_position}');" class="ico-settings"></i>
+	<a {id_tag} href="#" onClick="selectBlock('{frame_id}', '{block_id}', '{block_position}', '{block_key}'); return false;">{module_name}&nbsp;> {block_name}</a>
+</li>
+<!-- end block_template -->
+</div>
+
+
+<form name="settings_form" action="admin_cms_block_settings.php" target="block_settings_frame" method="POST">
+<input type="hidden" name="frame_id" value="">
+<input type="hidden" name="block_id" value="">
+<input type="hidden" name="block_position" value="">
+<input type="hidden" name="block_params" value="">
+<input type="hidden" name="block_properties" value="">
+</form>
+
+<div id="settings_opacity" class="settings-opacity" style="display: none;" onClick="hideSettingsPopup();return false;"></div>
+
+<div id="settings_shadow" class="settings-shadow" style="display: none;">
+<div class="settings-block">
+<div class="settings-img-close" align="right"><a href="#" onClick="hideSettingsPopup();return false;"><img src="../images/icons/close.gif" border="0" alt=""></a></div>
+
+<div id="settings_win" class="settings-descr">
+<iframe id="settings_page" name="block_settings_frame" width="560" height="500" frameborder="no"></iframe>
+</div>
+
+</div>
+</div>
+
+
+<div id="frameSettings_opacity" class="frameSettings-opacity" style="display: none;" onClick="hideFrameSettings();return false;"></div>
+
+<div id="frameSettings_shadow" class="frameSettings-shadow" style="display: none;">
+<div class="frameSettings-block">
+<div class="frameSettings-img-close" align="right"><a href="#" onClick="hideFrameSettings();return false;"><img src="../images/icons/close.gif" border="0" alt=""></a></div>
+
+<div id="frameSettings_win" class="frameSettings-descr">
+<div class="title" id="frame_setting_title">{FRAME_SETTINGS_MSG}</div><br>
+
+<form name="frame_settings" action="admin_cms_page_layout.php" method="POST">
+<input type="hidden" name="frame_id" value="">
+
+{FRAME_CLASS_MSG}:<br>
+<input class="frame-field" type="text" name="frame_class" /><br/>
+
+{FRAME_STYLE_MSG}:<br>
+<textarea class="frame-field" rows="3" name="frame_style"></textarea><br>
+
+{HTML_FRAME_START_MSG}:<br>
+<textarea class="frame-field" rows="3" name="html_frame_start"></textarea><br>
+
+{HTML_BEFORE_BLOCK_MSG}:<br>
+<textarea class="frame-field" rows="3" name="html_before_block"></textarea><br>
+
+{HTML_AFTER_BLOCK_MSG}:<br>
+<textarea class="frame-field" rows="3" name="html_after_block"></textarea><br>
+
+{HTML_BETWEEN_BLOCKS_MSG}:<br>
+<textarea class="frame-field" rows="3" name="html_between_blocks"></textarea><br>
+
+{HTML_FRAME_END_MSG}:<br>
+<textarea class="frame-field" rows="3" name="html_frame_end"></textarea><br>
+
+<br>
+<span class="button"><input class="submit" type="button" value="{UPDATE_BUTTON}" onClick="saveFrameSettings();"></span>
+
+</form>
+
+
+</div>
+
+</div>
+</div>
+
+
+
+</body>
+</html>

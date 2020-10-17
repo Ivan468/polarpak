@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{EDIT_IP_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="page pg-black-ip {popup_class}">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<!-- begin success --><div class="message" align="center">{success_message}</div><!-- end success -->
+
+<div class="form">
+<div class="head">{EDIT_IP_MSG}</div>
+	<div class="body">
+	<form action="{admin_black_ip_href}" name="record" method="POST">
+	<input type="hidden" name="popup" value="{popup}">
+	<input type="hidden" name="module" value="{module}">
+	<input type="hidden" name="operation" value="save">
+	<input type="hidden" name="ip_address" value="{ip_address}">
+
+
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{IP_ADDRESS_MSG} *</div> 
+			<div class="control">
+				<input class="text" type="text" size="20" name="ip_address_edit" value="{ip_address_edit}">
+			</div>
+			<div class="after"></div>
+		</div>
+		<div class="field">
+			<div class="name">{NOTES_MSG}</div> 
+			<div class="control">
+				<textarea class="text" type="text" size="20" name="address_notes">{address_notes}</textarea>
+			</div>
+			<div class="after"></div>
+		</div>
+		<div class="section">{ACTION_MSG}</div> 
+		<div class="field">
+			<div class="name">{LOGIN_TITLE}</div> 
+			<div class="control cl-radio">
+				<!-- begin log_in -->
+				<input type="radio" name="log_in" id="log_in{log_in_value}" {log_in_checked} value="{log_in_value}">
+				<label for="log_in{log_in_value}">{log_in_description}</label><!-- end log_in -->
+			</div>
+			<div class="after"></div>
+		</div>
+		<div class="field">
+			<div class="name">{SIGN_UP_MSG}</div> 
+			<div class="control cl-radio">
+				<!-- begin sign_up -->
+				<input type="radio" name="sign_up" id="sign_up{sign_up_value}" {sign_up_checked} value="{sign_up_value}">
+				<label for="sign_up{sign_up_value}">{sign_up_description}</label><!-- end sign_up -->
+			</div>
+			<div class="after"></div>
+		</div>
+		<div class="field">
+			<div class="name">{ORDERS_MSG}</div> 
+			<div class="control cl-radio">
+				<!-- begin orders -->
+				<input type="radio" name="orders" id="orders{orders_value}" {orders_checked} value="{orders_value}">
+				<label for="orders{orders_value}">{orders_description}</label><!-- end orders -->
+			</div>
+			<div class="after"></div>
+		</div>
+		<div class="field">
+			<div class="name">{SUPPORT_TITLE}</div> 
+			<div class="control cl-radio">
+				<!-- begin support -->
+				<input type="radio" name="support" id="support{support_value}" {support_checked} value="{support_value}">
+				<label for="support{support_value}">{support_description}</label><!-- end support -->
+			</div>
+			<div class="after"></div>
+		</div>
+		<div class="field">
+			<div class="name">{FORUM_TITLE}</div> 
+			<div class="control cl-radio">
+				<!-- begin forum -->
+				<input type="radio" name="forum" id="forum{forum_value}" {forum_checked} value="{forum_value}">
+				<label for="forum{forum_value}">{forum_description}</label><!-- end forum -->
+			</div>
+			<div class="after"></div>
+		</div>
+
+		<div class="field">
+			<div class="name">{PRODUCTS_REVIEWS_MSG} </div> 
+			<div class="control cl-radio">
+				<!-- begin products_reviews -->
+				<input type="radio" name="products_reviews" id="products_reviews{products_reviews_value}" {products_reviews_checked} value="{products_reviews_value}">
+				<label for="products_reviews{products_reviews_value}">{products_reviews_description}</label><!-- end products_reviews -->
+			</div>
+			<div class="after"></div>
+		</div>
+		<div class="field">
+			<div class="name">{ARTICLES_REVIEWS_MSG} </div> 
+			<div class="control cl-radio">
+				<!-- begin articles_reviews -->
+				<input type="radio" name="articles_reviews" id="articles_reviews{articles_reviews_value}" {articles_reviews_checked} value="{articles_reviews_value}">
+				<label for="articles_reviews{articles_reviews_value}">{articles_reviews_description}</label><!-- end articles_reviews -->
+			</div>
+			<div class="after"></div>
+		</div>
+		<div class="field fd-buttons">
+			<div class="name"></div> 
+			<div class="control">
+				<input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"><!-- BEGIN delete -->
+				<input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';"><!-- END delete -->
+				<input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'">
+			</div>
+			<div class="after"></div>
+		</div>
+
+	</form>	
+	</div>
+</div>
+
+{admin_footer}
+
+<!-- begin set_ip_class -->
+<script>
+	if (window.opener && window.opener.vaSetIpClass) {
+		window.opener.vaSetIpClass("{ip_class}", "{ip_operation}");
+		window.close();
+	}
+</script>
+<!-- end set_ip_class -->
+<!-- begin close_popup -->
+<script>
+	if (window.opener) { window.close();}
+</script>
+<!-- end close_popup -->
+
+</body>
+</html>

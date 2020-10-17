@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {COUPONS_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="bodyDboard">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<!-- BEGIN errors -->
+<div class="errorbg">{errors_list}</div><!-- END errors -->
+
+	<div class="Block">
+	<form name="search_form" action="{admin_coupons_href}" method="GET">
+		<input type="hidden" name="s" value="1">
+		<div class="AdminSearch">
+			<div id="item_advanced_search" class="leftNavNonActive">
+				<a href="#" class="leftNavTitle">{SEARCH_TITLE}</a>
+				<div class="innerDiv">
+					<select name="s_a"><!-- begin s_a -->
+						<option {s_a_selected} value="{s_a_value}">{s_a_description}<!-- end s_a -->
+					</select>
+					<select name="s_dt"><!-- begin s_dt -->
+						<option {s_dt_selected} value="{s_dt_value}">{s_dt_description}<!-- end s_dt -->
+					</select>
+					<input class="field" type="text" name="s_n" value="{s_n}" size="40">
+					<span class="button"><input class="submit" type="submit" value="{ADMIN_SHOW_MSG}"></span>
+				</div>
+			</div>
+		</div>
+	</form>
+	</div>
+
+
+
+<div class="Block">
+<div class="BlockTitle">{COUPONS_MSG}</div>
+<div class="BlockContent">
+
+<table border="0" cellpadding="6" cellspacing="1" width="100%"><!-- begin sorters -->
+<tr class="middle" align="center">
+	<td>{sorter_coupon_id}</td>
+	<td>{sorter_coupon_title}</td>
+	<td>{sorter_coupon_code}</td>
+	<td>{sorter_expiry_date}</td>
+	<td>{STATUS_MSG}</td>
+	<td>&nbsp;</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="usual" align="center">
+	<td>{coupon_id}</td>
+	<td align="left">{coupon_title}</td>
+	<td>{coupon_code}</td>
+	<td>{expiry_date}</td>
+	<td>{coupon_status}</td>
+	<td align="left">
+		<a class="ico" title="{EDIT_COUPON_MSG}" href="{coupon_edit_url}"><i class="ico-edit"></i></a>
+		<a class="ico" title="{MULTIPLY_MSG}" href="{coupon_multiply_url}"><i class="ico-clone"></i></a>
+		<!-- begin transfer_link -->
+		<a class="ico" title="{VOUCHER_TRANSFER_MSG}" href="{coupon_transfer_url}"><i class="ico-transfer"></i></a><!-- end transfer_link -->
+	</td>
+	</tr><!-- END records --><!-- BEGIN no_records -->
+<tr>
+	<td colspan="7" class="usual">{NO_COUPONS_FOUND_MSG}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="7">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		{ADD_COUPON_MSG}:
+		<a href="{admin_coupon_href}?discount_type=1&s_n={s_n_url}&s_a={s_a_url}&s_dt={s_dt_url}">{ORDER_COUPON_MSG}</a> |
+		<a href="{admin_coupon_href}?discount_type=3&s_n={s_n_url}&s_a={s_a_url}&s_dt={s_dt_url}">{PRODUCT_COUPON_MSG}</a> |
+		<a href="{admin_coupon_href}?discount_type=5&s_n={s_n_url}&s_a={s_a_url}&s_dt={s_dt_url}">{GIFT_VOUCHER_MSG}</a> |
+		<a href="{admin_coupon_href}?discount_type=6&s_n={s_n_url}&s_a={s_a_url}&s_dt={s_dt_url}">{SALES_DISCOUNT_MSG}</a> |
+		<a href="{admin_coupon_href}?discount_type=8&s_n={s_n_url}&s_a={s_a_url}&s_dt={s_dt_url}">{USER_VOUCHER_MSG}</a>
+	</td>
+</tr>
+</table>	
+
+</div>
+</div>
+
+
+{admin_footer}
+</body>
+</html>

@@ -1,0 +1,74 @@
+<div class="cookie-bar">
+	<i class="close" onclick="cookieBarClose();"></i>
+	<div class="cookie-message">{cookie_bar_message}</div>
+	<div class="cookie-settings" data-cookie-time="{cookie_time}" data-disabled-message="{disabled_message}">
+		<!-- begin cookie_types -->
+		<label class="{cookie_type_class}" onclick="checkCookieDisabled(this);"><input type="checkbox" name="{cookie_type}" {cookie_type_checked} {cookie_type_disabled} value="1" />{cookie_name}</label>
+		<!-- end cookie_types -->
+		<a class="button" onclick="setVaCookie();">{ACCEPT_BUTTON}</a>
+		<a data-js="expand" data-class="cookie-details" class="expand"><span class="expand-show">{SHOW_DETAILS_MSG}</span><span class="expand-hide">{HIDE_DETAILS_MSG}</span></a>
+		<div class="clear"></div>
+	</div>
+
+	<div class="cookie-details">
+		<ul class="tabs" data-js="tabs"><!-- BEGIN tabs -->
+			<li class="{tab_class}" data-tab="{tab_name}">{tab_title}</li><!-- END tabs -->
+		</ul>
+		<div class="clear"></div>
+		<!-- BEGIN tabs_data -->
+		<div class=" {tab_data_class}">
+			{tab_data}
+		</div><!-- END tabs_data -->
+	</div>
+
+</div>
+
+<script>
+function setVaCookie() {
+	var setObj = document.querySelector(".cookie-settings");
+	if (setObj) {
+		// prepare expires time
+		var expires = "";
+		var cookieDays = parseInt(setObj.getAttribute("data-cookie-time"));
+		if (isNaN(cookieDays)) { cookieDays = 0; }
+		if (cookieDays > 0) {
+			var date = new Date();
+			date.setTime(date.getTime() + (cookieDays*24*60*60*1000));
+			expires = "; expires=" + date.toUTCString();
+		}
+		// generate _va_cookie value
+		var vaCookie = {};
+		var cookieOptions = setObj.querySelectorAll("input[type=checkbox]");
+		for (var ch = 0; ch < cookieOptions.length; ch++) {
+			var cookieOption = cookieOptions[ch];
+			var cookieType = cookieOptions[ch].name;
+			var cookieValue = (cookieOptions[ch].checked) ? "yes" : "no";
+			vaCookie[cookieType] = cookieValue;
+		}
+    document.cookie = "_va_cookie=" + JSON.stringify(vaCookie) + expires + "; path=/";
+	}
+	cookieBarClose();
+}
+
+function cookieBarClose()
+{
+	var barObj = document.querySelector(".cookie-bar");
+	if (barObj) {
+		barObj.parentNode.removeChild(barObj);
+	}
+}
+
+function checkCookieDisabled(labelObj)
+{
+	var setObj = document.querySelector(".cookie-settings");
+	var checkboxObj = labelObj.querySelector("input[type=checkbox]");
+	var checkboxDisabled = (checkboxObj.disabled) ? true : false;
+	if (checkboxDisabled) {
+		var disabledMessage = "";
+		if (setObj && setObj.hasAttribute("data-disabled-message")) {
+			disabledMessage = setObj.getAttribute("data-disabled-message");
+		}
+		alert(disabledMessage);
+	}
+}
+</script>

@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {EDIT_LANGUAGE_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+	function openWindow(pagename, filetype)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+	}
+
+	function setFileName(filename, filetype)
+	{
+		var siteUrl = '{site_url}';
+		if (filename != "")
+		{
+			if (filetype == "language") {
+				document.record.language_image.value = siteUrl + "images/flags/" + filename;
+				document.record.language_image.focus();
+			} else if (filetype == "language_active") {
+				document.record.language_image_active.value = siteUrl + "images/flags/" + filename;
+				document.record.language_image_active.focus();
+			}
+
+		}
+	}
+//-->
+</script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_LANGUAGE_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_language_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="language_edit" value="{language_edit}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="page" value="{page}">
+<input type="hidden" name="sp" value="{sp}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="usual">
+	<td><label for="show_for_user">{SHOW_FOR_USER_MSG}</label></td>
+	<td><input type="checkbox" name="show_for_user" id="show_for_user" {show_for_user} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{LANGUAGE_CODE_MSG} *</td>
+	<td><input class="field" type="text" size="5" name="language_code_edit" value="{language_code_edit}" maxlength="2"></td>
+</tr>
+<tr class="usual">
+	<td>{ADMIN_ORDER_NUMBER_MSG} *</td>
+	<td><input class="field" type="text" size="5" name="language_order" value="{language_order}" maxlength="2"></td>
+</tr>
+<tr class="usual">
+	<td>{NAME_MSG} *</td>
+	<td><input class="field" type="text" size="60" name="language_name" value="{language_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{LANGUAGE_IMAGE_MSG} </td>
+	<td>
+		<input class="field" type="text" size="60" name="language_image" value="{language_image}">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'language')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'language')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{LANGUAGE_IMAGE_ACTIVE_MSG} </td>
+	<td>
+		<input class="field" type="text" size="60" name="language_image_active" value="{language_image_active}">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'language_active')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'language_active')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

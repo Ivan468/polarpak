@@ -1,0 +1,88 @@
+<script type="text/javascript">
+var site_url = "{site_url}";
+</script>
+
+<div class="MainBlock">
+<div class="Header">
+
+	<a class="admin-logo" href="{admin_href}" title="Viart {CONTROL_PANEL_MSG}"><span>{CONTROL_PANEL_MSG}</span></a>
+	<a class="version-info" href="{admin_href}" title="Viart {CONTROL_PANEL_MSG}">
+		<span class="control-panel">{CONTROL_PANEL_MSG}</span>
+		<span class="version-name">Viart {version_name} {version_type}</span>
+		<span class="version-number">v.{version_number} ({version_build})</span>
+	</a>
+
+	<div class="adminAdditional">
+		<div class="searchAdd">
+			<form action="{admin_global_search_href}" method="GET">
+			<input class="field" name="s" value="" size="30" type="text">
+			<span class="button"><input class="submit" name="search" value="{SEARCH_BUTTON}" type="submit"></span>
+			</form>
+		</div>
+		<ul data-js="nav" data-js-type="click" class="languages">
+			<li>
+				<a href=""><!-- begin active_image --><img src="{src}" /><!-- end active_image --><span>{active_language}</span></a>
+				<ul><!-- begin header_languages -->
+					<li>
+						<a href="{language_url}">
+							<!-- begin language_image --><img src="{src}" /><!-- end language_image --><span>{language_name}</span>
+						</a>
+					</li><!-- end header_languages -->
+				</ul>
+			</li>
+		</ul>
+
+		<div class="newAdd">
+			<!-- begin today_block -->
+			<div class="newTxt">{TODAY_MSG}</div><!-- end today_block -->
+			<!-- begin new_orders_block -->
+			<div class="newOrders">
+				<a href="admin_orders.php?s_os_list=17&s_sd={today_header}&s_ed={today_header}"><b>{new_orders}</b> {ORDERS_MSG}</a>
+			</div><!-- end new_orders_block -->
+			<!-- begin new_tickets_block -->
+			<div class="newChats">
+				<a href="#" onclick="openChatWindow('admin_support_chat.php');return false;">{chats_message}</a>
+			</div>
+			<div class="newTickets">
+				<a href="admin_support.php?s_sd={today_header}&s_ed={today_header}&s_in=0"><b>{new_tickets}</b> {TICKETS_MSG}</a>
+			</div><!-- end new_tickets_block -->
+			<!-- begin new_users_block -->
+			<div class="newUsers">
+				<a href="admin_users.php?s_sd={today_header}&s_ed={today_header}"><b>{new_users}</b> {USERS_MSG}</a>
+			</div><!-- end new_users_block -->
+		</div>
+	</div>
+
+	<div class="version">
+<!--		Viart {version_name} {version_type} v.{version_number} ({version_build})<br>-->
+	</div>
+
+
+	<div class="clear"></div>
+
+	<div class="links">
+		<a href="{index_href}" class="linkAsButton"><span>{SITE_HOME_MSG}</span></a>
+		{block_bookmarks}
+		<a href="admin_login.php?operation=logout" class="linkAsButton logout"><span>{LOGOUT_BUTTON}</span></a>
+	</div>
+
+<!-- begin menu_block -->
+	<div class="{block_menu_class}">
+		<ul data-js="nav" data-js-type="click" class="{top_menu_class}"><!-- BEGIN menus -->
+			<li class="{menu_class}"><!-- BEGIN menu_image -->
+				<a href="{menu_href}" {menu_target}><img border="0" src="{src}" alt="{alt}" title="{alt}" /></a><!-- END menu_image --><!-- BEGIN menu_text -->
+				<a href="{menu_href}" {menu_target}><i class="left"></i><span>{menu_title}</span><i class="right"></i></a><!-- END menu_text --><!-- BEGIN submenus_block --> 
+				<ul class="sub-menu">{submenus}</ul><!-- END submenus_block --> 
+			</li><!-- END menus -->
+		</ul>
+	</div>
+	<div class="clear"></div>
+<!-- end menu_block -->
+
+</div>
+	
+<div class="MainContent">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr><!-- begin block_leftside_menu_block -->
+	<td valign="top" width="220">{block_leftside_menu}</td><!-- end block_leftside_menu_block -->
+<td valign="top">

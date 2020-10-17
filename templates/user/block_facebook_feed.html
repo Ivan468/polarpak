@@ -1,0 +1,58 @@
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+function facebookDate(dateStr) {
+	var d = dateStr.match(/^([0-9][0-9][0-9][0-9])-([0-9][0-9])-([0-9][0-9])/);
+	if (d) {
+		var feedDate = new Date(d[1], d[2]-1, d[3]);
+		return feedDate.toLocaleDateString();
+	} else {
+		return dateStr;
+	}
+}
+function facebookLoad() {
+	//Set Url of JSON data from the facebook graph api. make sure callback is set with a '?' to overcome the cross domain problems with JSON
+	var url = "https://graph.facebook.com/{ff_username}?fields=id%2Cname%2Cposts.limit({ff_limit}})%2Cpicture.type(small)&method=GET&format=json&suppress_http_code=1&access_token={ff_access_token}&callback=?";
+	//Use jQuery getJSON method to fetch the data from the url and then create our unordered list with the relevant data.
+	$.getJSON(url,function(json){
+		var feed = "",
+			limit = {ff_limit},
+			feedsToShow = {ff_recs},
+			counter = 0,
+			smallImg = "<img class=\"fbImg twitterImg\" src=\"" + json.picture.data.url + "\" />";
+		//loop through and within data array's retrieve the message variable.
+		$.each(json.posts.data,function(i,fb){
+			if (fb.story != undefined && counter < feedsToShow) {
+				counter++;
+				feed += "<div class=\"tweet\">";
+				feed += smallImg;
+				feed += "<span class=\"date articleDate\">";
+				feed += facebookDate(fb.created_time);
+				feed += "</span><br />";
+				feed += fb.story;
+				feed += "<div class=\"clearboth\"></div>";
+				feed += "</div>";
+			}
+		});
+		$("#facebook_feed").html(feed);
+	});
+ 
+};
+//]]>
+</script>
+	
+	<!-- BEGIN facebook_errors -->
+	<div class="errorbg">{errors_list}</div>
+	<!-- END facebook_errors -->
+	
+	<!-- BEGIN facebook_feeds -->
+	<div class="facebook">
+		<div class="facebook_feed" id="facebook_feed">Loading...</div>  
+	</div>
+	<!-- END facebook_feeds -->
+
+<script type="text/javascript">
+//<![CDATA[
+facebookLoad();
+//]]>
+</script>

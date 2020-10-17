@@ -1,0 +1,27 @@
+<div class="Block">
+<div class="BlockTitle">{ADMIN_MANUAL_MSG} in {product_category_name}<!-- begin s_title --> matching the term(s) '<b>{s}</b>'<!-- end s_title -->:</div>
+<div class="BlockContent">
+		<table border="0" cellspacing="1" cellpadding="6" width="99%">
+		<tr class="middle" align="center">
+			<td align="left">{ADMIN_TITLE_MSG}</td>
+			<td nowrap>{ADMIN_SECTION_MSG}</td>
+			<td nowrap>{LAST_UPDATED_MSG}</td>
+		</tr><!-- BEGIN items_list -->
+		<tr class="{row_style}" align="center" valign="top" id="tr_product_{item_index}">
+			<td align="left">
+				<a class="title" href="{admin_manual_article_href}?manual_id={manual_id}&article_id={article_id}&parent_article_id={parent_article_id}">{article_title}</a> &nbsp; &nbsp; 
+				<a class="small" href="{admin_manual_article_href}?manual_id={manual_id}&article_id={article_id}&parent_article_id={parent_article_id}">{EDIT_MSG}</a>
+				<div class="small">
+					<a class="small" href="{admin_manual_href}?category_id={article_category_id}&manual_id={manual_id}">{manual_title}</a>
+			</td>
+			<td align="right">{section_number}</td>
+			<td>{date_modified}</td>
+		</tr><!-- END items_list -->
+		<tr class="middle" align="center">
+			<td align="left" colspan="3">
+				<a href="{admin_manual_href}?s={s}">Show all ({total_records})</a>
+			</td>
+		</tr>
+		</table>
+</div>
+</div>

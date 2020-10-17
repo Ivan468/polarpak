@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{ARTICLES_REVIEWS_MSG} :: {EDIT_REVIEW_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/admin.js"></script>
+</head>
+
+<body class="bodyDboard">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_REVIEW_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_article_review_href}" name="record" method="POST">
+<input type="hidden" name="sf" value="{sf}">
+<input type="hidden" name="s_a" value="{s_a}">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="review_id" value="{review_id}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="usual">
+	<td>{ARTICLES_TYPE_MSG}</td>
+	<td><b>{articles_type}</b></td>
+</tr>
+<tr class="usual">
+	<td>{ARTICLE_TITLE_MSG}</td>
+	<td><b>{article_title}</b></td>
+</tr>
+<tr class="usual">
+	<td>{REVIEW_DATE_MSG}</td>
+	<td>{date_added} <input type="hidden" name="date_added" size="20" value="{date_added}"></td>
+</tr>
+<tr class="usual">
+	<td>{IP_ADDRESS_MSG}</td>
+	<td>{remote_address} <input class="" type="hidden" name="remote_address" size="20" value="{remote_address}"></td>
+</tr>
+<tr class="usual">
+	<td nowrap>{IS_APPROVED_MSG}</td>
+	<td><!-- begin approved -->
+		<input type="radio" name="approved" id="approved{approved_value}" {approved_checked} value="{approved_value}">
+		<label for="approved{approved_value}">{approved_description}</label><!-- end approved -->
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2"><b>{USER_IDENT_INFO_MSG}</b></td>
+</tr>
+
+<tr class="usual">
+	<td>{USER_NAME_MSG} {user_name_required}</td>
+	<td><input class="field" type="text" name="user_name" size="60" value="{user_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{USER_EMAIL_MSG} {user_email_required}</td>
+	<td><input class="field" type="text" name="user_email" size="60" value="{user_email}"></td>
+</tr>
+<tr class="middle">
+	<td colspan="2"><b>{ADMIN_DETAILS_MSG}</b></td>
+</tr>
+<tr class="usual">
+	<td>{USER_RECOMMEND_QST} {reviewed_item}?</td>
+	<td>
+		<select name="recommended"><!-- begin recommended -->
+			<option {recommended_selected} value="{recommended_value}">{recommended_description}<!-- end recommended -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{RATING_MSG}</td>
+	<td>
+		<select name="rating"><!-- begin rating -->
+			<option {rating_selected} value="{rating_value}">{rating_description}<!-- end rating -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CONTACT_SUMMARY_FIELD}</td>
+	<td><input class="field" type="text" name="summary" size="60" value="{summary}"></td>
+</tr>
+<tr class="usual">
+	<td>{USER_COMMENT_MSG}</td>
+	<td><textarea name="comments" cols="60" rows="10">{comments}</textarea></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+	</div>
+	</div>
+
+{admin_footer}
+
+</body>
+</html>

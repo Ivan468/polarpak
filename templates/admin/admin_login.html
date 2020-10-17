@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {LOGIN_BUTTON}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+
+<body class="popup">
+
+<div class="Form" style="margin: 20% auto; width: 400px;">
+<div class="FormTitle"><img align="top" src="../images/icons/admin.gif" width="16" height="16">&nbsp; {ADMINISTRATION_MSG}</div>
+<div class="FormContent">
+
+<form action="{admin_login_url}" name="record" method="POST">
+<input type="hidden" name="operation" value="{operation}">
+<input type="hidden" name="return_page" value="{return_page}">
+<input type="hidden" name="post_data" value="{post_data}">
+<!-- BEGIN errors --><div class="errorbg">
+	<!-- begin session_expired -->
+	{SESSION_EXPIRED_MSG}<br>
+	<!-- end session_expired -->
+	<!-- begin access_error -->
+	<b>{ADMIN_ACCESS_ERROR}</b><br>
+	{TO_CHANGE_PERMISSION_MSG}
+	<a style="color:#cc0000;" href="{admin_privileges_href}">{PRIVILEDGE_GROUPS_MSG}</a>.<!-- end access_error -->
+	{errors_list}
+</div><!-- END errors -->
+
+<table border="0" cellpadding="6" cellspacing="1" width="100%"><!-- BEGIN login_form -->
+<tr>
+	<td align="right">{LOGIN_FIELD}</td>
+	<td><input class="field" type="text" name="login" value="{login}" size="24" maxlength="32"></td>
+</tr>
+<tr>
+	<td align="right">{PASSWORD_FIELD}</td>
+	<td><input class="field" type="password" name="password" value="" size="24" maxlength="32"></td>
+</tr>
+
+<tr>
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value=" {LOGIN_BUTTON} " onCLick="document.record.operation.value='login'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel_login'"></span>
+	</td>
+</tr><!-- END login_form --><!-- BEGIN access_form -->
+<tr>
+	<td align="right">{ACCESS_CODE_MSG}</td>
+	<td><input class="field" type="text" name="access_code" value="{access_code}" size="24" maxlength="32"></td>
+</tr>
+<tr>
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value=" {GO_BUTTON} " onCLick="document.record.operation.value='access'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr><!-- END access_form --><!-- BEGIN logout_form -->
+<tr>
+	<td align="right">{LOGIN_AS_NAME}</td>
+</tr>
+<tr>
+	<td align="right">{TO_ACCESS_HOME_MSG} <a href="{admin_href}">{CLICK_HERE_MSG}</a></td>
+</tr>
+<tr>
+	<td align="right">
+		<input class="submit" type="submit" value="{LOGOUT_BUTTON}" onCLick="document.record.operation.value='logout'">
+	</td>
+</tr><!-- END logout_form -->
+</table>
+</form>
+
+</div>
+</div>
+
+<script language="JavaScript">
+<!--
+	if(document.record.login) {
+		document.record.login.focus();
+	} else if (document.record.access_code) {
+		document.record.access_code.focus();
+	}
+//-->
+</script>
+</body>
+</html>

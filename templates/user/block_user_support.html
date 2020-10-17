@@ -1,0 +1,25 @@
+	<table cellspacing="1" width="100%" class="table-data"><!-- begin sorters -->
+	<tr class="middlebg" align="center">
+		<td>{sorter_summary}</td>
+		<td>{sorter_status}</td>
+		<td>{sorter_type}</td>
+		<td>{sorter_modified}</td>
+		<td>&nbsp;</td>
+	</tr><!-- end sorters --><!-- BEGIN records -->
+	<tr class="usualbg" valign="top" align="center">
+		<td align="left">{summary}</td>
+		<td>{status_name}</td>
+		<td>{type_name}</td>
+		<td>{date_modified}</td>
+		<td><a href="{support_messages_href}?support_id={support_id}&vc={vc}">{VIEW_MSG}</a></td>
+	</tr><!-- END records --><!-- BEGIN no_records -->
+	<tr class="usualbg">
+		<td>{NO_SUPPORT_REQUEST_MSG}</td>
+	</tr><!-- END no_records -->
+	</table>	
+	<table cellspacing="1" width="100%" class="table-data">
+	<tr class="middlebg">
+		<td colspan="4"><a href="{support_href}">{NEW_SUPPORT_REQUEST_MSG}</a></td>
+		<td align="right">&nbsp;{navigator}</td>
+	</tr>
+	</table>	

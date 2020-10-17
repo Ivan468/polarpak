@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html><head><title>{ADMINISTRATION_MSG} :: {IMPORT_MSG} {table_title}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript">
+	// control constants
+	var HIDDEN       = 1;
+	var TEXTBOX      = 2;
+	var TEXTAREA     = 3;
+	var CHECKBOX     = 4;
+	var LISTBOX      = 5;
+	var RADIOBUTTON  = 6;
+	var CHECKBOXLIST = 7;
+	var TEXTBOXLIST  = 8;
+	var SUBMITBUTTON = 9;
+	var BUTTON       = 10;
+		
+	var dbColumns = {db_columns};
+	var relatedColumns = {related_columns};
+	var headerData = {header_data};
+	var keysChain = {keys_chain};
+
+	function checkDBColumns()
+	{
+		var submitForm = true;
+		var formObj = document.matching;
+		var totalColumns = formObj.total_columns.value;
+		for(var i = 1; i <= totalColumns; i++) {
+
+			var columnName = formObj.elements["column_name_"+i].value;
+			var rowObj = document.getElementById("row_"+columnName);
+			var columnSource = formObj.elements["column_source_"+columnName].value;
+						
+			if (columnSource == "") {
+				rowObj.className = "warning";
+				submitForm = false;
+			}
+		}
+
+
+		if (!submitForm) {
+			alert("Please select source for columns mark in red.");
+		}
+		if(!checkRootSelection()){
+			submitForm = false;
+			alert("Please choose xml root element.");
+		}
+				
+		return submitForm;
+	}
+
+
+function matchColumns()
+{
+}
+
+function dataSourceFrame(fieldIndex, columnType)
+{
+	// delete popup block if it was initialized before
+	hidePopupBlock();
+
+	var formObj = document.matching;
+	formObj.column_index.value = fieldIndex;
+	formObj.column_type.value = columnType;
+
+	// check if root element was selected for XML format
+	var isXml = formObj.file_type.value.toLowerCase() == "xml";
+	if(isXml && formObj.xml_product_root.tagName == 'SELECT') {
+		rootElemValue = formObj.xml_product_root.options[formObj.xml_product_root.selectedIndex].value;
+		if (rootElemValue == -1) {
+			alert("{SELECT_XML_IMPORT_ROOT_MSG}");
+			formObj.xml_product_root.focus();
+			return;
+		}
+	}
+
+
+	var pageSize = getPageSize()
+	var pageScroll = getScroll();
+	//var popupObj = document.createElement("div");
+	var popupObj = document.getElementById("popupBlock");
+	//popupObj.id = "popupBlock";
+	//popupObj.className = "popupBlock";
+	popupObj.style.zIndex = "111";
+	popupObj.style.position = "absolute";
+	popupObj.style.left = "0px";
+	popupObj.style.top = "0px";
+	popupObj.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
+	popupObj.style.display = "block";
+	//popupObj.innerHTML = msgText;
+
+	//document.body.insertBefore(popupObj, document.body.firstChild);
+	// check size for shadow background
+	var fullSize = getPageSizeWithScroll();
+	popupObj.style.width = fullSize[0]+"px";
+	popupObj.style.height = fullSize[1]+"px";
+	//popupObj.onclick = hidePopupBlock;
+
+	// move frame to the center
+	var popupFrame = document.getElementById("popupFrame");
+	var frameWidth = popupFrame.offsetWidth;
+	var frameHeight = popupFrame.offsetHeight
+
+	// calculate message block position
+	var	frameLeft = pageScroll[0] + pageSize[0]/2 - frameWidth/2;
+	var	frameTop = pageScroll[1] + pageSize[1]/2 - frameHeight/2;
+	if (frameLeft < 0) {
+		frameLeft = 0;
+	}
+	if (frameWidth > pageSize[0]) {
+		//frameLeft = 0;
+	} else if (frameLeft + frameWidth > pageSize[0]) {
+		//frameLeft = pageSize[0] - frameWidth;
+	}
+	popupFrame.style.left = frameLeft+"px";
+	popupFrame.style.top  = frameTop+"px";
+
+	populateDataSource(fieldIndex, columnType);
+}
+
+function hidePopupBlock()
+{
+	var popupObj = document.getElementById("popupBlock");
+	popupObj.style.display = "none";
+	if (popupObj) {
+		//var parentObj = popupObj.parentNode;
+		//parentObj.removeChild(popupObj);
+	}
+}
+
+function docKeyUp(keyCode)
+{
+	if (keyCode == 27) {
+		hidePopupBlock();
+	}
+}
+
+function populateDataSource() 
+{
+	var formObj = document.matching;
+	var fieldIndex = formObj.column_index.value;
+	var columnType = formObj.column_type.value;
+	var columnSource, columnData, fieldName;
+	if (columnType == "related") {
+		columnSource = formObj.elements["related_source_"+fieldIndex].value;
+		columnData = formObj.elements["related_data_"+fieldIndex].value;
+		fieldName = formObj.elements["related_name_"+fieldIndex].value;
+	} else {
+		columnSource = formObj.elements["column_source_"+fieldIndex].value;
+		columnData = formObj.elements["column_data_"+fieldIndex].value;
+		fieldName = formObj.elements["column_name_"+fieldIndex].value;
+	}
+
+	var tableID = "headerData";
+	deleteTableRows(tableID);
+	var tableObj = document.getElementById(tableID);
+	var formObj = document.matching, rootElemValue = "";
+	var isXml = formObj.file_type.value.toLowerCase() == "xml";
+	// XML only
+	if(isXml){
+		if (formObj.xml_product_root.tagName == 'SELECT'){
+			rootElemValue = formObj.xml_product_root.options[formObj.xml_product_root.selectedIndex].value;
+		} else {
+			rootElemValue = formObj.xml_product_root.value;		
+		}
+		//currentHeaderList = do
+	}
+
+	// filter data by nodes
+	var nodeIndex = 0;
+	var nodeHeaderData = []; // object for filtered Data
+	for(key in headerData) {	
+		var cellValue = headerData[key]["value"];
+		if(isXml && rootElemValue !== '-1' && keysChain[rootElemValue].hasValue(cellValue) === false){
+			ignoreItem = true;
+		} else {
+			nodeHeaderData[nodeIndex] = headerData[key];
+			nodeIndex++;
+		}
+	}
+
+	// calculate length of header data array	
+	var dataTotal = headerData.length;
+	/*
+	var dataTotal = 0;
+	for(key in nodeHeaderData) {
+		if(nodeHeaderData.hasOwnProperty(key)) {
+			dataTotal++;
+		}
+	}
+alert(dataTotal);
+	var dataMiddle = Math.ceil(dataTotal / 3);
+*/
+
+	// prepare data for comparison
+	columnSource = columnSource.toLowerCase();
+	columnData = columnData.replace(/^\s+|\s+$/g, "").toLowerCase();
+
+	var rowNumber = 0; var rowObj; var cellObj; 
+	var cellNumber = 0; var cellValue; var cellTitle; var titleCompare; var sourceClass;
+	for (var h = 0; h < dataTotal; h++) {
+		if (h % 3 == 0) {
+			// add new row for every 3 header fields
+			rowObj = tableObj.insertRow();
+		}
+		// add cell
+		cellNumber++;
+		cellValue = headerData[h]["value"];
+		cellTitle = headerData[h]["title"];
+		//cellValue = paramValue.replace(/%0D/g, "\r");
+
+		titleCompare = cellTitle.replace(/^\s+|\s+$/g, "").toLowerCase();
+		if ((columnSource == "csv" || columnSource == "xml") && titleCompare == columnData) {
+			sourceClass = "sourceSelected";
+		} else {
+			sourceClass = "sourceSelect";
+		}
+
+		cellObj = rowObj.insertCell();
+		cellObj.style.align = "center";
+		cellObj.innerHTML = cellNumber+ ".";
+		cellObj = rowObj.insertCell();
+		cellObj.innerHTML = '<a class="'+sourceClass+'" onclick="selectSource(\''+cellValue+'\',\''+cellTitle+'\')">'+cellTitle+'</a>';
+
+		cellObj = rowObj.insertCell();
+		cellObj.innerHTML = "&nbsp;";
+	}
+
+	// show default value
+	var titleObj = document.getElementById("defaultTitle");
+	var valueObj = document.getElementById("defaultValue");
+	// clear from previous values
+	titleObj.innerHTML = "";
+	valueObj.innerHTML = "";
+	var fieldInfo;
+	if (columnType == "related") {
+		fieldInfo = relatedColumns[fieldName];
+	} else {
+		fieldInfo = dbColumns[fieldName];
+	}
+	var fieldTitle = (fieldInfo["title"]) ? fieldInfo["title"] : fieldInfo["0"];
+	var fieldControl = TEXTBOX;
+	if (fieldInfo["control"]) {
+		fieldControl = fieldInfo["control"];
+	}
+
+	// add default field title 
+	titleObj.innerHTML = fieldTitle + ": ";
+	// show for popup title as well
+	document.getElementById("popupTitle").innerHTML = fieldTitle;
+
+
+	var controlSize = "40";
+	if (fieldInfo["size"]) {
+		controlSize = fieldInfo["size"];
+	}
+
+	var controlObj; var optionObj; var descObj;
+	if (fieldControl == TEXTBOX) {
+		controlObj = document.createElement("input");
+		controlObj.type = "text";
+		controlObj.size = controlSize;
+		controlObj.name = "default_value";
+		if (columnSource == "default") {
+			controlObj.value = columnData;
+		}
+		valueObj.appendChild(controlObj);   
+	} else if (fieldControl == TEXTAREA) {
+		controlObj = document.createElement("textarea");
+		controlObj.cols = "40";
+		controlObj.rows = "3";
+		controlObj.name = "default_value";
+		if (columnSource == "default") {
+			controlObj.value = columnData;
+		}
+		valueObj.appendChild(controlObj);   
+	} else if (fieldControl == LISTBOX) {
+		controlObj = document.createElement("select");
+		controlObj.name = "default_value";
+
+		var values = fieldInfo["values"];
+		for (var key in values) {
+			var val = values[key]["0"];
+			var desc = values[key]["1"];
+			optionObj = document.createElement("option");
+			optionObj.value = val;
+			optionObj.text = desc;
+			if (columnSource == "default" && columnData == val) {
+				optionObj.selected = true;
+			}
+			controlObj.add(optionObj, null);
+		}
+		valueObj.appendChild(controlObj);   
+	} else if (fieldControl == RADIOBUTTON) {
+
+		var values = fieldInfo["values"];
+		for (var key in values) {
+			var val = values[key]["0"];
+			var desc = values[key]["1"];
+			controlObj = document.createElement("input");
+			controlObj.type = "radio";
+			controlObj.name = "default_value";
+			controlObj.value = val;
+			valueObj.appendChild(controlObj);   
+
+			descObj = document.createElement("span");
+			descObj.innerHTML = desc + " ";
+			valueObj.appendChild(descObj);   
+		}
+	}
+}
+
+function selectSource(columnData, sourceTitle)
+{
+	var formObj = document.matching;
+	var fileType = formObj.file_type.value;
+	var fieldIndex = formObj.column_index.value;
+	var columnType = formObj.column_type.value;
+
+	var rowObj;
+	if (columnType == "related") {
+		rowObj = document.getElementById("related_"+fieldIndex);
+		formObj.elements["related_source_"+fieldIndex].value = fileType;
+		formObj.elements["related_data_"+fieldIndex].value = columnData;
+	} else {
+		rowObj = document.getElementById("row_"+fieldIndex);
+		formObj.elements["column_source_"+fieldIndex].value = fileType;
+		formObj.elements["column_data_"+fieldIndex].value = columnData;
+	}
+	var sourceObj = rowObj.querySelector(".field-source");
+	var dataObj = rowObj.querySelector(".field-data");
+
+	sourceObj.innerHTML = fileType.toUpperCase();
+	dataObj.innerHTML = sourceTitle;
+	rowObj.className = "source";
+
+	hidePopupBlock();
+}
+
+function ignoreColumn(columnData, sourceTitle)
+{
+	var formObj = document.matching;
+	var fileType = formObj.file_type.value;
+	var fieldIndex = formObj.column_index.value;
+	var columnType = formObj.column_type.value;
+
+	var rowObj;
+	if (columnType == "related") {
+		rowObj = document.getElementById("related_"+fieldIndex);
+		formObj.elements["related_source_"+fieldIndex].value = 'ignore';
+		formObj.elements["related_data_"+fieldIndex].value = 'ignore';
+	} else {
+		rowObj = document.getElementById("row_"+fieldIndex);
+		formObj.elements["column_source_"+fieldIndex].value = 'ignore';
+		formObj.elements["column_data_"+fieldIndex].value = "ignore";
+	}
+
+	var sourceObj = rowObj.querySelector(".field-source");
+	var dataObj = rowObj.querySelector(".field-data");
+
+	sourceObj.innerHTML = "&ndash;";
+	dataObj.innerHTML = "Ignore";
+	rowObj.className = "ignore";
+
+	hidePopupBlock();
+}
+
+function setDefaultValue(columnData, sourceTitle)
+{
+	var formObj = document.matching;
+	var defaultForm = document.default_form;
+	var fileType = formObj.file_type.value;
+	var fieldIndex = formObj.column_index.value;
+	var columnType = formObj.column_type.value;
+	var columnSource, columnData, fieldName;
+	if (columnType == "related") {
+		columnSource = formObj.elements["related_source_"+fieldIndex].value;
+		columnData = formObj.elements["related_data_"+fieldIndex].value;
+		fieldName = formObj.elements["related_name_"+fieldIndex].value;
+	} else {
+		columnSource = formObj.elements["column_source_"+fieldIndex].value;
+		columnData = formObj.elements["column_data_"+fieldIndex].value;
+		fieldName = formObj.elements["column_name_"+fieldIndex].value;
+	}
+
+	// check selected default value
+	var fieldInfo;
+	if (columnType == "related") {
+		fieldInfo = relatedColumns[fieldName];
+	} else {
+		fieldInfo = dbColumns[fieldName];
+	}
+	var fieldControl = TEXTBOX;
+
+	if (fieldInfo["control"]) {
+		fieldControl = fieldInfo["control"];
+	}
+	var defaultValue = ""; var defaultDesc = "";
+	var defaultControl = defaultForm.elements["default_value"];
+	if (fieldControl == TEXTBOX) {
+		defaultValue = defaultControl.value;
+	} else if (fieldControl == RADIOBUTTON) { 
+		if (defaultControl.length) {
+			for ( var ri = 0; ri < defaultControl.length; ri++) {
+				if (defaultControl[ri].checked) {
+					defaultValue = defaultControl[ri].value;
+					break;
+				}
+			}
+		} else {
+			if (defaultControl.checked) {
+				defaultValue = defaultControl.value;
+			}
+		}
+	} else {
+		defaultValue = defaultControl.value;
+	}
+
+	// assign value for description by default
+	defaultDesc = defaultValue;
+	if (fieldInfo["values"]) {
+		var values = fieldInfo["values"];
+		for (var key in values) {
+			var val = values[key]["0"];
+			var desc = values[key]["1"];
+			if (val == defaultValue) {
+				defaultDesc = desc;
+				break;
+			}
+		}
+	}
+	// check length for defaultDesc
+	if (defaultDesc.length > 32) {
+		defaultDesc = defaultDesc.substring(0, 30)+"...";
+	}
+
+	var rowObj;
+	if (columnType == "related") {
+		rowObj = document.getElementById("related_"+fieldIndex);
+		formObj.elements["related_source_"+fieldIndex].value = 'default';
+		formObj.elements["related_data_"+fieldIndex].value = defaultValue;
+	} else {
+		rowObj = document.getElementById("row_"+fieldIndex);
+		formObj.elements["column_source_"+fieldIndex].value = 'default';
+		formObj.elements["column_data_"+fieldIndex].value = defaultValue;
+	}
+
+	var sourceObj = rowObj.querySelector(".field-source");
+	var dataObj = rowObj.querySelector(".field-data");
+
+	sourceObj.innerHTML = " = ";
+	dataObj.innerHTML = defaultDesc;
+	rowObj.className = "default";
+
+	hidePopupBlock();
+}
+
+
+function deleteTableRows(tableID) 
+{
+	var tableObj = document.getElementById(tableID);
+	var rowCount = tableObj.rows.length;
+
+	for (var i=0; i < rowCount; i++) {
+		tableObj.deleteRow(0);
+	}
+}
+
+function toggleDelimiterAccessibility(el)
+{
+	var val = el.options[el.selectedIndex].value;
+	if(val === "csv"){
+		document.upload.csv_delimiter.disabled = false;
+	} else{
+		document.upload.csv_delimiter.disabled = true;
+	}
+}
+
+function checkRootSelection()
+{
+	if(document.matching.file_type.value.toLowerCase() == "csv") return true;
+	var val;
+	if (document.matching.xml_product_root.tagName == 'SELECT'){
+		val = document.matching.xml_product_root.options[document.matching.xml_product_root.selectedIndex].value;
+	} else{
+		val = formObj.xml_product_root.value;		
+	}
+	return (val == "-1") ? false : true;
+}
+
+/**
+ *php like in_array
+ */
+Array.prototype.hasValue = function(value)
+{
+	var i;
+	for (i=0; i < this.length; i+=1){
+		if(this[i] === value)
+			return true;
+	}
+	return false;
+}
+document.onkeyup = function(evt) {
+	evt = evt || window.event;
+	docKeyUp(evt.keyCode);
+};
+
+</script>
+
+</head>
+
+
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+
+<div class="BlockTitle">{table_title} :: {import_operation}
+
+	<!--begin products_other_links-->
+	<div class="BlockTitleRight">
+		{IMPORT_MSG}:
+		<a class="recsLink" href="{admin_items_properties_values_import_url}"><b>{OPTIONS_VALUES_MSG}</b></a> |
+		<a class="recsLink" href="{admin_items_prices_import_url}"><b>{QUANTITY_PRICES_MSG}</b></a> |
+		<a class="recsLink" href="{admin_items_files_import_url}"><b>{ADMIN_DOWNLOADABLE_MSG}</b></a> |
+		<a class="recsLink" href="{admin_items_serials_export_url}"><b>{ADMIN_SERIAL_NUMBERS_MSG}</b></a>
+	</div><!--end products_other_links-->
+</div>
+<div class="BlockContent">
+
+	<!-- BEGIN upload_block -->
+	<form name="upload" action="{admin_import_href}" enctype="multipart/form-data" method="post">
+	<input type="hidden" name="table" value="{table}" />
+	<input type="hidden" name="operation" value="upload" />
+	<input type="hidden" name="category_id" value="{category_id}" />
+	<input type="hidden" name="newsletter_id" value="{newsletter_id}" />
+	<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+	<table cellspacing="1" cellpadding="6" border="0" width="100%">
+	<tr>
+		<td class="usual">
+			{SOURCE_TYPE_MSG}: <select name="file_type" oninput="toggleDelimiterAccessibility(this)" id="sourceFileType"><!-- begin file_type -->
+				<option {file_type_selected} value="{file_type_value}">{file_type_description}<!-- end file_type -->
+			</select>
+			<span class=small>&nbsp;(select source feed type)</span>
+		</td>
+	</tr>
+	<tr>
+		<td class="usual">
+			{DELIMITED_BY_MSG}: <select name="csv_delimiter"><!-- begin delimiter -->
+				<option {delimiter_selected} value="{delimiter_value}">{delimiter_description}<!-- end delimiter -->
+			</select>
+			<font class=small>&nbsp;(characters such as commas or tabs separate each field)</font>
+		</td>
+	</tr><!-- begin related_delimiter_block-->
+	<tr>
+		<td class="usual">
+			<input type="checkbox" name="import_related_table" id="" value="1" checked> <label for="">with products</label> {DELIMITED_BY_MSG}: <select name="csv_related_delimiter"><!-- begin related_delimiter -->
+			<option {related_delimiter_selected} value="{related_delimiter_value}">{related_delimiter_description}<!-- end related_delimiter -->
+		</select>
+		</td>
+	</tr><!-- end related_delimiter_block-->
+	<!-- begin items_settings -->
+	<tr>
+		<td class="usual">
+			# {PROD_OPTIONS_MSG}  <input type="text" name="properties_number" value="{properties_number}" size="2">
+			# {PROD_SPECIFICATION_MSG}  <input type="text" name="features_number" value="{features_number}" size="2">
+		</td>
+	</tr><!-- end items_settings -->
+	<tr>
+		<td class="usual">
+			{UPLOAD_SELECT_MSG}
+		</td>
+	</tr>
+	<tr>
+		<td class="usual">
+			<input class="field" type="file" size="60" name="csv_file" style="width: 400px;">&nbsp; &nbsp;
+			<span class="button"><input class="submit" type="submit" name="submit" value="{UPLOAD_TITLE}" style="width: 90px;"></span>
+		</td>
+	</tr>
+	<tr>
+		<td class="usual">
+			{SPECIFY_PATH_FILE_MSG}
+		</td>
+	</tr>
+	<tr>
+		<td class="usual">
+			<input class="field" type="text" size="60" name="csv_file_path" value="{csv_file_path}" style="width: 400px;">&nbsp; &nbsp;
+			<span class="button"><input class="submit" type="submit" name="submit" value="{CONTINUE_BUTTON}" style="width: 90px;"></span>
+		</td>
+
+	</tr>
+
+	</table>
+
+	</form>
+
+	<script type="text/javascript">
+		/*set delimiter accessibility*/
+		toggleDelimiterAccessibility(document.getElementById('sourceFileType'));
+	</script>
+	<!-- END upload_block -->
+
+
+
+
+
+	<!-- BEGIN import_block -->
+
+			<!-- begin xml_root_select -->
+			{SELECT_XML_IMPORT_ROOT_MSG}
+			<select name="xml_product_root" id="xmlRootElem"><!-- begin xml_root -->
+				<option {xml_root_selected} value="{xml_root_value}">{xml_root_description}<!-- end xml_root -->
+			</select> {SELECT_DATA_SOURCE_DESC} <!-- end xml_root_select -->
+
+	<form name="matching" action="{admin_import_href}" method="post" onSubmit="return checkDBColumns();">
+	<input type="hidden" name="rnd" value="{rnd}">
+	<input type="hidden" name="operation" value="preview">
+	<input type="hidden" name="table" value="{table}">
+	<input type="hidden" name="file_type" value="{file_type}">
+	<input type="hidden" name="column_index">
+	<input type="hidden" name="column_type">
+	<input type="hidden" name="category_id" value="{category_id}">
+	<input type="hidden" name="newsletter_id" value="{newsletter_id}" />
+	<input type="hidden" name="total_columns" value="{total_columns}">
+	<input type="hidden" name="total_related" value="{total_related}">
+	<input type="hidden" name="csv_delimiter" value="{csv_delimiter}">
+	<input type="hidden" name="csv_file_path" value="{csv_file_path}">	
+	<input type="hidden" name="csv_related_delimiter" value="{csv_related_delimiter}">
+	<input type="hidden" name="properties_number" value="{properties_number}" />
+	<input type="hidden" name="features_number" value="{features_number}" />
+	<input type="hidden" name="import_related_table" value="{import_related_table}"><!-- begin xml_root_single -->
+	<input type="hidden" name="xml_product_root" value="{root_elem}"><!-- end xml_root_single -->
+
+	<div class="fields-match">
+		<div class="fields-column">
+			<table border="0" cellpadding="5" cellspacing="0" width="100%">
+			<tr class="middle" align="left">
+				<td>&nbsp;#&nbsp;</td>
+				<td>&nbsp;{VIART_DATABASE_COLUMN}</td>
+				<td>&nbsp;{SOURCE_MSG}</td>
+				<td>&nbsp;{DATA_MSG}&nbsp;</td>
+			</tr><!-- begin columns_1 --><!-- end columns_1 -->
+			</table>
+		</div>
+		<div class="fields-column">
+			<table border="0" cellpadding="5" cellspacing="0" width="100%">
+			<tr class="middle" align="left">
+				<td>&nbsp;#&nbsp;</td>
+				<td>&nbsp;{VIART_DATABASE_COLUMN}</td>
+				<td>&nbsp;{SOURCE_MSG}</td>
+				<td>&nbsp;{DATA_MSG}&nbsp;</td>
+			</tr><!-- begin columns_2 --><!-- end columns_2 -->
+			</table>
+		</div>
+		<div class="fields-column">
+			<table border="0" cellpadding="5" cellspacing="0" width="100%">
+			<tr class="middle" align="left">
+				<td>&nbsp;#&nbsp;</td>
+				<td>&nbsp;{VIART_DATABASE_COLUMN}</td>
+				<td>&nbsp;{SOURCE_MSG}</td>
+				<td>&nbsp;{DATA_MSG}&nbsp;</td>
+			</tr><!-- begin columns_3 --><!-- end columns_3 -->
+			</table>
+		</div>
+	</div>
+	<div class="clear"></div>
+
+
+	<br>
+	<div class="BlockTitle">{ORDER_ITEMS_MSG} :: {MATCH_FIELDS_MSG}</div>
+	<div class="fields-match">
+		<div class="fields-column">
+			<table border="0" cellpadding="5" cellspacing="0" width="100%">
+			<tr class="middle" align="left">
+				<td>&nbsp;#&nbsp;</td>
+				<td>&nbsp;{VIART_DATABASE_COLUMN}</td>
+				<td>&nbsp;{SOURCE_MSG}</td>
+				<td>&nbsp;{DATA_MSG}&nbsp;</td>
+			</tr><!-- begin related_columns_1 --><!-- end related_columns_1 -->
+			</table>
+		</div>
+		<div class="fields-column">
+			<table border="0" cellpadding="5" cellspacing="0" width="100%">
+			<tr class="middle" align="left">
+				<td>&nbsp;#&nbsp;</td>
+				<td>&nbsp;{VIART_DATABASE_COLUMN}</td>
+				<td>&nbsp;{SOURCE_MSG}</td>
+				<td>&nbsp;{DATA_MSG}&nbsp;</td>
+			</tr><!-- begin related_columns_2 --><!-- end related_columns_2 -->
+			</table>
+		</div>
+		<div class="fields-column">
+			<table border="0" cellpadding="5" cellspacing="0" width="100%">
+			<tr class="middle" align="left">
+				<td>&nbsp;#&nbsp;</td>
+				<td>&nbsp;{VIART_DATABASE_COLUMN}</td>
+				<td>&nbsp;{SOURCE_MSG}</td>
+				<td>&nbsp;{DATA_MSG}&nbsp;</td>
+			</tr><!-- begin related_columns_3 --><!-- end related_columns_3 -->
+			</table>
+		</div>
+	</div>
+
+			<!-- begin column_template -->
+			<tr id="{column_id}" class="import-row {row_class}" align="left" 
+				onclick="dataSourceFrame('{column_number}', '{column_type}'); return false;">
+				<td align="center">{column_number}</td>
+				<td>
+					<b>{column_title}</b>
+					<input type="hidden" name="{column_name_param}" value="{column_name}" />
+					<input type="hidden" name="{column_source_param}" value="{column_source}" />
+					<input type="hidden" name="{column_data_param}" value="{column_data}" />
+				</td>
+				<td align="center">
+					<span class="field-source">{source_desc}</span>
+				</td>
+				<td>
+					<span class="field-data">{data_desc}</span>
+				</td>
+			</tr>
+			<!-- end column_template -->
+
+
+	<table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<tr>
+		<td class="middle">
+			<span class="button"><input class="submit" type="submit" value="{PREVIEW_BUTTON}"></span>
+		</td>
+	</tr>
+	</table>
+
+
+	</form>
+	<!-- END import_block -->
+
+	<!-- begin preview_block -->
+
+	<form name="matching" action="{admin_import_href}" method="post">
+	<input type="hidden" name="rnd" value="{rnd}">
+	<input type="hidden" name="operation" value="import">
+	<input type="hidden" name="table" value="{table}">
+	<input type="hidden" name="file_type" value="{file_type}">
+	<input type="hidden" name="category_id" value="{category_id}">
+	<input type="hidden" name="newsletter_id" value="{newsletter_id}" />
+	<input type="hidden" name="total_columns" value="{total_columns}">
+	<input type="hidden" name="total_related" value="{total_related}">
+	<input type="hidden" name="csv_delimiter" value="{csv_delimiter}">
+	<input type="hidden" name="csv_file_path" value="{csv_file_path}">	
+	<input type="hidden" name="csv_related_delimiter" value="{csv_related_delimiter}">
+	<input type="hidden" name="properties_number" value="{properties_number}" />
+	<input type="hidden" name="features_number" value="{features_number}" />
+	<input type="hidden" name="import_related_table" value="{import_related_table}"><!-- begin xml_root_single -->
+	<input type="hidden" name="xml_product_root" value="{root_elem}"><!-- end xml_root_single --><!-- begin import_columns -->
+	<input type="hidden" name="{column_name_param}" value="{column_name}" />
+	<input type="hidden" name="{column_source_param}" value="{column_source}" />
+	<input type="hidden" name="{column_data_param}" value="{column_data}" /><!-- end import_columns -->
+
+		<div class="import-preview">
+			<table cellspacing="0" cellpadding="0">
+			<tr><!-- begin preview_fields -->
+				<th>{field_title}</th><!-- end preview_fields -->
+			</tr><!-- begin preview_rows -->
+			<tr><!-- begin preview_values -->
+				<td class="{field_class}">
+					{field_value}
+					<!-- begin field_error -->
+					<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+					<div class="help-popup"><div class="popup-body">{error_desc}</div></div>
+					<!-- end field_error -->
+				</td><!-- end preview_values -->
+			</tr><!-- end preview_rows -->
+			</table>
+		</div>
+
+		<br>	
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+		<tr>
+			<td class="middle">
+				<span class="button"><input class="submit" type="submit" value="{IMPORT_MSG}"></span>
+			</td>
+		</tr>
+		</table>
+
+
+	</form>
+	<!-- end preview_block -->
+
+
+
+
+
+	<!-- BEGIN result_block -->
+	<table border="0" cellspacing="0" cellpadding="10">
+	<tr>
+		<td align="left">
+			<div style="color:blue">
+			<b>{records_added}</b> records added.
+			</div>
+			<div style="color:green">
+			<b>{records_updated}</b> records updated.
+			</div>
+			<div style="color:gray">
+			<b>{records_ignored}</b> records ignored.
+			</div>
+			<!-- BEGIN db_errors -->
+			<div style="color:red">
+			<b>{records_error}</b> errors occurred.
+			</div>
+			<!-- END db_errors -->
+		</td>
+	</tr>
+	</table>
+
+	<!-- BEGIN import_errors -->
+	<table cellspacing="1" cellpadding="5" border="0" width="100%" align="center">
+	<tr class="middle">
+		<th>
+			{ID_MSG}
+		</th>
+		<th>
+			{ERROR_MESSAGE_MSG}
+		</th>
+	</tr><!-- begin records_errors -->
+	<tr class="row1">
+		<td>
+			{pk_id}
+		</td>                          	
+		<td>
+			{error_desc}
+		</td>
+	</tr><!-- end records_errors -->
+	</table>
+	<!-- END import_errors -->
+
+	<!-- END result_block -->
+
+</div>
+</div>
+
+<div id="popupBlock" class="popupBlock">
+	<div id="popupFrame" class="popupFrame">
+
+		<div class="popupHeader">
+			<div class="popupClose" onclick="hidePopupBlock();">{CLOSE_WINDOW_MSG}<img src="../images/icons/add-cart-close.gif" width="19" height="19" align="top" /></div>
+			<div id="popupTitle" class="popupTitle">Select Data Source</div>
+		</div>
+	
+		<div class="popupContent">
+	
+			<div class="popupMessage">{message_desc}</div>
+			<div class="popupError">{error_desc}</div>
+
+			<div align="center">
+				<div style="padding-top: 10px; padding-bottom: 10px;">
+					<b>{SELECT_DATA_SOURCE_MSG}:</b>
+				</div>
+
+			<table id="headerData" class="headerData" align="center">
+			</table>
+			</div>
+
+			<div align="center">
+				<div style="padding-top: 10px; padding-bottom: 10px;">
+					<a style="cursor:pointer;" onclick="ignoreColumn();">{NO_SOURCE_IGNORE_MSG}</a> <br/><br/>
+					{SPECIFY_DEFAULT_VALUE_MSG}:
+				</div>
+
+				<form name="default_form">
+				<table align="center">
+				<tr>
+					<td id="defaultTitle"></td>
+					<td id="defaultValue"></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="button" value="{APPLY_BUTTON}" onclick="setDefaultValue();"></td>
+				</tr>
+				</table>
+				</form>
+
+			</div>
+
+		</div>
+	
+	</div>
+
+</div>
+
+
+{admin_footer}
+
+</body>
+
+</html>

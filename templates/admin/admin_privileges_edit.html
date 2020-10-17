@@ -1,0 +1,788 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {EDIT_PERMISSIONS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/win_select.js"></script>
+<script language="JavaScript" type="text/javascript">
+<!--
+	var removeButton = "{REMOVE_BUTTON}";
+
+	var items = new Array(); // global array for all selected items
+
+	var userTypes = new Array(); // <!-- BEGIN selected_user_types_js -->
+	userTypes["{user_type_id}"] = new Array("{user_type_name_js}"); // <!-- END selected_user_types_js -->
+	items["user_types_ids"] = userTypes;
+
+	function allPrivileges(group)
+	{
+		if (group == 'modules') {
+			var checkedStatus = document.record.all_modules.checked;
+			document.record.elements['site_settings'].checked = checkedStatus;
+			document.record.elements['forum'].checked = checkedStatus;
+			document.record.elements['newsletter'].checked = checkedStatus;
+			document.record.elements['filemanager'].checked = checkedStatus;
+			document.record.elements['ads'].checked = checkedStatus;
+			document.record.elements['black_ips'].checked = checkedStatus;
+			document.record.elements['banned_contents'].checked = checkedStatus;
+			document.record.elements['manual'].checked = checkedStatus;
+			document.record.elements['visits_report'].checked = checkedStatus;
+			document.record.elements['import_export'].checked = checkedStatus;
+			document.record.elements['black_ips'].checked = checkedStatus;
+			document.record.elements['banned_contents'].checked = checkedStatus;
+			document.record.elements['manual'].checked = checkedStatus;
+			document.record.elements['db_management'].checked = checkedStatus;
+			document.record.elements['system_upgrade'].checked = checkedStatus;
+			
+		} else if (group == 'cms') {
+			var checkedStatus = document.record.all_cms.checked;
+			document.record.elements['cms_settings'].checked = checkedStatus;
+			document.record.elements['site_navigation'].checked = checkedStatus;
+			document.record.elements['footer_links'].checked = checkedStatus;
+			document.record.elements['web_pages'].checked = checkedStatus;
+			document.record.elements['custom_blocks'].checked = checkedStatus;
+			document.record.elements['custom_friendly_urls'].checked = checkedStatus;
+			document.record.elements['polls'].checked = checkedStatus;
+			document.record.elements['banners'].checked = checkedStatus;
+			document.record.elements['static_messages'].checked = checkedStatus;
+			document.record.elements['filters'].checked = checkedStatus;
+			document.record.elements['sliders'].checked = checkedStatus;
+		} else if (group == 'products') {
+			var checkedStatus = document.record.all_products.checked;
+			document.record.elements['products_categories'].checked = checkedStatus;
+			document.record.elements['products_settings'].checked = checkedStatus;
+			document.record.elements['product_types'].checked = checkedStatus;
+			document.record.elements['manufacturers'].checked = checkedStatus;
+			document.record.elements['suppliers'].checked = checkedStatus;
+			document.record.elements['shipping_methods'].checked = checkedStatus;
+			document.record.elements['shipping_times'].checked = checkedStatus;
+			document.record.elements['shipping_rules'].checked = checkedStatus;
+			document.record.elements['downloadable_products'].checked = checkedStatus;
+			document.record.elements['coupons'].checked = checkedStatus;
+			document.record.elements['saved_types'].checked = checkedStatus;
+			document.record.elements['advanced_search'].checked = checkedStatus;
+			document.record.elements['products_report'].checked = checkedStatus;
+			document.record.elements['product_prices'].checked = checkedStatus;
+			document.record.elements['product_images'].checked = checkedStatus;
+			document.record.elements['product_properties'].checked = checkedStatus;
+			document.record.elements['product_features'].checked = checkedStatus;
+			document.record.elements['product_related'].checked = checkedStatus;
+			document.record.elements['product_categories'].checked = checkedStatus;
+			document.record.elements['product_accessories'].checked = checkedStatus;
+			document.record.elements['product_releases'].checked = checkedStatus;
+			document.record.elements['products_order'].checked = checkedStatus;
+			document.record.elements['products_export'].checked = checkedStatus;
+			document.record.elements['products_import'].checked = checkedStatus;
+			document.record.elements['products_export_google_base'].checked = checkedStatus;
+			document.record.elements['features_groups'].checked = checkedStatus;
+			document.record.elements['tell_friend'].checked = checkedStatus;
+			document.record.elements['categories_export'].checked = checkedStatus;
+			document.record.elements['categories_import'].checked = checkedStatus;
+			document.record.elements['categories_order'].checked = checkedStatus;
+			document.record.elements['view_categories'].checked = checkedStatus;
+			document.record.elements['view_products'].checked = checkedStatus;
+			document.record.elements['add_categories'].checked = checkedStatus;
+			document.record.elements['update_categories'].checked = checkedStatus;
+			document.record.elements['remove_categories'].checked = checkedStatus;
+			document.record.elements['add_products'].checked = checkedStatus;
+			document.record.elements['update_products'].checked = checkedStatus;
+			document.record.elements['remove_products'].checked = checkedStatus;
+			document.record.elements['approve_products'].checked = checkedStatus;
+			document.record.elements['duplicate_products'].checked = checkedStatus;
+			document.record.elements['products_reviews'].checked = checkedStatus;
+			document.record.elements['products_reviews_settings'].checked = checkedStatus;
+		} else if (group == 'articles') {
+			var checkedStatus = document.record.all_articles.checked;
+			document.record.elements['articles'].checked = checkedStatus;
+			document.record.elements['articles_statuses'].checked = checkedStatus;
+			document.record.elements['articles_reviews'].checked = checkedStatus;
+			document.record.elements['articles_reviews_settings'].checked = checkedStatus;
+			document.record.elements['articles_lost'].checked = checkedStatus;
+		} else if (group == 'orders') {
+			var checkedStatus = document.record.all_orders.checked;
+			document.record.elements['sales_orders'].checked = checkedStatus;
+			document.record.elements['order_payment'].checked = checkedStatus;
+			document.record.elements['update_orders'].checked = checkedStatus;
+			document.record.elements['remove_orders'].checked = checkedStatus;
+			document.record.elements['order_statuses'].checked = checkedStatus;
+			document.record.elements['order_notes'].checked = checkedStatus;
+			document.record.elements['order_serials'].checked = checkedStatus;
+			document.record.elements['order_links'].checked = checkedStatus;
+			document.record.elements['order_profile'].checked = checkedStatus;
+			document.record.elements['order_confirmation'].checked = checkedStatus;
+			document.record.elements['payment_systems'].checked = checkedStatus;
+			document.record.elements['tax_rates'].checked = checkedStatus;
+			document.record.elements['order_vouchers'].checked = checkedStatus;
+			document.record.elements['orders_stats'].checked = checkedStatus;
+			document.record.elements['create_orders'].checked = checkedStatus;
+			document.record.elements['orders_import'].checked = checkedStatus;
+			document.record.elements['orders_recover'].checked = checkedStatus;
+		} else if (group == 'helpdesk') {
+			var checkedStatus = document.record.all_helpdesk.checked;
+			document.record.elements['support'].checked = checkedStatus;
+			document.record.elements['support_settings'].checked = checkedStatus;
+			document.record.elements['support_ticket_new'].checked = checkedStatus;
+			document.record.elements['support_ticket_edit'].checked = checkedStatus;
+			document.record.elements['support_ticket_close'].checked = checkedStatus;
+			document.record.elements['support_ticket_reply'].checked = checkedStatus;
+			document.record.elements['support_users'].checked = checkedStatus;
+			document.record.elements['support_departments'].checked = checkedStatus;
+			document.record.elements['support_predefined_reply'].checked = checkedStatus;
+			document.record.elements['support_static_data'].checked = checkedStatus;
+			document.record.elements['support_users_stats'].checked = checkedStatus;
+			document.record.elements['support_users_priorities'].checked = checkedStatus;
+		} else if (group == 'customers') {
+			var checkedStatus = document.record.all_customers.checked;
+			document.record.elements['site_users'].checked = checkedStatus;
+			document.record.elements['users_groups'].checked = checkedStatus;
+			document.record.elements['users_login'].checked = checkedStatus;
+			document.record.elements['add_users'].checked = checkedStatus;
+			document.record.elements['update_users'].checked = checkedStatus;
+			document.record.elements['remove_users'].checked = checkedStatus;
+			document.record.elements['import_users'].checked = checkedStatus;
+			document.record.elements['export_users'].checked = checkedStatus;
+			document.record.elements['users_forgot'].checked = checkedStatus;
+			document.record.elements['users_payments'].checked = checkedStatus;
+			document.record.elements['add_payments'].checked = checkedStatus;
+			document.record.elements['update_payments'].checked = checkedStatus;
+			document.record.elements['remove_payments'].checked = checkedStatus;
+			document.record.elements['export_payments'].checked = checkedStatus;
+			document.record.elements['subscriptions'].checked = checkedStatus;
+			document.record.elements['subscriptions_groups'].checked = checkedStatus;
+		} else if (group == 'administrators') {
+			var checkedStatus = document.record.all_administrators.checked;
+			document.record.elements['admin_users'].checked = checkedStatus;
+			document.record.elements['admins_groups'].checked = checkedStatus;
+			document.record.elements['admins_login'].checked = checkedStatus;
+			document.record.elements['add_admins'].checked = checkedStatus;
+			document.record.elements['update_admins'].checked = checkedStatus;
+			document.record.elements['remove_admins'].checked = checkedStatus;
+			document.record.elements['admins_hidden'].checked = checkedStatus;
+			
+		} else if (group == 'static_tables') {
+			var checkedStatus = document.record.all_static_tables.checked;
+			document.record.elements['static_tables'].checked = checkedStatus;			
+			document.record.elements['static_google_base_types'].checked = checkedStatus;	
+			document.record.elements['static_google_base_attributes'].checked = checkedStatus;	
+			document.record.elements['static_prices'].checked = checkedStatus;		
+					
+		} else if (group == 'multisites') {
+			var checkedStatus = document.record.all_multisites.checked;
+			document.record.elements['admin_sites'].checked = checkedStatus;
+			document.record.elements['add_sites'].checked = checkedStatus;
+			document.record.elements['update_sites'].checked = checkedStatus;
+			document.record.elements['remove_sites'].checked = checkedStatus;
+			
+		} else if (group == 'xml') {
+			var checkedStatus = document.record.all_xml.checked;
+			document.record.elements['get_orders_statuses'].checked = checkedStatus;
+			document.record.elements['get_orders_ids'].checked = checkedStatus;
+			document.record.elements['update_order_status'].checked = checkedStatus;
+			document.record.elements['add_duplicate_coupons'].checked = checkedStatus;
+			
+		} else if (group == 'all_registration') {
+			var checkedStatus = document.record.all_registration.checked;
+			document.record.elements['admin_registration'].checked = checkedStatus;
+			document.record.elements['edit_reg_list'].checked = checkedStatus;
+			document.record.elements['edit_reg_categories'].checked = checkedStatus;
+			document.record.elements['edit_reg_products'].checked = checkedStatus;
+		}
+	}
+//-->
+</script>
+
+</head>
+<body class="commonbg">
+{admin_header}
+{block_leftside_breadcrumbs}
+
+<form action="{admin_privileges_edit_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="rp" value="{rp}">
+<input type="hidden" name="privilege_id" value="{privilege_id}">
+<input type="hidden" name="tab" value="{tab}">
+
+<div id="tabs"><!-- BEGIN tabs_rows -->
+	<ul id="{row_id}" class="tabRow"><!-- BEGIN tabs -->
+		<li id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+	</ul><!-- END tabs_rows -->
+</div>
+
+<div class="Block clearBoth">
+<div class="BlockContent">
+
+<div id="data_general" style="{general_style}"> 
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellpadding="6" cellspacing="1" width="100%"><!-- BEGIN is_hidden_block -->
+<tr class="usual">
+	<td><label for="is_hidden">{HIDDEN_GROUP_MSG}</label></td>
+	<td><input type="checkbox" name="is_hidden" {is_hidden} value="1" id="is_hidden"></td>
+</tr><!-- END is_hidden_block -->
+<tr class="usual">
+	<td>{TYPE_MSG} *</td>
+	<td><input class="field" type="text" name="privilege_name" value="{privilege_name}" size="45" maxlength="255"></td>
+</tr><!-- BEGIN support_privilege_block -->
+<tr class="usual">
+	<td><label for="support_privilege">{HELPDESK_PRIVILEGE_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="support_privilege" {support_privilege} value="1" id="support_privilege">
+		({ASSIGN_THIS_PRIVILEGE_TYPE_MSG})
+	</td>
+</tr><!-- END support_privilege_block -->
+</table>
+<br>
+<!-- BEGIN aps_errors --><div class="errorbg">{errors_list}</div><!-- END aps_errors -->
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="4">
+		<label for="all_modules">{USE_CHECKBOXES_TO_ALLOW_MSG}</label> &nbsp;
+		<input type="checkbox" name="all_modules" value="1" onClick="allPrivileges('modules');" id="all_modules">
+	</td>
+</tr>
+<tr class="usual">
+	<td width="35%"><label for="site_settings">{SITE_SETTINGS_MSG}</label></td>
+	<td align="center" width="15%"><input type="checkbox" name="site_settings" {site_settings} value="1" id="site_settings"></td>
+	<td  width="35%"><label for="system_upgrade">{SYSTEM_UPGRADE_MSG}</label></td>
+	<td align="center" width="15%"><input type="checkbox" name="system_upgrade" {system_upgrade} value="1" id="system_upgrade"></td>
+</tr>
+<tr class="usual">
+	<td><label for="black_ips">{BLACK_IPS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="black_ips" {black_ips} value="1" id="black_ips"></td>
+	<td><label for="banned_contents">{BANNED_CONTENT}</label></td>
+	<td align="center"><input type="checkbox" name="banned_contents" {banned_contents} value="1" id="banned_contents"></td>
+</tr>
+<tr class="usual">
+	<td><label for="forum">{ADMIN_FORUM_TITLE}</label></td>
+	<td align="center"><input type="checkbox" name="forum" {forum} value="1" id="forum"></td>
+	<td><label for="manual">{MANUAL_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="manual" {manual} value="1" id="manual"></td>
+</tr>
+<tr class="usual">
+	<td><label for="newsletter">{NEWSLETTER_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="newsletter" {newsletter} value="1" id="newsletter"></td>
+	<td><label for="ads">{CLASSIFIED_ADS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="ads" {ads} value="1" id="ads"></td>
+</tr>
+<tr class="usual">
+	<td><label for="visits_report">{TRACKING_VISITS_REPORT_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="visits_report" {visits_report} value="1" id="visits_report"></td>
+	<td><label for="import_export">{IMPORT_EXPORT_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="import_export" {import_export} value="1" id="import_export"></td>
+</tr>
+<tr class="usual">
+	<td><label for="db_management">{DATABASE_MANAGEMENT_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="db_management" {db_management} value="1" id="db_management"></td>
+	<td>&nbsp;</td>
+	<td align="center">&nbsp;</td>
+</tr>
+<tr class="middle">
+	<td colspan="4">
+		<label for="all_cms">{CMS_PERMISSIONS_MSG}</label> &nbsp;
+		<input type="checkbox" name="all_cms" value="1" onClick="allPrivileges('cms');" id="all_cms">
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="cms_settings">{CMS_SETTINGS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="cms_settings" {cms_settings} value="1" id="cms_settings"></td>
+	<td><label for="site_navigation">{SITE_NAVIGATION_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="site_navigation" {site_navigation} value="1" id="site_navigation"></td>
+</tr>
+<tr class="usual">
+	<td><label for="web_pages">{WEB_PAGES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="web_pages" {web_pages} value="1" id="web_pages"></td>
+	<td><label for="custom_blocks">{CUSTOM_BLOCKS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="custom_blocks" {custom_blocks} value="1" id="custom_blocks"></td>
+</tr>
+<tr class="usual">
+	<td><label for="static_messages">{SYSTEM_STATIC_MESSAGES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="static_messages" {static_messages} value="1" id="static_messages"></td>
+	<td><label for="filemanager">{FILE_MANAGER_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="filemanager" {filemanager} value="1" id="filemanager"></td>
+</tr>
+<tr class="usual">
+	<td><label for="banners">{BANNERS_MANAGEMENT_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="banners" {banners} value="1" id="banners"></td>
+	<td><label for="polls">{OPINION_POLLS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="polls" {polls} value="1" id="polls"></td>
+</tr>
+<tr class="usual">
+	<td><label for="filters">{FILTERS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="filters" {filters} value="1" id="filters"></td>
+	<td><label for="custom_friendly_urls">{CUSTOM_FRIENDLY_URLS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="custom_friendly_urls" {custom_friendly_urls} value="1" id="custom_friendly_urls"></td>
+</tr>
+<tr class="usual">
+	<td><label for="sliders">{SLIDERS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="sliders" {sliders} value="1" id="sliders"></td>
+	<td></td>
+	<td align="center"></td>
+</tr>
+<tr class="middle">
+	<td colspan="4">
+		<label for="all_products">{PRODUCTS_PERMISSIONS_MSG}</label> &nbsp;
+		<input type="checkbox" name="all_products" value="1" onClick="allPrivileges('products');" id="all_products">
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="products_categories">{PRODUCTS_CATEGORIES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="products_categories" {products_categories} value="1" id="products_categories"></td>
+	<td><label for="products_settings">{PRODUCT_SETTINGS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="products_settings" {products_settings} value="1" id="products_settings"></td>
+</tr>
+<tr class="usual">
+	<td><label for="product_types">{PRODUCT_TYPES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="product_types" {product_types} value="1" id="product_types"></td>
+	<td><label for="manufacturers">{MANUFACTURERS_TITLE}</label></td>
+	<td align="center"><input type="checkbox" name="manufacturers" {manufacturers} value="1" id="manufacturers"></td>
+</tr>
+<tr class="usual">
+	<td><label for="suppliers">{SUPPLIERS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="suppliers" {suppliers} value="1" id="suppliers"></td>
+	<td><label for="shipping_methods">{SHIPPING_METHODS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="shipping_methods" {shipping_methods} value="1" id="shipping_methods"></td>
+</tr>
+<tr class="usual">
+	<td><label for="shipping_times">{SHIPPING_TIMES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="shipping_times" {shipping_times} value="1" id="shipping_times"></td>
+	<td><label for="shipping_rules">{SHIPPING_RULES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="shipping_rules" {shipping_rules} value="1" id="shipping_rules"></td>
+</tr>
+<tr class="usual">
+	<td><label for="downloadable_products">{DOWNLOADABLE_PRODUCTS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="downloadable_products" {downloadable_products} value="1" id="downloadable_products"></td>
+	<td><label for="coupons">{COUPONS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="coupons" {coupons} value="1" id="coupons"></td>
+</tr>
+<tr class="usual">
+	<td><label for="advanced_search">{ADVANCED_SEARCH_TITLE}</label></td>
+	<td align="center"><input type="checkbox" name="advanced_search" {advanced_search} value="1" id="advanced_search"></td>
+	<td><label for="products_report">{PRODUCTS_REPORT_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="products_report" {products_report} value="1" id="products_report"></td>
+</tr>
+<tr class="usual">
+	<td><label for="product_prices">{PRODUCT_PRICE_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="product_prices" {product_prices} value="1" id="product_prices"></td>
+	<td><label for="product_images">{PRODUCT_IMAGES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="product_images" {product_images} value="1" id="product_images"></td>
+</tr>
+<tr class="usual">
+	<td><label for="product_properties">{OPTIONS_AND_COMPONENTS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="product_properties" {product_properties} value="1" id="product_properties"></td>
+	<td><label for="product_features">{PRODUCT_SPECIFICATION_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="product_features" {product_features} value="1" id="product_features"></td>
+</tr>
+<tr class="usual">
+	<td><label for="product_related">{ADMIN_RELATED_PRODUCTS_TITLE}</label></td>
+	<td align="center"><input type="checkbox" name="product_related" {product_related} value="1" id="product_related"></td>
+	<td><label for="product_categories">{PRODUCTS_CATEGORIES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="product_categories" {product_categories} value="1" id="product_categories"></td>
+</tr>
+<tr class="usual">
+	<td><label for="product_accessories">{PRODUCT_ACCESSORIES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="product_accessories" {product_accessories} value="1" id="product_accessories"></td>
+	<td><label for="product_releases">{RELEASES_TITLE}</label></td>
+	<td align="center"><input type="checkbox" name="product_releases" {product_releases} value="1" id="product_releases"></td>
+</tr>
+<tr class="usual">
+	<td><label for="products_order">{CHANGE_PRODUCTS_ORDER_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="products_order" {products_order} value="1" id="products_order"></td>
+	<td><label for="products_export">{EXPORT_PRODUCTS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="products_export" {products_export} value="1" id="products_export"></td>
+</tr>
+<tr class="usual">
+	<td><label for="products_import">{IMPORT_PRODUCTS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="products_import" {products_import} value="1" id="products_import"></td>
+	<td><label for="products_export_google_base">{GOOGLE_BASE_EXPORT_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="products_export_google_base" {products_export_google_base} value="1" id="products_export_google_base"></td>
+</tr>
+<tr class="usual">
+	<td><label for="features_groups">{SPECIFICATION_GROUPS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="features_groups" {features_groups} value="1" id="features_groups"></td>
+	<td><label for="tell_friend">{TELL_FRIEND_TITLE}</label></td>
+	<td align="center"><input type="checkbox" name="tell_friend" {tell_friend} value="1" id="tell_friend"></td>
+</tr>
+<tr class="usual">
+	<td><label for="saved_types">{WISHLIST_TYPES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="saved_types" {saved_types} value="1" id="saved_types"></td>
+	<td><label for="categories_export">{CAT_EXPORT_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="categories_export" {categories_export} value="1" id="categories_export"></td>
+</tr>
+<tr class="usual">
+	<td><label for="categories_import">{CAT_IMPORT_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="categories_import" {categories_import} value="1" id="categories_import"></td>
+	<td><label for="categories_order">{CHANGE_CATEGORIES_ORDER_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="categories_order" {categories_order} value="1" id="categories_order"></td>
+</tr>
+<tr class="usual">
+	<td><label for="view_categories">{VIEW_CATS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="view_categories" {view_categories} value="1" id="view_categories"></td>
+	<td><label for="view_products">{VIEW_PRODUCTS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="view_products" {view_products} value="1" id="view_products"></td>
+</tr>
+<tr class="usual">
+	<td><label for="add_categories">{NEW_CATEGORY_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="add_categories" {add_categories} value="1" id="add_categories"></td>
+	<td><label for="update_categories">{UPDATING_CATS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="update_categories" {update_categories} value="1" id="update_categories"></td>
+</tr>
+<tr class="usual">
+	<td><label for="remove_categories">{REMOVING_CATS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="remove_categories" {remove_categories} value="1" id="remove_categories"></td>
+	<td><label for="add_products">{ADDING_NEW_PRODS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="add_products" {add_products} value="1" id="add_products"></td>
+</tr>
+<tr class="usual">
+	<td><label for="update_products">{UPDATING_PRODS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="update_products" {update_products} value="1" id="update_products"></td>
+	<td><label for="remove_products">{REMOVING_RPODS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="remove_products" {remove_products} value="1" id="remove_products"></td>
+</tr>
+<tr class="usual">
+	<td><label for="duplicate_products">{DUPLICATING_PRODS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="duplicate_products" {duplicate_products} value="1" id="duplicate_products"></td>
+	<td><label for="approve_products">{APPROVING_PRODS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="approve_products" {approve_products} value="1" id="approve_products"></td>
+</tr>
+<tr class="usual">
+	<td><label for="products_reviews">{PRODUCTS_REVIEWS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="products_reviews" {products_reviews} value="1" id="products_reviews"></td>
+	<td><label for="products_reviews_settings">{REVIEWS_SETTINGS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="products_reviews_settings" {products_reviews_settings} value="1" id="products_reviews_settings"></td>
+</tr>
+<tr class="middle">
+	<td colspan="4">
+		<label for="all_articles">{ARTICLES_PERMISSIONS_MSG}</label> &nbsp;
+		<input type="checkbox" name="all_articles" value="1" onClick="allPrivileges('articles');" id="all_articles">
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="articles">{ARTICLES_TITLE}</label></td>
+	<td align="center"><input type="checkbox" name="articles" {articles} value="1" id="articles"></td>
+	<td><label for="articles_statuses">{ARTICLES_STATUSES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="articles_statuses" {articles_statuses} value="1" id="articles_statuses"></td>
+</tr>
+<tr class="usual">
+	<td><label for="articles_reviews">{ARTICLES_REVIEWS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="articles_reviews" {articles_reviews} value="1" id="articles_reviews"></td>
+	<td><label for="articles_reviews_settings">{REVIEWS_SETTINGS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="articles_reviews_settings" {articles_reviews_settings} value="1" id="articles_reviews_settings"></td>
+</tr>
+<tr class="usual">
+	<td><label for="articles_lost">{ARTICLES_LOST_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="articles_lost" {articles_lost} value="1" id="articles_lost"></td>
+	<td>&nbsp;</td>
+	<td align="center">&nbsp;</td>
+</tr><!-- begin orders_settings -->
+<tr class="middle">
+	<td colspan="4">
+		<label for="all_orders">{ORDERS_PERMISSIONS_MSG}</label> &nbsp;
+		<input type="checkbox" name="all_orders" value="1" onClick="allPrivileges('orders');" id="all_orders">
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="sales_orders">{ACCESSING_SALES_ORDERS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="sales_orders" {sales_orders} value="1" id="sales_orders"></td>
+	<td><label for="create_orders">{CREATE_CALL_CENTER_ORDER_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="create_orders" {create_orders} value="1" id="create_orders"></td>
+</tr>
+<tr class="usual">
+	<td><label for="order_payment">{ACCESSING_ORDERS_PAYMENT_DETAILS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="order_payment" {order_payment} value="1" id="order_payment"></td>
+	<td><label for="remove_orders">{REMOVING_ORDERS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="remove_orders" {remove_orders} value="1" id="remove_orders"></td>
+</tr>
+<tr class="usual">
+	<td><label for="update_orders">{UPDATING_ORDERS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="update_orders" {update_orders} value="1" id="update_orders"></td>
+	<td><label for="add_products">{ADDING_NEW_PRODS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="add_order_products" {add_order_products} value="1" id="add_products"></td>
+</tr>
+<tr class="usual">
+	<td><label for="update_products">{UPDATING_PRODS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="update_order_products" {update_order_products} value="1" id="update_products"></td>
+	<td><label for="remove_products">{REMOVING_RPODS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="remove_order_products" {remove_order_products} value="1" id="remove_products"></td>
+</tr>
+<tr class="usual">
+	<td><label for="order_statuses">{UPDATING_ORDERS_STATUSES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="order_statuses" {order_statuses} value="1" id="order_statuses"></td>
+	<td><label for="order_notes">{UPDATING_ORDER_NOTES_SECTION_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="order_notes" {order_notes} value="1" id="order_notes"></td>
+</tr>
+<tr class="usual">
+	<td><label for="order_serials">{UPDATING_ORDER_SERIAL_NUMBERS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="order_serials" {order_serials} value="1" id="order_serials"></td>
+	<td><label for="order_links">{UPDATING_ORDER_DOWNLOAD_LINKS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="order_links" {order_links} value="1" id="order_links"></td>
+</tr>
+<tr class="usual">
+	<td><label for="order_profile">{UPDATING_ORDER_PROFILE_PAGE_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="order_profile" {order_profile} value="1" id="order_profile"></td>
+	<td><label for="order_confirmation">{UPDATING_ORDER_CONFIRMATION_PAGE_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="order_confirmation" {order_confirmation} value="1" id="order_confirmation"></td>
+</tr>
+<tr class="usual">
+	<td><label for="payment_systems">{UPDATING_PAYMENT_SYSTEMS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="payment_systems" {payment_systems} value="1" id="payment_systems"></td>
+	<td><label for="tax_rates">{UPDATING_TAX_RATES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="tax_rates" {tax_rates} value="1" id="tax_rates"></td>
+</tr>
+<tr class="usual">
+	<td><label for="order_vouchers">{UPDATING_ORDER_GIFT_VOUCHERS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="order_vouchers" {order_vouchers} value="1" id="order_vouchers"></td>
+	<td><label for="orders_stats">{ACCESSING_ORDERS_REPORTS_STATISTICS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="orders_stats" {orders_stats} value="1" id="orders_stats"></td>
+</tr>
+<tr class="usual">
+	<td><label for="orders_import">{ORDERS_IMPORT_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="orders_import" {orders_import} value="1" id="orders_import"></td>
+	<td><label for="orders_recover">{ORDERS_RECOVER_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="orders_recover" {orders_recover} value="1" id="orders_recover"></td>
+</tr><!-- end orders_settings --><!-- begin helpdesk_settings -->
+<tr class="middle">
+	<td colspan="4">
+		<label for="all_helpdesk">{HELPDESK_PERMISSIONS_MSG}</label> &nbsp;
+		<input type="checkbox" name="all_helpdesk" value="1" onClick="allPrivileges('helpdesk');" id="all_helpdesk">
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="support">{ACCESSING_HELPDESK_SYSTEM_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="support" {support} value="1" id="support"></td>
+	<td><label for="support_settings">{HELPDESK_SETTINGS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="support_settings" {support_settings} value="1" id="support_settings"></td>
+</tr>
+<tr class="usual">
+	<td><label for="support_ticket_new">{CREATING_A_NEW_TICKETS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="support_ticket_new" {support_ticket_new} value="1" id="support_ticket_new"></td>
+	<td><label for="support_ticket_edit">{UPDATING_REMOVING_TICKETS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="support_ticket_edit" {support_ticket_edit} value="1" id="support_ticket_edit"></td>
+</tr>
+<tr class="usual">
+	<td><label for="support_ticket_close">{CLOSING_TICKETS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="support_ticket_close" {support_ticket_close} value="1" id="support_ticket_close"></td>
+	<td><label for="support_ticket_reply">{REPLYING_TICKETS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="support_ticket_reply" {support_ticket_reply} value="1" id="support_ticket_reply"></td>
+</tr>
+<tr class="usual">
+	<td><label for="support_users">{EDITING_HELPDESK_USERS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="support_users" {support_users} value="1" id="support_users"></td>
+	<td><label for="support_departments">{EDITING_DEPARTMENTS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="support_departments" {support_departments} value="1" id="support_departments"></td>
+</tr>
+<tr class="usual">
+	<td><label for="support_predefined_reply">{EDITING_PREDEFINED_REPLIES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="support_predefined_reply" {support_predefined_reply} value="1" id="support_predefined_reply"></td>
+	<td><label for="support_static_data">{EDITING_TYPES_PRODUCTS_PRIORITIES_STATUSES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="support_static_data" {support_static_data} value="1" id="support_static_data"></td>
+</tr>
+<tr class="usual">
+	<td><label for="support_users_stats">{ACCESSING_USERS_REPORTS_STATISTICS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="support_users_stats" {support_users_stats} value="1" id="support_users_stats"></td>
+	<td><label for="support_users_priorities">{CUSTOMERS_RANKS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="support_users_priorities" {support_users_priorities} value="1" id="support_users_priorities"></td>
+</tr><!-- end helpdesk_settings -->
+<tr class="middle">
+	<td colspan="4">
+		<label for="all_customers">{CUSTOMERS_PERMISSIONS_MSG}</label> &nbsp;
+		<input type="checkbox" name="all_customers" value="1" onClick="allPrivileges('customers');" id="all_customers">
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="site_users">{ACCESSING_CUSTOMERS_MODULE_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="site_users" {site_users} value="1" id="site_users"></td>
+	<td><label for="users_groups">{ACCESSING_GROUPS_PROFILE_SETTINGS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="users_groups" {users_groups} value="1" id="users_groups"></td>
+</tr>
+<tr class="usual">
+	<td><label for="users_login">{ACCESSING_UPDATING_CUSTOMER_LOGIN_DETAILS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="users_login" {users_login} value="1" id="users_login"></td>
+	<td><label for="add_users">{ADDING_NEW_CUSTOMERS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="add_users" {add_users} value="1" id="add_users"></td>
+</tr>
+<tr class="usual">
+	<td><label for="update_users">{UPDATING_CUSTOMERS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="update_users" {update_users} value="1" id="update_users"></td>
+	<td><label for="remove_users">{REMOVING_CUSTOMERS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="remove_users" {remove_users} value="1" id="remove_users"></td>
+</tr>
+<tr class="usual">
+	<td><label for="import_users">{IMPORTING_CUSTOMERS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="import_users" {import_users} value="1" id="import_users"></td>
+	<td><label for="export_users">{EXPORTING_CUSTOMERS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="export_users" {export_users} value="1" id="export_users"></td>
+</tr>
+<tr class="usual">
+	<td><label for="users_forgot">{ACCESSING_FORGOTTEN_PASSWORD_SETTINGS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="users_forgot" {users_forgot} value="1" id="users_forgot"></td>
+	<td><label for="users_payments">{ACCESSING_CUSTOMER_COMMISSIONS_AND_PAYMENTS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="users_payments" {users_payments} value="1" id="users_payments"></td>
+</tr>
+<tr class="usual">
+	<td><label for="add_payments">{CREATING_A_NEW_COMMISSION_PAYMENTS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="add_payments" {add_payments} value="1" id="add_payments"></td>
+	<td><label for="update_payments">{UPDATING_COMMISSION_PAYMENTS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="update_payments" {update_payments} value="1" id="update_payments"></td>
+</tr>
+<tr class="usual">
+	<td><label for="remove_payments">{REMOVING_COMMISSION_PAYMENTS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="remove_payments" {remove_payments} value="1" id="remove_payments"></td>
+	<td><label for="export_payments">{EXPORTING_COMMISSION_PAYMENTS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="export_payments" {export_payments} value="1" id="export_payments"></td>
+</tr>
+<tr class="usual">
+	<td><label for="subscriptions">{SUBSCRIPTIONS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="subscriptions" {subscriptions} value="1" id="subscriptions"></td>
+	<td><label for="subscriptions_groups">{SUBSCRIPTIONS_GROUPS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="subscriptions_groups" {subscriptions_groups} value="1" id="subscriptions_groups"></td>
+</tr>
+<tr class="middle">
+	<td colspan="4">
+		<label for="all_administrators">{ADMINISTRATORS_PERMISSIONS_MSG}</label> &nbsp;
+		<input type="checkbox" name="all_administrators" value="1" onClick="allPrivileges('administrators');" id="all_administrators">
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="admin_users">{ACCESSING_ADMINISTRATORS_MODULE_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="admin_users" {admin_users} value="1" id="admin_users"></td>
+	<td><label for="admins_groups">{ACCESSING_UPDATING_PRIVILEGES_GROUPS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="admins_groups" {admins_groups} value="1" id="admins_groups"></td>
+</tr>
+<tr class="usual">
+	<td><label for="admins_login">{ACCESSING_UPDATING_ADMINISTRATORS_PASSWORDS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="admins_login" {admins_login} value="1" id="admins_login"></td>
+	<td><label for="add_admins">{ADDING_NEW_ADMINISTRATORS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="add_admins" {add_admins} value="1" id="add_admins"></td>
+</tr>
+<tr class="usual">
+	<td><label for="update_admins">{UPDATING_ADMINISTRATORS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="update_admins" {update_admins} value="1" id="update_admins"></td>
+	<td><label for="remove_admins">{REMOVING_ADMINISTRATORS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="remove_admins" {remove_admins} value="1" id="remove_admins"></td>
+</tr><!-- BEGIN admins_hidden_block -->
+<tr class="usual">
+	<td><label for="admins_hidden">{ACCESSING_HIDDEN_GROUPS_ADMINS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="admins_hidden" {admins_hidden} value="1" id="admins_hidden"></td>
+	<td>&nbsp;</td>
+	<td align="center">&nbsp;</td>
+</tr><!-- END admins_hidden_block -->
+<tr class="middle">
+	<td colspan="4">
+		<label for="all_static_tables">{STATIC_TABLES_MSG}</label> &nbsp;
+		<input type="checkbox" name="all_static_tables" value="1" onClick="allPrivileges('static_tables');" id="all_static_tables">
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="static_google_base_types">{GOOGLE_BASE_ITEM_TYPES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="static_google_base_types" {static_google_base_types} value="1" id="static_google_base_types"></td>
+	<td><label for="static_google_base_attributes">{GOOGLE_BASE_ATTRIBUTE_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="static_google_base_attributes" {static_google_base_attributes} value="1" id="static_google_base_attributes">
+	</td>	
+</tr>
+<tr class="usual">
+	<td><label for="static_prices">{PREDEFINED_PRICES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="static_prices" {static_prices} value="1" id="static_prices"></td>
+	<td><label for="static_tables">{SYSTEM_STATIC_TABLES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="static_tables" {static_tables} value="1" id="static_tables"></td>	
+</tr>
+<tr class="middle">
+	<td colspan="4">
+		<label for="all_multisites">{MULTISITES_FUNCTIONALITY_MSG}</label> &nbsp;
+		<input type="checkbox" name="all_multisites" value="1" onClick="allPrivileges('multisites');" id="all_multisites">
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="admin_sites">{EDIT_SITE_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="admin_sites" {admin_sites} value="1" id="admin_sites"></td>
+	<td><label for="add_sites">{NEW_SITE_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="add_sites" {add_sites} value="1" id="add_sites"></td>
+</tr>
+<tr class="usual">
+	<td><label for="update_sites">{UPDATE_SITE_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="update_sites" {update_sites} value="1" id="update_sites"></td>
+	<td><label for="remove_sites">{REMOVE_SITES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="remove_sites" {remove_sites} value="1" id="remove_sites"></td>
+</tr>
+<tr class="middle">
+	<td colspan="4">
+		<label for="all_xml">{XML_INTERFACE_MSG}</label> &nbsp;
+		<input type="checkbox" name="all_xml" value="1" onClick="allPrivileges('xml');" id="all_xml">
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="get_orders_statuses">{GET_ORDER_STATUSES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="get_orders_statuses" {get_orders_statuses} value="1" id="get_orders_statuses"></td>
+	<td><label for="get_orders_ids">{GET_ORDER_IDS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="get_orders_ids" {get_orders_ids} value="1" id="get_orders_ids"></td>
+</tr>
+<tr class="usual">
+	<td><label for="update_order_status">{UPDATE_ORDER_STATUS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="update_order_status" {update_order_status} value="1" id="update_order_status"></td>
+	<td><label for="add_duplicate_coupons">Add, Duplicate coupons</label></td>
+	<td align="center"><input type="checkbox" name="add_duplicate_coupons" {add_duplicate_coupons} value="1" id="add_duplicate_coupons"></td>
+</tr>
+<tr class="middle">
+	<td colspan="4">
+		<label for="all_registration">{PRODUCT_REGISTRATION_MSG}</label> &nbsp;
+		<input type="checkbox" name="all_registration" value="1" onClick="allPrivileges('all_registration');" id="all_registration">
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="admin_registration">{VIEW_REGISTERED_PRODUCTS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="admin_registration" {admin_registration} value="1" id="admin_registration"></td>
+	<td><label for="edit_reg_list">{EDIT_REGISTERED_PRODUCTS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="edit_reg_list" {edit_reg_list} value="1" id="edit_reg_list"></td>
+</tr>
+<tr class="usual">
+	<td><label for="edit_reg_categories">{EDIT_REGISTRATION_CATEGORIES_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="edit_reg_categories" {edit_reg_categories} value="1" id="edit_reg_categories"></td>
+	<td><label for="edit_reg_products">{EDIT_REGISTRATION_PRODUCTS_MSG}</label></td>
+	<td align="center"><input type="checkbox" name="edit_reg_products" {edit_reg_products} value="1" id="edit_reg_products"></td>
+</tr>
+<tr class="middle">
+	<td align="right" colspan="4">
+		<input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'" id="">&nbsp; &nbsp; &nbsp; <!-- BEGIN delete -->
+		<input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');" id="">&nbsp; &nbsp; &nbsp; <!-- END delete -->
+		<input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'" id="">
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="data_users" style="{users_style}">
+	<table cellspacing="1" cellpadding="4" border="0" width="100%">
+	<tr class="usual">
+		<td colspan="2">
+			<input type="checkbox" name="non_logged_users" id="non_logged_users" {non_logged_users} value="1">
+			<label for="non_logged_users">{ACCESS_UNREG_USERS_DATA_MSG}</label>
+		</td>
+	</tr>	
+	<tr class="usual">
+		<td colspan="2">
+			<input type="hidden" name="user_types_ids" value="{user_types_ids}">
+			<input type="checkbox" name="user_types_all" id="user_types_all" {user_types_all} value="1">
+			<label for="user_types_all">{ACCESS_ALL_USER_TYPES_MSG} ({ACCESS_ALL_USER_TYPES_DESC})</label>
+		</td>
+	</tr>	
+	<tr class="usual">
+		<td colspan="2">
+			<ul id="selectedUserTypes"><!-- BEGIN selected_user_types -->
+				<li class="selectedCategory">{user_type_name} - <a href="#" onClick="removeItem('{user_type_id}', 'record', 'user_types_ids', 'selectedUserTypes'); return false;">{REMOVE_BUTTON}</a></li><!-- END selected_user_types -->
+			</ul>
+			<a class=title href="#" onClick="openWindowSelect('{admin_user_types_select_href}', 'record', 'user_types_ids', 'selectedUserTypes', 'multiple'); return false;">{SELECT_USER_TYPE_MSG}</a>
+		</td>
+	</tr>
+	<tr class="middle">
+		<td colspan="2">
+			<span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+</div>
+</div>
+
+</form>
+
+{admin_footer}
+</body>
+</html>

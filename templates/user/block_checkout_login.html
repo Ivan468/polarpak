@@ -1,0 +1,91 @@
+<!-- begin before_block --><!-- begin call_center_mode -->
+<div class="area bk-message"> 
+	{CALL_CENTER_MODE_MSG}
+</div><!-- end call_center_mode --><!-- end before_block -->
+
+	<form action="{checkout_url}" method="post" name="login">
+	<input type="hidden" name="operation" value="login" />
+	<input type="hidden" name="user_id" value="" />
+
+		<!-- begin new_user_block -->
+		<div class="new-user">
+			<div class="bg-title">{NEW_USER_MSG}</div>
+			<div class="login-signup">
+				<!-- BEGIN checkout_without_link --><a href="{order_info_url}">{CHECKOUT_WITHOUT_MSG}</a><!-- END checkout_without_link -->				
+				<!-- begin user_types --><a href="{user_profile_type_url}">{OPEN_AND_CHECKOUT_MSG} <span class="user-type">({user_type_name})</span></a><!-- end user_types -->
+			</div>
+		</div><!-- end new_user_block -->
+
+		<div class="exists-user">
+			<div class="bg-title">{EXISTS_USER_MSG}</div>
+			<div class="login-hint">{ENTER_LOGIN_MSG}</div>
+			<!-- begin admin_select_user -->
+			<div class="field admin-select">
+				<div class="before"></div>
+				<div class="name"></div>
+				<div class="control">
+					<a href="#" onClick="openUsersWindow('{call_center_users_href}', 'login', '', 'login'); return false;">{SELECT_USER_MSG}</a>
+				</div>
+				<div class="after"></div>
+			</div><!-- end admin_select_user -->
+			<!-- BEGIN login_errors -->
+			<div class="errors">{errors_list}</div><!-- END login_errors -->
+
+			<div class="field fd-login">
+				<div class="before"></div>
+				<div class="name">
+					{LOGIN_FIELD}
+				</div>
+				<div class="control">
+					<input class="text" type="text" name="login" value="{login}" size="20" maxlength="64" placeholder="{login_placeholder}" />
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-password">
+				<div class="before"></div>
+				<div class="name">
+					{PASSWORD_FIELD}
+				</div>
+				<div class="control">
+					<input class="text" type="password" name="password" value="" size="20" maxlength="32" />
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-remember">
+				<div class="before"></div>
+				<div class="name"></div>
+				<div class="control">
+					<label><input type="checkbox" {remember_me} name="remember_me" value="1" />{REMEMBER_ME_MSG}</label> 
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-buttons">
+				<div class="before"></div>
+				<div class="name"></div>
+				<div class="control">
+					<input class="submit" type="submit" value="{SIGN_IN_BUTTON}" onclick="document.record.operation.value='login'" /> 
+				</div>
+				<div class="after"></div>
+			</div>
+
+			<div class="field forgot-password">
+				<div class="before"></div>
+				<div class="name"></div>
+				<div class="control">
+					<a href="{forgot_password_href}">{FORGOT_PASSWORD_MSG}</a>
+				</div>
+				<div class="after"></div>
+			</div>
+		</div>
+
+		<div class="clear"></div>
+
+	</form>
+
+<script type="text/javascript">
+//<![CDATA[
+	if(document.login.login) {
+		document.login.login.focus();
+	}
+//]]>
+</script>

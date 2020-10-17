@@ -1,0 +1,12 @@
+	<!-- BEGIN site_maps -->
+	<div class="tree-title">{tree_title}</div>
+	<ul data-js="tree" class="tree" data-pb-id="{pb_id}" data-type="{data_type}">
+		<!-- BEGIN nodes -->
+		<li class="{node_class}" id="{data_type}-{pb_id}-{node_id}" data-id="{node_id}">
+			<i class="fa expand"></i>
+			<!-- begin node_image --><a href="{node_url}"><img class="node-image" src="{src}" alt="{alt}" /></a><!-- end node_image -->
+			<a class="title {restricted_class}" href="{node_url}" title="{a_title}">{node_title}</a>
+			<!-- BEGIN subnodes_block --><ul>{subnodes}</ul><!-- END subnodes_block --> 
+		</li>
+		<!-- END nodes -->
+	</ul><!-- END site_maps -->

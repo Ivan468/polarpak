@@ -1,0 +1,162 @@
+<form class="grid-view" name="products_{pb_id}" method="post" action="{products_form_url}#pb_{pb_id}">
+<input type="hidden" name="pb_id" value="{pb_id}" />
+<input type="hidden" name="type" value="grid" />
+<input type="hidden" name="rp" value="{rp}" />
+<input type="hidden" name="rnd" value="{rnd}" />
+<input type="hidden" name="cart" value="ADD" />
+<input type="hidden" name="redirect_to_cart" value="{redirect_to_cart}" />
+<input type="hidden" name="multi_add" value="{multi_add}" />
+<input type="hidden" name="add_id" value="" />
+<input type="hidden" name="saved_type_id" value="" />
+<input type="hidden" name="start_index" value="{start_index}" />
+<input type="hidden" name="item_index" value="" />
+<input type="hidden" name="form_id" value="" />
+<input type="hidden" name="items_indexes" value="{items_indexes}" />
+<input type="hidden" name="sc_params" value="{sc_params}" />
+{hidden_parameters}
+
+	<!-- begin search_results -->
+	<div class="search-results">{FOUND_PRODUCTS_MSG}</div><!-- end search_results -->
+
+	<!-- begin sorter_block -->
+	<div class="sorter">
+		{PROD_SORT_BY_MSG}: 
+		<div class="sorter-select" data-js="expand" data-tag="ul">{active_sorter_name} <i class="{active_sorter_class}"></i>
+			<ul><!-- begin sort_items -->
+				<li>
+					<a href="{sorter_url}">{sorter_name} <i class="{sorter_class}"></i></a>
+				</li><!-- END sort_items -->
+			</ul>
+		</div>
+	</div>
+	<!-- end sorter_block -->
+
+	<!-- begin no_items -->
+	<div class="no-items">{NO_PRODUCTS_MSG}</div><!-- end no_items -->
+
+	<!-- BEGIN item_added --><div class="messagebg" align="center">{added_message}</div><!-- END item_added -->
+	<!-- BEGIN sc_errors --><div class="errorbg" align="center">{errors_list}</div><!-- END sc_errors -->
+
+	<!-- begin category_items -->
+	<div class="products {columns_class}">
+
+	<!-- begin items_category_name -->
+	<div class="category-name bg-title br-solid">{category_name}</div> 
+	<!-- end items_category_name -->
+	<!-- begin items_category_desc -->
+	<div class="category-desc br-solid">{category_desc}</div>
+	<!-- end items_category_desc -->
+
+	<!-- BEGIN items_rows -->
+	<!-- BEGIN items_cols -->
+	<div class="col {column_class}">
+
+			<div class="product br-solid">
+
+			<input type="hidden" name="item_id{form_id}" value="{item_id}" />
+			<input type="hidden" name="tax_percent{form_id}" value="{tax_percent}" />
+			<input type="hidden" name="product_params{form_id}" value="{product_params}" />
+			<input type="hidden" name="product_data{form_id}" value="{product_data}" />
+
+					<div class="before-image">
+						<h2 class="product-name"><a class="product-name {product_new_class} {restricted_class}" href="{product_details_url}" title="{a_title}">{item_name}</a></h2>
+						{found_in_category}
+					</div>
+
+					<!-- begin product_image -->
+					<div class="image-block">
+						<a href="{product_details_url}" title="{a_title}"><img class="product-image" name="image_{form_id}" src="{src}" alt="{alt}" /></a>
+					</div><!-- end product_image -->
+
+
+					<div class="after-image">
+						<h2 class="product-name"><a class="product-name {product_new_class} {restricted_class}" href="{product_details_url}" title="{a_title}">{item_name}</a></h2>
+						<!-- begin found_in_category -->
+						<div class="found-in">{FOUND_IN_MSG}: <!-- BEGIN found_categories --><a class="found-in" href="{products_href}?category_id={ic_id}">{item_category}</a>{ic_separator}<!-- END found_categories --></div>
+						<!-- end found_in_category -->
+					</div>
+
+					{product_previews}							
+
+				<div class="buy-block">
+					<div class="prices {price_type_class}">				
+						<!-- begin price_block -->
+						<span id="price_block{form_id}" class="{price_block_class}"><span class="caption">{PRICE_MSG}</span><span id="price{form_id}" class="price">{price_control}</span><span class="price-note">{price_note}</span> <span class="tax-price">{tax_price}</span></span><!-- end price_block -->
+						<!-- begin sales -->
+						<span class="price-sale"><span class="caption">{SALE_PRICE_MSG}</span><span id="sales_price{form_id}" class="price">{sales_price_control}</span><span class="price-note">{price_note}</span> <span class="tax-price">{tax_sales}</span></span><!-- end sales -->
+						<!-- begin save -->
+						<span class="price-save"><span class="caption">{YOU_SAVE_MSG}</span><span class="price">{you_save}</span> <span class="percent">({discount_percent}%)</span></span><!-- end save -->
+					</div>
+
+					<!-- begin item_code_block -->
+					<div class="product-code"><span class="caption">{PROD_CODE_MSG}</span><span class="code">{item_code}</span></div><!-- end item_code_block -->	
+					<!-- begin manufacturer_code_block -->
+					<div class="manf-code"><span class="caption">{MANUFACTURER_CODE_MSG}</span><span class="code">{manufacturer_code}</span></div><!-- end manufacturer_code_block -->	
+					<!-- begin reviews -->
+					<div class="rating"><span class="caption">{AVERAGE_RATING_MSG}</span><span class="rating-image"><a href="{reviews_url}"><img class="{rating_image}" src="images/tr.gif" alt="{rating_alt}" align="top" /></a></span><span class="rating-votes">({rating_votes})</span></div><!-- end reviews -->
+					<!-- begin properties_block -->
+					<div id="properties{form_id}" class="properties"><!-- begin properties -->
+						<div id="{property_block_id}" class="property {property_class}"  style="{property_style}"><span class="name">{property_name}</span><span class="control">{property_control}</span></div><!-- end properties -->
+					</div><!-- end properties_block -->
+
+					<!-- begin shipping_free -->
+					<div class="shipping-free">{FREE_SHIPPING_MSG}</div><!-- end shipping_free -->
+					<!-- begin availability -->
+					<div id="block_sm{form_id}" class="availability" style="{sm_style}"><span class="caption">{PROD_AVAILABILITY_MSG}</span><span id="sm{form_id}" class="shipping-time">{shipping_time_desc}</span></div><!-- end availability -->	
+					<!-- begin stock_level_block -->
+					<div id="block_sl{form_id}" class="stock-level" style="{sl_style}"><span class="caption">{STOCK_LEVEL_MSG}</span><span id="sl{form_id}" class="stock-value">{stock_level}</span></div><!-- end stock_level_block -->	
+
+					<!-- begin quantity -->
+					<div class="product-qty"><span class="caption">{PROD_QTY_COLUMN}</span><span class="qty-control">{quantity_control}</span></div><!-- end quantity -->	
+
+
+					<div class="buttons">
+						<!-- begin in_cart -->
+						<a class="in-cart {hidden_class}" id="in-cart{form_id}" href="{basket_href}?rp={rp_url}" title="{IN_CART_MSG}"><span>{IN_CART_MSG}</span></a><!-- end in_cart -->
+
+						<!-- begin buy_button -->
+						<a class="button bn-buy" id="add{form_id}" href="{buy_href}" rel="nofollow"><span>{BUY_NOW_MSG}</span></a> 
+						<!-- end buy_button -->
+						<!-- begin cart_add_button -->
+						<a class="button bn-add" id="add{form_id}" href="{buy_href}" onclick="{buy_onclick}"><span>{ADD_TO_CART_MSG}</span></a> 
+						<!-- end cart_add_button -->
+						<!-- begin cart_add_disabled -->
+						<a class="button bn-disabled" title="{PRODUCT_OUT_STOCK_MSG}" onclick="alert('{out_stock_alert}');"><span>{ADD_TO_CART_MSG}</span></a> 
+						<!-- end cart_add_disabled -->
+						<!-- begin view_button -->
+						<a class="button bn-view" id="view{form_id}" href="{basket_href}?rp={rp_url}"><span>{VIEW_CART_MSG}</span></a> 
+						<!-- end view_button -->
+						<!-- begin checkout_button -->
+						<a class="button bn-checkout" id="checkout{form_id}" href="{checkout_href}?rp={rp_url}"><span>{GOTO_CHECKOUT_MSG}</span></a>
+						<!-- end checkout_button -->
+						<!-- begin compare -->
+						<a class="button bn-compare" id="compare{form_id}" href="{compare_href}" onclick="return confirmBuy('products_{pb_id}','{form_id}','compare', 'compare{form_id}');"><span>{COMPARE_MSG}</span></a> 
+						<!-- end compare -->
+						<!-- begin wishlist_button -->
+						<a class="button bn-wishlist" id="wishlist{form_id}" href="{wishlist_href}" onclick="return confirmBuy('products_{pb_id}', '{form_id}', 'wishlist', 'wishlist{form_id}');"><span>{ADD_TO_WISHLIST_MSG}</span></a> 
+						<!-- end wishlist_button -->
+					</div>
+				</div>
+
+				<div class="clear"></div>
+			</div>
+
+	</div>
+	<!-- END items_cols -->
+	<!-- END items_rows -->
+
+	<div class="clear"></div>
+
+	<!-- begin multi_add_button -->
+	<div class="multi-add br-solid">
+		<a class="button bn-add" id="multi_add{form_id}" href="#" onclick="confirmBuy('products_{pb_id}','','cart', 'multi_add{form_id}'); return false;"><span>{ADD_BUTTON}</span></a>
+	</div><!-- end multi_add_button -->
+
+	</div>
+	<!-- end category_items -->
+
+
+	<!-- begin navigator_block -->
+	<div class="navigator br-solid">{navigator}</div><!-- end navigator_block -->
+
+</form>

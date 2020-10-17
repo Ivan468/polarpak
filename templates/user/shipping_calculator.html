@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{meta_language}" lang="{meta_language}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{meta_title}</title>
+<meta name="description" content="{meta_description}" />
+<meta name="keywords" content="{meta_keywords}" />
+<link rel="stylesheet" href="{css_file}" type="text/css" />
+{head_tags}
+<script type="text/javascript">
+<!--
+
+	var selectCountryFirst = "{SELECT_COUNTRY_FIRST_MSG}";
+	var noStatesForCountry = "{NO_STATES_FOR_COUNTRY_MSG}";
+	var site_url = "{site_url}";
+	var states = {states_json};
+
+function moveToCart(cartOperation)
+{
+	var checkoutForm = document.checkout;
+	var formName = document.checkout.form_name.value;
+	var selectedIndex = document.checkout.selected_index.value;
+	var controlId = document.checkout.control_id.value;
+	var sgNumber = document.checkout.shipping_groups_number.value;
+
+
+	// check selected shipping method
+	var shippingTypeId = "";
+	if (checkoutForm.shipping_type_id) {
+		if (checkoutForm.shipping_type_id.length > 1) {
+			for(var i = 0; i < checkoutForm.shipping_type_id.length; i++) {
+				if (checkoutForm.shipping_type_id[i].checked) {
+					shippingTypeId = checkoutForm.shipping_type_id[i].value;
+				}
+			}
+		} else {
+			shippingTypeId = checkoutForm.shipping_type_id.value;
+		}
+	}
+	// check selected country 
+	var cartForm = ""; var inputObj = ""; var countryId = "";	var stateId = ""; var postalCode = "";
+	if (document.shipping.country_id) {
+		countryId = document.shipping.country_id.options[document.shipping.country_id.selectedIndex].value;
+	}
+	if (document.shipping.state_id) {
+		stateId = document.shipping.state_id.options[document.shipping.state_id.selectedIndex].value;
+	}
+	if (document.shipping.postalCode) {
+		postalCode = document.shipping.postalCode.value;
+	}
+
+	// check new cart id
+	var newCartId = document.shipping.new_cart_id.value;
+	var parentDoc = "";
+	// check cart form
+	if (newCartId && newCartId != "") {
+		parentDoc = window.parent.document;
+		cartForm = window.parent.document.forms[formName];
+	} else if (window.opener && window.opener.document.basket) {
+		parentDoc = window.opener.document;
+		cartForm = window.opener.document.basket;
+	}
+	// add shippingTypeId parameters to cart form
+	if (cartForm) {
+		if (!cartForm.shipping_groups_number) {
+			inputObj = parentDoc.createElement("input");
+			inputObj.type = "hidden";
+			inputObj.name = "shipping_groups_number";
+			cartForm.appendChild(inputObj);
+		}
+		cartForm.shipping_groups_number.value = sgNumber;
+		// check shipping value for every shipping group
+		for (var si = 1; si <= sgNumber; si++) {
+			if (!cartForm.elements["shipping_type_id_"+si]) {
+				inputObj = parentDoc.createElement("input");
+				inputObj.type = "hidden";
+				inputObj.name = "shipping_type_id_"+si;
+				cartForm.appendChild(inputObj);
+			}
+
+			// get shipping type value
+			var shippingObj = checkoutForm.elements["shipping_type_id_"+si];
+			shippingTypeId = "";
+			if (shippingObj) {
+				if (shippingObj.length > 1) {
+					for(var i = 0; i < shippingObj.length; i++) {
+						if (shippingObj[i].checked) {
+							shippingTypeId = shippingObj[i].value;
+						}
+					}
+				} else {
+					shippingTypeId = shippingObj.value;
+				}
+			}
+			cartForm.elements["shipping_type_id_"+si].value = shippingTypeId;
+		}
+
+		// send data to cart form
+		if (newCartId && newCartId != "") {
+			cartForm.cart.value = cartOperation;
+			window.parent.hideShippingFrame();
+			window.parent.confirmBuy(formName, selectedIndex, cartOperation);
+		} else if (window.opener) {
+			cartForm.cart.value = "GOTOCHECKOUT";
+			cartForm.submit();
+			window.close();
+		}
+	}
+}
+
+function selectShipping(controlId)
+{
+	var radioObj = document.getElementById(controlId);
+	radioObj.checked = true;
+}
+
+function overRow(controlId)
+{
+	var rowObj = document.getElementById(controlId);
+	rowObj.style.background = "#FFFDDD";
+}
+
+function outRow(controlId)
+{
+	var rowObj = document.getElementById(controlId);
+	rowObj.style.background = "transparent";
+}
+
+//-->
+</script>
+</head>
+
+<body class="popup {scheme_class}">
+
+
+<table cellspacing="0" width="100%" class="shipping-cart">
+<tr class="cart-title bg-title br-solid">
+	<td>
+		{PROD_TITLE_COLUMN}
+	</td>
+	<td align="center">
+		{PROD_QTY_COLUMN}
+	</td>
+	<td align="center">
+		{WEIGHT_MSG}
+	</td>
+</tr>
+<!-- begin items -->
+<tr class="cart-item br-solid" valign="center">
+	<td>
+		{item_name} {item_weight}
+			<font class="smallText">{properties_values}</font>
+			<!-- begin components_block -->
+			<div><b>{PROD_SUBCOMPONENTS_MSG}:</b></div>
+			<!-- begin components -->
+			<div>{selection_name} {component_quantity} x {component_name} {component_weight}</div>
+			<!-- end components -->
+			<!-- end components_block -->
+	</td>
+	<td align="center">
+		{quantity}
+	</td>
+	<td align="center">
+		{total_weight}
+	</td>
+</tr>
+<!-- end items -->
+<tr class="cart-total bg-title br-solid">
+	<td>
+		{TOTAL_MSG}
+	</td>
+	<td align="center">
+		{items_quantity}
+	</td>
+	<td align="center">
+		{items_weight}
+	</td>
+</tr>
+</table>
+
+<!-- begin errors -->
+<div class="errors">{errors_list}</div>
+<!-- end errors -->
+
+<form name="shipping" action="{shipping_calculator_href}">
+<input type="hidden" name="operation" value="go" />
+<input type="hidden" name="new_cart_id" value="{new_cart_id}" />
+<input type="hidden" name="form_name" value="{form_name}" />
+<input type="hidden" name="selected_index" value="{selected_index}" />
+<input type="hidden" name="control_id" value="{control_id}" />
+
+<table cellspacing="0" width="100%">
+<!-- begin country_id_block -->
+<tr class="cart-item">
+	<td>{COUNTRY_FIELD} <span class="required">{country_id_required}</span></td>
+	<td>
+		<select class="text" id="country_id_{pb_id}" name="country_id" onChange="updateStates('{pb_id}', 'personal');"><!-- begin country_id -->
+			<option {country_id_selected} value="{country_id_value}">{country_id_description}</option><!-- end country_id -->
+		</select>
+	</td>
+</tr><!-- end country_id_block --><!-- begin state_id_block -->
+<tr class="cart-item">
+	<td>{STATE_FIELD} <span id="state_id_required_{pb_id}" style="{state_id_required_style}" class="required">{state_id_required}</span></td>
+	<td>
+		<select class="text" id="state_id_{pb_id}" style=" {state_id_control_style}" name="state_id"><!-- begin state_id -->
+			<option {state_id_selected} value="{state_id_value}">{state_id_description}</option><!-- end state_id -->
+		</select>
+		<span class="message" style="{state_id_comments_style}" id="state_id_comments_{pb_id}">{state_id_comments}</span>
+	</td>
+</tr><!-- end state_id_block -->
+<tr class="cart-item">
+	<td>
+		<span>{ZIP_FIELD}</span> 
+	</td>
+	<td>
+		<input class="text" type="text" name="postal_code" value="{postal_code}" size="8" maxlength="16" />
+		<input class="inline-submit" type="submit" value="{GO_BUTTON}" />
+	</td>
+</tr>
+</table>
+
+	</form>
+
+<br />
+
+
+<form name="checkout" action="checkout.php">
+<input type="hidden" name="form_name" value="{form_name}">
+<input type="hidden" name="selected_index" value="{selected_index}">
+<input type="hidden" name="control_id" value="{control_id}">
+<input type="hidden" name="shipping_groups_number" value="{shipping_groups_number}">
+
+<!-- begin shipping -->
+<table cellspacing="0" width="100%" class="shipping-checkout">
+<tr class="cart-title bg-title br-solid" align="center" valign="top">
+	<td width="80%">
+		<b>{group_name}</b>
+	</td>
+	<td width="1%">
+		&nbsp;
+	</td>
+	<td width="20%">
+		{SHIPPING_COST_MSG}
+	</td>
+</tr>
+<!-- begin shipping_methods -->
+<tr id="sr_{si}_{shipping_type_id}" class="cart-item br-solid" valign="center" style="cursor: pointer;"
+	onclick="selectShipping('st_{si}_{shipping_type_id}');"
+	onmouseover="overRow('sr_{si}_{shipping_type_id}');"
+	onmouseout="outRow('sr_{si}_{shipping_type_id}');">
+	<td>
+		{shipping_name}
+	</td>
+	<td>
+		<input id="st_{si}_{shipping_type_id}"  type="radio" name="shipping_type_id_{si}" value="{shipping_type_id}" style="cursor: pointer;"/>
+	</td>
+	<td align="center">
+		{shipping_cost}
+	</td>
+</tr>
+<!-- end shipping_methods -->
+</table>
+<!-- end shipping -->
+<br/>
+<div align="right">
+	<!-- BEGIN new_item_buttons -->
+	<span class="submit"><input class="submit" type="button" value="{ADD_TO_CART_MSG}" onClick="moveToCart('SHIPPINGADD');"></span>
+	<span class="submit"><input class="submit" type="button" value="{ADD_TO_CART_MSG} & {GOTO_CHECKOUT_MSG}" onClick="moveToCart('CHECKOUT');"></span><!-- END new_item_buttons -->
+	<!-- BEGIN basket_buttons -->
+	<span class="submit"><input class="submit" type="button" value="{GOTO_CHECKOUT_MSG}" onClick="moveToCart('GOTOCHECKOUT');"></span><!-- END basket_buttons -->
+	&nbsp;
+</div>
+
+</form>
+
+
+<!-- begin no_shipping -->
+<div class="message">{NO_SHIPPING_METHODS_MSG}</div>
+<!-- end no_shipping -->
+
+</body>
+</html>

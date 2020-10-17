@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {PRODUCT_SELECTION_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+ 
+<script language="JavaScript">
+<!--
+
+usersInfo = new Array();
+<!-- begin users_info -->
+usersInfo['{user_id}'] = new Object();<!-- end users_info -->
+<!-- begin user_info -->
+usersInfo['{user_id}']['{param_name}'] = '{param_value}';<!-- end user_info -->
+
+function selectUser(userId)
+{
+	if (window.opener) {
+		window.opener.setUser(usersInfo[userId]);
+		window.opener.focus();
+	}
+	window.close();
+}
+
+function closeWindow()
+{
+	window.opener.focus();
+	window.close();
+}
+
+function clearSearch() {
+	document.form_list.sw.value = "";
+	document.form_list.submit();
+}
+
+//-->
+</script>
+</head>
+<body class="popup">
+
+<form action="{admin_order_user_select_href}" name="form_list">
+<input type="hidden" name="operation" value="1">
+<input type="hidden" name="form_id" value="{form_id}">
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%" align="center">
+<tr class="middle">
+	<td colspan="7" align="center"><a href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+<tr>
+	<td colspan="7" class="usual" align="center">
+		<input type="text" name="sw" value="{sw}" class="search">
+		<span class="button"><input type="submit" value="Search" class="submit"></span>
+		<span class="button"><input type="submit" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch()"></span>
+	</td>
+</tr><!-- begin search_results -->
+<tr>
+	<td colspan="7" class="usual" align="center">{found_message}</td>
+</tr><!-- end search_results --><!-- begin users_sorters -->
+<tr class="middle" align="center">
+	<td nowrap>{sorter_user_id}</td>
+	<td nowrap>{sorter_login}</td>
+	<td nowrap>{sorter_name}</td>
+	<td nowrap>{sorter_first_name}</td>
+	<td nowrap>{sorter_last_name}</td>
+	<td nowrap>{sorter_phone}</td>
+	<td>&nbsp;</td>
+</tr><!-- end users_sorters --><!-- begin users -->
+<tr class="usual" align="center">
+	<td>{user_id}</td>
+	<td>{login}</td>
+	<td>{name}</td>
+	<td>{first_name}</td>
+	<td>{last_name}</td>
+	<td>{phone}</td>
+	<td><a href="javascript:selectUser('{user_id}');">Select</a></td>
+</tr><!-- end users -->
+<!-- begin navigator_block -->
+<tr class="middle">
+	<td colspan="7" align="right">{navigator}</td>
+</tr><!-- end navigator_block -->
+<tr class="middle">
+	<td colspan="7" align="center"><a href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+</table>
+
+</form>
+
+</body>
+</html>

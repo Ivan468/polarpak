@@ -1,0 +1,29 @@
+	<form action="{current_url}#coupon_form" name="coupon" method="post">
+	<input type="hidden" name="coupon_operation" value="add" />
+	{hidden_parameters}
+	
+	<table align="center">
+	<!-- BEGIN coupon_errors -->
+	<tr>
+		<td colspan="2" align="center">
+			<div class="errorbg">{errors_list}</div>
+		</td>
+	</tr>
+	<!-- END coupon_errors -->
+	<!-- BEGIN message_block -->
+	<tr>
+		<td colspan="2" align="center">
+			<div class="messagebg">{coupon_message}</div>
+		</td>
+	</tr>
+	<!-- END message_block -->
+	<tr>
+		<td>{COUPON_CODE_FIELD}:</td>
+		<td><input class="field" size="16" type="text" name="coupon_code" value="{coupon_code}" /></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><span class="submit"><input class="submit" type="submit" value="{APPLY_BUTTON}" /></span></td>
+	</tr>
+	</table>
+	</form>

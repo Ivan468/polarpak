@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{CARTS_REPORT_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" src="../js/calendar.js"></script>
+<script language="JavaScript">
+<!--
+
+	function selectPeriod()
+	{
+		var theForm = document.forms['search_form'];
+		var period = theForm.s_tp.options[theForm.s_tp.selectedIndex].value;
+		var startDate = "";
+		var endDate = "";
+		if(period == 1) {
+			startDate = "{today_date}"; endDate = "{today_date}";
+		} else if(period == 2) {
+			startDate = "{yesterday_date}"; endDate = "{yesterday_date}";
+		} else if (period == 3) {
+			startDate = "{week_start_date}"; endDate = "{today_date}";
+		} else if (period == 4) {
+			startDate = "{month_start_date}"; endDate = "{today_date}";
+		} else if (period == 5) {
+			startDate = "{last_month_start_date}"; endDate = "{last_month_end_date}";
+		} else if (period == 6) {
+			startDate = "{quarter_start_date}"; endDate = "{today_date}";
+		} else if (period == 7) {
+			startDate = "{year_start_date}"; endDate = "{today_date}";
+		}
+		theForm.s_sd.value = startDate;
+		theForm.s_ed.value = endDate;
+	}
+
+	function clearSearch() {
+		var theForm = document.forms['search_form'];
+
+		theForm.s_tp.selectedIndex = 0;
+		theForm.s_sd.value = "";
+		theForm.s_ed.value = "";
+		theForm.s_os.selectedIndex = 0;
+		theForm.s_cct.selectedIndex = 0;
+
+		theForm.submit();
+	}
+
+	function showTip(tipName) {
+		var tip = document.getElementById(tipName);
+		if (tip) {
+  	  		//var leftPos = event.x + document.body.scrollLeft + 15;
+	    	//var topPos  = event.y + document.body.scrollTop + 15;
+			//tip.style.left = leftPos;
+			//tip.style.top = topPos;
+			tip.style.display = "block";
+		}
+
+	}
+
+	function hideTip(tipName) {
+		var tip = document.getElementById(tipName);
+		if (tip) {
+			tip.style.display = 'none';
+		}
+	}
+
+//-->
+</script>
+</head>
+<body class="commonbg">
+{admin_header}
+{block_leftside_breadcrumbs}
+<div class="Block floatLeft">
+<div class="BlockTitle">{FILTER_ORDERS_STATS_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_orders_report_href}" name="search_form">
+<input type="hidden" name="s_form" value="1">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellpadding="4" cellspacing="1">
+<tr class="usual">
+	<td>{GROUP_BY_MSG}:</td>
+	<td>
+		<select name="s_gr" class="search"><!-- BEGIN s_gr -->
+			<option {s_gr_selected} value="{s_gr_value}">{s_gr_description}<!-- END s_gr -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{TIME_PERIOD_MSG}:</td>
+	<td>
+		<select name="s_tp" class="search" onChange="selectPeriod();"><!-- BEGIN s_tp -->
+			<option {s_tp_selected} value="{s_tp_value}">{s_tp_description}<!-- END s_tp -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FROM_DATE_MSG} ({date_edit_format}):</td>
+	<td>
+		<input type="text" name="s_sd" value="{s_sd}" class="search">
+		<a href="#"
+			onClick="setDateField(document.search_form.s_sd, '{date_edit_format}');
+			top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{TO_DATE_MSG} ({date_edit_format}):</td>
+	<td>
+		<input type="text" name="s_ed" value="{s_ed}" class="search">
+		<a href="#"
+			onClick="setDateField(document.search_form.s_ed, '{date_edit_format}');
+			top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input type="submit" name="filter" value="{FILTER_BUTTON}" class="submit"></span>
+		<span class="button"><input type="button" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch();"></span>
+	</td>
+</tr>
+</table>
+</form>
+</div>
+</div>
+
+<div class="clearBoth"></div>
+
+<!-- BEGIN search_results -->
+<div class="Block">
+<div class="BlockTitle">{CARTS_REPORT_MSG}</div>
+<div class="BlockContent">
+
+<table border="0" cellpadding="4" cellspacing="1" width="100%"><!-- BEGIN titles -->
+<tr class="middle" align="center">
+	<td>&nbsp;</td>
+	<td colspan="3">Saved Carts</td>
+	<td colspan="3">Retrieved Carts</td>
+</tr>
+<tr class="middle" align="center">
+	<td>{PERIOD_MSG}</td>
+	<td>Carts</td>
+	<td>{QUANTITY_MSG}</td>
+	<td>{GOODS_TOTAL_MSG}</td>
+	<td>{ORDERS_MSG}</td>
+	<td>{QUANTITY_MSG}</td>
+	<td>{GOODS_TOTAL_MSG}</td>
+</tr><!-- END titles --><!-- BEGIN summary -->
+<tr valign="top" align="center" class="middle">
+	<td align="center">{TOTAL_STATS_MSG}</td>
+	<td>{sum_saved_number}</td>
+	<td>{sum_saved_qty}</td>
+	<td>{sum_saved_total}</td>
+	<td>{sum_orders_number}</td>
+	<td>{sum_orders_qty}</td>
+	<td>{sum_orders_total}</td>
+</tr><!-- END summary --><!-- BEGIN records -->
+<tr valign="top" align="center" class="{row_style}">
+	<td>{time_period}</td>
+	<td>{saved_number}</td>
+	<td>{saved_quantity}</td>
+	<td>{saved_total}</td>
+	<td>{orders_number}</td>
+	<td>{orders_quantity}</td>
+	<td>{orders_total}</td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="10">{NO_DATA_WERE_FOUND_MSG}</td>
+</tr><!-- END no_records --><!-- BEGIN summary_bottom -->
+<tr valign="top" align="center" class="middle">
+	<td align="center">{TOTAL_STATS_MSG}</td>
+	<td>{sum_saved_number}</td>
+	<td>{sum_saved_qty}</td>
+	<td>{sum_saved_total}</td>
+	<td>{sum_orders_number}</td>
+	<td>{sum_orders_qty}</td>
+	<td>{sum_orders_total}</td>
+</tr><!-- END summary_bottom -->
+</table>
+</div>
+</div>
+<!-- END search_results -->
+
+{admin_footer}
+
+</body>
+</html>

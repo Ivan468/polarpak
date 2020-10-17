@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {USERS_TYPES_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{USERS_TYPES_MSG}</div>
+<div class="BlockContent">
+
+<table border="0" cellspacing="1" cellpadding="6" width="100%"><!-- begin titles -->
+<tr align="center" class="middle">
+	<td>{sorter_type_id}</td>
+	<td>{sorter_type_name}</td>
+	<td>{sorter_is_active}</td>
+	<td>{sorter_is_default}</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+</tr><!-- end titles --><!-- BEGIN records -->
+<tr class="usual" align="center">
+	<td>{type_id}</td>
+	<td align="left">{type_name}</td>
+	<td>{is_active}</td>
+	<td>{is_default}</td>
+	<td><a href="{admin_user_type_href}?type_id={type_id}">{EDIT_TYPE_MSG}</a></td>
+	<td><a href="{admin_subscriptions_href}?s_ut={type_id}">{SUBSCRIPTIONS_MSG}</a></td>
+	<td><a href="{admin_user_profile_href}?type_id={type_id}">{PROFILE_SETTINGS_MSG}</a></td>
+	<td><a href="{admin_user_product_href}?type_id={type_id}">{PRODUCT_SETTINGS_MSG}</a></td>
+	<td><a href="{admin_user_contact_href}?type_id={type_id}">{CONTACT_SETTINGS_MSG}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="9">{NO_RECORDS}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="9">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_user_type_href}">{ADD_NEW_MSG} {USER_TYPE_MSG}</a>
+	</td>
+</tr>
+</table>
+	
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

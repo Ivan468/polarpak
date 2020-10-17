@@ -1,0 +1,25 @@
+	<div data-type="cart" data-pb-id="{pb_id}" data-id="pb_{pb_id}"></div>
+
+	<!-- begin empty_small_cart -->
+	<div class="cart-empty">{EMPTY_CART_MSG}</div>
+	<!-- end empty_small_cart -->
+  
+	<!-- begin small_cart -->
+	<table width="100%" cellspacing="0" class="cart-small">
+	<tr class="cart-title bg-title br-solid">
+		<td>{PROD_TITLE_COLUMN}</td><td align="center">{PROD_QTY_COLUMN}</td><td align="right">{PROD_PRICE_COLUMN}</td>
+	</tr><!-- BEGIN small_cart_items -->
+	<tr class="cart-item br-solid">
+		<td class="product-name">{item_name}</td><td class="product-qty">{quantity}</td><td class="product-price">{price}</td>
+	</tr><!-- END small_cart_items -->
+	<tr class="cart-total bg-title br-solid">
+		<td align="right"><b>{GOODS_TOTAL_MSG}</b></td><td align="center">{total_quantity}</td><td align="right">{total_price}</td>
+	</tr>
+	<tr>
+		<td colspan="3" align="center" class="cart-buttons">
+			<a class="button bn-view" href="{basket_href}"><span>{VIEW_CART_MSG}</span></a>
+			<a class="button bn-checkout" href="{checkout_href}"><span>{GOTO_CHECKOUT_MSG}</span></a>
+		</td>
+	</tr>
+	</table>
+	<!-- end small_cart -->

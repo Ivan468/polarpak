@@ -1,0 +1,216 @@
+<script type="text/javascript" src="js/profile.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+	var selectCountryFirst = "{SELECT_COUNTRY_FIRST_MSG}";
+	var noStatesForCountry = "{NO_STATES_FOR_COUNTRY_MSG}";
+	var states = {states_json};
+	var addressParams = {address_json};
+
+	function addressTypeChange()
+	{
+		var formObj = document.record;
+		var pbId = formObj.pb_id.value;
+		var typeSize = formObj.address_types.value;
+		var addressTypes = [];
+		for (var i = 1; i <= typeSize; i++) {
+			if (formObj.elements["address_types_"+i].checked) {
+				addressTypes[addressTypes.length] = formObj.elements["address_types_"+i].value;
+			}
+		}
+		for (paramName in addressParams) {
+			var paramValues = addressParams[paramName];
+			var paramShow = false; var paramRequired = false; 
+			for (var j=0; j < addressTypes.length; j++) {
+				var typeValue = addressTypes[j];
+				if (paramValues[typeValue]["show"] == 1) {
+					paramShow = true;
+				}
+				if (paramValues[typeValue]["required"] == 1) {
+					paramRequired = true;
+				}
+			}
+			var rowObj = document.getElementById(paramName+"_row");
+			if (!rowObj) {
+				rowObj = document.getElementById(paramName+"_row_"+pbId);
+			}
+			if (paramShow) {
+				rowObj.style.display = "table-row";
+			} else {
+				rowObj.style.display = "none";
+			}
+			var reqObj = document.getElementById(paramName+"_required");
+			if (!reqObj) {
+				reqObj= document.getElementById(paramName+"_required_"+pbId);
+			}
+			if (paramRequired) {
+				reqObj.style.display = "inline";
+			} else {
+				reqObj.style.display = "none";
+			}
+		}
+	}
+//]]>
+</script>
+
+<form action="{address_form_url}" name="record" method="post">
+<input type="hidden" name="pb_id" value="{pb_id}" />
+<input type="hidden" name="operation" value="save" />
+<input type="hidden" name="address_id" value="{address_id}" />
+<input type="hidden" name="rp" value="{rp}" />
+<input type="hidden" name="select_type" value="{select_type}" />
+<table width="100%" cellspacing="1" align="center" class="table-data">
+<tr class="usualbg">
+	<td colspan="2" class="smallText" align="right">{ASTERISK_MSG}</td>
+</tr><!-- BEGIN errors -->
+<tr class="usualbg">
+	<td colspan="2" align="center">
+		<div class="errorbg">{errors_list}</div>
+	</td>
+</tr><!-- END errors -->
+<tr class="usualbg">
+	<td width="20%">{ADDRESS_TYPE_MSG} <span class="required">*</span></td>
+	<td width="80%"><!-- begin address_types-->
+		<label><input type="checkbox" {address_types_checked} name="address_types_{address_types_index}" value="{address_types_value}" onclick="addressTypeChange();" />{address_types_description} &nbsp; </label><!-- end address_types-->
+		<input type="hidden" name="address_types" value="{address_types_size}" />
+	</td>
+</tr>
+<!-- begin name_block -->
+<tr id="name_row" class="usualbg" style="{name_style}">
+	<td>{NAME_MSG} <span id="name_required" style="{name_required_style}" class="required">*</span></td>
+	<td><input class="text" type="text" name="name" value="{name}" size="40" maxlength="128" /></td>
+</tr><!-- end name_block --><!-- begin first_name_block -->
+<tr id="first_name_row" class="usualbg" style="{first_name_style}">
+	<td>{FIRST_NAME_FIELD} <span id="first_name_required" style="{first_name_required_style}" class="required">*</span></td>
+	<td><input class="text" type="text" name="first_name" value="{first_name}" size="40" maxlength="64" /></td>
+</tr><!-- end first_name_block --><!-- begin middle_name_block -->
+<tr id="middle_name_row" class="usualbg" style="{middle_name_style}">
+	<td>{MIDDLE_NAME_FIELD} <span id="middle_name_required" style="{middle_name_required_style}" class="required">*</span></td>
+	<td><input class="text" type="text" name="middle_name" value="{middle_name}" size="40" maxlength="64" /></td>
+</tr><!-- end middle_name_block --><!-- begin last_name_block -->
+<tr id="last_name_row" class="usualbg" style="{last_name_style}">
+	<td>{LAST_NAME_FIELD} <span id="last_name_required" style="{last_na,e_required_style}" class="required">*</span></td>
+	<td><input class="text" type="text" name="last_name" value="{last_name}" size="40" maxlength="64" /></td>
+</tr><!-- end last_name_block --><!-- begin company_id_block -->
+<tr id="company_id_row" class="usualbg" style="{company_id_style}">
+	<td>{COMPANY_SELECT_FIELD} <span id="company_id_required" style="{company_id_required_style}" class="required">*</span></td>
+	<td>
+		<select class="text" name="company_id"><!-- begin company_id -->
+			<option {company_id_selected} value="{company_id_value}">{company_id_description}</option><!-- end company_id -->
+		</select>
+	</td>
+</tr><!-- end company_id_block --><!-- begin company_name_block -->
+<tr id="company_name_row" class="usualbg" style="{company_name_style}">
+	<td>{COMPANY_NAME_FIELD} <span id="company_name_required" style="{company_name_required_style}" class="required">*</span></td>
+	<td><input class="text" type="text" name="company_name" value="{company_name}" size="40" maxlength="128" /></td>
+</tr><!-- end company_name_block --><!-- begin email_block -->
+<tr id="email_row" class="usualbg" style="{email_style}">
+	<td>{EMAIL_FIELD} <span id="email_required" class="required" style="{email_required_style}">*</span></td>
+	<td><input class="text" type="text" name="email" value="{email}" size="40" maxlength="128" /></td>
+</tr><!-- end email_block --><!-- begin country_id_block -->
+<tr id="country_id_row" class="usualbg" style="{country_id_style}">
+	<td>{COUNTRY_FIELD} <span id="country_id_required" style="{country_id_required_style}" class="required">*</span></td>
+	<td>
+		<select class="text" id="country_id_{pb_id}" name="country_id" onChange="updateStates('{pb_id}', 'personal');"><!-- begin country_id -->
+			<option {country_id_selected} value="{country_id_value}">{country_id_description}</option><!-- end country_id -->
+		</select>
+	</td>
+</tr><!-- end country_id_block --><!-- begin state_id_block -->
+<tr id="state_id_row" class="usualbg" style="{state_id_style}">
+	<td>{STATE_FIELD} <span id="state_id_required_{pb_id}" style="{state_id_required_style}" class="required">*</span></td>
+	<td>
+		<select class="text" id="state_id_{pb_id}" style="{state_id_control_style}" name="state_id"><!-- begin state_id -->
+			<option {state_id_selected} value="{state_id_value}">{state_id_description}</option><!-- end state_id -->
+		</select>
+		<span class="message" style="{state_id_comments_style}" id="state_id_comments_{pb_id}">{state_id_comments}</span>
+	</td>
+</tr><!-- end state_id_block --><!-- begin address1_block -->
+<tr id="address1_row" class="usualbg" style="{address1_style}">
+	<td>{STREET_FIRST_FIELD} <span id="address1_required" style="{address1_required_style}" class="required">*</span></td>
+	<td><input class="text" type="text" name="address1" value="{address1}" size="40" maxlength="255" /></td>
+</tr><!-- end address1_block --><!-- begin address2_block -->
+<tr id="address2_row" class="usualbg" style="{address2_style}">
+	<td>{STREET_SECOND_FIELD} <span id="address2_required" style="{address2_required_style}" class="required">*</span></td>
+	<td><input class="text" type="text" name="address2" value="{address2}" size="40" maxlength="255" /></td>
+</tr><!-- end address2_block --><!-- begin address3_block -->
+<tr id="address3_row" class="usualbg" style="{address3_style}">
+	<td>{STREET_THIRD_FIELD} <span id="address3_required" style="{address3_required_style}" class="required">*</span></td>
+	<td><input class="text" type="text" name="address3" value="{address3}" size="40" maxlength="255" /></td>
+</tr><!-- end address3_block --><!-- begin city_block -->
+<tr id="city_row" class="usualbg" style="{city_style}">
+	<td>{CITY_FIELD} <span id="city_required" style="{city_required_style}" class="required">*</span></td>
+	<td><input class="text" type="text" name="city" value="{city}" size="40" maxlength="128" /></td>
+</tr><!-- end city_block --><!-- begin province_block -->
+<tr id="province_row" class="usualbg" style="{province_style}">
+	<td>{PROVINCE_FIELD} <span id="province_required" style="{province_required_style}" class="required">*</span></td>
+	<td><input class="text" type="text" name="province" value="{province}" size="40" maxlength="128" /></td>
+</tr><!-- end province_block --><!-- begin postal_code_block -->
+<tr id="postal_code_row" class="usualbg" style="{postal_code_style}">
+	<td>{ZIP_FIELD} <span id="postal_code_required" style="{postal_code_required_style}"  class="required">*</span></td>
+	<td><input class="text" type="text" name="postal_code" value="{postal_code}" size="10" maxlength="16" /></td>
+</tr><!-- end postal_code_block --><!-- begin phone_block -->
+<tr id="phone_row" class="usualbg" style="{phone_style}">
+	<td>{PHONE_FIELD} <span id="phone_required" style="{phone_required_style}" class="required">*</span></td>
+	<td>
+		<!-- begin phone_code_block -->
+		<select class="text" name="phone_code"><!-- begin phone_code -->
+			<option {phone_code_selected} value="{phone_code_value}">{phone_code_description}</option><!-- end phone_code -->
+		</select>
+		<!-- end phone_code_block -->
+		<input class="text" type="text" name="phone" value="{phone}" size="40" maxlength="32" />
+</td>
+</tr><!-- end phone_block --><!-- begin daytime_phone_block -->
+<tr id="daytime_phone_row" class="usualbg" style="{daytime_phone_style}">
+	<td>{DAYTIME_PHONE_FIELD} <span id="daytime_phone_required" style="{daytime_phone_required_style}" class="required">*</span></td>
+	<td>
+		<!-- begin daytime_phone_code_block -->
+		<select class="text" name="daytime_phone_code"><!-- begin daytime_phone_code -->
+			<option {daytime_phone_code_selected} value="{daytime_phone_code_value}">{daytime_phone_code_description}</option><!-- end daytime_phone_code -->
+		</select>
+		<!-- end daytime_phone_code_block -->
+		<input class="text" type="text" name="daytime_phone" value="{daytime_phone}" size="40" maxlength="32" />
+</td>
+</tr><!-- end daytime_phone_block --><!-- begin evening_phone_block -->
+<tr id="evening_phone_row" class="usualbg" style="{evening_phone_style}">
+	<td>{EVENING_PHONE_FIELD} <span id="evening_phone_required" style="{evening_required_style}" class="required">*</span></td>
+	<td>
+		<!-- begin evening_phone_code_block -->
+		<select class="text" name="evening_phone_code"><!-- begin evening_phone_code -->
+			<option {evening_phone_code_selected} value="{evening_phone_code_value}">{evening_phone_code_description}</option><!-- end evening_phone_code -->
+		</select>
+		<!-- end evening_phone_code_block -->
+		<input class="text" type="text" name="evening_phone" value="{evening_phone}" size="40" maxlength="32" />
+</td>
+</tr><!-- end evening_phone_block --><!-- begin cell_phone_block -->
+<tr id="cell_phone_row" class="usualbg" style="{cell_phone_style}">
+	<td>{CELL_PHONE_FIELD} <span id="cell_phone_required" style="{cell_phone_required_style}"  class="required">*</span></td>
+	<td>
+		<!-- begin cell_phone_code_block -->
+		<select class="text" name="cell_phone_code"><!-- begin cell_phone_code -->
+			<option {cell_phone_code_selected} value="{cell_phone_code_value}">{cell_phone_code_description}</option><!-- end cell_phone_code -->
+		</select>
+		<!-- end cell_phone_code_block -->
+		<input class="text" type="text" name="cell_phone" value="{cell_phone}" size="40" maxlength="32" />
+</td>
+</tr><!-- end cell_phone_block --><!-- begin fax_block -->
+<tr id="fax_row" class="usualbg" style="{fax_style}">
+	<td>{FAX_FIELD} <span id="fax_required" style="{fax_required_style}"  class="required">*</span></td>
+	<td>
+		<!-- begin fax_code_block -->
+		<select class="text" name="fax_code"><!-- begin fax_code -->
+			<option {fax_code_selected} value="{fax_code_value}">{fax_code_description}</option><!-- end fax_code -->
+		</select>
+		<!-- end fax_code_block -->
+		<input class="text" type="text" name="fax" value="{fax}" size="40" maxlength="32" />
+</td>
+</tr><!-- end fax_block -->
+<tr class="middlebg">
+	<td>&nbsp;</td>
+	<td><!-- BEGIN add_button -->
+		<span class="submit"><input class="submit" type="submit" value=" {ADD_NEW_MSG} " onclick="document.record.operation.value='save'"></span><!-- END add_button --><!-- BEGIN update_button -->
+		<span class="submit"><input class="submit" type="submit" value=" {UPDATE_BUTTON} " onclick="document.record.operation.value='save'"></span><!-- END update_button --><!-- BEGIN delete -->
+		<span class="submit"><input class="submit" type="submit" value=" {DELETE_BUTTON} " onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="submit"><input class="submit" type="submit" value=" {CANCEL_BUTTON} " onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>

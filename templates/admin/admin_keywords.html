@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {KEYWORDS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/ajax.js"></script>
+<script language="JavaScript">
+<!--
+	var indexedProducts = 0;
+	var progressNumber = 0;
+	var stopKeywords = false;
+	var stopProgress = false;
+
+	function startGenerateKeywords()
+	{
+		stopKeywords = false;
+		stopProgress = false;
+		// check indexed products value 
+		var obj = document.getElementById("indexed_products");
+		indexedProducts = parseInt(obj.innerHTML);
+		// disable active buttons
+		document.keywords.generateButton.disabled = true;
+		document.keywords.clearButton.disabled = true;
+		// show cancel button
+		obj = document.getElementById("cancelBlock");
+		obj.style.display = "inline";
+
+		showProcess();
+		generateKeywords();
+	}
+
+	function stopGenerateKeywords()
+	{
+		stopKeywords = true;
+	}
+
+	function generateKeywords()
+	{
+		callAjax("admin_keywords_generate.php?operation=generate", keywordsResult, "generate");
+	}
+
+	function clearKeywords()
+	{
+		callAjax("admin_keywords_generate.php?operation=clear", keywordsResult, "clear");
+	}
+
+	function keywordsResult(responseText, operation)
+	{
+		var obj = "";
+		var params = new Array();
+		var paramsPairs = responseText.split("#");
+		for (var p = 0; p < paramsPairs.length; p++) {
+			var paramPair = paramsPairs[p];
+			var equalPos = paramPair.indexOf("=");
+			if(equalPos == -1) {
+				params[paramPair] = "";
+			} else {
+				var paramName = paramPair.substring(0, equalPos);
+				var paramValue = paramPair.substring(equalPos + 1, paramPair.length);
+				params[paramName] = paramValue;
+			}
+		}
+		
+		for (paramName in params) {
+			obj = document.getElementById(paramName);
+			if (obj) {
+				obj.innerHTML = params[paramName];
+			}
+		}
+		// check how many products has been indexed
+		obj = document.getElementById("total_products");
+		var totalProducts = parseInt(obj.innerHTML);
+		obj = document.getElementById("indexed_products");
+		var lastIndexedProducts = parseInt(obj.innerHTML);
+
+		if (!stopKeywords && operation == "generate" && lastIndexedProducts < totalProducts && lastIndexedProducts > indexedProducts) {
+			setTimeout("generateKeywords()", 100);
+		} else {
+			stopProgress = true;
+			// activate disabled buttons
+			document.keywords.generateButton.disabled = false;
+			document.keywords.clearButton.disabled = false;
+			// hide cancel button
+			obj = document.getElementById("cancelBlock");
+			obj.style.display = "none";
+		}
+	}
+
+	function showProcess()
+	{
+		var obj = "";
+		var prEl = new Array("\\", "|", "/", "&mdash;");
+		if (!stopProgress) {
+			progressNumber++;
+			obj = document.getElementById("progress_products");
+			var indexNumber = (progressNumber % 4);
+			obj.innerHTML = prEl[indexNumber];
+
+			obj = document.getElementById("progress_keywords");
+			indexNumber = ((progressNumber + 2) % 4);
+			obj.innerHTML = prEl[indexNumber];
+			setTimeout("showProcess()", 100);
+		} else {
+			obj = document.getElementById("progress_products");
+			obj.innerHTML = "";
+			obj = document.getElementById("progress_keywords");
+			obj.innerHTML = "";
+		}
+	}
+
+//-->
+</script>
+
+</head>
+
+<body class="commonbg">
+
+{admin_header}
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{KEYWORDS_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_keywords_href}" name="keywords" method="post">
+<input type="hidden" name="operation" value="generate">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+	<table width="100%" align="center" cellspacing="1" cellpadding="4" border="0">
+	<tr class="usual">
+		<td width="20%">{TOTAL_PRODUCTS_MSG}</td>
+		<td width="80%"><b><span id="total_products">{total_products}</span></b></td>
+	</tr>
+	<tr class="usual">
+		<td width="20%">{INDEXED_PRODUCTS_MSG}</td>
+		<td width="80%"><div id="indexed_products" style="float: left; font-weight: bold;">{indexed_products}</div> <div id="progress_products" style="color: #2F97EC; float: left; width: 20px; text-align: center;"></div></td>
+	</tr>
+	<tr class="usual">
+		<td width="20%">{INDEXED_KEYWORDS_MSG}</td>
+		<td width="80%"><div id="indexed_keywords" style="float: left; font-weight: bold;">{indexed_keywords}</div> <div id="progress_keywords" style="color: #2F97EC; float: left; width: 20px; text-align: center;"></div></td>
+	</tr>
+	<tr class="middle">
+		<td>&nbsp;</td>
+		<td>
+			<span class="button"><input class="submit" name="generateButton" type="button" value="{GENERATE_KEYWORDS_MSG}" onCLick="startGenerateKeywords();"></span>
+			<span class="button"><input class="submit" name="clearButton" type="button" value="{CLEAR_KEYWORDS_MSG}" onCLick="clearKeywords();"></span>
+			<span id="cancelBlock" class="button" style="display:none;"><input class="submit" name="cancelButton" type="button" value="{CANCEL_BUTTON}" onCLick="stopGenerateKeywords();"></span>
+		</td>
+	</tr>
+	</table>
+
+</form>
+</div>
+</div>
+
+{admin_footer}
+
+</body></html>

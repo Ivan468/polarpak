@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{EMAIL_CAMPAIGN_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EMAIL_CAMPAIGN_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_newsletter_campaign_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="campaign_id" value="{campaign_id}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table width="100%" border="0" cellspacing="1" cellpadding="6" align="center">
+<tr class="usual">
+	<td width="30%"><label for="is_active">{IS_ACTIVE_MSG}</label></td>
+	<td><input type="checkbox" name="is_active" id="is_active" {is_active} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{NAME_MSG} *</td>
+	<td><input class="field" type="text" name="campaign_name" value="{campaign_name}" size="75" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{START_DATE_MSG} *</td>
+	<td>
+		<input class="field" type="text" name="campaign_date_start" value="{campaign_date_start}" size="30">
+		({USE_FOLLOWING_FORMAT_MSG} <b>{datetime_format}</b>)</div>		
+	</td>
+</tr>
+<tr class="usual">
+	<td>{END_DATE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="campaign_date_end" value="{campaign_date_end}" size="30">
+		({USE_FOLLOWING_FORMAT_MSG} <b>{datetime_format}</b>)</div>		
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body></html>

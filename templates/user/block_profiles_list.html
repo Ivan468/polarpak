@@ -1,0 +1,78 @@
+<table width="100%" cellspacing="0" cellpadding="0">
+<!-- begin search_and_navigation -->
+<tr class="middlebg"> 
+	<td valign="top">
+
+		<table width="100%" cellspacing="2" cellpadding="3">
+		<tr>
+			<!-- begin search_results --><td>&nbsp;&nbsp;&nbsp;&nbsp;{found_message}</td><!-- end search_results -->
+			<!-- begin navigator_block --><td align="right" nowrap="nowrap">&nbsp;{navigator}&nbsp;</td><!-- end navigator_block -->
+		</tr>
+		</table>
+
+	</td>
+</tr>
+<!-- end search_and_navigation -->
+<tr class="usualbg"> 
+	<td valign="top">
+
+			<!-- begin no_items -->
+			<table width="100%" cellspacing="0" cellpadding="0">
+			<tr><td align="center" class="padding10px">{NO_PROFILES_MSG}</td></tr>
+			</table>
+			<!-- end no_items -->
+
+			<table width="100%" cellspacing="0" cellpadding="0">
+			<!-- BEGIN items_rows -->
+			<tr>
+				<!-- BEGIN items_cols -->
+				<td valign="top" width="{item_column}" class="padding10px">
+
+					<table cellspacing="0" cellpadding="3" width="100%">
+					<tr>
+						<td align="center" width="110" valign="top">
+							<!-- begin small_image --><a href="{profiles_view_url}"><img class="profilePhoto" src="{src}" {width} {height} vspace="0" hspace="5" alt="{alt}" /></a><!-- end small_image -->
+						</td>
+						<td align="left" width="500" valign="top">
+							<div>
+								<a class="dName" href="{profiles_view_url}">{name}</a>,
+								<span class="dAge">{age}</span>
+							</div>
+							<div class="dAddress">
+								{country_name}<!-- begin 
+								state_block -->, {state_name}<!-- end state_block --><!-- begin 
+								city_block -->, {city}<!-- end city_block -->
+							</div>
+
+							<!-- begin personal_info_block -->
+							<div class="dPersonalInfo">{personal_info}</div><!-- end personal_info_block -->
+
+							<div><a href="{profiles_view_url}">{MORE_MSG}</a></div>
+		
+						</td>
+					</tr>
+					</table>
+
+				</td>
+				<!-- END items_cols -->
+			</tr>
+			<!-- END items_rows -->
+			</table>
+
+	</td>
+</tr>
+<!-- begin search_and_navigation -->
+<tr class="middlebg"> 
+	<td valign="top">
+
+		<table width="100%" cellspacing="2" cellpadding="3">
+		<tr>
+			<!-- begin search_results --><td>&nbsp;&nbsp;&nbsp;&nbsp;{found_message}</td><!-- end search_results -->
+			<!-- begin navigator_block --><td align="right" nowrap="nowrap">&nbsp;{navigator}&nbsp;</td><!-- end navigator_block -->
+		</tr>
+		</table>
+
+	</td>
+</tr>
+<!-- end search_and_navigation -->
+</table>

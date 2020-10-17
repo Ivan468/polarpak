@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {AUTHORS_MSG} :: {EDIT_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/list_fields.js"></script>
+<script language="JavaScript">
+<!--
+
+	var list_fields_names = new Array('languages', 'sites');
+	window.addEventListener("load", checkListFieldsAll, false);
+
+	function openWindow(pagename, filetype)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype, 'uploadWindow', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+	}
+
+	function setFileName(filename, filetype)
+	{
+		var siteUrl = '{image_site_url}';
+
+		if (filename != "" && filetype == "author_tiny") {
+			document.record.image_tiny.value = siteUrl + "images/authors/tiny/" + filename;
+			document.record.image_tiny.focus();
+		} else if (filename != "" && filetype == "author_small") {
+			document.record.image_small.value = siteUrl + "images/authors/small/" + filename;
+			document.record.image_small.focus();
+		} else if (filename != "" && filetype == "author_large") {
+			document.record.image_large.value = siteUrl + "images/authors/large/" + filename;
+			document.record.image_large.focus();
+		} else if (filename != "" && filetype == "author_super") {
+			document.record.image_super.value = siteUrl + "images/authors/super/" + filename;
+			document.record.image_super.focus();
+		}
+	}
+
+//-->
+</script>
+
+</head>
+<body class="bodySettings">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<form action="{admin_author_href}" name="record" method="POST" onsubmit="selectListFieldsAll();">
+<input type="hidden" name="sites" value="{sites}">
+<input type="hidden" name="languages" value="{languages}">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="author_id" value="{author_id}">
+<input type="hidden" name="sw" value="{sw}">
+<input type="hidden" name="form_name" value="{form_name}">
+<input type="hidden" name="items_field" value="{items_field}">
+<input type="hidden" name="items_object" value="{items_object}">
+<input type="hidden" name="item_template" value="{item_template}">
+<input type="hidden" name="selection_type" value="{selection_type}">
+<input type="hidden" name="win_type" value="{win_type}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="page" value="{page}">
+<input type="hidden" name="tab" value="{tab}">
+
+	<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+		<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+	</ul>
+
+<div class="Form">
+<div class="FormContent">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<div id="general_data" class="tab-data {general_class}">
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="usual">
+	<td>{AUTHOR_NAME_MSG}	*</td>
+	<td><input class="field" type="text" size="80" name="author_name" value="{author_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{OTHER_NAME_MSG} #1</td>
+	<td><input class="field" type="text" size="80" name="other_name" value="{other_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{OTHER_NAME_MSG} #2</td>
+	<td><input class="field" type="text" size="80" name="extra_name" value="{extra_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{COUNTRY_FIELD}</td>
+	<td>
+		<select name="author_country_id">
+			<!-- BEGIN author_country_id --><option {author_country_id_selected} value="{author_country_id_value}">{author_country_id_description}<!-- END author_country_id -->
+		</select>
+	</td>
+</tr>
+<!-- BEGIN friendly_url_block -->
+<tr class="usual">
+	<td>{FRIENDLY_URL_MSG}</td>
+	<td><input class="field" type="text" name="friendly_url" value="{friendly_url}" size="80" maxlength="255"></td>
+</tr>
+<!-- END friendly_url_block -->
+<tr class="usual">
+	<td>{IMAGE_TINY_MSG}</td>
+	<td>
+		<input class="field" type="text" name="image_tiny" value="{image_tiny}" size="80" maxlength="255"> 
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'author_tiny')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'author_tiny')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_SMALL_MSG}</td>
+	<td>
+		<input class="field" type="text" name="image_small" value="{image_small}" size="80" maxlength="255"> 
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'author_small')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'author_small')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_LARGE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="image_large" value="{image_large}" size="80" maxlength="255"> 
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'author_large')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'author_large')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_SUPER_MSG}</td>
+	<td>
+		<input class="field" type="text" name="image_super" value="{image_super}" size="80" maxlength="255"> 
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'author_super')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'author_super')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="middle">
+	<td>
+	</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="Delete" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="Cancel" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="desc_data" class="tab-data {desc_class}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<!-- begin short_description_block -->
+<tr class="usual">
+	<td>{SHORT_DESCRIPTION_MSG}</td>
+	<td><textarea name="short_description" cols="80" rows="10">{short_description}</textarea></td>
+</tr><!-- end short_description_block --><!-- begin full_description_block -->
+<tr class="usual">
+	<td>{FULL_DESCRIPTION_MSG}</td>
+	<td><textarea name="full_description" cols="80" rows="20">{full_description}</textarea></td>
+</tr><!-- end full_description_block -->
+<tr class="middle">
+	<td>
+	</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="Delete" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="Cancel" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+<div id="languages_data" class="tab-data {languages_class}">
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+<tr class="usual">
+	<td colspan="3">
+		<input type="checkbox" name="languages_all" id="languages_all" {languages_all} onClick="checkListFields('languages');" value="1">
+		<label for="languages_all">{APPLY_TO_ALL_LANGUAGES_MSG} ({UNTICK_CHECKBOX_TO_SELECT_MSG})</label>
+	</td>
+</tr>
+<tr align="center" class="middle">
+	<td width="45%"><b>{AVAILABLE_LANGUAGES_MSG}</b></td>
+	<td width="10%"><b>{OPERATIONS_MSG}</b></td>
+	<td width="45%"><b>{SELECTED_LANGUAGES_MSG}</b></td>
+</tr>
+<tr align="center" class="usual">
+	<td>
+		<select name="available_languages" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_languages -->
+			<option value="{language_code}">{language_name}<!-- end available_languages-->
+		</select>
+	</td>
+	<td>
+		<span class="button"><input class="submit" readonly type="button" name="add_languages" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('languages');"></span>
+		<br><br>
+		<span class="button"><input class="submit" type="button" name="remove_languages" value="<- {REMOVE_BUTTON}" onClick="removeListFields('languages');"></span>
+	</td>
+	<td>
+		<select name="selected_languages" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_languages -->
+			<option value="{language_code}">{language_name}<!-- end selected_languages -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="3"><span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+
+<div id="sites_data" class="tab-data {sites_class}">
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+<tr class="usual">
+	<td colspan="3">
+		<input type="checkbox" name="sites_all" id="sites_all" {sites_all} onClick="checkListFields('sites');" value="1">
+		<label for="sites_all">{SITES_ALL_MSG} ({SITES_ALL_UNTICK_MSG})</label>
+	</td>
+</tr>
+<tr align="center" class="middle">
+	<td width="45%"><b>{AVAILABLE_SITES_MSG}</b></td>
+	<td width="10%"><b>{OPERATIONS_MSG}</b></td>
+	<td width="45%"><b>{USE_ITEM_SITES_MSG}</b></td>
+</tr>
+<tr align="center" class="usual">
+	<td>
+		<select name="available_sites" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_sites -->
+			<option value="{site_id}">{site_name}<!-- end available_sites-->
+		</select>
+	</td>
+	<td>
+		<span class="button"><input class="submit" readonly type="button" name="add_sites" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('sites');"></span>
+		<br><br>
+		<span class="button"><input class="submit" type="button" name="remove_sites" value="<- {REMOVE_BUTTON}" onClick="removeListFields('sites');"></span>
+	</td>
+	<td>
+		<select name="selected_sites" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_sites -->
+			<option value="{site_id}">{site_name}<!-- end selected_sites -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="3"><span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

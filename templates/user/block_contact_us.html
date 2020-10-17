@@ -1,0 +1,41 @@
+	<!-- begin errors --><div class="errorbg" align="center">{errors_list}</div><!-- end errors -->
+	<!-- begin success --><div class="message" align="center">{success_message}</div><!-- end success -->
+
+	<!-- begin record -->
+	<form name="contact_us" action="{current_href}" method="post">
+	<input type="hidden" name="rnd" value="{rnd}" />
+	<input type="hidden" name="operation" value="send" />
+	{hidden_parameters}
+	<table width="100%" cellspacing="0" align="center" class="padding4px">
+		<!-- begin sections --><!-- end sections -->
+		<!-- begin user_name_block -->
+		<tr>
+			<td class="{user_name_class}">{NAME_MSG} {user_name_required}</td>
+			<td class="{user_name_class}"><input class="text" type="text" name="user_name" size="42" value="{user_name}" maxlength="64" /></td>
+		</tr><!-- end user_name_block --><!-- begin user_email_block -->
+		<tr>
+			<td class="{user_email_class}">{EMAIL_FIELD} {user_email_required}</td>
+			<td class="{user_email_class}"><input class="text" type="text" name="user_email" size="42" value="{user_email}" maxlength="64" /></td>
+		</tr><!-- end user_email_block --><!-- begin summary_block -->
+		<tr>
+			<td class="{summary_class}">{ONE_LINE_SUMMARY_MSG} {summary_required}</td>
+			<td class="{summary_class}"><input class="text" type="text" name="summary" size="42" value="{summary}" /></td>
+		</tr><!-- end summary_block --><!-- begin comments_block -->
+		<tr>
+			<td class="{comments_class}">{YOUR_MESSAGE_MSG} {comments_required}</td>
+			<td class="{comments_class}"><textarea name="comments" cols="40" rows="5">{comments}</textarea></td>
+		</tr><!-- end comments_block --><!-- begin validation_number_block -->
+		<tr class="usualbg">
+			<td class="{validation_number_class}">{VALIDATION_CODE_FIELD} {validation_number_required}</td>
+			<td class="{validation_number_class}">
+				<input class="field fd-validation" type="text" name="validation_number" size="4" value="{validation_number}" />&nbsp;
+				<img src="validation_image.php" align="absmiddle" />
+			</td>
+		</tr><!-- end validation_number_block --><!-- begin buttons -->
+		<tr>
+			<td></td>
+			<td><span class="submit"><input class="submit" type="submit" value="{SEND_BUTTON}" /></span></td>
+		</tr><!-- end buttons -->
+	</table>
+	</form>
+	<!-- end record -->

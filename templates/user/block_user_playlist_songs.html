@@ -1,0 +1,514 @@
+<script>
+/* Load YouTube script */
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+var player; var lyrics; var lyricsTid; 
+
+function searchKeyUp(event, inputObj)
+{
+	var key = vaGetKey(event);
+	if (key == "Enter") {
+		var parentObj = vaParentJS(inputObj);
+		var buttonObj = parentObj.querySelector(".bn-search");
+		searchSongs(buttonObj);
+	}
+}
+
+function searchSongs(buttonObj)
+{
+	closeSearch(); // close previous search
+
+	var parentObj = vaParentJS(buttonObj);
+	var listId = parentObj.getAttribute("data-list-id");
+	var searchUrl = parentObj.getAttribute("data-search-url");
+	var swObj = parentObj.querySelector("input[name=sw]");
+
+	if (swObj && swObj.value != "") {
+		//vaSpin(buttonObj); // spin 
+		searchUrl += "?list_id="+encodeURIComponent(listId);
+		searchUrl += "&sw="+encodeURIComponent(swObj.value);
+		vaSpin(buttonObj, "", "", 0);
+		// hide button using transparent color
+		buttonObj.style.color = "transparent";
+		callAjax(searchUrl, foundSongs);
+	}
+
+}
+
+function foundSongs(data)
+{
+	var searchButton = document.querySelector(".search-form .bn-search");
+	searchButton.style.color = null;	
+	vaStopSpin(searchButton);
+
+	try { 
+		data = JSON.parse(data); 
+	} catch(e){
+		alert("Bad response: " + data);
+		return;
+	}
+
+	if (data.found > 0) {
+		// check already added songs to playlist
+		var plObj = document.querySelector(".playlist-songs");
+		var plSongs = plObj.querySelectorAll("[data-song-id]");
+		var addedSongs = new Array();
+		for (var s = 0; s < plSongs.length; s++) {
+			var plSongId = plSongs[s].getAttribute("data-song-id");
+			if (addedSongs[plSongId]) {
+				addedSongs[plSongId]++;
+			} else {
+				addedSongs[plSongId]=1;
+			}
+		}
+
+		var foundHTML = "";
+		var foundPopup = document.querySelector(".found-popup");
+		var foundSongs = document.querySelector(".found-songs");
+		var searchTemplate = document.querySelector(".search-template").innerHTML;
+		var songs = data.songs;
+		for(var songId in songs) {
+			var song = songs[songId];
+			var authorsNames = song["authors_names"];
+			var authorsFeatured = song["authors_featured"];
+			var songName = song["authors_names"]+" - "+song["song_name"];
+			var youtubeVideo = song["youtube_video"];
+			if (authorsFeatured != "") { songName += " ft. " + authorsFeatured; }
+			var songHTML = searchTemplate;
+			songHTML = songHTML.replace("\[song_id\]", songId);
+			songHTML = songHTML.replace("\[song_name\]", songName);
+			songHTML = songHTML.replace(/\[youtube_video\]/gi, youtubeVideo);
+			if (addedSongs[songId]) {
+				songHTML = songHTML.replace("\[song_class\]", "found-song song-added");
+			} else {
+				songHTML = songHTML.replace("\[song_class\]", "found-song");
+			}
+			foundHTML += songHTML;
+		}
+		foundSongs.innerHTML = foundHTML;
+		foundPopup.style.display = "block";
+	} else {
+		var noSongsPopup = document.querySelector(".no-songs-popup");
+		noSongsPopup.style.display = "block";
+	}
+}
+
+function closeSearch()
+{
+	var foundPopup = document.querySelector(".found-popup");
+	foundPopup.style.display = "none";
+	var noSongsPopup = document.querySelector(".no-songs-popup");
+	noSongsPopup.style.display = "none";
+}
+
+function addSong(songObj)
+{
+	var parentObj = vaParentJS(songObj);
+	var listId = parentObj.getAttribute("data-list-id");
+	var addUrl = parentObj.getAttribute("data-edit-url");
+	var songId = songObj.getAttribute("data-song-id");
+	var icoObj = songObj.querySelector(".ico-song");
+	var songName = songObj.querySelector(".name").innerHTML;
+
+
+	if (songId && songId.value != "") {
+		//vaSpin(buttonObj); // spin 
+		addUrl += "?list_id="+encodeURIComponent(listId);
+		addUrl += "&song_id="+encodeURIComponent(songId);
+		addUrl += "&operation=add";
+		vaSpin(icoObj, "", "", 0);
+		// hide icon using transparent color
+		icoObj.style.color = "transparent";
+		callAjax(addUrl, songAdded);
+	}
+}
+
+function songAdded(data)
+{
+	try { 
+		data = JSON.parse(data); 
+	} catch(e){
+		alert("Bad response: " + data);
+		return;
+	}
+
+	if (data.error) {
+		alert(data.error);
+		return;
+	}
+
+	var songId = data.song_id;
+	var songLyrics = data.song_lyrics;
+	var favoriteId = data.favorite_id;
+	var songObj = document.querySelector("[data-song-id=\""+songId+"\"]");
+	var icoObj = songObj.querySelector(".ico-song");
+	var songName = songObj.querySelector(".name").innerHTML;
+	var youtubeVideo = songObj.getAttribute("data-youtube-video");
+	icoObj.style.color = null;	
+	vaStopSpin(icoObj);
+
+	var regExp = /song-added/g;
+	if (!regExp.test(songObj.className)) {
+		songObj.className += " song-added";
+	}
+
+	// add song to the list
+	var foundHTML = "";
+	var plSongs = document.querySelector(".playlist-songs");
+	var listHTML = document.querySelector(".list-template").innerHTML.trim();
+
+	listHTML = listHTML.replace(/\[favorite_id\]/gi, favoriteId);
+	listHTML = listHTML.replace(/\[song_id\]/gi, songId);
+	listHTML = listHTML.replace(/\[song_name\]/gi, songName);
+	listHTML = listHTML.replace(/\[song_lyrics\]/gi, songLyrics);
+	listHTML = listHTML.replace(/\[youtube_video\]/gi, youtubeVideo);
+
+	// show added song in playlist
+	var divObj = document.createElement('div'); 
+	divObj.innerHTML = listHTML; 
+	var favoriteObj = divObj.firstChild;
+	plSongs.appendChild(favoriteObj);
+}
+
+function switchSongMode(favoriteObj)
+{
+	// check guest mode first
+	var parentObj = vaParentJS(favoriteObj);
+	var parentClass = parentObj.className;
+	var reGuest = /guest-mode/g;
+	if (reGuest.test(parentClass)) {
+		var songUrl = favoriteObj.getAttribute("data-url");
+		if (songUrl) { window.location = songUrl; }
+		return;
+	} 
+
+	// check different list actions
+	//var favoriteId = favoriteObj.getAttribute("data-favorite-id");
+	//var songId = favoriteObj.getAttribute("data-song-id");
+	var className = favoriteObj.className;
+	var reMove = /move-mode/g;
+	var reMoving = /moving-mode/g;
+	var reAbove = /move-above/g;
+	var reBelow = /move-below/g;
+	var reDelete = /deleting-mode/g;
+	var reOptions = /options-mode/g;
+	var moveClass = " move-above";
+	if (reMove.test(className)) {
+		clearMove();
+	} else if (reMoving.test(className)) {
+		alert("Please wait...");
+	} else if (reAbove.test(className)) {
+	} else if (reBelow.test(className)) {
+	} else if (reDelete.test(className)) {
+		return;
+	} else if (reOptions.test(className)) {
+		className = className.replace(/options-mode/gi, "").trim();
+		favoriteObj.className = className;
+	} else {
+		className += " options-mode";
+		favoriteObj.className = className;
+	}
+}
+
+function deleteSong(event, deleteObj)
+{
+	var songObj = vaParentLI(deleteObj);
+	var favoriteId = songObj.getAttribute("data-favorite-id");
+	var parentObj = vaParentJS(songObj);
+
+	// set delete mode
+	var className = songObj.className;
+	className  = className.replace(/options-mode/gi, "").trim();
+	className += " deleting-mode";
+	songObj.className = className;
+
+	var delUrl = parentObj.getAttribute("data-edit-url");
+	if (favoriteId && favoriteId.value != "") {
+		//vaSpin(buttonObj); // spin 
+		delUrl += "?favorite_id="+encodeURIComponent(favoriteId);
+		delUrl += "&operation=delete";
+
+		callAjax(delUrl, songDeleted);
+	}
+	event.stopPropagation();
+}
+
+function songDeleted(data)
+{
+	try { 
+		data = JSON.parse(data); 
+	} catch(e){
+		alert("Bad response: " + data);
+		return;
+	}
+
+	var plObj = document.querySelector(".playlist-songs");
+	var favoriteId = data.favorite_id;
+	var songObj = plObj.querySelector("[data-favorite-id=\""+favoriteId+"\"]");
+
+	if (data.error) {
+		alert(data.error);
+		if (songObj) { // remove delete mode
+			songObj.className = songObj.className.replace(/deleting-mode/gi, "").trim();
+		}
+		return;
+	}
+
+	// remove song from playlisy
+	songObj.parentNode.removeChild(songObj);
+}
+
+
+function orderSong(event, moveObj)
+{
+	var moveSongObj = vaParentLI(moveObj);
+	var favoriteId = moveSongObj.getAttribute("data-favorite-id");
+	var parentObj = vaParentJS(moveSongObj);
+	parentObj.setAttribute("data-move-id", favoriteId);
+
+	// set move mode for selected song 
+	var className = moveSongObj.className;
+	className  = className.replace(/options-mode/gi, "").trim();
+	className += " move-mode";
+	moveSongObj.className = className;
+
+	var plObj = document.querySelector(".playlist-songs");
+	var songs = plObj.querySelectorAll("LI");
+	var moveClass = " move-above";
+	for (var s = 0; s < songs.length; s++) {
+		var songObj = songs[s];
+		if (moveSongObj == songObj) { // when reach selected object change to move-below class
+			moveClass = " move-below";
+		} else {
+			className = songObj.className;
+			className  = className.replace(/options-mode|move-node/gi, "").trim();
+			className += moveClass;
+			songObj.className = className;
+		}
+	}
+	event.stopPropagation();
+}
+
+function moveSong(event, directionObj, direction)
+{
+	var parentObj = vaParentJS(directionObj);
+	var songObj = vaParentLI(directionObj);
+	var directionId = songObj.getAttribute("data-favorite-id");
+	var moveId = parentObj.getAttribute("data-move-id");
+
+	// set moving mode
+	var moveObj = parentObj.querySelector("[data-favorite-id=\""+moveId+"\"]");
+	var className = moveObj.className;
+	className  = className.replace(/move-mode/gi, "").trim();
+	className += " moving-mode";
+	moveObj.className = className;
+
+	clearMove();
+
+	var moveUrl = parentObj.getAttribute("data-edit-url");
+	if (directionId && moveId) {
+		moveUrl += "?direction_id="+encodeURIComponent(directionId);
+		moveUrl += "&favorite_id="+encodeURIComponent(moveId);
+		moveUrl += "&direction="+encodeURIComponent(direction);
+		moveUrl += "&operation=move";
+
+		callAjax(moveUrl, songMoved);
+	}
+	event.stopPropagation();
+}
+
+function songMoved(data)
+{
+	try { 
+		data = JSON.parse(data); 
+	} catch(e){
+		alert("Bad response: " + data);
+		return;
+	}
+
+	var favoriteId = data.favorite_id;
+	var directionId = data.direction_id;
+	var direction = data.direction;
+
+	var plObj = document.querySelector(".playlist-songs");
+	var songObj = plObj.querySelector("[data-favorite-id=\""+favoriteId+"\"]");
+	var directionObj = plObj.querySelector("[data-favorite-id=\""+directionId+"\"]");
+
+	// back to normal mode
+	songObj.className = songObj.className.replace(/moving-mode/gi, "").trim();
+
+	if (data.error) {
+		alert(data.error);
+	} else {
+		// move node to new position
+		if (direction == "after" || direction == "below") {
+			plObj.insertBefore(songObj, directionObj.nextSibling);
+		} else {
+			plObj.insertBefore(songObj, directionObj);
+		}
+	}
+}
+
+
+function clearMove()
+{
+	var plObj = document.querySelector(".playlist-songs");
+	plObj.removeAttribute("data-move-id");
+	var songs = plObj.querySelectorAll("LI");
+	for (var s = 0; s < songs.length; s++) {
+		var songObj = songs[s];
+		songObj.className = songObj.className.replace(/options-mode|move-mode|move-above|move-below/gi, "").trim();
+	}
+}
+
+
+function editSong(event, deleteObj)
+{
+	alert("This option is not yet implemented.");
+	event.stopPropagation();
+}
+
+function playAll()
+{
+	var songObj = document.querySelector("[data-video]");
+	playSong(event, songObj);
+}
+
+function playSong(event, playObj)
+{
+	var songObj = vaParentLI(playObj);
+	var youtubeVideo = songObj.getAttribute("data-youtube-video");
+	var parentObj = vaParentJS(songObj);
+	var listId = parentObj.getAttribute("data-list-id");
+
+	var popupObj = document.querySelector(".playlist-video-popup");
+	var frameObj = document.querySelector(".playlist-video-frame");
+	var videoObj = document.querySelector(".youtube-video");
+	var nameObj = document.querySelector(".youtube-name");
+
+	// update video name
+	nameObj.innerHTML = songObj.getAttribute("data-name");
+
+	var className = popupObj.className;
+	className  = className.replace(/play-mode/gi, "").trim();
+	className += " play-mode";
+	popupObj.className = className;
+
+	var youtubePlayer = document.getElementById("youtube-player");
+	if (youtubePlayer) {
+		frameObj.removeChild(youtubePlayer);
+	}
+	youtubePlayer = document.createElement('div'); 
+	youtubePlayer.id = "youtube-player"; 
+	youtubePlayer.className = "youtube-player"; 
+	videoObj.appendChild(youtubePlayer);
+
+	player = new YT.Player('youtube-player', {
+	  height: '390',
+	  width: '640',
+	  videoId: youtubeVideo,
+	  events: {
+	    'onReady': vaPlayerReadyPlay,
+	    'onStateChange': vaPlayerState,
+	    'onError': vaPlayerError,
+	  }
+	});
+	player.playlistSong = songObj;
+	player.playlistId = listId;
+
+	event.stopPropagation();
+}
+
+</script>
+
+<div class="{playlist_mode_class}" data-js="parent" data-playlist="{list_id}" data-list-id="{list_id}" data-edit-url="{user_playlist_songs_href}" data-search-url="{ajax_songs_href}">
+
+	<div class="pl-name" onclick="playAll();" title="{PLAY_ALL_MSG}">{list_name}</div>
+	<div class="pl-play" onclick="playAll();" title="{PLAY_ALL_MSG}"><i class="ico-youtube-play"></i></div>
+	<div class="clear"></div>
+
+	<!-- BEGIN playlist_search -->
+	<div class="search-form">
+		{SEARCH_ADD_PLAYLIST_MSG}<br/>
+		<input class="fd-search" type="text" name="sw" value="" onkeyup="searchKeyUp(event, this);" /> 
+		<a class="bn-search" onclick="searchSongs(this);"><i class="ico-search" title="{SEARCH_BUTTON}"><span>{SEARCH_BUTTON}<span></i></a>
+		<div class="clear"></div>
+
+		<div class="no-songs-popup" style="display: none;">
+			{NO_SONGS_FOUND_MSG}
+			<ul>
+				<li>{CHECK_WORDS_SPELLING_MSG}</li>
+				<li>{TRY_DIFFERENT_KEYWORDS_MSG}</li>
+				<li>{TRY_GENERAL_KEYWORDS_MSG}</li>
+			</ul>
+		</div>
+
+		<div class="found-popup" style="display: none;">
+			<div class="found-top">
+				<i class="ico-close" onclick="closeSearch();"></i>
+				<span class="note">{CLICK_ON_SONG_TO_ADD_MSG}</span>
+			</div>
+			<div class="found-songs"></div>
+		</div>
+	</div>
+	<!-- END playlist_search -->
+
+	<!-- BEGIN playlist_note -->
+	<div class="playlist-note">{CLICK_MORE_SETS_MSG}</div>
+	<!-- END playlist_note -->
+
+	<ol class="playlist-songs">
+		<!-- BEGIN playlist_songs --><!-- END playlist_songs -->
+	</ol>
+	<div class="playlist-foot"></div>
+
+
+	<div class="list-template" style="display: none;">
+		<!-- begin list_template -->
+		<li class="pl-song" data-favorite-id="{favorite_id}" data-url="{song_url}" data-name="{song_name}" data-song-id="{song_id}" data-video="{youtube_video}" data-youtube-video="{youtube_video}" onclick="switchSongMode(this);">
+			<span class="counter">.</span>
+			<div class="name">{song_name}</div>
+			<div class="lyrics" data-video-id="{youtube_video}">{song_lyrics}</div>
+			<div class="options">
+				<i class="ico-delete" title="{DELETE_PLAYLIST_SONG_MSG}" onclick="deleteSong(event, this);"></i>
+				<i class="ico-order" title="{CHANGE_SONG_ORDER_MSG}" onclick="orderSong(event, this);"></i>
+				<i class="ico-edit" title="{EDIT_SONG_MSG}" onclick="editSong(event, this);"></i>
+				<i class="ico-play" title="{PLAY_SONG_NSG}" onclick="playSong(event, this);"></i>
+			</div>
+			<i class="spin"></i>
+			<i class="ico-above" onclick="moveSong(event, this, 'above');"></i>
+			<i class="ico-below" onclick="moveSong(event, this, 'below');"></i>
+		</li>
+		<!-- end list_template -->
+	</div>
+
+	<div class="search-template" style="display: none;">
+		<!-- begin search_template -->
+		<div class="[song_class]" data-youtube-video="[youtube_video]" data-song-id="{song_id}" onclick="addSong(this);">
+			<i class="ico-song"></i>
+			<div class="name">{song_name}</div>
+		</div>
+		<!-- end search_template -->
+	</div>
+
+</div>
+
+<div class="playlist-video-popup">
+	<div class="playlist-video-frame">
+		<div class="youtube-controls">
+			<i class="ico-prev youtube-prev" title="Previous" onclick="vaPrevVideo();"></i>
+			<i class="ico-next youtube-next" title="Next" onclick="vaNextVideo();"></i>
+		</div>
+		<div class="youtube-name"></div>
+		<i class="ico-close" onclick="vaDisablePopupVideo();"></i>
+		<div class="youtube-video"></div>
+	</div>
+</div>
+
+<!-- begin play_on_load -->
+<script>
+window.addEventListener("load", playAll, false);
+</script>
+<!-- end play_on_load -->

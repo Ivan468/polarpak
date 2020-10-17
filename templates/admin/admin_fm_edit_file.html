@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {FILE_MANAGER_MSG} :: {UPLOAD_FILE_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_FILE_MSG}</div>
+<div class="BlockContent">
+
+<FORM method=post action="{admin_edit_file_href}">
+<!-- BEGIN service_messages --><div class="messagebg">{service_message}</div><!-- END service_messages -->
+<!-- BEGIN errors --><div class="errorbg">{error}</div><!-- END errors -->
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="usual">
+	<TD>{FILENAME_MSG}</TD>
+	<TD><INPUT class="field" TYPE="text" NAME="edit_file" size="120" value="{edit_file}"></TD>
+</tr>
+<tr class="usual" valign="top">
+	<TD>File content</TD>
+	<TD><TEXTAREA NAME="file_content" ROWS="25" COLS="120">{content_file}</TEXTAREA></TD>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<TD>
+		<INPUT TYPE="hidden" name=op value=1>
+		<INPUT TYPE="hidden" name=dir_path value="{dir_path}">
+		<INPUT TYPE="hidden" name=old_edit_file value="{edit_file}">
+		<span class="button"><INPUT TYPE="submit" class="submit" name=button value="Save"></span>
+		<span class="button"><INPUT TYPE="button" class="submit" value="{CANCEL_BUTTON}" name=button_reset onclick="parent.location='{host}{admin_filemanager_fm_href}?op=1&root_dir={dir_path}'"></span>
+	</TD>
+</tr>
+</table>
+</FORM>
+</div>
+</div>
+{admin_footer}
+</body>
+</html>

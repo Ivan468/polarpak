@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{TWO_FACTOR_AUTH_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="../js/admin.js"></script>
+<script language="JavaScript">
+<!--
+	function openWindow(pagename, filetype)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+	}
+//-->
+</script>
+</head>
+<body class="mainbg">
+{admin_header}
+{admin_breadcrumb}
+
+<form action="{settings_two_factor_href}" name="record" method="POST">
+<div class="sitelist"><!-- begin sitelist -->
+	{SELECT_SITE_MSG}&nbsp;
+	<select name="param_site_id" onchange="reloadSite(this.form)"><!-- begin param_site_id -->
+		<option {param_site_id_selected} value="{param_site_id_value}">{param_site_id_description}<!-- end param_site_id -->
+	</select><!-- end sitelist -->
+</div>
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<div id="tabs"><!-- BEGIN tabs_rows -->
+	<ul id="{row_id}" class="tabRow"><!-- BEGIN tabs -->
+		<li id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+	</ul><!-- END tabs_rows -->
+</div>
+
+<div class="Block clearBoth">
+<div class="BlockContent">
+
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="rp" value="{rp}">
+<input type="hidden" name="tab" value="{tab}">
+
+<!-- notification email -->
+<div id="data_admin" style="{admin_style}">
+<table border="0" cellpadding="5" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2">{ADMIN_GENERAL_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="admin_two_factor">{USE_TWO_FACTOR_AUTH_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="admin_two_factor" id="admin_two_factor" {admin_two_factor} value="1">
+		({USE_TWO_FACTOR_AUTH_DESC})
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{EMAIL_NOTIFICATION_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="admin_notification">{SEND_NOTIFICATION_ADMIN_MSG}</label></td>
+	<td><input type="checkbox" name="admin_notification" id="admin_notification" {admin_notification} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_FROM_MSG}</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="admin_mail_from" value="{admin_mail_from}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>message@example.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="admin_mail_cc" value="{admin_mail_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="admin_mail_bcc" value="{admin_mail_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="admin_mail_reply_to" value="{admin_mail_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="admin_mail_return_path" value="{admin_mail_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="admin_subject" value="{admin_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin admin_message_type -->
+		<input class="field" type="radio" name="admin_message_type" id="admin_message_type{admin_message_type_value}" {admin_message_type_checked} value="{admin_message_type_value}">
+		<label for="admin_message_type{admin_message_type_value}">{admin_message_type_description}</label><!-- end admin_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<div><b>{MESSAGE_MSG}</b></div>
+
+		<br>
+		<table cellspacing="1" cellpadding="2">
+		<tr class="middle"><td>{TAG_NAME_MSG}</td><td>{TAG_DESCRIPTION_MSG}</td></tr>
+		<tr><td>&#123;access_code}</td><td>{ACCESS_CODE_MSG}</td></tr>
+		</table>
+
+	</td>
+	<td><textarea name="admin_message" cols="80" rows="10">{admin_message}</textarea></td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{SMS_NOTIFICATION_ADMIN_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="admin_sms_notification">{SMS_SEND_ADMIN_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="admin_sms_notification" id="admin_sms_notification" {admin_sms_notification} value="1">
+		({SMS_NOTIFICATION_NOTE})
+	</td>
+</tr>
+<tr class="usual">
+	<td><b>{SMS_RECIPIENT_MSG}</b> ({SMS_RECIPIENT_ADMIN_DESC})</td>
+	<td><input class="field" type="text" name="admin_sms_recipient" value="{admin_sms_recipient}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{SMS_ORIGINATOR_MSG}</b></td>
+	<td><input class="field" type="text" name="admin_sms_originator" value="{admin_sms_originator}" size="80" maxlength="16"></td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{SMS_MESSAGE_MSG}</b>
+
+		<br/><br/>
+
+		<table cellspacing="1" cellpadding="2">
+		<tr class="middle"><td>{TAG_NAME_MSG}</td><td>{TAG_DESCRIPTION_MSG}</td></tr>
+		<tr><td>&#123;access_code}</td><td>{ACCESS_CODE_MSG}</td></tr>
+		</table>
+
+	</td>
+	<td>
+		<textarea name="admin_sms_message" cols="80" rows="4">{admin_sms_message}</textarea>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+</div>
+</div>
+</form>
+
+{admin_footer}
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {OPTION_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+	var removeButton = "{REMOVE_BUTTON}";
+
+	var optionsValues = new Array();
+	//<!-- begin parent_options -->
+	optionsValues[{property_id}] = new Array();//<!-- end parent_options -->
+	//<!-- begin options_values -->
+	optionsValues[{property_id}][{value_id}] = "{value_title}";//<!-- end options_values -->
+
+	function changeParentValues()
+	{
+		var formObj = document.record;
+		var propertyObj = formObj.parent_property_id;
+		var valueObj = formObj.parent_value_id;
+		var totalOptions = valueObj.length;
+		// clear options first
+		for (var i = totalOptions - 1; i >= 0; i--) {
+			valueObj.options[i] = null;
+		}
+		var parentId = propertyObj.options[propertyObj.selectedIndex].value;
+		if (parentId && optionsValues[parentId]) {
+			var optionValues = optionsValues[parentId];
+			valueObj.options[valueObj.length] = new Option("", "");
+			for (valueId in optionValues) {
+				valueObj.options[valueObj.length] = new Option(optionValues[valueId], valueId);
+			}
+		}
+		var valueBlockObj = document.getElementById("parent_value_id_block");
+		if(valueObj.options.length <= 1) {
+			valueBlockObj.style.display = "none";
+		} else {
+			valueBlockObj.style.display = "block";
+		}
+	}
+
+//-->
+</script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<div id="tabs"><!-- BEGIN tabs_rows -->
+	<ul id="{row_id}" class="tabRow"><!-- BEGIN tabs -->
+		<li id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+	</ul><!-- END tabs_rows -->
+</div>
+
+
+<div class="Block clearBoth">
+<div class="BlockContent">
+
+<form action="{admin_cms_block_property_href}" name="record" method="post">
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="property_id" value="{property_id}">
+<input type="hidden" name="block_id" value="{block_id}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="page" value="{page}">
+<input type="hidden" name="os_dir" value="{os_dir}">
+<input type="hidden" name="os_ord" value="{os_ord}">
+<input type="hidden" name="op" value="{op}">
+<input type="hidden" name="more_properties" value="0">
+<input type="hidden" name="number_properties" value="{number_properties}">
+
+<div id="data_general" style="{general_style}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="2">{ADMIN_GENERAL_MSG}</td>
+</tr>
+<tr class="usual">
+	<td width="20%">{OPTION_ORDER_MSG} *</td>
+	<td><input class="field" type="text" name="property_order" value="{property_order}" size="12"></td>
+</tr>
+<tr class="usual">
+	<td>{OPTION_NAME_MSG} *</td>
+	<td><input class="field" type="text" name="property_name" value="{property_name}" size="60"></td>
+</tr>
+<tr class="usual">
+	<td nowrap>{OPTION_CONTROL_MSG} *</td>
+	<td>
+		<select name="control_type"><!-- begin control_type -->
+			<option {control_type_selected} value="{control_type_value}">{control_type_description}<!-- end control_type -->
+		</select>
+		<span class="small">({CONTROL_TYPE_USE_DESC})</span>
+	</td>
+</tr><!-- BEGIN parent_property_block -->
+<tr class="usual" valign="top">
+	<td>{PARENT_OPTION_MSG}</td>
+	<td>
+		<select name="parent_property_id" onChange="changeParentValues();"><!-- begin parent_property_id -->
+			<option {parent_property_id_selected} value="{parent_property_id_value}">{parent_property_id_description}<!-- end parent_property_id -->
+		</select>
+		<span class="small">({PARENT_OPTION_DESC})</span>
+		<div id="parent_value_id_block" style="{parent_value_style} padding: 4px 0 0 0;">
+			&mdash; <select name="parent_value_id"><!-- begin parent_value_id -->
+				<option {parent_value_id_selected} value="{parent_value_id_value}">{parent_value_id_description}<!-- end parent_value_id -->
+			</select>
+			<span class="small">({PARENT_OPTION_VALUE_DESC})</span>
+		</div>
+	</td>
+</tr><!-- END parent_property_block -->
+<tr class="usual">
+	<td>{VARIABLE_NAME_MSG} *</td>
+	<td><input class="field" type="text" name="variable_name" value="{variable_name}" size="60"></td>
+</tr>
+<tr class="usual">
+	<td>{DEFAULT_VALUE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="default_value" value="{default_value}" size="60"> 
+		<span class="small">({ONLY_FOR_LABEL_MSG})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="">{OPTION_REQUIRED_MSG}</label></td>
+	<td><input type="checkbox" {required} name="required" id="" value="1"></td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{OPTIONS_VALUES_MSG}</td>
+</tr>
+</table>
+
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr align="center" class="usual">
+	<td class="small"><b>{ID_MSG}</b></td>
+	<td class="small"><b>{SORT_ORDER_MSG}</b></td>
+	<td class="small"><b>{NAME_MSG}</b></td>
+	<td class="small"><b>{VARIABLE_NAME_MSG}</b></td>
+	<td class="small"><b>{VARIABLE_VALUE_MSG}</b></td>
+	<td class="small"><b>{DEFAULT_MSG}</b></td>
+	<td class="small"><b>{HIDE_MSG}</b></td>
+	<td class="small"><b>{DELETE_BUTTON}</b></td>
+</tr>
+<!-- begin properties --><!-- begin properties_errors -->
+<tr class="usual" align="center">
+	<td colspan="7" class="errorbg">{errors_list}</td>
+</tr><!-- end properties_errors -->
+<tr class="usual" align="center" valign="top">
+	<td>
+		{value_id}
+		<input type="hidden" name="value_id_{properties_number}" value="{value_id}">
+		<input type="hidden" name="property_id_{properties_number}" value="{property_id}">
+	</td>
+	<td>
+		<input class="field" type="text" name="value_order_{properties_number}" value="{value_order}" size="8">
+	</td>
+	<td>
+		<input class="field" type="text" name="value_name_{properties_number}" value="{value_name}" size="30">
+	</td>
+	<td>
+		<input class="field" type="text" name="variable_name_{properties_number}" value="{variable_name}" size="24">
+	</td>
+	<td>
+		<input class="field" type="text" name="variable_value_{properties_number}" value="{variable_value}" size="24">
+	</td>
+	<td>
+		<input type="checkbox" name="is_default_value_{properties_number}" {is_default_value} value="1">
+	</td>
+	<td>
+		<input type="checkbox" name="hide_value_{properties_number}" {hide_value} value="1">
+	</td>
+	<td>
+		<input type="checkbox" name="properties_delete_{properties_number}" {properties_delete} value="1">
+	</td>
+</tr><!-- end properties -->
+<tr class="usual">
+	<td colspan="8" align="right">
+		{ADD_MORE_OPTIONS_QST} <span class="button"><input class="submit" type="submit" value={ADD_BUTTON} onClick="document.record.more_properties.value=1"></span>
+	</td>
+</tr>
+</table>
+
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td align="center">
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onCLick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+<div id="data_html" style="{html_style}">
+<table cellspacing="1" cellpadding="4" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="2">{OPTIONS_APPEARANCE_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>
+		{BLOCK_CSS_CLASS_MSG}
+	</td>
+	<td>
+		<input class="field" type="text" name="property_class" value="{property_class}" size="80">
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{OPTION_STYLE_MSG}
+		<div class="small">({OPTION_STYLE_NOTE},<br> &nbsp; {EG_MSG} 'text-transform: uppercase;')</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="property_style">{property_style}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{CONTROL_STYLE_MSG}
+		<div class="small">({CONTROL_STYLE_NOTE},<br> &nbsp; {EG_MSG} 'color: green;')</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="control_style">{control_style}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{BEFORE_TITLE_HTML_MSG}
+		<div class="small">({BEFORE_TITLE_HTML_NOTE})</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="start_html">{start_html}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{AFTER_TITLE_HTML_MSG}
+		<div class="small">({AFTER_TITLE_HTML_NOTE})</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="middle_html">{middle_html}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{BEFORE_CONTROL_HTML_MSG}
+		<div class="small">({BEFORE_CONTROL_HTML_NOTE})</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="before_control_html">{before_control_html}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{AFTER_CONTROL_HTML_MSG}
+		<div class="small">({AFTER_CONTROL_HTML_NOTE})</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="after_control_html">{after_control_html}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{END_HTML_MSG}
+		<div class="small">({END_HTML_NOTE})</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="end_html">{end_html}</textarea>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td><span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+
+<div id="data_js" style="{js_style}">
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="2">{JAVASCRIPT_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>
+		{ONCHANGE_EVENT_MSG}
+		<div class="small">({EG_MSG} &lt;select onChange="<b>[your code here]</b>"&gt;)</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="onchange_code">{onchange_code}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{ONCLICK_EVENT_MSG}
+		<div class="small">({EG_MSG} &lt;input type="radio" onClick="<b>[your code here]</b>"&gt;)</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="onclick_code">{onclick_code}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{CONTROL_CODE_MSG}
+		<div class="small">({EG_MSG} &lt;input type="text" <b>[your code here]</b>&gt;)</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="control_code">{control_code}</textarea>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td><span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+
+
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

@@ -1,0 +1,154 @@
+<form class="table-view" name="products_{pb_id}" method="post" action="{products_form_url}#pb_{pb_id}">
+<input type="hidden" name="pb_id" value="{pb_id}" />
+<input type="hidden" name="type" value="table" />
+<input type="hidden" name="rp" value="{rp}" />
+<input type="hidden" name="rnd" value="{rnd}" />
+<input type="hidden" name="cart" value="ADD" />
+<input type="hidden" name="redirect_to_cart" value="{redirect_to_cart}" />
+<input type="hidden" name="multi_add" value="{multi_add}" />
+<input type="hidden" name="add_id" value="" />
+<input type="hidden" name="saved_type_id" value="" />
+<input type="hidden" name="start_index" value="{start_index}" />
+<input type="hidden" name="item_index" value="" />
+<input type="hidden" name="form_id" value="" />
+<input type="hidden" name="items_indexes" value="{items_indexes}" />
+<input type="hidden" name="sc_params" value="{sc_params}" />
+{hidden_parameters}
+
+
+	<!-- begin search_results -->
+	<div class="search-results">{FOUND_PRODUCTS_MSG}</div><!-- end search_results -->
+
+	<!-- begin sorter_block -->
+	<div class="sorter">
+		{PROD_SORT_BY_MSG}: 
+		<div class="sorter-select" data-js="expand" data-tag="ul">{active_sorter_name} <i class="{active_sorter_class}"></i>
+			<ul><!-- begin sort_items -->
+				<li>
+					<a href="{sorter_url}">{sorter_name} <i class="{sorter_class}"></i></a>
+				</li><!-- END sort_items -->
+			</ul>
+		</div>
+	</div>
+	<!-- end sorter_block -->
+
+	<!-- begin no_items -->
+	<div class="no-items">{NO_PRODUCTS_MSG}</div><!-- end no_items -->
+
+	<!-- BEGIN item_added --><div class="messagebg" align="center">{added_message}</div><!-- END item_added -->
+	<!-- BEGIN sc_errors --><div class="errorbg" align="center">{errors_list}</div><!-- END sc_errors -->
+
+	<!-- begin category_items -->
+
+	<!-- begin items_category_name -->
+	<div class="category-name bg-title br-solid">{category_name}</div> 
+	<!-- end items_category_name -->
+	<!-- begin items_category_desc -->
+	<div class="category-desc br-solid">{category_desc}</div>
+	<!-- end items_category_desc -->
+
+	<table width="100%" cellspacing="0" cellpadding="0">
+	<tr align="center" class="row-title bg-title br-solid"><!-- begin title_columns -->
+		<th class="{column_class}">{column_title}</th><!-- end title_columns -->
+	</tr>
+	<!-- BEGIN items_rows -->
+	<input type="hidden" name="item_id{form_id}" value="{item_id}" />
+	<input type="hidden" name="tax_percent{form_id}" value="{tax_percent}" />
+	<input type="hidden" name="product_params{form_id}" value="{product_params}" />
+	<input type="hidden" name="product_data{form_id}" value="{product_data}" />
+
+	<!-- BEGIN items_cols -->
+	<tr valign="top" class="row-cell br-solid"><!-- begin column_data -->
+		<td class="{column_class}">
+			<!-- begin column_html --><!-- end column_html -->
+
+			<!-- begin product_image -->
+			<a href="{product_details_url}" title="{a_title}"><img class="product-image" name="image_{form_id}" src="{src}" alt="{alt}" /></a><!-- end product_image -->
+  
+			<!-- begin manufacturer -->
+			<div>{manufacturer_name}</div><!-- end manufacturer -->
+			<!-- begin manufacturer_code_block -->
+			<div class="manf-code"><b>{manufacturer_code}</b></div><!-- end manufacturer_code_block -->	
+  
+			<!-- begin item_code_block -->
+			<div class="productCode"><b>{item_code}</b></div><!-- end item_code_block -->	
+  
+			<!-- begin item_name_block -->
+			<h2 class="product-name {product_new_class}"><a class="title" href="{product_details_url}" title="{a_title}">{item_name}</a></h2>
+			<!-- end item_name_block -->
+			<!-- begin found_in_category -->
+			<div class="found-in">{FOUND_IN_MSG}: <!-- BEGIN found_categories --><a class="found-in" href="{products_href}?category_id={ic_id}">{item_category}</a>{ic_separator}<!-- END found_categories --></div>
+			<!-- end found_in_category -->
+  
+			<!-- begin short_description -->
+			<div class="desc desc-short">{desc_text}</div><!-- end short_description -->
+			<!-- begin full_description -->
+			<div class="desc desc-full">{desc_text}</div><!-- end full_description -->
+
+			<!-- begin description -->
+			<div align="justify">{short_description}</div>
+			<!-- end description -->
+  
+			<!-- begin reviews -->
+			<div class="rating"><a href="{reviews_url}"><img class="{rating_image}" src="images/tr.gif" alt="{rating_alt}" align="top" /></a></div><!-- end reviews -->
+  
+			<!-- begin multi_properties -->
+			<div id="{property_block_id}" class="property {property_class}" style="{property_style}">{property_name} {property_control}</div><!-- end multi_properties -->
+  
+			<!-- begin single_properties -->
+			<div id="{property_block_id}" class="property {property_class}" style="{property_style}">{property_control}</div><!-- end single_properties -->
+  
+			<!-- begin multi_fs_groups -->
+			<div><b><u>{group_name}</u></b></div><!-- begin multi_features -->
+			<div>{feature_name}: {feature_value}</div><!-- end multi_features --><!-- end multi_fs_groups -->
+  
+			<!-- begin single_features -->
+			<div>{feature_value}</div><!-- end single_features -->
+  
+			<!-- begin price_block -->
+			<div id="price_block{form_id}" class="{price_block_class}"><span id="price{form_id}" class="price">{price_control}</span><span class="price-note">{price_note}</span> <span class="tax" style="display: none;">{tax_price}</span></div><!-- end price_block -->
+  
+			<!-- begin sales -->
+			<div class="price-sale"><span id="sales_price{form_id}" class="price">{sales_price_control}</span><span class="price-note">{price_note}</span> <span class="tax" style="display: none;">{tax_sales}</span></div><!-- end sales -->
+  
+			<!-- begin availability -->
+			<div id="block_sm{form_id}" class="availability" style="{sm_style}"><span id="sm{form_id}" class="smallText">{shipping_time_desc}</span></div><!-- end availability -->	
+  
+			<!-- begin stock_level_block -->
+			<div id="block_sl{form_id}" class="stock-level" style="{sl_style}"><span id="sl{form_id}" class="stock-level">{stock_level}</span></div><!-- end stock_level_block -->	
+  
+			<!-- begin quantity -->
+			<span class="qty-control">{quantity_control}</span><!-- end quantity -->	
+			<!-- begin cart_add_button -->
+			<a class="button bn-add" id="add{form_id}" href="{buy_href}" onclick="{buy_onclick}"><span>{ADD_TO_CART_MSG}</span><img src="images/tr.gif" alt="{ADD_TO_CART_MSG}" /></a> 
+			<!-- end cart_add_button -->
+			<!-- begin cart_add_disabled -->
+			<a class="button bn-disabled"title="{PRODUCT_OUT_STOCK_MSG}" onclick="alert('{out_stock_alert}');">{ADD_BUTTON}</a> 
+			<!-- end cart_add_disabled -->
+			<!-- begin compare -->
+			<a class="button bn-compare" id="compare{form_id}" href="{compare_href}" onclick="return confirmBuy('products_{pb_id}','{form_id}','compare', 'compare{form_id}');"><span>{COMPARE_MSG}</span></a> 
+			<!-- end compare -->
+  
+			<!-- begin more_button -->
+			<div class="more-details">
+				<a class="button bn-more" href="{product_details_url}" title="{a_title}"><span>{READ_MORE_MSG}</span></a>
+			</div><!-- end more_button -->
+
+			<!-- begin save -->
+			<div class="price-save">&nbsp;<span class="percent">{discount_percent}%</span></div><!-- end save -->
+		</td><!-- end column_data -->
+	</tr><!-- END items_cols -->
+	<!-- END items_rows -->
+	</table>
+
+	<!-- begin multi_add_button -->
+	<div class="multi-add br-solid">
+		<a class="button bn-add" id="multi_add{form_id}" href="#" onclick="confirmBuy('products_{pb_id}','','cart', 'multi_add{form_id}'); return false;"><span>{ADD_BUTTON}</span></a>
+	</div><!-- end multi_add_button -->
+
+<!-- end category_items -->
+
+	<!-- begin navigator_block -->
+	<div class="navigator br-solid">{navigator}</div><!-- end navigator_block -->
+
+	</form>

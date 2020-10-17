@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {EDIT_CURRENCY_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="../js/list_fields.js"></script>
+<script language="JavaScript">
+<!--
+	var list_fields_names = new Array('sites');
+
+	function checkDefault() 
+	{
+		if (!document.record.is_default.checked) {
+			document.record.recalculate_prices.checked = false;
+		}
+	}
+	
+	function checkShow() 
+	{
+		if (document.record.is_default_show.checked) {
+			if (!document.record.show_for_user.checked) {
+				document.record.show_for_user.checked = true;
+				alert ("To make this currency as default show you should make this currency as show.");
+			}
+		}
+	}
+
+	function openWindow(pagename, filetype)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+	}
+
+	function setFileName(filename, filetype)
+	{
+		var siteUrl = '{site_url}';
+		if (filename != "")
+		{
+			if (filetype == "currency") {
+				document.record.currency_image.value = siteUrl + "images/currencies/" + filename;
+				document.record.currency_image.focus();
+			} else if (filetype == "currency_active") {
+				document.record.currency_image_active.value = siteUrl + "images/currencies/" + filename;
+				document.record.currency_image_active.focus();
+			}
+		}
+	}
+//-->
+</script>
+</head>
+
+<body class="bodySettings">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<ul class="tabRow"><!-- BEGIN tabs -->
+	<li onClick="changeTab('{tab_name}'); return false;" id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+</ul>
+
+<div class="Block clearBoth">
+<div class="BlockContent">
+
+<form action="{admin_currency_href}" name="record" onSubmit="selectListFieldsAll();" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="sites" value="">
+<input type="hidden" name="currency_id" value="{currency_id}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<div id="data_general" style="{general_style}">
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="usual">
+	<td nowrap><label for="is_default">{SET_AS_DEFAULT_CURRENCY_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="is_default" id="is_default" {is_default} value="1" onClick="checkDefault();">
+		<label for="is_default">{SET_AS_DEFAULT_CURRENCY_NOTE}</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap valign="top">{SHOW_FOR_USER_MSG}</td>
+	<td>
+		<input type="checkbox" name="show_for_user" id="show_for_user" {show_for_user} value="1">
+		<label for="show_for_user">{CURRENCY_SHOW_DESC}</label><br>
+		<input type="checkbox" name="is_default_show" id="is_default_show" {is_default_show} value="1" onClick="checkShow();">
+		<label for="is_default_show">{CURRENCY_DEFAULT_SHOW_DESC}</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CURRENCY_CODE_MSG} *</td>
+	<td><input class="field" type="text" name="currency_code" size="10" value="{currency_code}"></td>
+</tr>
+<tr class="usual">
+	<td>{NUMERIC_CODE_MSG}</td>
+	<td><input class="field" type="text" name="currency_value" size="10" value="{currency_value}"></td>
+</tr>
+<tr class="usual">
+	<td>{CURRENCY_TITLE_MSG} *</td>
+	<td><input class="field" type="text" name="currency_title" size="50" value="{currency_title}"></td>
+</tr>
+<tr class="usual">
+	<td>{CURRENCY_IMAGE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="currency_image" size="50" value="{currency_image}">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'currency')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'currency')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CURRENCY_IMAGE_ACTIVE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="currency_image_active" size="50" value="{currency_image_active}">
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'currency_active')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'currency_active')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual" valign="top">
+	<td>{EXCHANGE_RATE_MSG} *</td>
+	<td><input class="field" type="text" name="exchange_rate" size="10" value="{exchange_rate}"></td>
+</tr>
+<tr class="usual">
+	<td>{SYMBOL_LEFT_MSG}</td>
+	<td><input class="field" type="text" name="symbol_left" size="10" value="{symbol_left}"></td>
+</tr>
+<tr class="usual">
+	<td>{SYMBOL_RIGHT_MSG}</td>
+	<td><input class="field" type="text" name="symbol_right" size="10" value="{symbol_right}"></td>
+</tr>
+<tr class="usual">
+	<td>{NUMBER_OF_DECIMALS_MSG}</td>
+	<td><input class="field" type="text" name="decimals_number" size="10" value="{decimals_number}" maxlength="2"></td>
+</tr>
+<tr class="usual">
+	<td>{DECIMAL_POINT_MSG}</td>
+	<td><input class="field" type="text" name="decimal_point" size="10" value="{decimal_point}" maxlength="1"></td>
+</tr>
+<tr class="usual">
+	<td>{THOUSANDS_SEPARATOR_MSG}</td>
+	<td><input class="field" type="text" name="thousands_separator" size="10" value="{thousands_separator}" maxlength="1"></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="data_sites" style="{sites_style}">
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+<tr class="usual">
+	<td colspan="3">
+		<input type="checkbox" name="sites_all" id="sites_all" {sites_all} onClick="checkListFields('sites');" value="1">
+		<label for="sites_all">{SITES_ALL_MSG} ({SITES_ALL_UNTICK_MSG})</label>
+	</td>
+</tr>
+<tr align="center" class="middle">
+	<td width="45%"><b>{AVAILABLE_SITES_MSG}</b></td>
+	<td width="10%"><b>{OPERATIONS_MSG}</b></td>
+	<td width="45%"><b>{USE_ITEM_SITES_MSG}</b></td>
+</tr>
+<tr align="center" class="usual">
+	<td>
+		<select name="available_sites" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_sites -->
+			<option value="{site_id}">{site_name}<!-- end available_sites-->
+		</select>
+	</td>
+	<td>
+		<span class="button"><input class="submit" readonly type="button" name="add_sites" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('sites');"></span>
+		<br><br>
+		<span class="button"><input class="submit" type="button" name="remove_sites" value="<- {REMOVE_BUTTON}" onClick="removeListFields('sites');"></span>
+	</td>
+	<td>
+		<select name="selected_sites" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_sites -->
+			<option value="{site_id}">{site_name}<!-- end selected_sites -->
+		</select>
+	</td>
+</tr>
+<tr align="center" class="middle">
+	<td colspan="3" >
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

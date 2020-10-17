@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{UPLOAD_TITLE}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/product.js"></script>
+<script language="JavaScript">
+<!--
+
+function closeWindow(imageName)
+{
+	var siteUrl = '{image_site_url}';
+	var formObj = document.upload;
+	var fileType = document.upload.filetype.value;
+
+	window.opener.setFileName(imageName, fileType, formObj.image_index.value, siteUrl);
+	if (fileType == "super_image" || fileType == "big_image" || fileType == "small_image") {
+		if (formObj.generate_big && formObj.generate_big.value) {
+			window.opener.setFileName(imageName, "big_image", formObj.image_index.value, siteUrl);
+		}
+		if (formObj.generate_small && formObj.generate_small.value) {
+			window.opener.setFileName(imageName, "small_image", formObj.image_index.value, siteUrl);
+		}
+		if (formObj.generate_tiny && formObj.generate_tiny.value) {
+			window.opener.setFileName(imageName, "tiny_image", formObj.image_index.value, siteUrl);
+		}
+	} else if (fileType == "author_super" || fileType == "author_large" || fileType == "author_small") {
+		if (formObj.large_generated && formObj.large_generated.value) {
+			window.opener.setFileName(imageName, "author_large");
+		}
+		if (formObj.small_generated && formObj.small_generated.value) {
+			window.opener.setFileName(imageName, "author_small");
+		}
+		if (formObj.tiny_generated && formObj.tiny_generated.value) {
+			window.opener.setFileName(imageName, "author_tiny");
+		}
+	} else if (fileType == "article_super" || fileType == "article_large" || fileType == "article_small") {
+		if (formObj.large_generated && formObj.large_generated.value) {
+			window.opener.setFileName(imageName, "article_large");
+		}
+		if (formObj.small_generated && formObj.small_generated.value) {
+			window.opener.setFileName(imageName, "article_small");
+		}
+		if (formObj.tiny_generated && formObj.tiny_generated.value) {
+			window.opener.setFileName(imageName, "article_tiny");
+		}
+	} else if (fileType == "album_super" || fileType == "album_large" || fileType == "album_small") {
+		if (formObj.large_generated && formObj.large_generated.value) {
+			window.opener.setFileName(imageName, "album_large");
+		}
+		if (formObj.small_generated && formObj.small_generated.value) {
+			window.opener.setFileName(imageName, "album_small");
+		}
+		if (formObj.tiny_generated && formObj.tiny_generated.value) {
+			window.opener.setFileName(imageName, "album_tiny");
+		}
+	} else if (fileType == "contest_super" || fileType == "contest_large" || fileType == "contest_small") {
+		if (formObj.large_generated && formObj.large_generated.value) {
+			window.opener.setFileName(imageName, "contest_large");
+		}
+		if (formObj.small_generated && formObj.small_generated.value) {
+			window.opener.setFileName(imageName, "contest_small");
+		}
+		if (formObj.tiny_generated && formObj.tiny_generated.value) {
+			window.opener.setFileName(imageName, "contest_tiny");
+		}
+	}
+	
+	window.opener.focus();
+	window.close();
+}
+
+//-->
+</script>
+</head>
+
+<body class="popup">
+<form name="upload" action="{admin_upload_href}" enctype="multipart/form-data" method="post">
+<input type="hidden" name="operation" value="1">
+<input type="hidden" name="filetype" value="{filetype}">
+<input type="hidden" name="image_index" value="{image_index}">
+<input type="hidden" name="layout_id" value="{layout_id}">
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle" align="center">
+	<td><a href="{admin_select_href}?filetype={filetype}&layout_id={layout_id}"><b>{VIEW_FILES_MSG}</b></a></td>
+	<td><a href="javascript:closeWindow('{filename_js}');"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+<tr>
+	<td colspan="2" class="usual">
+		{CURRENT_DIR_MSG}: <b>{files_dir}</b><!-- begin subdir_id_block -->
+		<select name="subdir_id"><!-- begin subdir_id -->
+			<option {subdir_id_selected} value="{subdir_id_value}">{subdir_id_description}<!-- end subdir_id -->
+		</select><!-- end subdir_id_block -->
+	</td>
+</tr><!-- BEGIN errors -->
+<tr>
+	<td colspan="2"><div class="errorbg">{errors_list}</div></td>
+</tr><!-- END errors --><!-- BEGIN before_upload -->
+<tr class="usual">
+	<td colspan="2">
+		{upload_select_message}<br><br>
+		<input class="submit" type="file" size="40" name="newfile">&nbsp;&nbsp;
+		<span class="button"><input class="submit" type="submit" name="submit" value="{UPLOAD_BUTTON}"></span>
+	</td>
+</tr><!-- BEGIN tiny_generate_block -->
+<tr class="usual">
+	<td colspan="2" align="left"><input type="checkbox" name="tiny_generate" {tiny_generate_checked} value="1"> {GENERATE_TINY_IMAGE_MSG}</td>
+</tr><!-- END tiny_generate_block -->
+
+<!-- BEGIN small_generate_block -->
+<tr class="usual">
+	<td colspan="2" align="left"><input type="checkbox" name="small_generate" {small_generate_checked} value="1"> {GENERATE_SMALL_IMAGE_MSG}</td>
+</tr><!-- END small_generate_block -->
+
+<!-- BEGIN large_generate_block -->
+<tr class="usual">
+	<td colspan="2" align="left"><input type="checkbox" name="large_generate" {large_generate_checked} value="1"> {GENERATE_BIG_IMAGE_MSG}</td>
+</tr><!-- END large_generate_block -->
+
+<!-- END before_upload --><!-- BEGIN after_upload -->
+<tr class="usual">
+	<td colspan="2" align="center">
+		{UPLOADED_FILE_MSG}
+		<input type="hidden" name="filename" value="{filename}">
+		<input type="hidden" name="generate_tiny" value="{generate_tiny}">
+		<input type="hidden" name="generate_small" value="{generate_small}">
+		<input type="hidden" name="generate_big" value="{generate_big}">
+		<input type="hidden" name="tiny_generated" value="{tiny_generated}">
+		<input type="hidden" name="small_generated" value="{small_generated}">
+		<input type="hidden" name="large_generated" value="{large_generated}">
+		<script language="JavaScript">
+			closeWindow('{filename_js}');
+		</script>
+	</td>
+</tr><!-- END after_upload -->
+<tr class="middle" align="center">
+	<td><a href="{admin_select_href}?filetype={filetype}&layout_id={layout_id}"><b>{VIEW_FILES_MSG}</b></a></td>
+	<td><a href="javascript:closeWindow('{filename_js}');"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+</table>
+
+</form>
+
+</body>
+</html>

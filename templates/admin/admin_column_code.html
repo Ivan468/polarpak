@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{FIELD_CODE_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/admin.js"></script>
+<script language="JavaScript">
+<!--
+
+function clearSearch() {
+	document.record.sw.value = "";
+	document.record.submit();
+}
+
+function selectCode(fieldCode)
+{
+	if (window.opener) {
+		var column = document.record.column.value;
+		window.opener.setCode(column, fieldCode);
+		window.opener.focus();
+	}
+	window.close();
+}
+
+function closeWindow()
+{
+	window.opener.focus();
+	window.close();
+}
+
+//-->
+</script>
+</head>
+
+<body class="popup">
+
+<form action="{admin_column_code_href}" name="record">
+<input type="hidden" name="operation" value="1">
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="column" value="{column}">
+<input type="hidden" name="options_ord" value="{options_ord}">
+<input type="hidden" name="options_dir" value="{options_dir}">
+<input type="hidden" name="features_ord" value="{features_ord}">
+<input type="hidden" name="features_dir" value="{features_dir}">
+
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+<tr>
+	<td>
+
+	<div align="center">
+		<a href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a>
+	</div>
+
+	</td>
+</tr>
+<tr>
+	<td>
+
+	<div align="center">
+		<input type="text" name="sw" value="{sw}" class="search">
+		<span class="button"><input type="submit" value="Search" class="submit"></span>
+		<span class="button"><input type="submit" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch()"></span>
+	</div>
+
+	</td>
+</tr>
+</table>
+
+<div id="tabs"><!-- BEGIN tabs_rows -->
+	<ul id="{row_id}" class="tabRow"><!-- BEGIN tabs -->
+		<li id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+	</ul><!-- END tabs_rows -->
+</div>
+
+<div class="Block clearBoth">
+<div class="BlockContent">
+
+
+<div id="data_fields" style="{fields_style}">
+
+<!-- begin fields_results -->
+<div align="center">{found_message}</div>&nbsp;
+<!-- end fields_results -->
+
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+<!-- begin fields_sorters -->
+<tr class="middle" align="center">
+	<td>{FIELD_NAME_MSG}</td>
+	<td>{FIELD_CODE_MSG}</td>
+	<td>&nbsp;</td>
+</tr><!-- end fields_sorters --><!-- begin fields -->
+<tr class="usual">
+	<td>{field_name}</td>
+	<td>{field_code}</td>
+	<td align="center"><a href="javascript:selectCode('{field_code_js}');">{SELECT_MSG}</a></td>
+</tr><!-- end fields -->
+<tr class="middle">
+	<td colspan="3">
+		&nbsp;<!-- begin navigator_block -->{navigator}<!-- end navigator_block -->
+	</td>
+</tr>
+</table>
+</div>
+
+
+<div id="data_options" style="{options_style}">
+{ADMIN_COLUMN_CODE_OPTIONS_NOTE}
+<!-- begin options_results -->
+<div align="center">{found_message}</div>&nbsp;
+<!-- end options_results -->
+
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+<!-- begin options_sorters -->
+<tr class="middle" align="center">
+	<td>&nbsp;{sorter_option_name}</td>
+	<td>&nbsp;{sorter_option_code}</td>
+	<td>&nbsp;</td>
+</tr><!-- end options_sorters --><!-- begin options -->
+<tr class="usual">
+	<td>&nbsp;{option_name}</td>
+	<td>&nbsp;{option_code}</td>
+	<td align="center"><a href="javascript:selectCode('{option_code_js}');">{SELECT_MSG}</a></td>
+</tr><!-- end options -->
+<tr class="middle">
+	<td colspan="3">
+		&nbsp;<!-- begin options_navigator_block -->{options_navigator}<!-- end options_navigator_block -->
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="data_features" style="{features_style}">
+{ADMIN_COLUMN_CODE_SPECIFICATION_NOTE}
+<!-- begin features_results -->
+<div align="center">{found_message}</div>&nbsp;
+<!-- end features_results -->
+
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+<!-- begin features_sorters -->
+<tr class="middle" align="center">
+	<td>&nbsp;{sorter_feature_name}</td>
+	<td>&nbsp;{sorter_feature_code}</td>
+	<td>&nbsp;</td>
+</tr><!-- end features_sorters --><!-- begin features -->
+<tr class="usual">
+	<td>{feature_name}</td>
+	<td>{feature_code}</td>
+	<td align="center"><a href="javascript:selectCode('{feature_code_js}');">{SELECT_MSG}</a></td>
+</tr><!-- end features -->
+<tr class="middle">
+	<td colspan="3">
+		&nbsp;<!-- begin features_navigator_block -->{features_navigator}<!-- end features_navigator_block -->
+	</td>
+</tr>
+</table>
+</div>
+
+</div></div>
+
+
+<div align="center">
+	<a href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a>
+</div>
+
+</form>
+
+</body>
+</html>

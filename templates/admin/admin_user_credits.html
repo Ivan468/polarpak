@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{CREDITS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" src="../js/calendar.js"></script>
+<script language="JavaScript">
+<!--
+	function clearSearch() {
+		document.search_form.credits_sd.value = "";
+		document.search_form.credits_ed.value = "";
+		document.search_form.credits_tp.selectedIndex = 0;
+	
+		document.search_form.submit();
+
+	}
+//-->
+</script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+	<tr valign="top">
+		<td>
+
+		<div class="Block floatLeft">
+		<div class="BlockTitle">{SEARCH_TITLE}</div>
+		<div class="BlockContent">
+			<form action="{admin_user_credits_href}" name="search_form">
+			<input type="hidden" name="user_id" value="{user_id}">
+			<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+			<table border="0" cellpadding="4" cellspacing="1">
+				<tr class="usual">
+					<td>{FROM_DATE_MSG} ({date_edit_format}):</td>
+					<td>
+						<input type="text" name="credits_sd" value="{credits_sd}" class="search">
+						<a href="#"
+							onClick="setDateField(document.search_form.credits_sd, '{date_edit_format}');
+							top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+						<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+					</td>
+				</tr>
+				<tr class="usual">
+					<td>{TO_DATE_MSG} ({date_edit_format}):</td>
+					<td>
+						<input type="text" name="credits_ed" value="{credits_ed}" class="search">
+						<a href="#"
+							onClick="setDateField(document.search_form.credits_ed, '{date_edit_format}');
+							top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+						<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+					</td>
+				</tr>
+				<tr class="usual">
+					<td>{TYPE_MSG}:</td>
+					<td>
+						<select name="credits_tp"><!-- begin credits_tp -->
+							<option {credits_tp_selected} value="{credits_tp_value}">{credits_tp_description}<!-- end credits_tp -->
+						</select>
+					</td>
+				</tr>
+				<tr class="middle">
+					<td>&nbsp;</td>
+					<td>
+						<span class="button"><input type="submit" value="Search" class="submit"></span>
+						<span class="button"><input type="button" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch()"></span>
+					</td>
+				</tr>
+			</table>
+			</form>
+		</div>
+		</div>
+
+		</td>
+		<td>
+
+		<div class="Block floatRight">
+		<div class="BlockTitle">Credits Stats</div>
+		<div class="BlockContent">
+			<table cellpadding="4" cellspacing="1" border="0">
+				<tr class="middle" align="center">
+					<td>&nbsp;</td>
+					<td><a href="{admin_user_credits_href}?user_id={user_id}&credits_sd={today_date}&credits_ed={today_date}">{TODAY_MSG}</a></td>
+					<td><a href="{admin_user_credits_href}?user_id={user_id}&credits_sd={yesterday_date}&credits_ed={yesterday_date}">{YESTERDAY_MSG}</a></td>
+					<td><a href="{admin_user_credits_href}?user_id={user_id}&credits_sd={week_date}&credits_ed={today_date}">{LAST_SEVEN_DAYS_MSG}</a></td>
+					<td><a href="{admin_user_credits_href}?user_id={user_id}&credits_sd={month_date}&credits_ed={today_date}">{THIS_MONTH_FMSG}</a></td>
+				</tr>
+				<!-- begin types_stats -->
+				<tr class="usual" align="right">
+					<td align="left"><a href="{admin_users_credits_href}?user_id={user_id}&credits_tp={type_id}">{type_name}</a>&nbsp;</td>
+					<td>{credits_today}</td>
+					<td>{credits_yesterday}</td>
+					<td>{credits_week}</td>
+					<td>{credits_month}</td>
+				</tr>
+				<!-- end types_stats -->
+				<tr class="middle" align="right">
+					<td>{TOTAL_MSG}:</td>
+					<td>{credits_total_today}</td>
+					<td>{credits_total_yesterday}</td>
+					<td>{credits_total_week}</td>
+					<td>{credits_total_month}</td>
+				</tr>
+			</table>
+		</div>
+		</div>
+
+		</td>
+	</tr>
+</table>
+
+<br>
+
+<div class="Block">
+<div class="BlockTitle">{CREDITS_MSG}</div>
+<div class="BlockContent">
+
+<form name="credits" action="{admin_user_credits_href}" method="POST">
+<table border="0" cellspacing="1" cellpadding="6" width="100%"><!-- begin sorters -->
+<tr align="center" class="middle">
+	<td>{sorter_credit_amount}</td>
+	<td>{sorter_date_added}</td>
+	<td>{sorter_order_id}</td>
+	<td>{sorter_credit_type}</td>
+	<td>&nbsp;</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="{row_style}">
+	<td align="right">{credit_amount}</td>
+	<td align="center">{date_added}</td>
+	<td align="center"><!-- begin order_link -->
+		<a href="{admin_order_href}?order_id={order_id}">{order_id}</a><!-- end order_link -->
+	</td>
+	<td align="center">{credit_type}</td>
+	<td align="center"><a href="{admin_user_credit_url}">{EDIT_MSG}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="5">{NO_RECORDS_MSG}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="5">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_user_credit_new_url}">Add Credits</a>
+	</td>	
+</tr>
+</table>	
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

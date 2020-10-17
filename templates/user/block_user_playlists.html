@@ -1,0 +1,31 @@
+<table cellspacing="1" width="100%" class="table-data"><!-- begin sorters -->
+<tr class="middlebg" align="center">
+	<td>{ORDER_MSG}</td>
+	<td>{NAME_MSG}</td>
+	<td>{ACTIVE_MSG}</td>
+	<td>{EDIT_MSG}</td>
+	<td>{SONGS_MSG}</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="usualbg" valign="top">
+	<td align="center">{list_order}</td>
+	<td><a href="{user_playlist_href}?list_id={list_id}">{list_name}</a></td>
+	<td align="center">{active_type}</td>
+	<td align="center">
+		<a class="ico" title="{EDIT_MSG}" href="{user_playlist_href}?list_id={list_id}"><i class="ico-edit"></i></a>
+	</td>
+	<td align="center">
+		{songs_number}
+		<a class="ico" title="{SONGS_MSG}" href="{user_playlist_songs_href}?list_id={list_id}"><i class="ico-music"></i></a>
+	</td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usualbg">
+	<td colspan="6">{NO_PLAYLISTS_MSG}</td>
+</tr><!-- END no_records -->
+<tr class="middlebg">
+	<td colspan="6">
+		<a href="{user_playlist_href}">{ADD_NEW_MSG}</a>
+		<!-- begin navigator_block -->
+		<div class="right">{navigator}</div><!-- end navigator_block -->
+	</td>
+</tr>
+</table>	

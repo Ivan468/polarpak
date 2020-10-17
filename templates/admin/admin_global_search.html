@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html><head><title>{FULL_SITE_SEARCH_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="bodyDboard">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+	<div class="search-form">
+		<div class="head">
+			<div class="search-advanced expand {search_advanced_class}" data-class="advanced-fields" data-js="expand">
+				{ADVANCED_SEARCH_TITLE}
+				<i class="ico-toggle"></i>
+			</div>	
+			<div class="title">{SEARCH_TITLE}</div>
+			<div class="clear"></div>
+		</div>
+		<div class="body">
+			<form action="{admin_global_search_href}" name="search_form">
+			<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+				
+				<div class="advanced-fields {search_advanced_class}">
+
+					<div class="field">
+						<div class="name"></div> 
+						<div class="control">
+							<!-- begin aa -->
+							<div><input type="checkbox" name="aa[]" id="aa{aa_value}" {aa_checked} value="{aa_value}"> <label for="aa{aa_value}">{aa_description}</label></div><!-- end aa -->
+						</div>
+						<div class="after"></div>
+					</div>
+
+				</div>
+
+				<div class="field">
+					<div class="name"></div> 
+					<div class="control"><input type="text" name="s" value="{s}" class="search" size="40">
+						<input type="submit" value="{SEARCH_BUTTON}" class="submit">
+					</div>
+					<div class="after"></div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+<br/>
+
+
+
+<div class="">
+{search_result}
+</div>
+
+<div class="clear"></div>
+
+<!--begin latest_search_block-->
+<div class="Block">
+<div class="BlockTitle">Latest Searches</div>
+<div class="BlockContent">
+	<ul class="LinkList"><!--begin latest_search-->
+		<li><a href={admin_global_search_href}?s={keyword_url}>{keyword}</a> (<b>{count}</b>)</li><!--end latest_search-->
+	</ul>
+</div>
+</div>
+<!--end latest_search_block-->
+
+{admin_footer}
+</body>
+</html>

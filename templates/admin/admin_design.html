@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{DESIGN_MSG} :: {EDIT_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+
+function selectDirectory()
+{
+	var directory_value = document.record.directory_list.options[document.record.directory_list.selectedIndex].value;
+	var directory_name = document.record.directory_list.options[document.record.directory_list.selectedIndex].text;
+
+	if(directory_value != "")
+		document.record.templates_dir.value = "./templates/" + directory_name;
+}
+
+//-->
+</script>
+
+<script language="JavaScript" type= "text/javascript" src="../js/list_fields.js"></script>
+<script language="JavaScript">
+<!--
+var list_fields_names = new Array('sites');
+//-->
+</script>
+
+</head>
+
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<ul class="tabRow"><!-- BEGIN tabs -->
+	<li onClick="changeTab('{tab_name}'); return false;" id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+</ul>
+
+<div class="Form">
+
+<form action="{admin_design_href}" name="record" onSubmit="selectListFieldsAll();" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="layout_id" value="{layout_id}">
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="sites" value="">
+
+<div id="data_general" style="{general_style}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellpadding="4" cellspacing="1" width="100%">
+<tr class="usual">
+	<td><label for="show_for_user">{SHOW_FOR_USER_MSG}</label></td>
+	<td><input type="checkbox" {show_for_user} size="40" name="show_for_user" id="show_for_user" value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{DESIGN_NAME_MSG} *</td>
+	<td><input class="field" type="text" size="40" name="layout_name" value="{layout_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{CUSTOMER_DESIGN_NAME_MSG}</td>
+	<td><input class="field" type="text" size="40" name="user_layout_name" value="{user_layout_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{STYLE_NAME_MSG}</td>
+	<td><input class="field" type="text" size="40" name="style_name" value="{style_name}"></td>
+</tr>
+<!-- BEGIN scheme_name_block -->
+<tr class="usual">
+	<td>{CHANGE_ACTIVE_SCHEME_MSG}</td>
+	<td>
+		<select name="scheme_name"><!-- begin scheme_name -->
+			<option {scheme_name_selected} value="{scheme_name_value}">{scheme_name_description}<!-- end scheme_name -->
+		</select>
+	</td>
+</tr>
+<!-- END scheme_name_block -->
+<tr class="usual">
+	<td>{TEMPLATES_DIRECTORY_MSG} *</td>
+	<td>
+		<input class="field" type="text" size="40" name="templates_dir" value="{templates_dir}"> &lt;&mdash;
+		<select name="directory_list" onChange="selectDirectory();"><!-- begin directory_list -->
+			<option {directory_list_selected} value="{directory_list_value}">{directory_list_description}<!-- end directory_list -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ADMIN_TEMPLATES_DIRECTORY_MSG} *</td>
+	<td><input class="field" type="text" size="40" name="admin_templates_dir" id="admin_templates_dir" value="{admin_templates_dir}"> &lt;&mdash; <a href="#" onclick="document.getElementById('admin_templates_dir').value='../templates/admin'; return false;">Restore Default</a></td>
+
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+<div id="data_block_layout" style="{block_layout_style}">
+
+<table border="0" cellpadding="4" cellspacing="1" width="100%">
+<tr class="usual">
+	<td>{DEFAULT_MSG} </td>
+	<td><input class="field" type="text" size="60" name="block_default_template" value="{block_default_template}"></td>
+</tr>
+<tr class="usual">
+	<td>{BLOCK_AREA_MSG} </td>
+	<td><input class="field" type="text" size="60" name="block_area_template" value="{block_area_template}"></td>
+</tr>
+<tr class="usual">
+	<td>{BREADCRUMB_MSG} </td>
+	<td><input class="field" type="text" size="60" name="block_breadcrumb_template" value="{block_breadcrumb_template}"></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<!--begin sitelist-->
+<div id="data_sites" style="{sites_style}">
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+<tr class="usual">
+	<td colspan="3">
+		<input type="checkbox" name="sites_all" id="sites_all" {sites_all} onClick="checkListFields('sites');" value="1">
+		<label for="sites_all">{SITES_ALL_MSG} ({SITES_ALL_UNTICK_MSG})</label>
+	</td>
+</tr>
+<tr align="center" class="middle">
+	<td width="45%"><b>{AVAILABLE_SITES_MSG}</b></td>
+	<td width="10%"><b>{OPERATIONS_MSG}</b></td>
+	<td width="45%"><b>{USE_ITEM_SITES_MSG}</b></td>
+</tr>
+<tr align="center" class="usual">
+	<td>
+		<select name="available_sites" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_sites -->
+			<option value="{site_id}">{site_name}<!-- end available_sites-->
+		</select>
+	</td>
+	<td>
+		<span class="button"><input class="submit" readonly type="button" name="add_sites" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('sites');"></span>
+		<br><br>
+		<span class="button"><input class="submit" type="button" name="remove_sites" value="<- {REMOVE_BUTTON}" onClick="removeListFields('sites');"></span>
+	</td>
+	<td>
+		<select name="selected_sites" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_sites -->
+			<option value="{site_id}">{site_name}<!-- end selected_sites -->
+		</select>
+	</td>
+</tr>
+<tr align="center" class="middle">
+	<td colspan="3" >
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+<!--end sitelist-->
+</form>
+
+</div>
+
+<script language="JavaScript">
+<!--
+	checkListFieldsAll();
+//-->
+</script>
+{admin_footer}
+</body>
+</html>

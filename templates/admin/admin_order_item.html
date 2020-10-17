@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html><head><title>{ADMIN_ORDER_MSG} :: {ADMIN_PRODUCT_MSG} :: {EDIT_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/calendar.js"></script>
+<script language="JavaScript" type="text/javascript" src="../js/win_select.js"></script>
+<script>
+function changeItemId() 
+{
+	var itemId = document.record.item_id.value;
+	var editProductLink = document.querySelector(".edit-product");
+	if (editProductLink) {
+		editProductLink.href = "{admin_product_href}?item_id="+encodeURIComponent(itemId);
+		if (itemId == "") {
+			editProductLink.style.display = "none";
+		} else {
+			editProductLink.style.display = "inline";
+		}
+	}
+}
+</script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+
+	<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+		<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+	</ul>
+
+<div class="Form clearBoth">
+<div class="FormContent">
+
+<form action="{admin_order_item_href}" name="record" method="post">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="order_item_id" value="{order_item_id}">
+<input type="hidden" name="order_id" value="{order_id}">
+<input type="hidden" name="more_properties" value="0">
+<input type="hidden" name="number_properties" value="{number_properties}">
+
+<div id="general_data" class="tab-data {general_class}">
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="usual">
+	<td colspan="2">
+		<input type="checkbox" {recalculate_comissions_points} name="recalculate_comissions_points" id="recalculate_comissions_points" value="1">
+		<label for="recalculate_comissions_points">{RECALCULATE_COMMISSIONS_AND_POINTS_MSG}</label>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{PROD_GENERAL_TAB}</td>
+</tr>
+<tr class="usual">
+	<td>{PRODUCT_ID_MSG}</td>
+	<td>
+		<input class="field" type="text" name="item_id" value="{item_id}" size="10" readonly="readonly" data-onchange="changeItemId">
+		<!-- begin edit_product -->
+		<a class="smallButton edit-product" href="{admin_product_href}?item_id={item_id}" onchange="changeItemId();" style="{edit_product_style}">{EDIT_PRODUCT_MSG}</a>
+		<!-- end edit_product -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{TYPE_MSG}</td>
+	<td>
+		<select name="item_type_id"><!-- begin item_type_id -->
+			<option {item_type_id_selected} value="{item_type_id_value}">{item_type_id_description}<!-- end item_type_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{STATUS_MSG} *</td>
+	<td>
+		<select name="item_status"><!-- begin item_status -->
+			<option {item_status_selected} value="{item_status_value}">{item_status_description}<!-- end item_status -->
+		</select>
+	</td>
+</tr><!-- begin supplier_id_block -->
+<tr class="usual">
+	<td>{SUPPLIER_MSG}</td>
+	<td>
+		<select name="supplier_id"><!-- begin supplier_id -->
+			<option {supplier_id_selected} value="{supplier_id_value}">{supplier_id_description}<!-- end supplier_id -->
+		</select>
+	</td>
+</tr><!-- end supplier_id_block -->
+<tr class="usual">
+	<td>{PROD_CODE_MSG}</td>
+	<td><input class="field" type="text" name="item_code" value="{item_code}" size="40"></td>
+</tr>
+<tr class="usual">
+	<td>{MANUFACTURER_CODE_MSG}</td>
+	<td><input class="field" type="text" name="manufacturer_code" value="{manufacturer_code}" size="40"></td>
+</tr>
+<tr class="usual">
+	<td>{PROD_NAME_MSG} *</td>
+	<td>
+		<input class="field" type="text" name="item_name" value="{item_name}" size="100">
+		<a href="#" class="smallButton" onClick='jsonWindow({"url": "{admin_product_select_href}", "params": {"js_type": "json", "form_name": "record", "item_fields": "item_id,item_type_id,supplier_id,item_name,item_code,manufacturer_code,quantity,buying_price=buying_value,real_price=base_value,price=price_value,discount_amount=discount_value,packages_number,weight,actual_weight,width,height,item_length=length,is_shipping_free,shipping_cost"}}); return false;'>{SELECT_PRODUCT_MSG}</a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{QUANTITY_MSG} *</td>
+	<td><input class="field" type="text" name="quantity" value="{quantity}" size="10"></td>
+</tr>
+<tr class="usual">
+	<td>{PROD_BUYING_PRICE_MSG}</td>
+	<td><input class="field" type="text" name="buying_price" value="{buying_price}" size="10"></td>
+</tr>
+<tr class="usual">
+	<td>{BASE_PRICE_MSG}</td>
+	<td><input class="field" type="text" name="real_price" value="{real_price}" size="10"></td>
+</tr>
+<tr class="usual">
+	<td>{SELLING_PRICE_MSG} *</td>
+	<td><input class="field" type="text" name="price" value="{price}" size="10"></td>
+</tr>
+<tr class="usual">
+	<td>{DISCOUNT_AMOUNT_MSG}</td>
+	<td><input class="field" type="text" name="discount_amount" value="{discount_amount}" size="10"></td>
+</tr>
+<tr class="usual">
+	<td>{TAX_PERCENT_MSG}</td>
+	<td><input class="field" type="text" name="tax_percent" value="{tax_percent}" size="10"></td>
+</tr>
+<tr class="usual">
+	<td><label for="tax_free">{TAX_FREE_MSG}</label></td>
+	<td><input type="checkbox" name="tax_free" id="tax_free" {tax_free} value="1"></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<!-- begin save_button -->
+		<span class="button"><input class="submit" type="submit" value="{save_button_title}" onCLick="document.record.operation.value='save'"></span>
+		<!-- end save_button -->
+		<!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onCLick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="shipping_data" class="tab-data {shipping_class}">
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="2">{PACKAGE_PARAMETERS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{PACKAGES_NUMBER_MSG}</td>
+	<td><input class="field" type="text" name="packages_number" value="{packages_number}" size="7" maxlength="10"></td>
+</tr>
+<tr class="usual">
+	<td>{WEIGHT_MSG}</td>
+	<td>
+		<input class="field" type="text" name="weight" value="{weight}" size="7" maxlength="10">
+		<b>{weight_measure}</b> &nbsp; ({PER_PACKAGE_MSG})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ACTUAL_WEIGHT_MSG}</td>
+	<td>
+		<input class="field" type="text" name="actual_weight" value="{actual_weight}" size="7" maxlength="10">
+		<b>{weight_measure}</b> 
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>{DIMENSIONS_MSG} ({WIDTH_MSG} x {HEIGHT_MSG} x {LENGTH_MSG})</td>
+	<td>
+		<input class="field" type="text" name="width" value="{width}" size="7" maxlength="10"> x
+		<input class="field" type="text" name="height" value="{height}" size="7" maxlength="10"> x
+		<input class="field" type="text" name="item_length" value="{item_length}" size="7" maxlength="10">
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="6">{PROD_SHIPPING_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="downloadable">{ADMIN_DOWNLOADABLE_MSG}</label></td>
+	<td><input type="checkbox" {downloadable} name="downloadable" id="downloadable" value="1"></td>
+</tr>
+<tr class="usual">
+	<td width="20%"><label for="is_shipping_free">{FREE_SHIPPING_MSG}</label></td>
+	<td width="80%"><input type="checkbox" name="is_shipping_free" id="is_shipping_free" {is_shipping_free} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{SHIPPING_COST_MSG}</td>
+	<td><input class="field" type="text" name="shipping_cost" value="{shipping_cost}" size="10" maxlength="10"></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<!-- begin save_button -->
+		<span class="button"><input class="submit" type="submit" value="{save_button_title}" onCLick="document.record.operation.value='save'"></span>
+		<!-- end save_button -->
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="points_data" class="tab-data {points_class}">
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="6">{POINTS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td width="20%">{POINTS_PRICE_MSG}</td>
+	<td width="80%"><input class="field" type="text" name="points_price" value="{points_price}" size="10" maxlength="10"></td>
+</tr>
+<tr class="usual">
+	<td>{REWARD_POINTS_AMOUNT_MSG}</td>
+	<td><input class="field" type="text" name="reward_points" value="{reward_points}" size="10" maxlength="10"></td>
+</tr>
+<tr class="usual">
+	<td>{REWARD_CREDITS_AMOUNT_MSG}</td>
+	<td><input class="field" type="text" name="reward_credits" value="{reward_credits}" size="10" maxlength="10"></td>
+</tr>
+<tr class="middle">
+	<td></td>
+	<td>
+		<!-- begin save_button -->
+		<span class="button"><input class="submit" type="submit" value="{save_button_title}" onCLick="document.record.operation.value='save'"></span>
+		<!-- end save_button -->
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="commissions_data" class="tab-data {commissions_class}">
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="2">{COMMISSIONS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td width="20%">{AFFILIATE_MSG} {COMMISSIONS_MSG}</td>
+	<td width="80%"><input class="field" type="text" name="affiliate_commission" value="{affiliate_commission}" size="10" maxlength="10"></td>
+</tr>
+<tr class="usual">
+	<td>{MERCHANT_MSG} {COMMISSIONS_MSG}</td>
+	<td><input class="field" type="text" name="merchant_commission" value="{merchant_commission}" size="10" maxlength="10"></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<!-- begin save_button -->
+		<span class="button"><input class="submit" type="submit" value="{save_button_title}" onCLick="document.record.operation.value='save'"></span>
+		<!-- end save_button -->
+	</td>
+</tr>
+</table>
+</div>
+
+
+<div id="recurring_data" class="tab-data {recurring_class}">
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="2">{RECURRING_OPTIONS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td colspan="2">
+		<input type="checkbox" name="is_recurring" id="is_recurring" {is_recurring} value="1"> 
+		<label for="is_recurring">{RECURRING_ACTIVATE_MSG}</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{RECURRING_PRICE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="recurring_price" value="{recurring_price}" size="10" maxlength="10">
+		({RECURRING_PRICE_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td width="20%">{RECURRING_PERIOD_MSG}</td>
+	<td width="80%">
+		<input class="field" type="text" name="recurring_interval" value="{recurring_interval}" size="10" maxlength="10"> &nbsp;
+		<select name="recurring_period"><!-- begin recurring_period -->
+			<option {recurring_period_selected} value="{recurring_period_value}">{recurring_period_description}<!-- end recurring_period -->
+		</select>
+		&nbsp; ({RECURRING_INTERVAL_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{RECURRING_PAYMENTS_TOTAL_MSG}</td>
+	<td>
+		<input class="field" type="text" name="recurring_payments_total" value="{recurring_payments_total}" size="10" maxlength="10">
+		({RECURRING_PAYMENTS_TOTAL_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{RECURRING_PAYMENTS_MADE_MSG}</td>
+	<td><input class="field" type="text" name="recurring_payments_made" value="{recurring_payments_made}" size="10" maxlength="10"></td>
+</tr>
+<tr class="usual">
+	<td>{RECURRING_PAYMENTS_FAILED_MSG}</td>
+	<td><input class="field" type="text" name="recurring_payments_failed" value="{recurring_payments_failed}" size="10" maxlength="10"></td>
+</tr>
+<tr class="usual">
+	<td>{RECURRING_LAST_PAYMENT_MSG}</td>
+	<td>
+		<input class="field" type="text" name="recurring_last_payment" value="{recurring_last_payment}" size="10" maxlength="10">
+		<a href="#"
+			onClick="setDateField(document.record.recurring_last_payment, '{date_edit_format}');
+			top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+		({date_format_msg})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{RECURRING_PLAN_PAYMENT_MSG}</td>
+	<td>
+		<input class="field" type="text" name="recurring_plan_payment" value="{recurring_plan_payment}" size="10" maxlength="10">
+		<a href="#"
+			onClick="setDateField(document.record.recurring_plan_payment, '{date_edit_format}');
+			top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{RECURRING_NEXT_PAYMENT_MSG}</td>
+	<td>
+		<input class="field" type="text" name="recurring_next_payment" value="{recurring_next_payment}" size="10" maxlength="10">
+		<a href="#"
+			onClick="setDateField(document.record.recurring_next_payment, '{date_edit_format}');
+			top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{RECURRING_END_DATE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="recurring_end_date" value="{recurring_end_date}" size="10" maxlength="10">
+		<a href="#"
+			onClick="setDateField(document.record.recurring_end_date, '{date_edit_format}');
+			top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<!-- begin save_button -->
+		<span class="button"><input class="submit" type="submit" value="{save_button_title}" onCLick="document.record.operation.value='save'"></span>
+		<!-- end save_button -->
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="subscription_data" class="tab-data {subscription_class}">
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="2">{SUBSCRIPTION_OPTIONS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td width="20%"><label for="is_subscription">{SUBSCRIPTION_ACTIVATE_MSG}</label></td>
+	<td width="80%"><input type="checkbox" name="is_subscription" id="is_subscription" {is_subscription} value="1"></td>
+</tr>
+<tr class="usual">
+	<td width="20%"><label for="is_account_subscription">{ACCOUNT_SUBSCRIPTION_MSG}</label></td>
+	<td width="80%"><input type="checkbox" name="is_account_subscription" id="is_account_subscription" {is_account_subscription} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{SUBSCRIPTION_PERIOD_MSG}</td>
+	<td>
+		<input class="field" type="text" name="subscription_interval" value="{subscription_interval}" size="10" maxlength="10"> &nbsp;
+		<select name="subscription_period"><!-- begin subscription_period -->
+			<option {subscription_period_selected} value="{subscription_period_value}">{subscription_period_description}<!-- end subscription_period -->
+		</select>
+		&nbsp; ({SUBSCRIPTION_INTERVAL_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{SUBSCRIPTION_SUSPEND_MSG}</td>
+	<td>
+		<input class="field" type="text" name="subscription_suspend" value="{subscription_suspend}" size="20" maxlength="20">
+		({SUBSCRIPTION_SUSPEND_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{SUBSCRIPTION_START_DATE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="subscription_start_date" value="{subscription_start_date}" size="20" maxlength="20">
+		<a href="#"
+			onClick="setDateField(document.record.subscription_start_date, '{date_edit_format}');
+			top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+		({date_format_msg})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{SUBSCRIPTION_EXPIRY_DATE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="subscription_expiry_date" value="{subscription_expiry_date}" size="20" maxlength="20">
+		<a href="#"
+			onClick="setDateField(document.record.subscription_expiry_date, '{date_edit_format}');
+			top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+		({date_format_msg})
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<!-- begin save_button -->
+		<span class="button"><input class="submit" type="submit" value="{save_button_title}" onCLick="document.record.operation.value='save'"></span>
+		<!-- end save_button -->
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="options_data" class="tab-data {options_class}">
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="8">{OPTIONS_VALUES_MSG}</td>
+</tr>
+<tr align="center" class="middle">
+	<td>#</td>
+	<td class="small">{OPTION_NAME_MSG}</td>
+	<td class="small">{HIDE_MSG}</td>
+	<td class="small">{OPTION_VALUE_MSG}</td>
+	<td class="small">{ADDITIONAL_PRICE_MSG}</td>
+	<td class="small">{ADDITIONAL_WEIGHT_MSG}</td>
+	<td class="small">{ACTUAL_WEIGHT_MSG}</td>
+	<td class="small">{DELETE_BUTTON}</td>
+</tr><!-- begin properties --><!-- begin properties_errors -->
+<tr class="usual" align="center">
+	<td>&nbsp;</td>
+	<td colspan="6" class="errorbg">{errors_list}</td>
+	<td>&nbsp;</td>	
+</tr><!-- end properties_errors -->
+<tr class="usual" align="center">
+	<td>
+		{properties_number}
+		<input type="hidden" name="item_property_id_{properties_number}" value="{item_property_id}">
+		<input type="hidden" name="order_item_id_{properties_number}" value="{order_item_id}">
+	</td>
+	<td><input class="field" type="text" name="property_name_{properties_number}" value="{property_name}" size="30" /></td>
+	<td><input class="field" type="checkbox" name="hide_name_{properties_number}" {hide_name} value="1" /></td>
+	<td><input class="field" type="text" name="property_value_{properties_number}" value="{property_value}" size="30" /></td>
+	<td><input class="field" type="text" name="additional_price_{properties_number}" value="{additional_price}" size="10" maxlength="10" /></td>
+	<td><input class="field" type="text" name="additional_weight_{properties_number}" value="{additional_weight}" size="10" maxlength="10" /></td>
+	<td><input class="field" type="text" name="additional_actual_weight_{properties_number}" value="{additional_actual_weight}" size="10" maxlength="10" /></td>
+	<td align="center"><input type="checkbox" name="properties_delete_{properties_number}" {properties_delete} value="1" /></td>
+</tr><!-- end properties -->
+<tr class="usual" align="right">
+	<td colspan="8">{ADD_MORE_OPTIONS_QST} <span class="button"><input class="submit" type="submit" value={ADD_BUTTON} onClick="document.record.tab.value='options';document.record.more_properties.value=1;"></span></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td colspan="7">
+		<!-- begin save_button -->
+		<span class="button"><input class="submit" type="submit" value="{save_button_title}" onCLick="document.record.operation.value='save'"></span>
+		<!-- end save_button -->
+	</td>
+</tr>
+</table>
+</div>
+
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

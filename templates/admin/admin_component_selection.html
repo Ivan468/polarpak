@@ -1,0 +1,417 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {EDIT_SUBCOMP_SELECTION_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="../js/list_fields.js"></script>
+<script language="JavaScript">
+<!--
+	var list_fields_names = new Array('sites');
+
+	var optionsValues = new Array();
+	//<!-- begin parent_options -->
+	optionsValues[{property_id}] = new Array();//<!-- end parent_options -->
+	//<!-- begin options_values -->
+	optionsValues[{property_id}][{value_id}] = "{value_title}";//<!-- end options_values -->
+
+	function changeParentValues()
+	{
+		var formObj = document.record;
+		var propertyObj = formObj.parent_property_id;
+		var valueObj = formObj.parent_value_id;
+		var totalOptions = valueObj.length;
+		// clear options first
+		for (var i = totalOptions - 1; i >= 0; i--) {
+			valueObj.options[i] = null;
+		}
+		var parentId = propertyObj.options[propertyObj.selectedIndex].value;
+		if (parentId && optionsValues[parentId]) {
+			var optionValues = optionsValues[parentId];
+			valueObj.options[valueObj.length] = new Option("", "");
+			for (valueId in optionValues) {
+				valueObj.options[valueObj.length] = new Option(optionValues[valueId], valueId);
+			}
+		}
+		var valueBlockObj = document.getElementById("parent_value_id_block");
+		if(valueObj.options.length <= 1) {
+			valueBlockObj.style.display = "none";
+		} else {
+			valueBlockObj.style.display = "block";
+		}
+	}
+
+	function openProductWindow(formId)
+	{
+		var productWin = window.open ('{admin_product_select_href}?form_id=' + formId, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		productWin.focus();
+	}
+
+	function setProduct(itemId, itemName, itemPrice, formId)
+	{
+		document.record.elements["sub_item_id_" + formId].value = itemId;
+		document.record.elements["property_value_" + formId].value = itemName;
+		var basicPrice = document.getElementById("price_" + formId);
+		if (basicPrice) {
+			basicPrice.innerHTML = itemPrice;
+		}
+	}
+
+//-->
+</script>
+</head>
+
+<body class="bodyDboard">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<ul class="tabRow"><!-- BEGIN tabs -->
+	<li onClick="changeTab('{tab_name}'); return false;" id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+</ul>
+
+<div class="Block">
+<div class="BlockContent">
+
+<form action="{admin_component_selection_href}" name="record" onSubmit="selectListFieldsAll();" method="post">
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="category_id" value="{category_id}">
+<input type="hidden" name="property_id" value="{property_id}">
+<input type="hidden" name="item_id" value="{item_id}">
+<input type="hidden" name="item_type_id" value="{item_type_id}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sites" value="">
+<input type="hidden" name="page" value="{page}">
+<input type="hidden" name="more_properties" value="0">
+<input type="hidden" name="number_properties" value="{number_properties}">
+
+<div id="data_general" style="{general_style}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="2">{ADMIN_GENERAL_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="show_for_user">{SHOW_FOR_USER_MSG}</label></td>
+	<td><input type="checkbox" name="show_for_user" id="show_for_user" {show_for_user} value="1"></td>
+</tr>
+<tr class="usual">
+	<td><label for="required">{COMPONENT_REQUIRED_MSG}</label></td>
+	<td><input type="checkbox" {required} name="required" id="required" value="1"></td>
+</tr>
+<tr class="usual">
+	<td width="20%">{COMPONENT_ORDER_MSG} *</td>
+	<td><input class="field" type="text" name="property_order" value="{property_order}" size="12"></td>
+</tr>
+<tr class="usual">
+	<td width="20%">{CODE_MSG}</td>
+	<td><input class="field" type="text" name="property_code" value="{property_code}" size="12"></td>
+</tr>
+<tr class="usual">
+	<td>{COMPONENT_NAME_MSG} *</td>
+	<td><input class="field" type="text" name="property_name" value="{property_name}" size="60"></td>
+</tr>
+<tr class="usual">
+	<td>{CART_QUANTITY_MSG}</td>
+	<td><!-- begin quantity_action -->
+		<input type="radio" name="quantity_action" id="quantity_action{quantity_action_value}" {quantity_action_checked} value="{quantity_action_value}">
+		<label for="quantity_action{quantity_action_value}">{quantity_action_description}</label><br><!-- end quantity_action -->
+	</td>
+</tr>
+<!-- BEGIN usage_type_block -->
+<tr class="usual">
+	<td>{ASSIGN_COMPONENT_MSG} *</td>
+	<td>
+		<select name="usage_type"><!-- begin usage_type -->
+			<option {usage_type_selected} value="{usage_type_value}">{usage_type_description}<!-- end usage_type -->
+		</select>
+	</td>
+</tr>
+<!-- END usage_type_block -->
+<tr class="usual">
+	<td>{COMPONENT_CONTROL_MSG} *</td>
+	<td>
+		<select name="control_type"><!-- begin control_type -->
+			<option {control_type_selected} value="{control_type_value}">{control_type_description}<!-- end control_type -->
+		</select>
+		<span class="small">({COMPONENT_CONTROL_DESC})</span>
+	</td>
+</tr>
+<!-- BEGIN parent_property_block -->
+<tr class="usual" valign="top">
+	<td>{PARENT_OPTION_MSG}</td>
+	<td>
+		<select name="parent_property_id" onChange="changeParentValues();"><!-- begin parent_property_id -->
+			<option {parent_property_id_selected} value="{parent_property_id_value}">{parent_property_id_description}<!-- end parent_property_id -->
+		</select>
+		<span class="small">({PARENT_OPTION_DESC})</span>
+		<div id="parent_value_id_block" style="{parent_value_style}">
+			<select name="parent_value_id"><!-- begin parent_value_id -->
+				<option {parent_value_id_selected} value="{parent_value_id_value}">{parent_value_id_description}<!-- end parent_value_id -->
+			</select>
+			<span class="small">({PARENT_OPTION_VALUE_DESC})</span>
+		</div>
+	</td>
+</tr>
+<!-- END parent_property_block -->
+<tr class="usual">
+	<td>{BLOCK_CSS_CLASS_MSG}</td>
+	<td>
+		<input class="field" type="text" name="property_class" value="{property_class}" size="60"> 
+	</td>
+</tr>
+<tr class="usual">
+	<td>{COMPONENT_STYLE_MSG}</td>
+	<td>
+		<input class="field" type="text" name="property_style" value="{property_style}" size="60"> <br>
+		<span class="small">({USE_CSS_TO_CHANGE_MSG}, {EG_MSG} 'display: none;')</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{SHOW_COMPONENT_MSG}</td>
+	<td>
+		<div class="floatLeft half25"><input type="checkbox" {use_on_list} name="use_on_list" id="use_on_list" value="1">
+		<label for="use_on_list">{ON_PROD_LIST_MSG}</label></div>
+		<div class="floatLeft half25"><input type="checkbox" {use_on_details} name="use_on_details" id="use_on_details" value="1">
+		<label for="use_on_details">{ON_PROD_DETAILS_MSG}</label></div>
+		<div class="floatLeft half25"><input type="checkbox" {use_on_table} name="use_on_table" id="use_on_table" value="1">
+		<label for="use_on_table">{ON_TABLE_VIEW_MSG}</label></div>
+		<div class="floatLeft half25"><input type="checkbox" {use_on_grid} name="use_on_grid" id="use_on_grid" value="1">
+		<label for="use_on_grid">{ON_GRID_VIEW_MSG}</label></div>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{LIST_OF_SUBCOMPONENTS_MSG}</td>
+</tr>
+<tr align="center" class="usual">
+	<td  colspan="2">
+
+<table cellspacing="1" cellpadding="4" border="0" align="center" width="100%">
+<tr align="center" class="usual">
+	<td class="small">{ID_MSG}</td>
+	<td class="small">&nbsp;</td>
+	<td class="small">{PRODUCT_ID_MSG}</td>
+	<td class="small">{ADMIN_ORDER_MSG}</td>
+	<td class="small">{SUBCOMP_NAME_MSG}</td>
+	<td class="small">{QUANTITY_MSG}</td>
+	<td class="small">{OVERRIDE_PRICE_MSG}</td>
+	<td class="small">{PROD_TRADE_PRICE_MSG}</td>
+	<td class="small">{BASE_PRICE_MSG}</td>
+	<td class="small">{DEFAULT_MSG}</td>
+	<td class="small">{HIDE_MSG}</td>
+	<td class="small">{DELETE_BUTTON}</td>
+</tr><!-- begin properties --><!-- begin properties_errors -->
+<tr class="usual" align="center">
+	<td colspan="11" class="errorbg">{errors_list}</td>
+</tr><!-- end properties_errors -->
+<tr class="usual" align="center" valign="top">
+	<td align="center">
+		<b>{item_property_id}</b>
+	</td>
+	<td align="center">
+		<a href="#" onClick="openProductWindow('{properties_number}'); return false;">{SELECT_PRODUCT_MSG}</a>
+	</td>
+	<td>
+		<input type="hidden" name="item_property_id_{properties_number}" value="{item_property_id}">
+		<input type="hidden" name="property_id_{properties_number}" value="{property_id}">
+		<input class="field" type="text" name="sub_item_id_{properties_number}" value="{sub_item_id}" size="8">
+	</td>
+	<td>
+		<input class="field" type="text" name="value_order_{properties_number}" value="{value_order}" size="3" maxlength="10">
+	</td>
+	<td>
+		<input class="field" type="text" name="property_value_{properties_number}" value="{property_value}" size="32">
+	</td>
+	<td>
+		<input class="field" type="text" name="quantity_{properties_number}" value="{quantity}" size="6" maxlength="10">
+	</td>
+	<td>
+		<input class="field" type="text" name="additional_price_{properties_number}" value="{additional_price}" size="10" maxlength="10" style="text-align:right;">
+	</td>
+	<td>
+		<input class="field" type="text" name="trade_additional_price_{properties_number}" value="{trade_additional_price}" size="10" maxlength="10" style="text-align:right;">
+	</td>
+	<td align="right">
+		<b><span id="price_{properties_number}">{basic_price}</span></b>
+	</td>
+	<td>
+		<input type="checkbox" name="is_default_value_{properties_number}" {is_default_value} value="1">
+	</td>
+	<td>
+		<input type="checkbox" name="hide_value_{properties_number}" {hide_value} value="1">
+	</td>
+	<td align="center">
+		<input type="checkbox" name="properties_delete_{properties_number}" {properties_delete} value="1">
+	</td>
+</tr><!-- end properties -->
+<tr class="usual">
+	<td colspan="11" align="right">
+		{ADD_MORE_SUBCOMP_QST} <span class="button"><input class="submit" type="submit" value=" {ADD_BUTTON} " onClick="document.record.more_properties.value=1"></span>
+	</td>
+</tr>
+</table>
+
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onCLick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="data_html" style="{html_style}">
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="2">{COMPONENT_APPEARANCE_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>
+		{CONTROL_STYLE_MSG}
+		<div class="small">({CONTROL_STYLE_NOTE}, {EG_MSG} 'color: green;')</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="control_style">{control_style}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{BEFORE_TITLE_HTML_MSG}
+		<div class="small">({BEFORE_TITLE_COMPONENT_NOTE})</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="start_html">{start_html}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{AFTER_TITLE_HTML_MSG}
+		<div class="small">({AFTER_TITLE_COMPONENT_NOTE})</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="middle_html">{middle_html}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{BEFORE_CONTROL_HTML_MSG}
+		<div class="small">({BEFORE_CONTROL_COMPONENT_NOTE})</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="before_control_html">{before_control_html}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{AFTER_CONTROL_HTML_MSG}
+		<div class="small">({AFTER_CONTROL_COMPONENT_NOTE})</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="after_control_html">{after_control_html}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{END_HTML_MSG}
+		<div class="small">({END_COMPONENT_NOTE})</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="end_html">{end_html}</textarea>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td><span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+
+<div id="data_js" style="{js_style}">
+<table cellspacing="1" cellpadding="6" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="2">{JAVASCRIPT_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>
+		{ONCHANGE_EVENT_MSG}
+		<div class="small">({EG_MSG} &lt;select onChange="<b>[your code here]</b>"&gt;)</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="onchange_code">{onchange_code}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{ONCLICK_EVENT_MSG}
+		<div class="small">({EG_MSG} &lt;input type="radio" onClick="<b>[your code here]</b>"&gt;)</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="onclick_code">{onclick_code}</textarea>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{CONTROL_CODE_MSG}
+		<div class="small">({EG_MSG} &lt;input type="text" <b>[your code here]</b>&gt;)</div>
+	</td>
+	<td>
+		<textarea cols="80" rows="3" name="control_code">{control_code}</textarea>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td><span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+
+<div id="data_sites" style="{sites_style}">
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+<tr class="usual">
+	<td colspan="3">
+		<input type="checkbox" name="sites_all" id="sites_all" {sites_all} onClick="checkListFields('sites');" value="1">
+		<label for="sites_all">{SITES_ALL_MSG} ({SITES_ALL_UNTICK_MSG})</label>
+	</td>
+</tr>
+<tr align="center" class="middle">
+	<td width="45%"><b>{AVAILABLE_SITES_MSG}</b></td>
+	<td width="10%"><b>{OPERATIONS_MSG}</b></td>
+	<td width="45%"><b>{USE_ITEM_SITES_MSG}</b></td>
+</tr>
+<tr align="center" class="usual">
+	<td>
+		<select name="available_sites" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_sites -->
+			<option value="{site_id}">{site_name}<!-- end available_sites-->
+		</select>
+	</td>
+	<td>
+		<span class="button"><input class="submit" readonly type="button" name="add_sites" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('sites');"></span>
+		<br><br>
+		<span class="button"><input class="submit" type="button" name="remove_sites" value="<- {REMOVE_BUTTON}" onClick="removeListFields('sites');"></span>
+	</td>
+	<td>
+		<select name="selected_sites" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_sites -->
+			<option value="{site_id}">{site_name}<!-- end selected_sites -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="3" >
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

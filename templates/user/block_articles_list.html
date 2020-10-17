@@ -1,0 +1,84 @@
+		<!-- begin search_and_navigation -->
+		<div class="search-navigation"> 
+			<!-- begin search_results --><div class="found-articles">{FOUND_ARTICLES_MSG}</div><!-- end search_results -->
+			<!-- begin navigator_block --><div class="navigation">{navigator}</div><!-- end navigator_block -->
+		</div>
+		<!-- end search_and_navigation -->
+
+
+			<!-- begin no_items -->
+			<div class="no-articles">{NO_ARTICLES_MSG}</div>
+			<!-- end no_items -->
+
+			<div class="articles {columns_class}">
+				<!-- BEGIN items_rows -->
+				<!-- BEGIN items_cols -->
+				<div class="col {column_class}">
+					<div class="article">
+
+					<a name="a{a_name}"></a>
+					<h2 class="title {article_new_class} {restricted_class}"><a class="title" href="{details_url}">{article_title}</a>
+					<!-- begin reviews -->
+					&nbsp;<a href="{reviews_url}"><img class="{rating_image}" src="images/tr.gif" alt="{rating_alt}" align="top" /></a><!-- end reviews -->
+					</h2>
+
+					<!-- begin found_in_category -->
+					<div class="found-in">{FOUND_IN_MSG}: <!-- BEGIN found_categories -->
+					<a class="found-in {restricted_cat_class}" href="{list_href}?category_id={ic_id}">{article_category}</a>{ic_separator} <!-- END found_categories -->	
+					</div><!-- end found_in_category -->
+
+					<!-- begin author_block -->
+					<!-- begin author_name_block --><b>{author_name}</b> <!-- end author_name_block -->
+					<!-- begin author_email_block -->&lt;{author_email}&gt;<!-- end author_email_block -->
+					<!-- begin author_url_block --> <a href="{author_url}" target="_blank">{author_url}</a><!-- end author_url_block -->
+					<!-- end author_block -->
+
+					<!-- begin date_block -->
+					<div class="article-date">
+					<!-- begin article_date_block -->{article_date}<!-- end article_date_block --> 
+					<!-- begin date_end_block --> &ndash; {date_end}<!-- end date_end_block --> 
+					</div>
+					<!-- end date_block -->
+
+
+					<!-- begin flash_player_block -->
+					<script type="text/javascript">
+					//<![CDATA[
+					flashplayer('{stream_video}','{stream_video_preview}','{stream_video_width}','{stream_video_height}','no','');
+					//]]>
+					</script>
+					<!-- end flash_player_block -->
+					<!-- begin windows_media_block-->
+					<script type="text/javascript">
+					//<![CDATA[
+					mediaplayer('{stream_video}','{stream_video_width}','{stream_video_height}','false');
+					//]]>
+					</script>
+					<!-- end windows_media_block-->
+					<!-- begin image_large_block --><a href="{details_url}"><img src="{src}" alt="{alt}" /></a><!-- end image_large_block -->
+					<!-- begin image_small_block --><a href="{details_url}"><img src="{src}" alt="{alt}" /></a><!-- end image_small_block -->
+					<!-- begin short_description_block -->
+					{short_description}
+					<!-- end short_description_block -->
+					{full_description}
+					<a class="button bn-more" href="{details_url}"><span><b>{READ_MORE_MSG}</b></span><img src="images/tr.gif" alt="{READ_MORE_MSG}" /></a>
+
+					<!-- begin link_url_block --><div class="link">{LINK_URL_MSG}: <a href="{link_url}" target="_blank">{link_title}</a></div><!-- end link_url_block -->
+					<!-- begin download_url_block --><div class="download">{DOWNLOAD_URL_MSG}: <a href="{download_url}" target="_blank">{download_url}</a></div><!-- end download_url_block -->
+					<!-- begin notes_block --><div class="notes">{NOTES_MSG}: {notes}</div><!-- end notes_block -->
+					<!-- begin keywords_block --><div class="keywords">{KEYWORDS_MSG}: {keywords}</div><!-- end keywords_block -->
+
+					</div>
+				</div>
+				<!-- END items_cols -->
+				<!-- END items_rows -->
+				<div class="clear"></div>
+			</div>
+
+
+		<!-- begin search_and_navigation -->
+		<div class="search-navigation"> 
+			<!-- begin search_results --><div class="found-articles">{FOUND_ARTICLES_MSG}</div><!-- end search_results -->
+			<!-- begin navigator_block --><div class="navigation">{navigator}</div><!-- end navigator_block -->
+		</div>
+		<!-- end search_and_navigation -->

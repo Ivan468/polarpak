@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {BOOKMARKS_MSG} ::..</title>
+	<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+	<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="bodySettings">
+	{admin_header}
+	{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{BOOKMARKS_MSG}</div>
+<div class="BlockContent">
+
+<!-- begin errors --><div class="errorbg">{error}</div><!-- end errors -->
+
+	<table width=100% border="0" cellspacing="1" cellpadding="6"><!--begin  bookmarks_table -->
+		<tr class="middle" align="center">
+			<td>{sorter_admin_bookmark_id}</td>
+			<td>{sorter_admin_title}</td>
+			<td>{sorter_admin_url}</td>
+			<td>{sorter_is_start_page}</td>
+			<td>&nbsp;</td>
+		</tr><!--end  bookmarks_table --><!-- begin admin_bookmarks -->
+		<tr class="usual"> 
+			<td align="center">{admin_bookmark_id}</td>
+			<td>{admin_title}</td>
+			<td><a href="{admin_url}">{admin_url}</a></td>
+			<td align="center">{admin_start_page}</td>
+			<td align="center"><a href="admin_bookmark.php?bookmark_id={admin_bookmark_id}">{EDIT_MSG}</a></td>
+		</tr><!-- end admin_bookmarks -->
+		<tr class="middle">
+			<td colspan="5"><a href="admin_bookmark.php">{ADD_NEW_MSG}</a></td>
+		</tr>
+	</table>
+
+</div>
+</div>
+
+{admin_footer}
+
+</body>
+</html>

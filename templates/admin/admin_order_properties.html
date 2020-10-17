@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{custom_module_name} :: {CUSTOM_FIELDS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header}
+{block_leftside_breadcrumbs}
+
+<div class="Block">
+<div class="BlockTitle">{custom_module_name} :: {CUSTOM_FIELDS_MSG}</div>
+<div class="BlockContent">
+
+<!-- custom fields -->
+<table border="0" cellpadding="6" cellspacing="1" width="100%"><!-- begin name_properties -->
+<tr class="middle" align="center">
+	<td>{ID_MSG}</td>
+	<td>{FIELD_NAME_MSG}</td>
+	<td>{TYPE_MSG}</td>
+	<td>{REQUIRED_MSG}</td>
+	<td>{SHOW_FIELD_MSG}</td>
+	<td>{FIELD_CONTROL_MSG}</td>
+	<td align="center">&nbsp;</td>
+</tr><!-- end name_properties --><!-- begin properties -->
+<tr class="usual" align="center">
+	<td>{property_id}</td>
+	<td align="left">{property_name}</td>
+	<td align="center">{property_type}</td>
+	<td><a class="{property_required_class}" href="{property_required_url}">{property_required_desc}</a></td>
+	<td>{property_show}</td>
+	<td>{control_type}</td>
+	<td><a href="{admin_order_property_url}">{EDIT_MSG}</a></td>
+</tr><!-- end properties --><!-- begin no_properties -->
+<tr class="usual">
+	<td colspan="7">{NO_CUSTOM_FIELDS_MSG}</td>
+</tr><!-- end no_properties -->
+<tr class="middle">
+	<td colspan="7"><a href="{admin_order_property_new_url}">{ADD_NEW_MSG}</a></td>
+</tr>
+</table>
+</div>
+
+
+
+</div>
+</div>
+
+</form>
+
+{admin_footer}
+
+</body>
+</html>

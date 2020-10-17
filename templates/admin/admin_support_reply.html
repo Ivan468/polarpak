@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html><head><title>{summary}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+
+function openDataWindow(pageURL)
+{
+	var popupWin = window.open (pageURL, 'popupWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+	popupWin.focus();
+}
+
+function insertAtCaret(text, delimiter)
+{	
+	if (!delimiter) { delimiter = ""; }
+	var textEl = document.reply.message_text;
+	var startPos = textEl.selectionStart;
+	var endPos = textEl.selectionEnd;
+	var textBefore = textEl.value.substring(0, startPos);
+	var textAfter = textEl.value.substring(endPos, textEl.value.length);
+	if (textBefore.length > 0) {
+		textBefore += delimiter;
+	}
+	if (textAfter.length > 0) {
+		text += delimiter;
+	}
+	textEl.value = textBefore + text + textAfter;
+}
+
+
+function addSignature(signatureObj)
+{
+	var signature = signatureObj.getAttribute("data-signature");
+	insertAtCaret(signature, "\n");
+}
+
+
+function openPredefined()
+{
+	var PredefinedWindow = window.open ('admin_support_prereplies.php?is_popup=1', 'predefinedWindow', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+	PredefinedWindow.focus();
+}
+
+
+function attachFiles()
+{
+	var attachWin = window.open ("{admin_support_attachments_url}", 'attachWin', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+	attachWin.focus();
+}
+
+
+function closeTicket()
+{
+	return confirm("{CLOSE_CONFIRM_QST} {ADMIN_TICKET_MSG}?");
+} 
+
+function changeHelpdeskTab(tabObj)
+{
+	document.reply.operation.value = tabObj.value;
+	return;
+}
+
+function updateAttachments(attachmentsFiles)
+{
+	var abObj = document.getElementById("attachmentsBlock");
+	var afObj = document.getElementById("attachedFiles");
+	if (attachmentsFiles == "") {
+		afObj.innerHTML = "";
+	} else {
+		afObj.innerHTML = attachmentsFiles;
+	}
+	if (abObj) {
+		if (attachmentsFiles == "") {
+			abObj.style.display = "none";
+		} else {
+			abObj.style.display = "block";
+		}
+	}
+}
+
+</script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{admin_breadcrumb}
+<a name="reply_form"></a>
+	
+<form action="{admin_support_reply_href}?support_id={support_id}#reply_form" name="reply" method="POST">
+<input type="hidden" name="rnd" value="{rnd}">
+<input type="hidden" name="tab" value="{tab}" onchange="changeHelpdeskTab(this);">
+<input type="hidden" name="operation" value="{operation}">
+<input type="hidden" name="support_id" value="{support_id}">
+<input type="hidden" name="s_tn" value="{s_tn}">
+<input type="hidden" name="s_ne" value="{s_ne}">
+<input type="hidden" name="s_sm" value="{s_sm}">
+<input type="hidden" name="s_kw" value="{s_kw}">
+<input type="hidden" name="s_sd" value="{s_sd}">
+<input type="hidden" name="s_ed" value="{s_ed}">
+<input type="hidden" name="s_at" value="{s_at}">
+<input type="hidden" name="s_dp" value="{s_dp}">
+<input type="hidden" name="s_tp" value="{s_tp}">
+<input type="hidden" name="s_st" value="{s_st}">
+<input type="hidden" name="s_in" value="{s_in}">
+<input type="hidden" name="s_sti" value="{s_sti}">
+<input type="hidden" name="page" value="{page}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+
+
+<div class="Block">
+<div class="BlockTitle">{summary}</div>
+<div class="BlockContent">
+
+<table border="0" cellpadding="2" cellspacing="1" width="100%">
+<tr><td valign="top" width="33%">	
+	
+	<!-- begin user info -->
+	<table border="0" cellpadding="4" cellspacing="1" width="100%">
+    <tr valign="top" class="middle">
+    	<td colspan="2">{CUSTOMER_DETAILS_MSG}</td>
+    </tr>
+    <tr valign="top">
+    	<td class="middle" width="30%" nowrap>{CUSTOMER_NAME_MSG}</td>
+    	<td class="usual">{user_name}</td>
+    </tr>
+    <tr valign="top">
+    	<td class="middle">{CUSTOMER_EMAIL_MSG}</td>
+    	<td class="usual">{user_email}</td>
+    </tr>
+    <tr valign="top">
+    	<td class="middle">{EMAIL_CC_MSG} {EMAIL_FIELD}</td>
+    	<td class="usual">{mail_cc}</td>
+    </tr>
+    <tr valign="top">
+    	<td class="middle">{IDENTIFIER_MSG}</td>
+    	<td class="usual">{identifier}</td>
+    </tr>
+    <tr valign="top">
+    	<td class="middle">{ENVIRONMENT_MSG}</td>
+    	<td class="usual">{environment}</td>
+    </tr>
+    <tr valign="top">
+    	<td class="middle">{CUSTOMER_IP_MSG}</td>
+    	<td class="usual ip-data">
+				<span class="ip-address {ip_class}">{remote_address_desc}</span> 
+				<a class="bn-tiny ip-edit" href="{admin_order_black_url}" onClick="openEditWindow('{admin_order_black_url}'); return false;" data-add-text="{ADD_TO_BLACK_LIST_MSG}" data-edit-text="{EDIT_BUTTON} / {REMOVE_BUTTON}">{ip_edit_text}</a>
+			</td>
+    </tr>
+    <tr valign="top">
+    	<td class="middle">{ADMIN_PRODUCT_MSG}</td>
+    	<td class="usual">{product_name}</td>
+    </tr><!-- begin custom_properties -->
+	<tr valign="top">
+    	<td class="middle">{property_name}</td>
+    	<td class="usual">{property_value}</td>
+    </tr><!-- end custom_properties -->
+    </table>
+    
+</td><td valign="top" width="33%">	
+
+	<table border="0" cellpadding="4" cellspacing="1" width="100%">
+    <tr class="middle">
+    	<td colspan="2">{ADMIN_STATISTIC_MSG}</td>
+    </tr><!-- begin orders_name_stats -->
+    <tr class="middlebg">
+    	<td colspan="2" >
+			Search by name: found 
+			<a href="{admin_orders_url}"><b>{orders_number_sum}</b></a> order(s) for '<b>{user_name}</b>'
+    	</td>
+    </tr><!-- end orders_name_stats --><!-- begin orders_stats -->
+    <tr class="middle">
+    	<td width="40%">{ORDERS_MSG}</td>
+    	<td width="60%"><a href="{admin_orders_url}"><b>{orders_number_sum}</b></a> ({orders_total_sum})</td>
+    </tr><!-- end orders_stats -->
+		<!-- begin orders_statuses -->
+    <tr valign="top">
+    	<td class="usual">{order_status}</td>
+    	<td class="usual"><a href="{admin_orders_url}"><b>{orders_number}</b></a> ({orders_total})</td>
+    </tr><!-- end orders_statuses -->
+		<!-- begin tickets_stats -->
+    <tr class="middle">
+    	<td width="40%">{TICKETS_MSG}</td>
+    	<td width="60%"><a href="{admin_tickets_url}"><b>{tickets_number_sum}</b></a></td>
+    </tr><!-- end tickets_stats -->
+		<!-- begin tickets_statuses -->
+    <tr valign="top">
+    	<td class="usual">{ticket_status}</td>
+    	<td class="usual"><a href="{admin_tickets_url}"><b>{tickets_number}</b></a></td>
+    </tr><!-- end tickets_statuses -->
+    </table>	
+	
+</td><td valign="top" width="33%">	
+
+	<table border="0" cellpadding="4" cellspacing="1" width="100%">
+    <tr valign="top" class="middle">
+    	<td colspan="2">{REQUEST_DETAILS_MSG}</td>
+    </tr>
+    <tr valign="top">
+    	<td class="middle" width="30%">{SUPPORT_DEPARTMENT_FIELD}</td>
+    	<td class="usual">{department_title}</td>
+    </tr>
+    <tr valign="top">
+    	<td class="middle" width="30%">{ASSIGNED_MSG}</td>
+    	<td class="usual">{assign_to}</td>
+    </tr>
+    <tr valign="top" >
+    	<td class="middle">{TYPE_MSG}</td>
+    	<td class="usual">{type}</td>
+    </tr>
+    <tr valign="top">
+    	<td nowrap class="middle">{SUPPORT_CURRENT_STATUS_FIELD}</td>
+    	<td nowrap class="usual">{current_status}</td>
+    </tr>
+    <tr valign="top">
+    	<td class="middle">{PRIORITY_MSG}</td>
+    	<td class="usual">{priority}</td>
+    </tr>
+    <tr valign="top">
+    	<td class="middle">{POSTED_MSG}</td>
+    	<td class="usual" nowrap>{request_added}</td>
+    </tr>
+    <tr valign="top">
+    	<td nowrap class="middle">{SUPPORT_UPDATED_FIELD}</td>
+    	<td nowrap class="usual">{date_modified}</td>
+    </tr>
+    <tr valign="top">
+    	<td nowrap class="middle">
+    		{CODE_MSG}
+    	</td>
+    	<td nowrap class="usual">
+    		<a href="{user_support_url}">{vc_parameter}</a>
+    	</td>
+    </tr><!--begin site_name_block-->
+    <tr valign="top">
+    	<td nowrap class="middle">{SITE_NAME_MSG}</td>
+    	<td nowrap class="usual">{site_name}</td>
+    </tr><!--end site_name_block-->
+    <tr valign="top" class="usual">
+    	<td colspan="2"><!-- BEGIN edit_ticket -->
+				<div class="right">
+					<a class="bn-small" href="{admin_support_request_url}"><b>{EDIT_TICKET_MSG}</b></a>
+					<a class="bn-small" href="{admin_request_delete_url}" onClick="return confirm('{CONFIRM_DELETE_JS}');"><b>{DELETE_TICKET_MSG}</b></a><!-- END edit_ticket -->
+					<!-- BEGIN close_ticket -->
+					<a class="bn-small" href="{close_ticket_url}" onclick="return closeTicket();"><b>{CLOSE_TICKET_MSG}</b></a><!-- END close_ticket -->
+				</div>
+    	</td>
+    </tr>
+    </table>
+
+	<!-- end of request data -->
+	</td>
+</tr>
+</table>
+
+</div>
+</div>
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+
+	<ul class="tabs" data-form="reply" data-js="tabs"><!-- BEGIN tabs -->
+		<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+	</ul>
+
+<div class="Form">
+<div class="FormContent form-reply">
+
+	<div class="tab-reply {reply_show_class}">
+		<div class="field">
+			<div class="name">
+				{SET_STATUS_MSG}
+			</div>
+			<div class="control">
+				<!-- begin reply_status_id_block -->
+				<select name="reply_status_id"><!-- begin reply_status_id -->
+					<option {reply_status_id_selected} value="{reply_status_id_value}">{reply_status_id_description}<!-- end reply_status_id -->
+				</select> 
+				<!-- end reply_status_id_block -->
+				<!-- begin reply_status_block -->
+				<div class="desc">{reply_status}</div>
+				<!-- end reply_status_block -->
+
+			</div>
+			<div class="after"></div>
+		</div>
+	</div>
+
+	<div class="tab-assign {assign_class}">
+		<div class="field">
+			<div class="name">
+				{SET_STATUS_MSG}
+			</div>
+			<div class="control">
+				<!-- begin assign_status_id_block -->
+				<select name="assign_status_id"><!-- begin assign_status_id -->
+					<option {assign_status_id_selected} value="{assign_status_id_value}">{assign_status_id_description}<!-- end assign_status_id -->
+				</select> 
+				<!-- end assign_status_id_block -->
+				<!-- begin assign_status_block -->
+				<div class="desc">{assign_status}</div>
+				<!-- end assign_status_block -->
+			</div>
+			<div class="after"></div>
+		</div>
+
+		<div class="field">
+			<div class="name">
+				{ASSIGN_TO_MSG}
+			</div>
+			<div class="control">
+				<select name="admin_id_assign_to"><!-- begin admin_id_assign_to -->
+					<option {admin_id_assign_to_selected} value="{admin_id_assign_to_value}">{admin_id_assign_to_description}<!-- end admin_id_assign_to -->
+				</select>
+			</div>
+			<div class="after"></div>
+		</div>
+	</div>	
+
+	<div class="tab-return {return_class}">
+		<div class="field">
+			<div class="name">
+				{SET_STATUS_MSG}
+			</div>
+			<div class="control">
+				<!-- begin return_status_id_block -->
+				<select name="return_status_id"><!-- begin return_status_id -->
+					<option {return_status_id_selected} value="{return_status_id_value}">{return_status_id_description}<!-- end return_status_id -->
+				</select> 
+				<!-- end return_status_id_block -->
+				<!-- begin return_status_block -->
+				<div class="desc">{return_status}</div>
+				<!-- end return_status_block -->
+			</div>
+			<div class="after"></div>
+		</div>
+
+		<input type="hidden" name="admin_id_return_to" value="{admin_id_return_to}">
+		{ASSIGN_TO_MSG}:&nbsp;<b>{return_to_admin}</b>
+	</div>	
+
+	<div class="tab-other {other_class}">
+		<div class="field">
+			<div class="name">
+				{SET_STATUS_MSG}
+			</div>
+			<div class="control">
+				<!-- begin other_status_id_block -->
+				<select name="other_status_id"><!-- begin other_status_id -->
+					<option {other_status_id_selected} value="{other_status_id_value}">{other_status_id_description}<!-- end other_status_id -->
+				</select> 
+				<!-- end other_status_id_block -->
+				<!-- begin other_status_block -->
+				<div class="desc">{other_status}</div>
+				<!-- end other_status_block -->
+			</div>
+			<div class="after"></div>
+		</div>
+	</div>	
+
+	<div class="tab-forward forward-fields {forward_class}">
+		<div class="field">
+			<div class="name">
+				{SET_STATUS_MSG}
+			</div>
+			<div class="control">
+				<!-- begin forward_status_id_block -->
+				<select name="forward_status_id"><!-- begin forward_status_id -->
+					<option {forward_status_id_selected} value="{forward_status_id_value}">{forward_status_id_description}<!-- end forward_status_id -->
+				</select> 
+				<!-- end forward_status_id_block -->
+				<!-- begin forward_status_block -->
+				<div class="desc">{forward_status}</div>
+				<!-- end forward_status_block -->
+
+				<div data-js="expand-fields" data-fields-class="forward-fields" class="right bn-small bn-more-less"><span class="more-fields">More Fields</span><span class="less-fields">Less Fields</span></div>
+
+			</div>
+			<div class="after"></div>
+		</div>
+
+		<div class="field fd-forward-to">
+			<div class="name">
+				{EMAIL_TO_MSG}
+			</div>
+			<div class="control">
+				<input type="text" class="fd-forward" name="forward_to" value="{forward_to}"> 
+			</div>
+			<div class="after"></div>
+		</div>
+		<div class="field fd-forward-from" data-control="forward_from" data-default-value="{forward_default_from}">
+			<div class="name">
+				{EMAIL_FROM_MSG}
+			</div>
+			<div class="control">
+				<input type="text" class="fd-forward" name="forward_from" value="{forward_from}"> 
+			</div>
+			<div class="after"></div>
+		</div>
+		<div class="field fd-forward-cc" data-control="forward_cc">
+			<div class="name">
+				{EMAIL_CC_MSG}
+			</div>
+			<div class="control">
+				<input type="text" class="fd-forward" name="forward_cc" value="{forward_cc}"> 
+			</div>
+			<div class="after"></div>
+		</div>
+		<div class="field fd-forward-bcc" data-control="forward_bcc">
+			<div class="name">
+				{EMAIL_BCC_MSG}
+			</div>
+			<div class="control">
+				<input type="text" class="fd-forward" name="forward_bcc" value="{forward_bcc}"> 
+			</div>
+			<div class="after"></div>
+		</div>
+		<div class="field fd-forward-reply-to" data-control="forward_reply_to">
+			<div class="name">
+				{EMAIL_REPLY_TO_MSG}
+			</div>
+			<div class="control">
+				<input type="text" class="fd-forward" name="forward_reply_to" value="{forward_reply_to}"> 
+			</div>
+			<div class="after"></div>
+		</div>
+		<div class="field fd-forward-return-path" data-control="forward_return_path">
+			<div class="name">
+				{EMAIL_RETURN_PATH_MSG}
+			</div>
+			<div class="control">
+				<input type="text" class="fd-forward" name="forward_return_path" value="{forward_return_path}"> 
+			</div>
+			<div class="after"></div>
+		</div>
+
+		<div class="field fd-forward-subject">
+			<div class="name">
+				{EMAIL_SUBJECT_MSG}
+			</div>
+			<div class="control">
+				<input type="text" class="fd-forward" name="forward_subject" value="{forward_subject}"> 
+			</div>
+			<div class="after"></div>
+		</div>
+
+	</div>	
+
+
+		<div class="field" id="attachmentsBlock" style="{attachments_class}">
+			<div class="name">                                                	
+				<a href="{admin_support_attachments_url}" onClick="attachFiles();return false;">{ATTACHMENTS_MSG}</a> <i class="ico-clip"></i>
+			</div>
+			<div class="desc">
+				<span id="attachedFiles">{attached_files}</span>
+			</div>
+			<div class="after"></div>
+		</div>
+
+		<div class="field">
+			<textarea name="message_text" cols="100" rows="15">{response_message}</textarea>
+		</div>
+
+	<div class="field fd-buttons">
+
+		<div class="tab-button tab-reply {reply_show_class}">
+			<!-- BEGIN reply_button -->
+			<input class="submit" type="submit" value="{REPLY_TO_CUSTOMER_MSG}"><!-- END reply_button -->
+		</div>
+  
+		<div class="tab-button tab-assign {assign_show_class}">
+			<!-- BEGIN assign_button -->
+			<input class="submit" type="submit" value="{ASSIGN_TICKET_MSG}"><!-- END assign_button -->
+		</div>
+  
+		<div class="tab-button tab-return {return_show_class}">
+			<!-- BEGIN return_button -->
+			<input class="submit" type="submit" value="{ASSIGN_TICKET_MSG}"><!-- END return_button -->
+		</div>
+  
+		<div class="tab-button tab-other {other_show_class}">
+			<!-- BEGIN other_button -->
+			<input class="submit" type="submit" value="{SAVE_BUTTON}"><!-- END other_button -->
+		</div>
+  
+		<div class="tab-button tab-forward {forward_show_class}">
+			<!-- BEGIN forward_button -->
+			<input class="submit" type="submit" value="{FORWARD_BUTTON}"><!-- END forward_button -->
+		</div>
+  
+		<div class="right">
+			<a class="bn-small" href="{admin_support_attachments_url}" onClick="attachFiles();return false;">{ATTACH_FILES_MSG} <i class="ico-clip"></i></a>
+			<a class="bn-small" data-signature="{admin_signature}" onClick="addSignature(this);">{ADD_SIGNATURE_MSG}</a>
+			<a class="bn-small" onClick="openPredefined();">{PREDEFINED_REPLIES_MSG}</a>
+			<a class="bn-small" onClick="document.reply.message_text.value='';">{CLEAR_BUTTON}</a>
+			<a class="bn-small" onclick="document.reply.reset();">{RESET_BUTTON}</a>
+		</div>
+  
+		<div class="clear"></div>
+
+	</div>
+
+</form>
+
+</div>
+</div>
+
+
+<!-- BEGIN records -->
+<a name="{message_id}"></a>
+<div class="Form">
+<table border="0" cellpadding="6" cellspacing="1" width="100%"><!-- begin internal_block -->
+<tr>
+	<td colspan="2" class="internalTitle"><b>{INTERNAL_MESSAGE_MSG}</b></td>
+</tr><!-- end internal_block --><!-- begin initial_block -->
+<tr>
+	<td colspan="2" class="initialTitle"><b>{INITIAL_REQUEST_MSG}</b></td>
+</tr><!-- end initial_block -->
+<tr valign="top">
+	<td class="middle" width="24%">{STATUS_MSG}</td>
+	<td class="{style_am}">{status}</td>
+</tr>
+<tr valign="top">
+	<td class="middle">{POSTED_BY_MSG}</td>
+	<td class="{style_am}">
+		<span class="posted-user {posted_user_class}"><span class="user-name">{posted_user_name}</span> <span class="user-type">{posted_user_type}</span></span>
+		<span class="posted-on">{ON_DATE_MSG}</span>
+		<span class="posted-date">{date_added}</span>
+	</td>
+</tr><!-- begin assign_to_block -->
+<tr valign="top">
+	<td class="middle">{ASSIGN_TO_MSG}</td>
+	<td class="{style_am}"><font color="blue">{message_assign_to}</font></td>
+</tr><!-- end assign_to_block -->
+<!-- begin viewed_by_block -->
+<tr valign="top">
+	<td class="middle">{VIEWED_BY_MSG}</td>
+	<td class="{style_am}">
+		<span class="viewed-user {viewed_user_class}"><span class="user-name">{viewed_user_name}</span></span>
+		<!-- begin date_viewed_block -->
+		<span class="viewed-on">{ON_DATE_MSG}</span>
+		<span class="viewed-date">{date_viewed}</span>
+		<!-- end date_viewed_block -->
+		<!-- begin not_viewed_block --><span class="not-viewed">{SUPPORT_NOT_VIEWED_MSG}</span><!-- end not_viewed_block -->
+	</td>
+</tr>
+<!-- end viewed_by_block -->
+<!-- begin forward_to_block -->
+<tr valign="top">
+	<td class="middle">{EMAIL_TO_MSG}</td>
+	<td class="{style_am}">{forward_to}</td>
+</tr>
+<!-- end forward_to_block -->
+<!-- begin forward_cc_block -->
+<tr valign="top">
+	<td class="middle">{EMAIL_CC_MSG}</td>
+	<td class="{style_am}">{forward_cc}</td>
+</tr>
+<!-- end forward_cc_block -->
+<!-- begin forward_bcc_block -->
+<tr valign="top">
+	<td class="middle">{EMAIL_BCC_MSG}</td>
+	<td class="{style_am}">{forward_bcc}</td>
+</tr>
+<!-- end forward_bcc_block -->
+<!-- begin forward_subject_block -->
+<tr valign="top">
+	<td class="middle">{EMAIL_SUBJECT_MSG}</td>
+	<td class="{style_am}">{forward_subject}</td>
+</tr>
+<!-- end forward_subject_block -->
+<!-- begin mail_data -->
+<tr valign="top">
+	<td class="middle">{MAIL_DATA_MSG}</td>
+	<td class="{style_am}">
+		<!-- BEGIN mail_headers -->
+		<img src="../images/icons/view_page.gif" width="16" height="16">
+		&nbsp;<a href="{admin_support_mail_data_url}" onClick="openDataWindow('{admin_support_mail_data_url}');return false;">{HEADERS_MSG}</a>&nbsp; &nbsp; 
+		<!-- END mail_headers -->
+		<!-- BEGIN mail_body_html -->
+		<img src="../images/icons/view_page.gif" width="16" height="16">
+		&nbsp;<a href="{admin_support_mail_data_url}" onClick="openDataWindow('{admin_support_mail_data_url}');return false;">{ORIGINAL_HTML_MSG}</a>&nbsp; &nbsp; 
+		<!-- END mail_body_html -->
+		<!-- BEGIN mail_body_text -->
+		<img src="../images/icons/view_page.gif" width="16" height="16">
+		&nbsp;<a href="{admin_support_mail_data_url}" onClick="openDataWindow('{admin_support_mail_data_url}');return false;">{ORIGINAL_TEXT_MSG}</a>
+		<!-- END mail_body_text -->
+	</td>
+</tr><!-- end mail_data --><!-- begin attachments_block -->
+<tr valign="top">
+	<td class="middle">{ATTACHMENTS_MSG}</td>
+	<td class="{style_am}">{attachments_files}</td>
+</tr><!-- end attachments_block -->
+<tr>
+	<td colspan="2" class="{style_am}">
+		{message_text}
+		<!-- begin edit_link -->
+		<div><br><a href="{admin_support_message_url}"><b>{EDIT_MESSAGE_MSG}</b></a></div><!-- end edit_link -->
+	</td>
+</tr>
+</table>
+</div><!-- END records -->
+
+<!-- begin navigator_block -->
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr class="middle">
+	<td align="right">{navigator}</td>
+</tr>
+</table><!-- end navigator_block -->
+
+{admin_footer}
+</body>
+</html>

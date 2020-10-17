@@ -1,0 +1,199 @@
+<script type="text/javascript" src="js/ads.js"></script>
+<script type="text/javascript" src="js/product.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+				
+	function openWindow(pagename)
+	{
+		var formObj = document.record;
+		var keyId = formObj.profile_id.value;
+		var winUrl = pagename + "?photo_type=1";
+		if (keyId && keyId!="") {
+			winUrl += "&key_id="+escape(keyId);
+		}
+		var uploadWin = window.open (winUrl, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=400');
+		uploadWin.focus();
+	}
+
+	function setPhoto(photoId)
+	{	
+		if (photoId != "") {
+			// assign all photos to profile
+			var photosIds = document.record.photos.value;
+			if (photosIds != "") { photosIds += ","; }
+			photosIds += photoId;
+			document.record.photos.value = photosIds;
+			// assign main profile photo
+			document.record.photo_id.value = photoId;
+			var imgObj = document.createElement('img');
+			imgObj.id = "profile_photo";
+			imgObj.src = "photo.php?id=" + encodeURIComponent(photoId) + "&type=large";
+			var photoBlock = document.getElementById('photo_block');
+			var photoObj = document.getElementById('profile_photo');
+			if (photoObj) {
+				photoBlock.replaceChild(imgObj, photoObj)
+			} else {
+				photoBlock.appendChild(imgObj);
+			}
+		}
+	}
+
+
+//]]>
+</script>
+
+		<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+			<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}">{tab_title}</a></li><!-- END tabs -->
+		</ul>
+
+		<div class="clearboth"></div>
+                     
+<form action="{profiles_user_edit_href}" name="record" method="post">
+<input type="hidden" name="operation" value="save" />
+<input type="hidden" name="tab" value="{tab}" />
+<input type="hidden" name="profile_id" value="{profile_id}" />
+<input type="hidden" name="photo_id" value="{photo_id}" />
+<input type="hidden" name="photos" value="" />
+
+
+<div id="general_data" class="tab-data {general_class}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table width="100%" cellspacing="1" class="padding6px">
+<tr class="middlebg">
+	<td colspan="3">{GENERAL_TAB}</td>
+</tr>
+<tr class="usualbg">
+	<td>{SHOW_ON_SITE_FIELD}</td>
+	<td><input type="checkbox" name="is_shown" {is_shown} value="1" /></td>
+	<td rowspan="9"> 
+		<div id="photo_block" style="border: 1px solid silver; text-align: center; padding: 2px; min-height: 300px; min-width: 200px;">
+		<!-- begin profile_photo --><img id="profile_photo" src="{photo_src}" alt="" /><!-- end profile_photo -->
+		</div>
+		<div style="text-align: center;">
+		&nbsp;<a href="javascript:openWindow('{photo_upload_href}');"><b>{UPLOAD_PHOTO_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{photos_manager_href}');"><b>{MANAGE_PHOTOS_MSG}</b></a>
+		</div>
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{PROFILE_TYPE_FIELD} <span class="required">*</span></td>
+	<td>
+		<select class="text" name="profile_type_id"><!-- begin profile_type_id -->
+			<option {profile_type_id_selected} value="{profile_type_id_value}">{profile_type_id_description}</option><!-- end profile_type_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{LOOKING_TYPE_FIELD} <span class="required">*</span></td>
+	<td>
+		<select class="text" name="looking_type_id"><!-- begin looking_type_id -->
+			<option {looking_type_id_selected} value="{looking_type_id_value}">{looking_type_id_description}</option><!-- end looking_type_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{NAME_MSG} <span class="required">*</span></td>
+	<td><input class="text" type="text" name="profile_name" value="{profile_name}" size="50" maxlength="255" /></td>
+</tr>
+<tr class="usualbg" >
+	<td>{BIRTHDAY_MSG} <span class="required">*</span></td>
+	<td>
+		<input class="text" type="text" name="birth_day" value="{birth_day}" size="2" maxlength="2" />, 
+		<select class="text" name="birth_month"><!-- begin birth_month -->
+			<option {birth_month_selected} value="{birth_month_value}">{birth_month_description}</option><!-- end birth_month -->
+		</select>, 
+		<input class="text" type="text" name="birth_year" value="{birth_year}" size="5" maxlength="4" />
+		({DAY_MSG}, {MONTH_MSG}, {YEAR_MSG})
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{ETHNICITY_MSG} <span class="required"></span></td>
+	<td>
+		<select class="text" name="ethnicity_id"><!-- begin ethnicity_id -->
+			<option {ethnicity_id_selected} value="{ethnicity_id_value}">{ethnicity_id_description}</option><!-- end ethnicity_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usualbg" >
+	<td>{HEIGHT_MSG} <span class="required"></span></td>
+	<td>
+		<select class="text" name="height"><!-- begin height -->
+			<option {height_selected} value="{height_value}">{height_description}</option><!-- end height -->
+		</select>
+	</td>
+</tr>
+<tr class="usualbg" >
+	<td>{WEIGHT_MSG} <span class="required"></span></td>
+	<td>
+		<select class="text" name="weight"><!-- begin weight -->
+			<option {weight_selected} value="{weight_value}">{weight_description}</option><!-- end weight -->
+		</select>
+	</td>
+</tr>
+<tr class="usualbg" >
+	<td></td>
+	<td></td>
+</tr>
+<tr class="middlebg">
+	<td colspan="3">{LOCATION_TAB}</td>
+</tr>
+<tr class="usualbg">
+	<td>{COUNTRY_FIELD} <span class="required">*</span></td>
+	<td>
+		<select class="text" name="country_id"><!-- begin country_id -->
+			<option {country_id_selected} value="{country_id_value}">{country_id_description}</option><!-- end country_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{STATE_FIELD}</td>
+	<td>
+		<select class="text" name="state_id"><!-- begin state_id -->
+			<option {state_id_selected} value="{state_id_value}">{state_id_description}</option><!-- end state_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{CITY_FIELD}</td>
+	<td><input class="text" type="text" name="city" value="{city}" size="50" maxlength="128" /></td>
+</tr>
+<tr class="usualbg">
+	<td>{ZIP_FIELD}</td>
+	<td><input class="field" type="text" name="postal_code" value="{postal_code}" size="20" maxlength="16" /></td>
+</tr>
+
+<tr class="middlebg">
+	<td colspan="3">{DESCRIPTION_TAB}</td>
+</tr>
+<tr class="usualbg">
+	<td>{PERSONAL_INFO_FIELD} <span class="required"></span></td>
+	<td><textarea class="text" name="profile_info" cols="50" rows="4">{profile_info}</textarea></td>
+</tr>
+<tr class="usualbg">
+	<td>{LOOKING_INFO_FIELD} <span class="required"></span></td>
+	<td><textarea class="text" name="looking_info" cols="50" rows="4">{looking_info}</textarea></td>
+</tr>
+
+<!-- begin terms_block -->
+<tr class="middlebg">
+	<td colspan="3">{TERMS_MSG}</td>
+</tr>
+<tr class="usualbg">
+	<td>&nbsp;</td>
+	<td>
+		<input type="checkbox" name="terms" {terms} value="1" />
+		(<a href="#" onclick="openTermsWindow('{profiles_terms_href}'); return false;">{TERMS_USER_DESC}</a>)
+	</td>
+</tr><!-- end terms_block -->
+<tr class="middlebg">
+	<td>&nbsp;</td>
+	<td colspan="2">
+		<!-- begin save_button --><span class="submit"><input name="save" class="submit" type="submit" value="{save_button_title}" onclick="document.record.operation.value='save';" /></span><!-- end save_button -->
+		<!-- BEGIN delete --><span class="submit"><input class="submit" id="delete" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{AD_DELETE_CONFIRM_MSG}?');" /></span><!-- END delete -->
+		<span class="submit"><input class="submit" id="cancel" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'" /></span>
+	</td>
+</tr>
+</table>
+</div>
+
+</form>

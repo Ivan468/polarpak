@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{ADMINISTRATION_MSG} :: {LAYOUTS_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="../js/admin.js"></script>
+</head>
+<body class="bodySbuilder">
+{admin_header} 
+<div class="sitelist"><!-- begin sitelist -->
+	<form method="GET" name="reloadform">
+	<input type="hidden" name="operation" value="">
+		{SELECT_SITE_MSG}&nbsp;
+		<select name="param_site_id" onchange="reloadSite(this.form)"><!-- begin param_site_id -->
+			<option {param_site_id_selected} value="{param_site_id_value}">{param_site_id_description}<!-- end param_site_id -->
+		</select>		
+	</form><!-- end sitelist -->
+</div>
+{block_leftside_breadcrumbs}
+
+<!-- begin cms_modules -->
+<div class="Form">
+<div class="FormTitle">{module_name}</div>
+<div class="FormContent">
+
+<table border="0" cellpadding="6" cellspacing="1">
+<!-- begin cms_pages_rows -->
+<tr class="usual"><!-- begin cms_pages_cols -->
+	<td><a href="{admin_cms_page_url}"><img src="images/ico-list.gif" width="13" height="13" border="0" hspace="2" align="top">{page_name}</a></td><!-- end cms_pages_cols -->
+</tr><!-- end cms_pages_rows -->
+</table>
+
+</div>
+</div>
+<!-- end cms_modules -->
+
+
+{admin_footer}
+</body>
+</html>

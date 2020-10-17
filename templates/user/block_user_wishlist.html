@@ -1,0 +1,55 @@
+<table cellspacing="1" width="100%" class="table-data"><!-- begin sorters -->
+<tr class="bg-title" align="center">
+	<th>&nbsp;</th>
+	<th>{sorter_item_name}</th>
+	<th>{sorter_price}</th>
+	<th>{sorter_quantity}</th>
+	<th>{sorter_quantity_bought}</th>
+	<th>{sorter_type}</th>
+	<th>{sorter_date}</th>
+	<th>&nbsp;</th>
+	<th>&nbsp;</th>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="usualbg" valign="top" align="center">
+	<td >
+		<!-- begin image_block -->
+		<a href="{super_src}" onclick="popupImage(this);return false;"><img src="{src}" alt="{alt}"/></a><!-- end image_block -->
+	</td>
+	<td align="left">{item_name}</td>
+	<td align="right">{price}</td>
+	<td>{quantity}</td>
+	<td>{quantity_bought}</td>
+	<td>{type_name}</td>
+	<td>{date_added}</td>
+	<td><a href="{cart_url}">{ADD_TO_CART_MSG}</a></td>
+	<td><a href="{delete_url}" onclick="return confirm('{CONFIRM_WISHLIST_DELETE_MSG}');">{DELETE_BUTTON}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usualbg">
+	<td colspan="9">No wishlist items were found</td>
+</tr><!-- END no_records --><!-- begin navigator_block -->
+<tr class="middlebg">
+	<td colspan="9" align="right">{navigator}</td>
+</tr><!-- end navigator_block -->
+</table>	
+
+
+	<!-- begin item_image_header -->
+	<th class="item-image">&nbsp;</th><!-- end item_image_header -->
+	<!-- begin item_name_header -->
+	<th class="product-name"><b>{PROD_TITLE_COLUMN}</b></th><!-- end item_name_header -->
+	<!-- begin item_price_header -->
+	<th class="price-excl-tax" align="right"><b>{PROD_PRICE_COLUMN} {tax_note_excl}</b></th><!-- end item_price_header -->
+	<!-- begin item_tax_percent_header -->
+	<th class="tax-percent" align="right"><b>{tax_name} (%)</b></th><!-- end item_tax_percent_header -->
+	<!-- begin item_tax_header -->
+	<th class="tax-amount" align="right"><b>{tax_name}</b></th><!-- end item_tax_header -->
+	<!-- begin item_price_incl_tax_header -->
+	<th class="price-incl-tax" align="right"><b>{PROD_PRICE_COLUMN} {tax_note}</b></th><!-- end item_price_incl_tax_header -->
+	<!-- begin item_quantity_header -->
+	<th class="item-qty" align="right"><b>{PROD_QTY_COLUMN}</b></th><!-- end item_quantity_header -->
+	<!-- begin item_price_total_header -->
+	<th class="price-excl-tax-total" align="right"><b>{PROD_TOTAL_COLUMN} {tax_note_excl}</b></th><!-- end item_price_total_header -->
+	<!-- begin item_tax_total_header -->
+	<th class="tax-total" align="right"><b>{tax_name} {PROD_TAX_TOTAL_COLUMN}</b></th><!-- end item_tax_total_header -->
+	<!-- BEGIN item_price_incl_tax_total_header -->
+	<th class="price-incl-tax-total" align="right"><b>{PROD_TOTAL_COLUMN} {tax_note}</b></th><!-- END item_price_incl_tax_total_header -->

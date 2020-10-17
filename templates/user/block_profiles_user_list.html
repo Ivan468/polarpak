@@ -1,0 +1,28 @@
+	<!-- BEGIN errors --><div align="center" class="errorbg">{errors_list}</div><!-- END errors -->
+
+	<table cellspacing="1" width="100%" class="padding6px"><!-- begin sorters -->
+	<tr class="middlebg" align="center">
+		<td>{ID_MSG}</td>
+		<td>{NAME_MSG}</td>
+		<td>{ADDRESS_MSG}</td>
+		<td>{STATUS_MSG}</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+	</tr><!-- end sorters --><!-- BEGIN records -->
+	<tr class="usualbg" valign="top" align="center">
+		<td>{profile_id}</td>
+		<td align="left">{profile_name}</td>
+		<td align="left">{address}</td>
+		<td>{status}</td>
+		<td><a href="{profiles_user_edit_href}?profile_id={profile_id}">{EDIT_MSG}</a></td>
+	</tr><!-- END records --><!-- BEGIN no_records -->
+	<tr class="usualbg">
+		<td colspan="6">{NO_PROFILES_MSG}</td>
+	</tr><!-- END no_records -->
+	<tr class="middlebg">
+		<td colspan="6"><!-- BEGIN new_profile_link -->
+			<a href="{profiles_user_edit_href}">{ADD_MY_PROFILE_MSG}</a><!-- END new_profile_link -->
+			<!-- begin navigator_block -->{navigator}<!-- end navigator_block -->
+		</td>
+	</tr>
+	</table>	

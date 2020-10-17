@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {EDIT_MSG} {MANUAL_ARTICLE_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/doubleCombo.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/editor.js"></script>
+<script type="text/javascript" >
+{options_js}
+
+function open_article_popup() {
+	window.open("popup_manuals_articles_list.php", "", "width=600,height=500,scrollbars=1,resizable=1");
+}
+
+function clear_text(textfield_id) {
+	element = document.getElementById(textfield_id);
+	
+	if (element != null) {
+		element.value = "";
+	}
+}
+</script>
+{CKEditor_tag}
+</head>
+<body class="bodyDboard">
+
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_ARTICLE_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_manual_article_href}" name="record" method="POST" id="record" onSubmit="submit_editor(Array('editor_sd','editor_fd'));">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="article_id" value="{article_id}" id="article_id">
+<input type="hidden" name="manual_id" value="{manual_id}">
+<input type="hidden" name="saved_article_order" value="{saved_article_order}">
+<input type="hidden" name="saved_parent_article_id" value="{saved_parent_article_id}">
+<input type="hidden" name="article_path" value="">
+<input type="hidden" name="alias_article_id" id="alias_article_id" value="{alias_article_id}">
+<input type="hidden" name="rp" value="{rp}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="middle">
+	<td colspan="2">{GENERAL_INFO_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="allowed_view">{ALLOW_VIEW_MSG}</label></td>
+	<td><input type="checkbox" name="allowed_view" id="allowed_view" {allowed_view} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{PARENT_ARTICLE_MSG}</td>
+	<td>
+		<select name="parent_article_id" id="parent_article_id"><!-- begin parent_article_id -->
+			<option {parent_article_id_selected} value="{parent_article_id_value}">{parent_article_id_description}<!-- end parent_article_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ARTICLE_ORDER_MSG}</td>
+	<td>
+		<select name="article_order" id="article_order"><!-- begin article_order -->
+			<option {article_order_selected} value="{article_order_value}">{article_order_description}<!-- end article_order -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ARTICLE_TITLE_MSG} *</td>
+	<td><input class="field" type="text" size="80" name="article_title" value="{article_title}"></td>
+</tr>
+<tr class="usual">
+	<td>{ARTICLE_ALIAS_MSG}</td>
+	<td>
+		<input class="field" type="text" name="alias_article_title" id="alias_article_title" value="{alias_article_title}" size="45">
+		&nbsp; <a href="#" onclick="open_article_popup();"><b>{SELECT_MSG} article</b></a>
+		&nbsp;|&nbsp; <a href="#" onclick="clear_text('alias_article_title');clear_text('alias_article_id');"><b>{CLEAR_BUTTON}</b></a>
+	</td>
+</tr><!-- BEGIN friendly_url_block -->
+<tr class="usual">
+	<td>{FRIENDLY_URL_MSG}</td>
+	<td><input class="field" type="text" name="friendly_url" value="{friendly_url}" size="80" maxlength="255"></td>
+</tr><!-- END friendly_url_block --><!-- begin short_description_block -->
+<tr class="usual">
+	<td>{SHORT_DESCRIPTION_MSG}</td>
+	<td>{editor_error}
+		<textarea name="short_description" id="sd" cols="80" rows="4">{short_description}</textarea>
+		<!-- begin sd_ext_editor -->
+		<script type="text/javascript">
+			CKEDITOR.replace( 'sd' );
+		</script><!-- end sd_ext_editor -->
+		<!-- begin sd_int_editor -->
+		<script language= "JavaScript" type= "text/javascript">
+		<!--
+			var editor_sd = new VA_HTMLeditor('content_sd','../','{html_editor}');
+			editor_sd.text_field_name = 'short_description';
+			editor_sd.formname = 'record';
+			editor_sd.css_file = '{css_file}';
+			editor_sd.editor_type = 'manuals_category_editor';
+			editor_sd.displayEditor('editor_sd', 565, 100);
+		//-->
+		</script><!-- end sd_int_editor -->
+	</td>
+</tr><!-- end short_description_block --><!-- begin full_description_block -->
+<tr class="usual">
+	<td>{FULL_DESCRIPTION_MSG}</td>
+	<td>{editor_error}
+		<textarea name="full_description" id="fd" cols="80" rows="10">{full_description}</textarea>
+		<!-- begin fd_ext_editor -->
+		<script type="text/javascript">
+			CKEDITOR.replace( 'fd' );
+		</script><!-- end fd_ext_editor -->
+		<!-- begin fd_int_editor -->
+		<script language= "JavaScript" type= "text/javascript">
+		<!--
+			var editor_fd = new VA_HTMLeditor('content_fd','../','{html_editor}');
+			editor_fd.text_field_name = 'full_description';
+			editor_fd.formname = 'record';
+			editor_fd.css_file = '{css_file}';
+			editor_fd.editor_type = 'manuals_category_editor';
+			editor_fd.displayEditor('editor_fd', 565, 150);
+		//-->
+		</script><!-- end fd_int_editor -->
+	</td>
+</tr><!-- end full_description_block -->
+</tr>
+<tr class="usual">
+	<td><label for="shown_in_contents">{SHOW_IN_CONTENT_MSG}</label></td>
+	<td><input type="checkbox" name="shown_in_contents" id="shown_in_contents" {shown_in_contents} value="1"></td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{IMAGES_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_SMALL_MSG}</td>
+	<td><input class="field" type="text" size="80" name="image_small" value="{image_small}"></td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_SMALL_ALT_MSG}</td>
+	<td><input class="field" type="text" size="80" name="image_small_alt" value="{image_small_alt}"></td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_LARGE_MSG}</td>
+	<td><input class="field" type="text" size="80" name="image_large" value="{image_large}"></td>
+</tr>
+<tr class="usual">
+	<td>{IMAGE_LARGE_ALT_MSG}</td>
+	<td><input class="field" type="text" size="80" name="image_large_alt" value="{image_large_alt}"></td>
+</tr>
+<tr class="middle">
+	<td colspan="2" class="middle">{META_DATA_MSG}</td>
+</tr><!-- BEGIN meta_title_block -->
+<tr class="usual">
+	<td>Meta {ADMIN_TITLE_MSG}</td>
+	<td><input class="field" type="text" name="meta_title" value="{meta_title}" size="80" maxlength="255"></td>
+</tr><!-- END meta_title_block --><!-- BEGIN meta_keywords_block -->
+<tr class="usual">
+	<td>{META_KEYWORDS_MSG}</td>
+	<td><input class="field" type="text" name="meta_keywords" value="{meta_keywords}" size="80" maxlength="255"></td>
+</tr><!-- END meta_keywords_block --><!-- BEGIN meta_description_block -->
+<tr class="usual">
+	<td>{META_DESCRIPTION_MSG}</td>
+	<td><textarea name="meta_description" cols="80" rows="3">{meta_description}</textarea></td>
+</tr><!-- END meta_description_block -->
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+</div>
+</div>
+<script language="javascript">
+//<!--
+var dc = new DoubleCombo( 'parent_article_id', 'article_order', options);
+//-->
+</script>
+
+{admin_footer}
+</body>
+</html>

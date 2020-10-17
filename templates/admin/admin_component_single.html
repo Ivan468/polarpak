@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {EDIT_SUBCOMP_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="../js/list_fields.js"></script>
+<script language="JavaScript">
+<!--
+	var list_fields_names = new Array('sites');
+
+	function openProductWindow(formId)
+	{
+		var productWin = window.open ('{admin_product_select_href}?form_id=' + formId, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		productWin.focus();
+	}
+
+	function setProduct(itemId, itemName, itemPrice, formId)
+	{
+		document.record.sub_item_id.value = itemId;
+		document.record.property_name.value = itemName;
+		var basicPrice = document.getElementById("basic_price");
+		if (basicPrice) {
+			basicPrice.innerHTML = "&nbsp;&ndash;&nbsp;" + itemPrice;
+		}
+	}
+
+//-->
+</script>
+</head>
+
+<body class="bodyDboard">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<div id="tabs"><!-- BEGIN tabs_rows -->
+	<ul id="{row_id}" class="tabRow"><!-- BEGIN tabs -->
+		<li id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+	</ul><!-- END tabs_rows -->
+</div>
+
+<div class="Block clearBoth">
+<div class="BlockContent">
+
+<form action="{admin_component_single_href}" name="record" onSubmit="selectListFieldsAll();" method="post">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="category_id" value="{category_id}">
+<input type="hidden" name="property_id" value="{property_id}">
+<input type="hidden" name="item_id" value="{item_id}">
+<input type="hidden" name="item_type_id" value="{item_type_id}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sites" value="">
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="page" value="{page}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<div id="data_general" style="{general_style}">
+<table cellspacing="1" cellpadding="4" border="0" align="center" width="100%">
+<tr class="usual">
+	<td width="20%">{COMPONENT_ORDER_MSG} *</td>
+	<td><input class="field" type="text" name="property_order" value="{property_order}" size="12"></td>
+</tr>
+<tr class="usual">
+	<td width="20%">{SUBCOMP_ID_MSG} *</td>
+	<td>
+		<input class="field" type="text" name="sub_item_id" value="{sub_item_id}" size="20">
+		&nbsp;<a href="#" onClick="openProductWindow(''); return false;"><b>{SELECT_PRODUCT_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{SUBCOMP_NAME_MSG} *</td>
+	<td><input class="field" type="text" name="property_name" value="{property_name}" size="60"></td>
+</tr>
+<!-- BEGIN usage_type_block -->
+<tr class="usual">
+	<td>{ASSIGN_COMPONENT_MSG} *</td>
+	<td>
+		<select name="usage_type"><!-- begin usage_type -->
+			<option {usage_type_selected} value="{usage_type_value}">{usage_type_description}<!-- end usage_type -->
+		</select>
+	</td>
+</tr>
+<!-- END usage_type_block -->
+<tr class="usual">
+	<td>{QUANTITY_MSG} *</td>
+	<td><input class="field" type="text" name="quantity" value="{quantity}" size="20"></td>
+</tr>
+<tr class="usual">
+	<td>{CART_QUANTITY_MSG}</td>
+	<td><!-- begin quantity_action -->
+		<input type="radio" name="quantity_action" id="quantity_action{quantity_action_value}" {quantity_action_checked} value="{quantity_action_value}">
+		<label for="quantity_action{quantity_action_value}">{quantity_action_description}</label><br><!-- end quantity_action -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{SUBCOMP_PRICE_MSG} </td>
+	<td>
+		<input class="field" type="text" name="additional_price" value="{additional_price}" size="20">
+		({SUBCOMP_PRICE_NOTE}<b><span id="basic_price">{basic_price}</span></b>)
+	</td>
+</tr>
+<tr class="usual">
+	<td>{PROD_TRADE_PRICE_MSG}</td>
+	<td><input class="field" type="text" name="trade_additional_price" value="{trade_additional_price}" size="20"></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onCLick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="data_sites" style="{sites_style}">
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+<tr class="usual">
+	<td colspan="3">
+		<input type="checkbox" name="sites_all" id="sites_all" {sites_all} onClick="checkListFields('sites');" value="1">
+		<label for="sites_all">{SITES_ALL_MSG} ({SITES_ALL_UNTICK_MSG})</label>
+	</td>
+</tr>
+<tr align="center" class="middle">
+	<td width="45%"><b>{AVAILABLE_SITES_MSG}</b></td>
+	<td width="10%"><b>{OPERATIONS_MSG}</b></td>
+	<td width="45%"><b>{USE_ITEM_SITES_MSG}</b></td>
+</tr>
+<tr align="center" class="usual">
+	<td>
+		<select name="available_sites" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_sites -->
+			<option value="{site_id}">{site_name}<!-- end available_sites-->
+		</select>
+	</td>
+	<td>
+		<span class="button"><input class="submit" readonly type="button" name="add_sites" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('sites');"></span>
+		<br><br>
+		<span class="button"><input class="submit" type="button" name="remove_sites" value="<- {REMOVE_BUTTON}" onClick="removeListFields('sites');"></span>
+	</td>
+	<td>
+		<select name="selected_sites" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_sites -->
+			<option value="{site_id}">{site_name}<!-- end selected_sites -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="3" >
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+</form>
+</div>
+</div>
+
+	
+{admin_footer}
+</body>
+</html>

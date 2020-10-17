@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {UPGRADE_TITLE} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+	var isFinished = false;
+	var stepNumber = 0;
+	var importSuccess = 0;
+	var importFailed = 0;
+
+	function updateBlockInfo(message, controlName, append)
+	{
+		var controlObject = document.getElementById(controlName);
+		var controlBlock = document.getElementById(controlName + "Block");
+		if (controlObject) {
+			if (append) {
+				controlObject.innerHTML += message;
+			} else {
+				controlObject.innerHTML = message;
+			}
+			if (controlBlock) {
+				controlBlock.style.display = "block";
+			}
+		}
+		if (controlName == "importSuccess") {
+			var importInt = parseInt(message);
+			if (!isNaN(importInt)) {
+				importSuccess = importInt;
+				updateBlockInfo((importSuccess + importFailed), "importTotal", false);
+			}
+		} else if (controlName == "importFailed") {
+			var importInt = parseInt(message);
+			if (!isNaN(importInt)) {
+				importFailed = importInt;
+				updateBlockInfo((importSuccess + importFailed), "importTotal", false);
+			}
+		}
+	}
+
+	function importFinished()
+	{
+		isFinished = true;
+		var message = "Import Finished";
+		var processObject = document.getElementById("processInfo");
+		processObject.innerHTML = message;
+	}
+
+	function importProcess()
+	{
+		if (!isFinished) {
+			stepNumber++;
+			var message = "Data import process ";
+			for (var s = 0; s < (stepNumber % 15) + 1; s++) {
+				message += " . ";
+			}
+			var processObject = document.getElementById("processInfo");
+			processObject.innerHTML = message;
+			setTimeout("importProcess()", 500);
+		}
+	}
+
+
+//-->
+</script>
+</head>
+
+<body class="commonbg">
+{admin_header} 
+
+<fieldset>
+<legend>ICECat Import</legend>
+
+<!-- BEGIN items_stats -->
+<table border="0" cellpadding="6" cellspacing="1">
+<tr class="usual">
+	<td colspan="3"><b>Stats</b></td>
+</tr>
+<!-- begin items -->
+<tr class="usual">
+	<td width="200">{icecat_status}</td>
+	<td>{icecat_items}</td>
+	<td><a href="admin_icecat.php?operation=import&status_id={icecat_status_id}" onClick="return confirm('Do you like to import data for those items from ICECat.biz');">{IMPORT_MSG}</a></td>
+</tr>
+<!-- end items -->
+<tr class="usual">
+	<td width="200"><b>Total Products</b></td>
+	<td><b>{total_items}</b></td>
+	<td>&nbsp;</td>
+</tr>
+</table>
+
+<!-- END items_stats -->
+
+</fieldset>
+
+<!-- BEGIN import_result -->
+<div class="Block">
+<div class="BlockTitle">{import_resultS_MSG}</div>
+<div class="BlockContent">
+
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td>
+		<span id="processInfo" class="message">Data import process </span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		<!-- import_success -->
+		<div id="importSuccessBlock" style="display: none;">
+		<table border="0" cellpadding="3" cellspacing="1" width="100%">
+		<tr>
+			<td width="20%"><font color="blue">Successfully imported:</font></td>
+			<td><font color="blue"><div id="importSuccess">0</div></font></td>
+		</tr>
+		</table>
+		</div>
+
+		<!-- import_failed -->
+		<div id="importFailedBlock" style="display: none;">
+		<table border="0" cellpadding="3" cellspacing="1" width="100%">
+		<tr>
+			<td width="20%"><font color="red">Failed:</font></td>
+			<td><font color="red"><div id="importFailed">0</div></font></td>
+		</tr>
+		</table>
+		</div>
+
+		<table border="0" cellpadding="3" cellspacing="1" width="100%">
+		<tr>
+			<td width="20%">Total products checked:</td>
+			<td><div id="importTotal">0</div></td>
+		</tr>
+		</table>
+
+	</td>
+</tr>
+</table>
+
+		<!-- import_result_errors -->
+		<div id="importErrorsBlock" style="display: none;">
+			<div id="importErrors" class="errorbg">{errors_list}</div>
+		</div>
+
+</div>
+</div>
+<!-- END import_result -->
+
+
+
+</form>
+
+{admin_footer}
+
+<!-- begin page_end -->
+</body></html><!-- end page_end -->

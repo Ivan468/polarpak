@@ -1,0 +1,333 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{PROFILES_TITLE}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/calendar.js"></script>
+<script language="JavaScript" type="text/javascript" src="../js/select.js"></script>
+<script language="JavaScript">
+<!--
+	function clearSearch() {
+		document.search_form.s_ne.value = "";
+		document.search_form.s_sd.value = "";
+		document.search_form.s_ed.value = "";
+		document.search_form.s_bsd.value = "";
+		document.search_form.s_bed.value = "";
+		document.search_form.s_c.selectedIndex = 0;
+		document.search_form.s_pt.selectedIndex = 0;
+		document.search_form.s_lt.selectedIndex = 0;
+		document.search_form.s_ap[0].checked = true;
+		document.search_form.s_on[0].checked = true;
+	
+		document.search_form.submit();
+
+	}
+
+	function changeStatus()
+	{
+		var checkedStatus = document.profiles.all_profiles.checked;
+		var profilesNumber = document.profiles.profiles_number.value;
+		for (var i = 1; i <= profilesNumber; i++) {
+			document.profiles.elements["id_" + i].checked = checkedStatus;
+		}
+		checkprofiles();
+	}
+
+	function checkprofiles()
+	{
+		var userId = "";
+		var profilesIds = "";
+		var profilesNumber = document.profiles.profiles_number.value;
+		var totalSelected = 0;
+		for (var i = 1; i <= profilesNumber; i++) {
+			if (document.profiles.elements["id_" + i].checked) {
+				document.getElementById("tr_profile_" + i).className = "SelectedRow";
+				totalSelected++;
+				userId = document.profiles.elements["id_" + i].value;
+				if(profilesIds != "") { profilesIds += ","; }
+				profilesIds += userId;
+			} else {
+				document.getElementById("tr_profile_" + i).className = mas[i];
+			}
+		}
+	}
+
+	function updateprofiles(operation)
+	{
+		var userId = "";
+		var profilesIds = "";
+		var profilesNumber = document.profiles.profiles_number.value;
+		var totalprofiles = 0;
+		for (var i = 1; i <= profilesNumber; i++) {
+			if (document.profiles.elements["id_" + i].checked) {
+				totalprofiles++;
+				userId = document.profiles.elements["id_" + i].value;
+				if(totalprofiles > 1) { profilesIds += ","; }
+				profilesIds += userId;
+			}
+		}
+		var profilesControl = document.update_profiles.status_id;
+		if (totalprofiles == 0) {
+			alert("Please select profiles first.")
+		} else if (operation == "update_status") {
+			if (profilesControl.options[profilesControl.selectedIndex].value == "") {
+				alert("Please select status.");
+			} else if (confirm("You are about to change the status of selected profiles to '" + profilesControl.options[profilesControl.selectedIndex].text + "'.\nContinue?'")) {
+				document.update_profiles.profiles_ids.value = profilesIds;
+				document.update_profiles.operation.value = "update_status";
+				document.update_profiles.submit();
+			}
+		} else if (operation == "remove_profiles") {
+			if (confirm("Are you sure you want remove selected profiles (" + totalprofiles + ")?")) {
+				document.update_profiles.profiles_ids.value = profilesIds;
+				document.update_profiles.operation.value = "remove_profiles";
+				document.update_profiles.submit();
+			}
+		}
+	} 
+
+//-->
+</script>
+<script language= "JavaScript" type= "text/javascript">
+<!--
+	var select_form = new select();
+		select_form.object_name = 'select_form';
+		select_form.name_prefix = 'id_';
+		select_form.formname = 'profiles';
+		select_form.final_action = 'checkprofiles();';
+		select_form.create_event_click();
+//-->
+</script>
+</head>
+<body class="commonbg" onload="start_event_select();">
+<script language= "JavaScript" type= "text/javascript">
+<!--
+	function start_event_select(){
+		create_event_listener(select_form);
+		var profilesNumber = document.profiles.profiles_number.value;
+		mas = new Array();
+		for (var i = 1; i <= profilesNumber; i++) {
+			mas[i] = document.getElementById("tr_profile_" + i).className;
+		}
+	}
+//-->
+</script>
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+	<tr>
+		<td valign="top">
+
+		<div class="Block floatLeft">
+		<div class="BlockTitle">{SEARCH_TITLE}</div>
+		<div class="BlockContent">
+			<form action="{admin_profiles_href}" name="search_form">
+			<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+			<table border="0" cellpadding="6" cellspacing="1">
+				<tr class="usual">
+					<td>{NAME_MSG}:</td>
+					<td><input type="text" name="s_ne" value="{s_ne}" class="search"></td>
+				</tr>
+				<tr class="usual">
+					<td>{COUNTRY_FIELD}:</td>
+					<td>
+						<select name="s_c" class="search"><!-- BEGIN s_c -->
+							<option {s_c_selected} value="{s_c_value}">{s_c_description}<!-- END s_c -->
+						</select>
+					</td>
+				</tr>
+				<tr class="usual">
+					<td>{PROFILE_TYPE_FIELD}<span>&nbsp;/&nbsp;</span>{LOOKING_TYPE_FIELD}</td>
+					<td>
+						<select name="s_pt" class="search"><!-- BEGIN s_pt -->
+							<option {s_pt_selected} value="{s_pt_value}">{s_pt_description}<!-- END s_pt -->
+						</select>
+						<span>/</span>
+						<select name="s_lt" class="search"><!-- BEGIN s_lt -->
+							<option {s_lt_selected} value="{s_lt_value}">{s_lt_description}<!-- END s_lt -->
+						</select>
+					</td>
+				</tr>
+
+				<tr class="usual">
+					<td nowrap>{DATE_ADDED_MSG}:</td>
+					<td nowrap>
+					<input type="text" name="s_sd" value="{s_sd}" class="tb-date" placeholder="{START_DATE_MSG}">
+					<a href="#"
+						onClick="setDateField(document.search_form.s_sd, '{date_edit_format}');
+						top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+					<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+
+					<input type="text" name="s_ed" value="{s_ed}" class="fd-date" placeholder="{END_DATE_MSG}">
+					<a href="#"
+						onClick="setDateField(document.search_form.s_ed, '{date_edit_format}');
+						top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+					<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+					</td>
+				</tr>
+				<tr class="usual">
+					<td nowrap>{BIRTH_DATE_MSG}:</td>
+					<td nowrap>
+					<input type="text" name="s_bsd" value="{s_bsd}" class="fd-date" placeholder="{START_DATE_MSG}">
+					<a href="#"
+						onClick="setDateField(document.search_form.s_bsd, '{date_edit_format}');
+						top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+					<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+
+					<input type="text" name="s_bed" value="{s_bed}" class="fd-date" placeholder="{END_DATE_MSG}">
+					<a href="#"
+						onClick="setDateField(document.search_form.s_bed, '{date_edit_format}');
+						top.newWin = window.open('../js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+					<img src="images/calendar.gif" border="0" align="top" alt="{CALENDAR_MSG}" title="{CALENDAR_MSG}"></a>
+					</td>
+				</tr>
+				<tr class="usual" valign="top">
+					<td>{ADMIN_SHOW_MSG}:</td>
+					<td><!-- BEGIN s_ap -->
+						<input type="radio" name="s_ap" {s_ap_checked} value="{s_ap_value}" id="s_ap{s_ap_value}"><label for="s_ap{s_ap_value}">{s_ap_description}</label><!-- END s_ap -->
+					</td>
+				</tr>
+				<tr class="usual" valign="top">
+					<td>{ONLINE_MSG}/{OFFLINE_MSG}:</td>
+					<td><!-- BEGIN s_on -->
+						<input type="radio" name="s_on" {s_on_checked} value="{s_on_value}" id="s_on{s_on_value}"><label for="s_on{s_on_value}">{s_on_description}</label><!-- END s_on -->
+					</td>
+				</tr>
+				<tr class="middle">
+					<td>&nbsp;</td>
+					<td>
+						<span class="button"><input type="submit" value="{SEARCH_BUTTON}" class="submit"></span>
+						<span class="button"><input type="button" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch()"></span>
+					</td>
+				</tr>
+			</table>
+			</form>
+		</div>
+		</div>
+
+		</td>
+		<td valign="top">
+		
+		<div class="Block floatRight">
+		<div class="BlockTitle">{REGISTRATION_INFO_MSG}</div>
+		<div class="BlockContent">
+			<table border="0" cellpadding="6" cellspacing="1" width="100%">
+			<tr class="middle" align="center">
+				<td>&nbsp;</td><!-- begin stats_titles -->
+				<td><a href="{admin_profiles_href}?s_sd={start_date}&s_ed={end_date}">{stat_title}</a></td><!-- end stats_titles -->
+			</tr><!-- begin types_stats -->
+			<tr class="usual" align="center">
+				<td align="left"><a href="{admin_profiles_href}?s_pt={type_id}">{type_name}</a></td><!-- begin stats_periods -->
+				<td>{period_profiles}</td><!-- end stats_periods -->
+			</tr><!-- end types_stats -->
+			<tr class="middle" align="center">
+				<td align="right">{TOTAL_MSG}:</td><!-- begin stats_totals -->
+				<td>{period_total}</td><!-- end stats_totals -->
+			</tr>
+			</table>
+		</div>
+		</div>
+
+		<div class="Block floatRight">
+		<div class="BlockTitle">{ONLINE_STATISTIC_MSG}</div>
+		<div class="BlockContent">
+			<table border="0" cellpadding="6" cellspacing="1" width="100%">
+				<tr class="middle" align="center">
+					<td>&nbsp;</td>
+					<td><a href="{admin_profiles_href}?s_on=1">{ONLINE_MSG}</a></td>
+				</tr>
+				<!-- begin profiles_online_stats -->
+				<tr class="usual" align="center">
+					<td align="left"><a href="{admin_profiles_href}?s_pt={type_id}&s_on=1">{type_name}</a></td>
+					<td>{profiles_online}</td>
+				</tr>
+				<!-- end profiles_online_stats -->
+				<tr class="middle" align="center">
+					<td align="left">{TOTAL_MSG}</td>
+					<td>{profiles_total_online}</td>
+				</tr>
+			</table>
+		</div>
+		</div>
+
+		</td>
+	</tr>
+</table>
+
+<br>
+<!-- BEGIN profiles_errors --><div class="errorbg">{errors_list}</div><!-- END profiles_errors -->
+<!-- BEGIN profiles_messages --><div class="message">{messages_list}</div><!-- END profiles_messages -->
+
+<div class="Block">
+<div class="BlockTitle">{PROFILES_TITLE}</div>
+<div class="BlockContent">
+
+<form name="profiles" action="{admin_profiles_href}" method="POST">
+<input type="hidden" name="profiles_number" value="{profiles_number}">
+<table border="0" cellspacing="1" cellpadding="4" width="100%"><!-- begin sorters -->
+<tr align="center" class="middle">
+	<td><input type="checkbox" name="all_profiles" value="1" onClick="changeStatus();"></td>
+	<td>{sorter_id}</td>
+	<td>{sorter_name}</td>
+	<td>{sorter_country}</td>
+	<td>{sorter_profile_type}</td>
+	<td>{sorter_looking_type}</td>
+	<td>{sorter_birth_date}</td>
+	<td>{sorter_date_added}</td>
+	<td>{sorter_approved}</td>
+	<td>&nbsp;</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="{row_style}" id="tr_profile_{profile_index}">
+	<td align="center"><input type="checkbox" name="id_{profile_index}" value="{profile_id}" onClick="checkprofiles();"></td>
+	<td align="center">{profile_id}</td>
+	<td>{profile_name}</td>
+	<td>{country_name}</td>
+	<td align="center">{profile_type_name}</td>
+	<td align="center">{looking_type_name}</td>
+	<td align="center">{birth_date}</td>
+	<td align="center">{date_added}</td>
+	<td align="center"><a href="{profiles_approve_url}">{is_approved}</a></td>
+	<td align="center"><a href="{profiles_view_url}" target="_blank">{VIEW_MSG}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+<td colspan="11">{NO_DATA_WERE_FOUND_MSG}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="11">
+		<div class="floatRight">&nbsp;<!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+	</td>
+</tr>
+</table>	
+</form>
+
+<!--
+<br>
+<form name="update_profiles" action="{admin_profiles_href}" method="POST">
+<input type="hidden" name="operation" value="">
+<input type="hidden" name="profiles_ids" value="">
+<input type="hidden" name="s_ne" value="{s_ne}">
+<input type="hidden" name="s_sd" value="{s_sd}">
+<input type="hidden" name="s_ed" value="{s_ed}">
+<input type="hidden" name="s_bsd" value="{s_bsd}">
+<input type="hidden" name="s_bed" value="{s_bed}">
+<input type="hidden" name="s_c" value="{s_c_search}">
+<input type="hidden" name="s_pt" value="{s_pt_search}">
+<input type="hidden" name="s_lt" value="{s_lt_search}">
+<input type="hidden" name="s_ap" value="{s_ap_search}">
+<input type="hidden" name="s_on" value="{s_on_search}">
+<!-- begin update_status -->
+<select name="status_id"><!-- begin status_id -->
+	<option {status_id_selected} value="{status_id_value}">{status_id_description}<!-- end status_id -->
+</select> 
+<span class="button"><input class="submit" type="button" value="{UPDATE_BUTTON} {STATUS_MSG}" onClick="updateprofiles('update_status');"></span><!-- end update_status --><!-- begin remove_profiles_button -->
+<span class="button"><input class="submit" type="button" value="{REMOVE_SELECTED_MSG}" onClick="updateprofiles('remove_profiles');"></span><!-- end remove_profiles_button -->
+</form>-->
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

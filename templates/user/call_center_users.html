@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{PRODUCT_SELECTION_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="js/init.js"></script>
+<script type="text/javascript" src="js/ajax.js"></script>
+<script type="text/javascript" src="js/blocks.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+function clearSearch() {
+	document.users.sw.value = "";
+	document.users.submit();
+}
+
+function closeWindow()
+{
+	window.opener.focus();
+	window.close();
+}
+
+function ccSelectUser(userInfo)
+{
+	if (window.opener) {
+		window.opener.focus();
+		window.opener.ccSetUser(userInfo);
+	}
+	window.close();
+}
+
+function signInUser(userInfo) 
+{
+	if (window.opener) {
+		var formName = document.users.form_name.value;
+		var formObj = window.opener.document.forms[formName];
+		formObj.user_id.value = userInfo["user_id"];
+		formObj.submit();
+		window.opener.focus();
+	}
+	window.close();
+}
+
+//]]>
+</script>
+</head>
+
+<body class="popup">
+
+
+<form name="users" method="get" action="{call_center_users_href}">
+
+<input type="hidden" name="operation" value="1">
+<input type="hidden" name="form_name" value="{form_name}">
+<input type="hidden" name="field_name" value="{field_name}">
+<input type="hidden" name="id_name" value="{id_name}">
+<input type="hidden" name="selection_type" value="{selection_type}">
+
+<table cellspacing="1" cellpadding="6" width="100%">
+<tr class="middle">
+	<td colspan="7" align="center"><a href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+<tr>
+	<td colspan="7" class="usual" align="center">
+		<input type="text" name="sw" value="{sw}" class="search">
+		<span class="button"><input type="submit" value="{SEARCH_BUTTON}" class="submit"></span>
+		<span class="button"><input type="submit" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch();"></span>
+	</td>
+</tr><!-- begin search_results -->
+<tr class="usual" align="center">
+	<td colspan="7">{found_message}</td>
+</tr><!-- end search_results --><!-- begin users_sorters -->
+<tr class="middle" align="center">
+	<td>{sorter_user_id}</td>
+	<td>{sorter_login}</td>
+	<td>{sorter_email}</td>
+	<td>{sorter_name}</td>
+	<td>{sorter_phone}</td>
+	<td>{ADDRESS_MSG}</td>
+	<td>&nbsp;</td>
+</tr><!-- end users_sorters --><!-- begin users -->
+<tr class="usual">
+	<td align="center">{user_id}</td>
+	<td>{login}</td>
+	<td>{email}</td>
+	<td>{name}</td>
+	<td>{phone}</td>
+	<td>{address}</td>
+	<!-- begin select_user_block -->
+	<td align="center">
+		<a href="#" onclick="ccSelectUser({user_json}); return false;">{SELECT_USER_MSG}</a> 
+	</td>
+	<!-- end select_user_block -->
+	<!-- begin sign_in_block -->
+	<td align="center">
+		<a href="#" onclick="signInUser({user_json}); return false;">{SIGN_IN_BUTTON}</a> 
+	</td>
+	<!-- end sign_in_block -->
+</tr><!-- end users --><!-- begin navigator_block -->
+<tr class="middle">
+	<td colspan="7" align="right">{navigator}</td>
+</tr><!-- end navigator_block -->
+<tr class="middle">
+	<td colspan="7" align="center"><a href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+</table>
+
+</form>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!-- begin before_block --><a name="block_{pb_id}"></a><!-- end before_block -->
+
+	<!-- begin subscribe_error -->
+	<div class="errorbg"><b>{error_desc}</b></div>
+	<!-- end subscribe_error -->
+	<!-- begin subscribe_message -->
+	<div class="messagebg"><b>{message_desc}</b></div>
+	<!-- end subscribe_message -->
+	<div>{SUBSCRIBE_FORM_MSG}</div><br />
+	<div>
+		<form action="{current_href}#block_{pb_id}" method="get">
+		{hidden_parameters}
+		<input class="field" type="text" name="subscribed_email" value="{subscribed_email}" />
+		<span class="submit"><input class="submit" type="submit" value="{SUBSCRIBE_BUTTON}" /></span>
+		</form>
+	</div>

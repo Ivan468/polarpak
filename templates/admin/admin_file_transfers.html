@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{FILE_TRANSFERS_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" src="../js/calendar.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/select.js"></script>
+<script language="JavaScript">
+<!--
+	function allRecords()
+	{
+		var checkedStatus = document.records.all_records.checked;
+		var recordsNumber = document.records.records_number.value;
+		for (var i = 1; i <= recordsNumber; i++) {
+			document.records.elements["id_" + i].checked = checkedStatus;
+		}
+		generateTransfers();
+	}
+
+	function updateRecords(operation)
+	{
+		var transferId = "";
+		var ids = "";
+		var recordsNumber = document.records.records_number.value;
+		var totalRecords = 0;
+		for (var i = 1; i <= recordsNumber; i++) {
+			if (document.records.elements["id_" + i].checked) {
+				totalRecords++;
+				transferId = document.records.elements["id_" + i].value;
+				if(totalRecords > 1) { ids += ","; }
+				ids += transferId;
+			}
+		}
+		var statusControl = document.update_form.status_id;
+		if (totalRecords == 0) {
+			alert("{SELECT_RECORDS_FIRST_MSG}")
+		} else if (operation == "remove") {
+			if (confirm("{RECORDS_DELETE_CONFIRM_MSG} (" + totalRecords + ")?")) {
+				document.update_form.ids.value = ids;
+				document.update_form.operation.value = "remove";
+				document.update_form.submit();
+			}
+		}
+	}
+
+	function generateTransfers()
+	{
+		var transferId = "";
+		var ids = "";
+		var recordsNumber = document.records.records_number.value;
+		var totalSelected = 0;
+
+		for (var i = 1; i <= recordsNumber; i++) {
+			if (document.records.elements["id_" + i].checked) {
+				document.getElementById("tr_" + i).className = "SelectedRow";
+				totalSelected++;
+				transferId = document.records.elements["id_" + i].value;
+				if(ids != "") { ids += ","; }
+				ids += transferId;
+			} else {
+				document.getElementById("tr_" + i).className = mas[i];
+			}
+		}
+	}
+
+	var select_form = new select();
+	select_form.object_name = 'select_form';
+	select_form.name_prefix = 'id_';
+	select_form.formname = 'records';
+	select_form.final_action = 'generateTransfers();';
+	select_form.create_event_click();
+//-->
+</script>
+</head>
+<body class="commonbg" onload="start_event_select();">
+<script language= "JavaScript" type= "text/javascript">
+<!--
+	function start_event_select(){
+		create_event_listener(select_form);
+		var recordsNumber = document.records.records_number.value;
+		mas = new Array();
+		for (var i = 1; i <= recordsNumber; i++) {
+			mas[i] = document.getElementById("tr_" + i).className;
+		}
+	}
+//-->
+</script>
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{FILE_TRANSFERS_MSG}</div>
+<div class="BlockContent">
+
+<!-- begin success -->
+<div class="messagebg">{success_message}</div><!-- end success --><!-- begin errors -->
+<div class="errorbg">{errors_list}</div><!-- end errors -->
+
+<form name="records" action="{admin_file_transfers_href}" method="POST">
+<input type="hidden" name="records_number" value="{records_number}">
+<table border="0" cellspacing="1" cellpadding="6" width="100%"><!-- begin sorters -->
+<tr align="center" class="middle">
+	<td width="30"><input type="checkbox" name="all_records" value="1" onClick="allRecords();"></td>
+	<td width="40">{sorter_id}</td>
+	<td>{sorter_file_path}</td>
+	<td>{sorter_type}</td>
+	<td>{sorter_status}</td>
+	<td>&nbsp;</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr id="tr_{index}" class="{row_style}" align="center">
+	<td><input type="checkbox" name="id_{index}" value="{transfer_id}" onClick="generateTransfers();"></td>
+	<td>{transfer_id}</td>
+	<td align="left">{file_path}</td>
+	<td align="left">{transfer_type}</td>
+	<td>{transfer_status}</td>
+	<td><a href="{admin_file_transfer_href}?transfer_id={transfer_id}">{EDIT_MSG}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="6">{NO_RECORDS_MSG}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="6">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_file_transfer_href}">{ADD_NEW_MSG}</a> | 
+		<a href="{admin_file_transfers_href}?operation=transfer&rnd={rnd}">Transfer Files</a>
+	</td>
+</tr>
+</table>	
+</form>
+
+<br>
+<form name="update_form" action="{admin_file_transfers_href}" method="POST">
+<input type="hidden" name="operation" value="">
+<input type="hidden" name="ids" value="">
+<input type="hidden" name="page" value="{page}">
+
+<span class="button"><input class="submit" type="button" value="{REMOVE_SELECTED_MSG}" onClick="updateRecords('remove');"></span>
+
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

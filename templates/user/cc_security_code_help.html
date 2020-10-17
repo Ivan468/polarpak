@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{meta_language}" lang="{meta_language}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{CC_SECURITY_CODE_TITLE}</title>
+<link rel="stylesheet" href="{css_file}" type="text/css" />
+<script type="text/javascript">
+//<![CDATA[
+function closeWindow()
+{
+	if(window.opener) {
+		window.opener.focus();
+	}
+	window.close();
+}
+
+//]]>
+</script>
+</head>
+
+<body class="popup">
+
+<table height="100%" width="100%" cellspacing="1" cellpadding="0" align="center" class="headerbg">
+<tr>
+	<td class="usualbg" valign="top"> 
+
+			<table cellspacing="1" cellpadding="12" width="100%" >
+			<tr>
+				<td>
+
+					<b>{CC_SECURITY_CODE_TITLE}</b>
+					<div align="justify">
+					{CC_SECURITY_CODE_1_DESC}
+					<br /><br />
+					<img src="images/cc_security_code.gif" width="185" height="116" align="left" hspace="5" alt="" />
+					{CC_SECURITY_CODE_2_DESC}
+					</div>
+
+				</td>
+			</tr>
+			</table>
+			&nbsp;
+			<div align="right">
+				<a href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a>&nbsp;&nbsp;&nbsp;
+			</div>
+
+
+</td></tr></table>
+
+</body>
+</html>

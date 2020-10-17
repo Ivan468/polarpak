@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{FILTER_OPTIONS_MSG} :: {EDIT_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="../js/win_select.js"></script>
+<script language="JavaScript">
+<!--
+	function changePropertyType()
+	{
+		var typeControl = document.record.property_type;
+		var typeName = typeControl.options[typeControl.selectedIndex].value;
+		var customOptionsBlock = document.getElementById("custom_options_block");
+		if (typeName == "custom") {
+			customOptionsBlock.style.display = "block";
+		} else {
+			customOptionsBlock.style.display = "none";
+		}
+		var propertyValueName = document.getElementById("property_value_name");
+		if (typeName == "product_option") {
+			propertyValueName.innerHTML = "Product Option Name";
+		} else if (typeName == "product_specification") {
+			propertyValueName.innerHTML = "Product Specification Name";
+		} else {
+			propertyValueName.innerHTML = "Option Value";
+		}
+		var propertyValueBlock = document.getElementById("property_value_block");
+		if (typeName == "product_option" || typeName == "product_specification") {
+			propertyValueBlock.style.display = "block";
+		} else {
+			propertyValueBlock.style.display = "none";
+		}
+	}
+
+	function setFileName(imageName, fileType, imageIndex, siteUrl)
+	{
+		var formObj = document.record;
+		if (fileType == 'filter' ||  fileType == 'filter_image') {
+			formObj.elements['list_image_'+imageIndex].value = siteUrl + 'images/filters/' + imageName;
+		}
+
+	}
+
+//-->
+</script>
+</head>
+
+<body>
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<ul class="tabRow"><!-- BEGIN tabs -->
+	<li onClick="changeTab('{tab_name}'); return false;" id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+</ul>
+
+<div class="Form">
+<div class="FormContent">
+
+<form action="{admin_filter_property_href}" name="record" method="post">
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="property_id" value="{property_id}">
+<input type="hidden" name="filter_id" value="{filter_id}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="page" value="{page}">
+<input type="hidden" name="more_properties" value="0">
+<input type="hidden" name="number_properties" value="{number_properties}">
+
+<div id="data_general" style="{general_style}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table cellspacing="1" cellpadding="4" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="2">{ADMIN_GENERAL_MSG}</td>
+</tr>
+<tr class="usual">
+	<td width="30%">{OPTION_ORDER_MSG} *</td>
+	<td><input class="field" type="text" name="property_order" value="{property_order}" size="12"></td>
+</tr>
+<tr class="usual">
+	<td>{OPTION_NAME_MSG} *</td>
+	<td><input class="field" type="text" name="property_name" value="{property_name}" size="60"></td>
+</tr>
+<tr class="usual">
+	<td>{TYPE_MSG} *</td>
+	<td>
+		<select name="property_type" onChange="changePropertyType();"><!-- begin property_type -->
+			<option {property_type_selected} value="{property_type_value}">{property_type_description}<!-- end property_type -->
+		</select>
+	</td>
+</tr>
+</table>
+
+<div id="property_value_block" style="{property_value_block_style}">
+<table cellspacing="0" cellpadding="4" border="0" align="center" width="100%">
+<tr class="usual">
+	<td width="30%"><span id="property_value_name">{property_value_name}</span> *</td>
+	<td><input class="field" type="text" name="property_value" value="{property_value}" size="60"></td>
+</tr>
+</table>
+</div>
+
+<div id="custom_options_block" style="{custom_options_block_style}">
+<table width="100%" border="0" cellspacing="1" cellpadding="4">
+<tr class="middle">
+	<td colspan="2">{CUSTOM_OPTIONS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td width="30%">{FILTER_FROM_SQL_MSG}</td>
+	<td><input class="field" type="text" name="filter_from_sql" value="{filter_from_sql}" size="80"></td>
+</tr>
+<tr class="usual">
+	<td>{FILTER_JOIN_SQL_MSG}</td>
+	<td><textarea cols="80" rows="3" name="filter_join_sql">{filter_join_sql}</textarea></td>
+</tr>
+<tr class="usual">
+	<td>{FILTER_WHERE_SQL_MSG}</td>
+	<td><textarea cols="80" rows="3" name="filter_where_sql">{filter_where_sql}</textarea></td>
+</tr>
+<tr class="usual">
+	<td>{GROUP_FIELDS_COUNT_LIST_MSG}</td>
+	<td><textarea cols="80" rows="3" name="list_group_fields">{list_group_fields}</textarea></td>
+</tr>
+<tr class="usual">
+	<td>{WHERE_SQL_COUNT_LIST_MSG}</td>
+	<td><textarea cols="80" rows="3" name="list_group_where">{list_group_where}</textarea></td>
+</tr>
+<tr class="usual">
+	<td>{LIST_TABLE_MSG}</td>
+	<td><input class="field" type="text" name="list_table" value="{list_table}" size="80"></td>
+</tr>
+<tr class="usual">
+	<td>{LIST_FIELD_ID_MSG}</td>
+	<td><input class="field" type="text" name="list_field_id" value="{list_field_id}" size="80"></td>
+</tr>
+<tr class="usual">
+	<td>{LIST_FIELD_TITLE_MSG}</td>
+	<td><input class="field" type="text" name="list_field_title" value="{list_field_title}" size="80"></td>
+</tr>
+<tr class="usual">
+	<td>{LIST_FIELD_IMAGE_MSG}</td>
+	<td><input class="field" type="text" name="list_field_image" value="{list_field_image}" size="80"></td>
+</tr>
+<tr class="usual">
+	<td>{LIST_FIELD_TOTAL_MSG}</td>
+	<td><input class="field" type="text" name="list_field_total" value="{list_field_total}" size="80"></td>
+</tr>
+<tr class="usual">
+	<td>{LIST_FIELD_SQL_MSG}</td>
+	<td><textarea cols="80" rows="3" name="list_sql">{list_sql}</textarea></td>
+</tr>
+</table>
+</div>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="4">
+<tr class="middle">
+	<td colspan="6">{OPTIONS_VALUES_MSG}</td>
+</tr>
+<tr align="center" class="usual">
+	<td>{ADMIN_ORDER_MSG}</td>
+	<td>{VALUE_ID_MSG}</td>
+	<td>{TITLE_MSG}</td>
+	<td>{IMAGE_MSG}</td>
+	<td>{SQL_WHERE_MSG}</td>
+	<td>{DELETE_BUTTON}</td>
+</tr><!-- begin properties --><!-- begin properties_errors -->
+<tr class="usual" align="center">
+	<td colspan="6" class="errorbg">{errors_list}</td>
+</tr><!-- end properties_errors -->
+<tr class="usual" align="center" valign="top">
+	<td>
+		<input type="hidden" name="value_id_{properties_number}" value="{value_id}">
+		<input type="hidden" name="property_id_{properties_number}" value="{property_id}">
+		<input class="field" type="text" name="value_order_{properties_number}" value="{value_order}" size="5">
+	</td>
+	<td>
+		<input class="field" type="text" name="list_value_id_{properties_number}" value="{list_value_id}" size="15">
+	</td>
+	<td>
+		<input class="field" type="text" name="list_value_title_{properties_number}" value="{list_value_title}" size="30">
+	</td>
+	<td>
+		<nobr>{TINY_MSG} <input class="field" type="text" name="list_image_{properties_number}" value="{list_image}" size="30">
+		&nbsp;<img class="editIcon" onclick="jsonWindow({'url': '{admin_upload_href}', 'params': {'filetype': 'filter', 'image_index': '{properties_number}', 'control_name': ''}});" src="../images/icons/upload.png" width="16" height="16" border="0" title="{UPLOAD_IMAGE_MSG}" />
+		&nbsp;<img class="editIcon" onclick="jsonWindow({'url': '{admin_select_href}', 'params': {'filetype': 'filter', 'image_index': '{properties_number}', 'control_name': ''}});" src="../images/icons/image.png" width="16" height="16" border="0" title="{SELECT_IMAGE_MSG}" />
+		</nobr>
+	</td>
+	<td>
+		<textarea cols="60" rows="2" name="filter_where_sql_{properties_number}">{filter_where_sql}</textarea>
+	</td>
+	<td align="center">
+		<input type="checkbox" name="properties_delete_{properties_number}" {properties_delete} value="1">
+	</td>
+</tr><!-- end properties -->
+<tr class="usual">
+	<td colspan="6" align="right">
+		{ADD_MORE_OPTIONS_QST} <span class="button"><input class="submit" type="submit" value=" {ADD_BUTTON} " onClick="document.record.more_properties.value=1"></span>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="6">
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onCLick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

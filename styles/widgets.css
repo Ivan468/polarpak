@@ -1,0 +1,131 @@
+div.ViArtWidgets {
+	font-family: tahoma, arial;
+	position: relative;
+	border: 1px solid silver;
+}
+
+div.ViArtWidgets div.product {
+	float: left;
+	padding: 0.5%;
+}
+
+/* one item */
+div.ViArtWidgets div.product:first-child:nth-last-child(1) {
+	width: 99%;
+}
+
+/* two items */
+div.ViArtWidgets div.product:first-child:nth-last-child(2),
+div.ViArtWidgets div.product:first-child:nth-last-child(2) ~ div.product {
+    width: 49%;
+}
+
+/* three items */
+div.ViArtWidgets div.product:first-child:nth-last-child(3),
+div.ViArtWidgets div.product:first-child:nth-last-child(3) ~ div.product {
+    width: 32.3333%;
+}
+
+/* four items */
+div.ViArtWidgets div.product:first-child:nth-last-child(4),
+div.ViArtWidgets div.product:first-child:nth-last-child(4) ~ div.product {
+    width: 24%;
+}
+
+div.ViArtWidgets div.product:first-child:nth-last-child(5),
+div.ViArtWidgets div.product:first-child:nth-last-child(5) ~ div.product {
+    width: 19%;
+}
+
+div.ViArtWidgets div.product + div.product:before {
+    content:" ";
+    margin: 0 -0.5%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: silver;
+  }
+
+div.ViArtWidgets div.title {
+	font-size: 12pt;
+	font-weight: bold;
+	text-align: center;
+}
+
+div.ViArtWidgets div.delimiter {
+	clear: both;
+	height: 1px;
+	background: silver;
+}
+
+div.ViArtWidgets div.delimiter:last-child {
+	clear: both;
+	height: 0;
+	background: none;
+}
+
+div.ViArtWidgets div.clear {
+	clear: both;
+}
+
+div.ViArtWidgets div.image { 
+	padding-top: 5px; 
+	text-align: center;
+}
+
+div.ViArtWidgets div.image img { 
+	border: 1px solid silver;
+	box-shadow: 3px 3px 3px #777;
+}
+
+div.ViArtWidgets .quantity { text-align: center; padding-top: 10px; } 
+div.ViArtWidgets .caption { font-weight: bold; }
+div.ViArtWidgets .caption:after { content:": "; }
+div.ViArtWidgets .quantity input { width: 50px; text-align: center; }
+
+
+div.ViArtWidgets div.buttons a { 
+	display: block;
+	width: 140px;
+	margin: 10px auto;
+	font-size: 11pt;
+	cursor: pointer;
+	border: 1px solid #FF8822;
+	background: #FFAD33;
+	color: #000;
+	border-radius: 8px;
+	text-align: center; 
+	text-decoration: none;
+	font-weight: bold;
+	padding: 4px 0;
+	box-shadow: 3px 3px 3px #777;
+}
+
+div.ViArtWidgets div.buttons a:hover { 
+	background: white;
+	color: #FFAD33;
+	border: 1px solid #FFAD33;
+
+}
+
+
+/*
+	float: left;
+	height: 1000px;
+	margin-left: 5px;
+	width: 10px;
+	border: 3px solid silver; 
+	overflow: hidden;
+*/
+
+/*
+    content:" ";
+    margin:0 -2px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #666666;
+*/
+

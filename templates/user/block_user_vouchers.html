@@ -1,0 +1,38 @@
+	<table cellspacing="0" width="100%" class="table-data"><!-- begin sorters -->
+	<tr class="middlebg" align="center">
+		<td>{sorter_code}</td>
+		<td>{STATUS_MSG}</td>
+		<td>{sorter_date}</td>
+		<td>{sorter_balance}</td>
+		<td>&nbsp;</td>
+	</tr><!-- end sorters --><!-- begin records -->
+	<tr class="usualbg {voucher_class}" valign="middle" align="center">
+		<td>
+			{voucher_code}       
+		</td>
+		<td>
+			{voucher_status}
+		</td>
+		<td>
+			{voucher_date}
+		</td>
+		<td align="right">
+			{voucher_balance}
+		</td>
+		<td>
+			<a class="link lk-voucher-details" href="{user_voucher_href}?voucher_id={voucher_id}" title="{VIEW_DETAILS_MSG}"><span>{VIEW_DETAILS_MSG}</span></a>
+			<!-- begin send_voucher_link -->
+			<a class="link lk-voucher-send" href="{user_voucher_send_href}?voucher_id={voucher_id}" title="{SEND_VOUCHER_MSG}"><span>{SEND_VOUCHER_MSG}</span></a>
+			<!-- end send_voucher_link -->
+			<!-- begin cash_out_voucher_link -->
+			<a class="link lk-voucher-cash" href="{user_voucher_cash_href}?voucher_id={voucher_id}" title="{CASH_OUT_MSG}"><span>{CASH_OUT_MSG}</span></a>
+			<!-- end cash_out_voucher_link -->
+		</td>
+	</tr><!-- end records --><!-- begin no_records -->
+	<tr class="usualbg">
+		<td colspan="4">{NO_VOUCHERS_MSG}</td>
+	</tr><!-- end no_records --><!-- begin navigator_block -->
+	<tr class="middlebg">
+		<td colspan="4" align="right">{navigator}</td>
+	</tr><!-- end navigator_block -->
+	</table>	

@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {PRICE_CODES_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<!-- begin success --><div class="messagebg">{success_message}</div><!-- end success -->
+<!-- begin errors --><div class="errorbg">{errors_list}</div><!-- end errors -->
+
+<div class="Block">
+<div class="BlockTitle">{PRICE_CODES_MSG}</div>
+<div class="BlockContent">
+
+<table border="0" cellpadding="6" cellspacing="1" width="100%"><!-- begin sorters -->
+<tr class="middle" align="center">
+	<td>{sorter_price_id}</td>
+	<td>{sorter_price_title}</td>
+	<td>{sorter_price_amount}</td>
+	<td>{sorter_price_description}</td>
+	<td>&nbsp;</td>
+</tr><!-- end sorters --><!-- BEGIN records -->
+<tr class="usual" align="center">
+	<td>{price_id}</td>
+	<td align="left">{price_title}</td>
+	<td>{price_amount}</td>
+	<td>{price_description}</td>
+	<td><a href="{admin_price_code_href}?price_id={price_id}">{EDIT_MSG}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr>
+	<td colspan="5" class="usual">{NO_RECORDS}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="5">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_price_code_href}">{ADD_NEW_MSG}</a>
+	</td>
+</tr>
+</table>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

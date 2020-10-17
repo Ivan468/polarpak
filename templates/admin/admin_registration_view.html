@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{PRODUCT_REGISTRATION_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<body class="commonbg">
+{admin_header}
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{PRODUCT_REGISTRATION_MSG}</div>
+<div class="BlockContent">
+
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+	<tr class="middle">
+		<td colspan="2">{GENERAL_INFO_MSG}</td>
+	</tr>
+	<tr class="usual">
+		<td width="300px">{USER_NAME_MSG}</td>
+		<td>{user_name}</td>
+	</tr>
+	<tr class="usual">
+		<td>{IS_APPROVED_MSG}</td>
+		<td>{is_approved}</td>
+	</tr>
+	<tr class="usual">
+		<td>{DATE_ADDED_MSG}</td>
+		<td>{date_added}</td>
+	</tr>
+	<tr class="usual">
+		<td>{MODIFIED_DATE_MSG}</td>
+		<td>{date_modified}</td>
+	</tr>
+	<tr class="usual">
+		<td>&nbsp;{CATEGORY_NAME_MSG}</td>
+		<td>{category_name}</td>
+	</tr>
+	<tr class="usual">
+		<td>{SELECTED_PRODUCT_MSG}</td>
+		<td>{item_id_name}</td>
+	</tr>
+	<tr class="usual">
+		<td>{PROD_NAME_MSG}</td>
+		<td>{item_name}</td>
+	</tr>
+	<tr class="usual">
+		<td>{PROD_CODE_MSG}</td>
+		<td>{item_code}</td>
+	</tr>
+	<tr class="usual">
+		<td>{SERIAL_NUMBER_MSG}</td>
+		<td>{serial_number}</td>
+	</tr>
+	<tr class="usual">
+		<td>{INVOICE_NUMBER_MSG}</td>
+		<td>{invoice_number}</td>
+	</tr>
+	<tr class="usual">
+		<td>{STORE_NAME_MSG}</td>
+		<td>{store_name}</td>
+	</tr>
+	<tr class="usual">
+		<td>{YEAR_OF_PURCHASE_MSG}</td>
+		<td>{purchased_year}</td>
+	</tr>
+	<tr class="usual">
+		<td>{MONTH_OF_PURCHASE_MSG}</td>
+		<td>{purchased_month}</td>
+	</tr>
+	<tr class="usual">
+		<td>{DAY_OF_PURCHASE_MSG}</td>
+		<td>{purchased_day}</td>
+	</tr><!-- begin custom_properties_title -->
+	<tr class="middle">
+		<td colspan="2">{CUSTOM_FIELDS_MSG}</td>
+	</tr><!-- end custom_properties_title --><!-- begin custom_properties -->
+	<tr id="pp_block_{property_id}" class="usual">
+		<td style="{property_style}">{property_name}</td>
+		<td style="{property_style}" >{property_value}</td>
+	</tr><!-- end custom_properties -->
+</table>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

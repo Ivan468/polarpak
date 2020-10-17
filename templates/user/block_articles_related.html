@@ -1,0 +1,37 @@
+		<div class="articles {columns_class}">
+			<!-- BEGIN articles_related_rows -->
+			<!-- BEGIN articles_related_cols -->
+			<div class="col {column_class}">
+				<div class="article">
+
+					<h2 class="title {article_new_class} {restricted_class}"><a class="title" href="{details_url}">{article_title}</a></h2>
+
+					<!--begin article_date_block-->
+					<div class="article-date">{article_date}</div><!--end article_date_block-->
+
+					<!-- begin article_image -->
+					<div class="image-block">
+						<a href="{details_url}"><img src="{src}" class="article-image" alt="{alt}" /></a>
+					</div><!-- end article_image -->					
+
+					<!-- begin article_desc_block-->				    
+					<div class="article-desc">
+						<!-- begin short_description -->
+						<div class="desc desc-short">{desc_text}</div><!-- end short_description -->
+						<!-- begin full_description -->
+						<div class="desc desc-full">{desc_text}</div><!-- end full_description -->
+						<!-- begin hot_description -->
+						<div class="desc desc-hot">{desc_text}</div><!-- end hot_description -->
+					</div><!-- end article_desc_block-->				    
+
+					<a class="button bn-more" href="{details_url}"><span>{READ_MORE_MSG}</span></a>
+
+				</div>				
+			</div>				
+			<!-- END articles_related_cols -->
+			<!-- END articles_related_rows -->
+			<div class="clear"></div>
+		</div>
+
+		<!-- begin articles_related_navigator_block -->
+		<div class="navigation">{articles_related_navigator}</div><!-- end articles_related_navigator_block -->

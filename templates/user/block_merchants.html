@@ -1,0 +1,24 @@
+	<form action="{user_list_href}" name="merchant" method="get">
+	<input type="hidden" name="category_id" value="{category_id}" />
+		<!-- begin merchants_list -->
+		<table cellpadding="0" cellspacing="0" width="100%">
+		<!-- BEGIN merchants -->
+		<tr><td class="usualbg"><a class="title" href="{merchant_url}">{merchant_name}</a> ({merchant_products})</td></tr>
+		<!-- END merchants --> 
+		</table>
+		<!-- end merchants_list -->
+	  
+		<!-- begin merchants_select -->
+		<table cellpadding="0" cellspacing="0" align="center">
+		<tr>
+			<td>
+				<select class="field" name="user">
+					<option value=""></option>
+					<!-- begin merchants_options --><option {merchant_selected} value="{merchant_id}">{merchant_name} ({merchant_products})</option><!-- end merchants_options -->
+				</select>
+				<span class="submit"><input class="submit" type="submit" value="{GO_BUTTON}" /></span>
+			</td>
+		</tr>
+		</table>
+		<!-- end merchants_select -->
+	</form>

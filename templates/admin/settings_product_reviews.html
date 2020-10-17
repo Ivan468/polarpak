@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{REVIEWS_SETTINGS_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script type="text/javascript" src="../js/admin.js"></script>
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/editor.js"></script>
+{CKEditor_tag}
+<script language="JavaScript">
+<!--
+	function openWindow(pagename)
+	{
+		var uploadWin = window.open (pagename, 'helpWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+	}
+//-->
+</script>
+</head>
+<body class="mainbg">
+{admin_header}
+{admin_breadcrumb}
+
+<!-- BEGIN success_block --><div class="messagebg">{CHANGES_SAVED_MSG}</div><br/><!-- END success_block -->
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+	<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+		<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+	</ul>
+
+<div class="Form clearBoth">
+<div class="FormContent">
+
+<form action="{settings_product_reviews_href}" name="record" method="POST" onsubmit="submit_editor(Array('editor_am','editor_um','editor_am_comment','editor_um_comment','ra_message', ru_message));">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="rp" value="{rp}">
+<input type="hidden" name="tab" value="{tab}">
+
+<div id="general_data" class="tab-data {general_class}">
+<table border="0" cellpadding="4" cellspacing="1" width="100%">
+<!-- begin sitelist -->
+<tr class="middle">
+	<td colspan="2">{SITE_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{ACTIVE_SITE_MSG}</td>
+	<td>
+		<select name="param_site_id" onchange="reloadSite(this.form);"><!-- begin param_site_id -->
+			<option {param_site_id_selected} value="{param_site_id_value}">{param_site_id_description}<!-- end param_site_id -->
+		</select>
+		<span class="comment">({SELECT_SITE_DESC})</span>
+</tr><!-- end sitelist -->
+<tr class="middle">
+	<td colspan="2">{REVIEWS_RESTRICTIONS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{ALLOWED_VIEW_REVIEWS_MSG}</td>
+	<td><!-- begin allowed_view -->
+		<input type="radio" name="allowed_view" id="allowed_view{allowed_view_value}" {allowed_view_checked} value="{allowed_view_value}">
+		<label for="allowed_view{allowed_view_value}">{allowed_view_description}</label><!-- end allowed_view -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ALLOWED_POST_REVIEWS_MSG}</td>
+	<td><!-- begin allowed_post -->
+		<input type="radio" name="allowed_post" id="allowed_post{allowed_post_value}" {allowed_post_checked} value="{allowed_post_value}">
+		<label for="allowed_post{allowed_post_value}">{allowed_post_description}</label><!-- end allowed_post -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{AUTO_PUBLISH_REVIEWS_MSG}</td>
+	<td><!-- begin auto_approve -->
+		<input type="radio" name="auto_approve" id="auto_approve{auto_approve_value}" {auto_approve_checked} value="{auto_approve_value}">
+		<label for="auto_approve{auto_approve_value}">{auto_approve_description}</label><!-- end auto_approve -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ALLOWED_LIKE_MSG}</td>
+	<td><!-- begin allowed_like -->
+		<input type="radio" name="allowed_like" id="allowed_like{allowed_like_value}" {allowed_like_checked} value="{allowed_like_value}">
+		<label for="allowed_like{allowed_like_value}">{allowed_like_description}</label><!-- end allowed_like -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ALLOWED_DISLIKE_MSG}</td>
+	<td><!-- begin allowed_dislike -->
+		<input type="radio" name="allowed_dislike" id="allowed_dislike{allowed_dislike_value}" {allowed_dislike_checked} value="{allowed_dislike_value}">
+		<label for="allowed_dislike{allowed_dislike_value}">{allowed_dislike_description}</label><!-- end allowed_dislike -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{RANDOM_IMAGE_VALIDATION_MSG}</td>
+	<td><!-- begin review_random_image -->
+		<input type="radio" name="review_random_image" id="review_random_image{review_random_image_value}" {review_random_image_checked} value="{review_random_image_value}">
+		<label for="review_random_image{review_random_image_value}">{review_random_image_description}</label><!-- end review_random_image -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{REVIEWS_PER_PAGE_MSG}</td>
+	<td><input class="field" type="text" name="reviews_per_page" value="{reviews_per_page}" size="5" maxlength="5"></td>
+</tr>
+<tr class="usual">
+	<td>{REVIEWS_PER_PRODUCT_MSG}</td>
+	<td>
+		<input class="field" type="text" name="reviews_per_user" value="{reviews_per_user}" size="5" maxlength="5">
+		({REVIEWS_PER_PRODUCT_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{REVIEWS_PERIOD_MSG}</td>
+	<td>
+		<input class="field" type="text" name="reviews_interval" value="{reviews_interval}" size="10" maxlength="10"> &nbsp;
+		<select name="reviews_period"><!-- begin reviews_period -->
+			<option {reviews_period_selected} value="{reviews_period_value}">{reviews_period_description}<!-- end reviews_period -->
+		</select>
+		&nbsp; ({REVIEWS_PERIOD_DESC})
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{REVIEW_COMMENTS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{ALLOWED_REVIEW_COMMENT_MSG}</td>
+	<td><!-- begin allowed_comment -->
+		<input type="radio" name="allowed_comment" id="allowed_comment{allowed_comment_value}" {allowed_comment_checked} value="{allowed_comment_value}">
+		<label for="allowed_comment{allowed_comment_value}">{allowed_comment_description}</label><!-- end allowed_comment -->
+		<span class="comment">&nbsp;({ALLOWED_REVIEW_COMMENT_DESC})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{AUTO_PUBLISH_COMMENTS_MSG}</td>
+	<td><!-- begin comments_approve -->
+		<input type="radio" name="comments_approve" id="comments_approve{comments_approve_value}" {comments_approve_checked} value="{comments_approve_value}">
+		<label for="comments_approve{comments_approve_value}">{comments_approve_description}</label><!-- end comments_approve -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{RANDOM_IMAGE_VALIDATION_MSG}</td>
+	<td><!-- begin comment_random_image -->
+		<input type="radio" name="comment_random_image" id="comment_random_image{comment_random_image_value}" {comment_random_image_checked} value="{comment_random_image_value}">
+		<label for="comment_random_image{comment_random_image_value}">{comment_random_image_description}</label><!-- end comment_random_image -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{COMMENTS_PER_REVIEW_MSG}</td>
+	<td>
+		<input class="field" type="text" name="comments_per_review" value="{comments_per_review}" size="5" maxlength="5">
+		<span class="comment">({COMMENTS_PER_REVIEW_DESC})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{COMMENTS_PERIOD_MSG}</td>
+	<td>
+		<input class="field" type="text" name="comments_interval" value="{comments_interval}" size="10" maxlength="10"> &nbsp;
+		<select name="comments_period"><!-- begin comments_period -->
+			<option {comments_period_selected} value="{comments_period_value}">{comments_period_description}<!-- end comments_period -->
+		</select>
+		&nbsp; ({COMMENTS_PERIOD_DESC})
+	</td>
+</tr>
+
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="predefined_fields_data" class="tab-data {predefined_fields_class}">
+<table border="0" cellpadding="4" cellspacing="1" width="100%">
+<tr class="middle"  align="center">
+	<td width="32%">&nbsp;</td>
+	<td width="9%">{ADMIN_SHOW_MSG}</td>
+	<td width="9%">{REQUIRED_MSG}</td>
+	<td width="9%">{ADMIN_ORDER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{IMPRESSION_MSG} <span class="comment">({POSITIVE_MSG}, {NEGATIVE_MSG}, {NEUTRAL_MSG})</span></td>
+	<td align="center"><input type="checkbox" name="show_recommended" {show_recommended} value="1"></td>
+	<td align="center"><input type="checkbox" name="recommended_required" {recommended_required} value="1"></td>
+	<td align="center"><input class="field" type="text" name="recommended_order" value="{recommended_order}" size="5" maxlength="10"></td>
+</tr>
+<tr class="usual">
+	<td>{RATE_IT_MSG} <i class="ico-stars ico-5-0-stars" style="float: none;"></i></td>
+	<td align="center"><input type="checkbox" name="show_rating" {show_rating} value="1"></td>
+	<td align="center"><input type="checkbox" name="rating_required" {rating_required} value="1"></td>
+	<td align="center"><input class="field" type="text" name="rating_order" value="{rating_order}" size="5" maxlength="10"></td>
+</tr>
+<tr class="usual">
+	<td>{NAME_ALIAS_MSG} <span class="comment">({UNREGISTERED_USER_ONLY_MSG})</span></td>
+	<td align="center"><input type="checkbox" name="show_user_name" {show_user_name} value="1"></td>
+	<td align="center"><input type="checkbox" name="user_name_required" {user_name_required} value="1"></td>
+	<td align="center"><input class="field" type="text" name="user_name_order" value="{user_name_order}" size="5" maxlength="10"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_MSG} <span class="comment">({UNREGISTERED_USER_ONLY_MSG})</span></td>
+	<td align="center"><input type="checkbox" name="show_user_email" {show_user_email} value="1"></td>
+	<td align="center"><input type="checkbox" name="user_email_required" {user_email_required} value="1"></td>
+	<td align="center"><input class="field" type="text" name="user_email_order" value="{user_email_order}" size="5" maxlength="10"></td>
+</tr>
+<tr class="usual">
+	<td>{ONE_LINE_SUMMARY_MSG}</td>
+	<td align="center"><input type="checkbox" name="show_summary" {show_summary} value="1"></td>
+	<td align="center"><input type="checkbox" name="summary_required" {summary_required} value="1"></td>
+	<td align="center"><input class="field" type="text" name="summary_order" value="{summary_order}" size="5" maxlength="10"></td>
+</tr>
+<tr class="usual">
+	<td>{YOUR_REVIEW_MSG}</td>
+	<td align="center"><input type="checkbox" name="show_comments" {show_comments} value="1"></td>
+	<td align="center"><input type="checkbox" name="comments_required" {comments_required} value="1"></td>
+	<td align="center"><input class="field" type="text" name="comments_order" value="{comments_order}" size="5" maxlength="10"></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td colspan="8">
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<!-- notification email -->
+
+<div id="review_notify_data" class="tab-data {review_notify_class}">
+<table border="0" cellpadding="4" cellspacing="1" width="100%">
+<tr class="usual">
+	<td colspan="2">{NEW_REVIEW_NOTIFY_DESC}</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{EMAIL_NOTIFICATION_ADMIN_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="admin_notification">{SEND_NOTIFICATION_ADMIN_MSG}</label></td>
+	<td><input type="checkbox" name="admin_notification" id="admin_notification" {admin_notification} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>To</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="admin_email" value="{admin_email}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>reviews@example.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_FROM_MSG}</b></td>
+	<td><input class="field" type="text" name="admin_mail_from" value="{admin_mail_from}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="admin_mail_cc" value="{admin_mail_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="admin_mail_bcc" value="{admin_mail_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="admin_mail_reply_to" value="{admin_mail_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="admin_mail_return_path" value="{admin_mail_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="admin_subject" value="{admin_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin admin_message_type -->
+		<input class="field" type="radio" name="admin_message_type" id="admin_message_type{admin_message_type_value}" {admin_message_type_checked} value="{admin_message_type_value}">
+		<label for="admin_message_type{admin_message_type_value}">{admin_message_type_description}</label><!-- end admin_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{MESSAGE_MSG}</b>
+		<div class="small">
+			<br>(<a href="javascript:openWindow('{admin_email_tags_help_href}?type=review')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_SETTINGS_NOTE} 
+			<br>&nbsp;{LEARN_MORE_AND_SEE_NOTE})
+		</div>
+	</td>
+	<td>{editor_error}
+		<textarea name="admin_message" id="am" cols="80" rows="10">{admin_message}</textarea>
+		<!-- begin am_ext_editor -->
+		<script type="text/javascript">
+			var amEditor = CKEDITOR.replace('am');{ckfinder}
+		</script><!-- end am_ext_editor -->
+		<!-- begin am_int_editor -->
+		<script type= "text/javascript">
+			var editor_am = new VA_HTMLeditor('content_am','../','{html_editor}');
+			editor_am.text_field_name = 'admin_message';
+			editor_am.formname = 'record';
+			editor_am.css_file = '{css_file}';
+			editor_am.editor_type = 'amail_editor';
+			editor_am.displayEditor('editor_am', 530, 170);
+		</script><!-- end am_int_editor -->
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{EMAIL_NOTIFICATION_USER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="user_notification">{SEND_NOTIFICATION_USER_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="user_notification" id="user_notification" {user_notification} value="1">
+		{USER_REVIEW_NOTIFY_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_FROM_MSG}</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="user_mail_from" value="{user_mail_from}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>sales@example.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="user_mail_cc" value="{user_mail_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="user_mail_bcc" value="{user_mail_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="user_mail_reply_to" value="{user_mail_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="user_mail_return_path" value="{user_mail_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="user_subject" value="{user_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin user_message_type -->
+		<input type="radio" name="user_message_type" id="user_message_type{user_message_type_value}" {user_message_type_checked} value="{user_message_type_value}">
+		<label for="user_message_type{user_message_type_value}">{user_message_type_description}</label><!-- end user_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{MESSAGE_MSG}</b>
+		<div class="small">
+			<br>(<a href="javascript:openWindow('{admin_email_tags_help_href}?type=review')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_SETTINGS_NOTE} 
+			<br>&nbsp;{LEARN_MORE_AND_SEE_NOTE})
+		</div>
+	</td>
+	<td>{editor_error}
+		<textarea name="user_message" id="um" cols="80" rows="10">{user_message}</textarea>
+		<!-- begin um_ext_editor -->
+		<script type="text/javascript">
+			var umEditor = CKEDITOR.replace('um');{ckfinder}
+		</script><!-- end um_ext_editor -->
+		<!-- begin um_int_editor -->
+		<script type= "text/javascript">
+			var editor_um = new VA_HTMLeditor('content_um','../','{html_editor}');
+			editor_um.text_field_name = 'user_message';
+			editor_um.formname = 'record';
+			editor_um.css_file = '{css_file}';
+			editor_um.editor_type = 'umail_editor';
+			editor_um.displayEditor('editor_um', 530, 170);
+		</script><!-- end um_int_editor -->
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+
+</div>
+
+<div id="comment_notify_data" class="tab-data {comment_notify_class}">
+<table border="0" cellpadding="4" cellspacing="1" width="100%">
+<tr class="usual">
+	<td colspan="2">{NEW_COMMENT_NOTIFY_DESC}</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{EMAIL_NOTIFICATION_ADMIN_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="admin_comment_notification">{SEND_NOTIFICATION_ADMIN_MSG}</label></td>
+	<td><input type="checkbox" name="admin_comment_notification" id="admin_comment_notification" {admin_comment_notification} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>To</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="admin_comment_to" value="{admin_comment_to}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>reviews@example.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_FROM_MSG}</b></td>
+	<td><input class="field" type="text" name="admin_comment_from" value="{admin_comment_from}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="admin_comment_cc" value="{admin_comment_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="admin_comment_bcc" value="{admin_comment_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="admin_comment_reply_to" value="{admin_comment_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="admin_comment_return_path" value="{admin_comment_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="admin_comment_subject" value="{admin_comment_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin admin_comment_message_type -->
+		<input class="field" type="radio" name="admin_comment_message_type" id="admin_comment_message_type{admin_comment_message_type_value}" {admin_comment_message_type_checked} value="{admin_comment_message_type_value}">
+		<label for="admin_comment_message_type{admin_comment_message_type_value}">{admin_comment_message_type_description}</label><!-- end admin_comment_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{MESSAGE_MSG}</b>
+		<div class="small">
+			<br>(<a href="javascript:openWindow('{admin_email_tags_help_href}?type=comment')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_SETTINGS_NOTE} 
+			<br>&nbsp;{LEARN_MORE_AND_SEE_NOTE})
+		</div>
+	</td>
+	<td>{editor_error}
+		<textarea name="admin_comment_message" id="am_comment" cols="80" rows="10">{admin_comment_message}</textarea>
+		<!-- begin am_comment_ext_editor -->
+		<script type="text/javascript">
+			var am_commentEditor = CKEDITOR.replace('am_comment');{ckfinder}
+		</script><!-- end am_comment_ext_editor -->
+		<!-- begin am_comment_int_editor -->
+		<script type= "text/javascript">
+			var editor_am_comment = new VA_HTMLeditor('content_am_comment','../','{html_editor}');
+			editor_am_comment.text_field_name = 'admin_comment_message';
+			editor_am_comment.formname = 'record';
+			editor_am_comment.css_file = '{css_file}';
+			editor_am_comment.editor_type = 'amail_editor';
+			editor_am_comment.displayEditor('editor_am_comment', 530, 170);
+		</script><!-- end am_comment_int_editor -->
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{EMAIL_NOTIFICATION_USER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td><label for="user_comment_notification">{SEND_NOTIFICATION_USER_MSG}</label></td>
+	<td>
+		<input type="checkbox" name="user_comment_notification" id="user_comment_notification" {user_comment_notification} value="1">
+		{USER_COMMENT_NOTIFY_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_FROM_MSG}</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="user_comment_from" value="{user_comment_from}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>sales@example.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="user_comment_cc" value="{user_comment_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="user_comment_bcc" value="{user_comment_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="user_comment_reply_to" value="{user_comment_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="user_comment_return_path" value="{user_comment_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="user_comment_subject" value="{user_comment_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin user_comment_message_type -->
+		<input type="radio" name="user_comment_message_type" id="user_comment_message_type{user_comment_message_type_value}" {user_comment_message_type_checked} value="{user_comment_message_type_value}">
+		<label for="user_comment_message_type{user_comment_message_type_value}">{user_comment_message_type_description}</label><!-- end user_comment_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{MESSAGE_MSG}</b>
+		<div class="small">
+			<br>(<a href="javascript:openWindow('{admin_email_tags_help_href}?type=comment')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_SETTINGS_NOTE} 
+			<br>&nbsp;{LEARN_MORE_AND_SEE_NOTE})
+		</div>
+	</td>
+	<td>{editor_error}
+		<textarea name="user_comment_message" id="um_comment" cols="80" rows="10">{user_comment_message}</textarea>
+		<!-- begin um_comment_ext_editor -->
+		<script type="text/javascript">
+			var um_commentEditor = CKEDITOR.replace('um_comment');{ckfinder}
+		</script><!-- end um_comment_ext_editor -->
+		<!-- begin um_comment_int_editor -->
+		<script type= "text/javascript">
+			var editor_um_comment = new VA_HTMLeditor('content_um_comment','../','{html_editor}');
+			editor_um_comment.text_field_name = 'user_comment_message';
+			editor_um_comment.formname = 'record';
+			editor_um_comment.css_file = '{css_file}';
+			editor_um_comment.editor_type = 'umail_editor';
+			editor_um_comment.displayEditor('editor_um_comment', 530, 170);
+		</script><!-- end um_comment_int_editor -->
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+
+</div>
+
+<div id="reviewer_notify_data" class="tab-data {reviewer_notify_class}">
+<table border="0" cellpadding="4" cellspacing="1" width="100%">
+<tr class="usual">
+	<td colspan="2">{REVIEWER_NOTIFY_DESC}</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{EMAIL_NOTIFICATION_USER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{SEND_NOTIFICATION_USER_MSG}</td>
+	<td>
+		<input type="checkbox" name="admin_reply_notification" id="admin_reply_notification" {admin_reply_notification} value="1">
+		<label for="admin_reply_notification">{REVIEWER_ADMIN_COMMENT_DESC}</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_FROM_MSG}</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="admin_reply_from" value="{admin_reply_from}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>sales@example.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="admin_reply_cc" value="{admin_reply_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="admin_reply_bcc" value="{admin_reply_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="admin_reply_reply_to" value="{admin_reply_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="admin_reply_return_path" value="{admin_reply_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="admin_reply_subject" value="{admin_reply_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin admin_reply_message_type -->
+		<input type="radio" name="admin_reply_message_type" id="admin_reply_message_type{admin_reply_message_type_value}" {admin_reply_message_type_checked} value="{admin_reply_message_type_value}">
+		<label for="admin_reply_message_type{admin_reply_message_type_value}">{admin_reply_message_type_description}</label><!-- end admin_reply_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{MESSAGE_MSG}</b>
+		<div class="small">
+			<br>(<a href="javascript:openWindow('{admin_email_tags_help_href}?type=comment')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_SETTINGS_NOTE} 
+			<br>&nbsp;{LEARN_MORE_AND_SEE_NOTE})
+		</div>
+	</td>
+	<td>{editor_error}
+		<textarea name="admin_reply_message" id="ra_message" cols="80" rows="10">{admin_reply_message}</textarea>
+		<!-- begin ra_message_ext_editor -->
+		<script type="text/javascript">
+			var ra_messageEditor = CKEDITOR.replace('ra_message');{ckfinder}
+		</script><!-- end ra_message_ext_editor -->
+		<!-- begin ra_message_int_editor -->
+		<script type= "text/javascript">
+			var editor_ra_message = new VA_HTMLeditor('content_ra_message','../','{html_editor}');
+			editor_ra_message.text_field_name = 'admin_reply_message';
+			editor_ra_message.formname = 'record';
+			editor_ra_message.css_file = '{css_file}';
+			editor_ra_message.editor_type = 'umail_editor';
+			editor_ra_message.displayEditor('editor_ra_message', 530, 170);
+		</script><!-- end ra_message_int_editor -->
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{EMAIL_NOTIFICATION_USER_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{SEND_NOTIFICATION_USER_MSG}</td>
+	<td>
+		<input type="checkbox" name="user_reply_notification" id="user_reply_notification" {user_reply_notification} value="1">
+		<label for="user_reply_notification">{REVIEWER_USER_COMMENT_DESC}</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_FROM_MSG}</b>
+		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
+	</td>
+	<td>
+		<input class="field" type="text" name="user_reply_from" value="{user_reply_from}" size="80" maxlength="255">
+		<div class="small">({EG_MSG} <b>sales@example.com</b>)</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_CC_MSG}</td>
+	<td><input class="field" type="text" name="user_reply_cc" value="{user_reply_cc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_BCC_MSG}</td>
+	<td><input class="field" type="text" name="user_reply_bcc" value="{user_reply_bcc}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_REPLY_TO_MSG}</td>
+	<td><input class="field" type="text" name="user_reply_reply_to" value="{user_reply_reply_to}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_RETURN_PATH_MSG}</td>
+	<td><input class="field" type="text" name="user_reply_return_path" value="{user_reply_return_path}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_SUBJECT_MSG}</b></td>
+	<td><input class="field" type="text" name="user_reply_subject" value="{user_reply_subject}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td><b>{EMAIL_MESSAGE_TYPE_MSG}</b></td>
+	<td><!-- begin user_reply_message_type -->
+		<input type="radio" name="user_reply_message_type" id="user_reply_message_type{user_reply_message_type_value}" {user_reply_message_type_checked} value="{user_reply_message_type_value}">
+		<label for="user_reply_message_type{user_reply_message_type_value}">{user_reply_message_type_description}</label><!-- end user_reply_message_type -->
+	</td>
+</tr>
+<tr class="usual">
+	<td valign="top">
+		<b>{MESSAGE_MSG}</b>
+		<div class="small">
+			<br>(<a href="javascript:openWindow('{admin_email_tags_help_href}?type=comment')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_SETTINGS_NOTE} 
+			<br>&nbsp;{LEARN_MORE_AND_SEE_NOTE})
+		</div>
+	</td>
+	<td>{editor_error}
+		<textarea name="user_reply_message" id="ru_message" cols="80" rows="10">{user_reply_message}</textarea>
+		<!-- begin ru_message_ext_editor -->
+		<script type="text/javascript">
+			var ru_messageEditor = CKEDITOR.replace('ru_message');{ckfinder}
+		</script><!-- end ru_message_ext_editor -->
+		<!-- begin ru_message_int_editor -->
+		<script type= "text/javascript">
+			var editor_ru_message = new VA_HTMLeditor('content_ru_message','../','{html_editor}');
+			editor_ru_message.text_field_name = 'user_reply_message';
+			editor_ru_message.formname = 'record';
+			editor_ru_message.css_file = '{css_file}';
+			editor_ru_message.editor_type = 'umail_editor';
+			editor_ru_message.displayEditor('editor_ru_message', 530, 170);
+		</script><!-- end ru_message_int_editor -->
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

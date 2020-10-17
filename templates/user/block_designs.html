@@ -1,0 +1,14 @@
+	<form action="{current_href}" name="designs" method="get">
+		{hidden_parameters}
+		<!-- begin layouts_select -->
+		<select class="field" name="set_layout_id">
+			<!-- begin layouts_options --><option {layout_selected} value="{layout_id}">{layout_name}</option><!-- end layouts_options -->
+		</select>
+		<span class="submit"><input class="submit" type="submit" value="{APPLY_BUTTON}" /></span>
+		<!-- end layouts_select -->
+		<!-- begin layouts_list -->
+		<!-- BEGIN layouts -->
+		<div class="usualbg"><a class="title" href="{layout_url}">{layout_name}</a></div>
+		<!-- END layouts --> 
+		<!-- end layouts_list -->
+	</form>

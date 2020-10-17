@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {FRIENDLY_URLS_MSG} :: {EDIT_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/list_fields.js"></script>
+<script language="JavaScript">
+<!--
+var list_fields_names = new Array('sites');
+//-->
+</script>
+
+</head>
+<body class="commonbg">
+
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{FRIENDLY_URLS_MSG}</div>
+<div class="BlockContent">
+<table width="100%" border="0" cellspacing="1" cellpadding="0">
+<tr align="center"> 
+	<td>
+
+<form action="{admin_friendly_url_href}" name="record" onSubmit="selectListFieldsAll();" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="friendly_id" value="{friendly_id}">
+<input type="hidden" name="sites" value="">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="usual">
+	<td>{SCRIPT_NAME_MSG} *</td>
+	<td><input class="field" type="text" size="80" name="script_name" value="{script_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{FRIENDLY_URL_MSG} *</td>
+	<td><input class="field" type="text" size="80" name="friendly_url" value="{friendly_url}"></td>
+</tr>
+<!--begin sitelist-->
+<tr class="usual">
+	<td colspan="2">
+		<input type="checkbox" name="sites_all" id="sites_all" {sites_all} onClick="checkListFields('sites');" value="1">
+		<label for="sites_all">{USE_FRIENDLY_URL_ALL_SITES_MSG}</label>
+	</td>
+</tr>
+</table>
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr align="center" class="middle">
+	<td width="45%"><b>{AVAILABLE_SITES_MSG}</b></td>
+	<td width="10%"><b>{OPERATIONS_MSG}</b></td>
+	<td width="45%"><b>{USE_ITEM_SITES_MSG}</b></td>
+</tr>
+<tr align="center" class="usual">
+	<td>
+		<select name="available_sites" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_sites -->
+			<option value="{site_id}">{site_name}<!-- end available_sites-->
+		</select>
+	</td>
+	<td>
+		<span class="button"><input class="submit" readonly type="button" name="add_sites" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('sites');"></span>
+		<br><br>
+		<span class="button"><input class="submit" type="button" name="remove_sites" value="<- {REMOVE_BUTTON}" onClick="removeListFields('sites');"></span>
+	</td>
+	<td>
+		<select name="selected_sites" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_sites -->
+			<option value="{site_id}">{site_name}<!-- end selected_sites -->
+		</select>
+	</td>
+</tr>
+</table>
+<!--end sitelist-->
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr class="middle">
+	<td align="center">
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+
+</div>
+</div>
+
+<script language="JavaScript">
+<!--
+	checkListFieldsAll();
+//-->
+</script>
+{admin_footer}
+</body>
+</html>

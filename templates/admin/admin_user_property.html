@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html><head><title>{ACCOUNT_PROFILE_MSG} :: {EDIT_CUSTOM_FIELD_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+{head_tags}
+<script>
+var list_fields_names = new Array('sites', 'user_types');
+</script>
+<script language="JavaScript" type= "text/javascript" src="../js/list_fields.js"></script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{admin_breadcrumb}
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+	<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}" title="{tab_title}">{tab_title}</a></li><!-- END tabs -->
+</ul>
+
+<div class="Form clearBoth">
+<div class="FormContent">
+
+<form action="{admin_property_href}" name="record" method="post" onsubmit="selectListFieldsAll();" >
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="sites" value="">
+<input type="hidden" name="user_types" value="">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="user_type_id" value="{user_type_id}">
+<input type="hidden" name="property_id" value="{property_id}">
+<input type="hidden" name="more_properties" value="0">
+<input type="hidden" name="number_properties" value="{number_properties}">
+
+<div id="general_data" class="tab-data {general_class}">
+<table cellspacing="1" cellpadding="4" border="0" align="center" width="100%">
+<tr class="usual">
+	<td width="20%">{FIELD_ORDER_MSG} *</td>
+	<td colspan="5"><input class="field" type="text" name="property_order" value="{property_order}" size="12"></td>
+</tr>
+<tr class="usual">
+	<td>{FIELD_CODE_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="property_code" value="{property_code}" size="30">
+		<span class="small">({FIELD_CODE_DESC})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FIELD_NAME_MSG} *</td>
+	<td colspan="5"><input class="field" type="text" name="property_name" value="{property_name}" size="60"></td>
+</tr>
+<!-- begin sitelist -->
+<tr class="usual">
+	<td>{ADMIN_SITE_MSG} *</td>
+	<td colspan="5">
+		<select name="param_site_id"><!-- begin site_id -->
+			<option {site_id_selected} value="{site_id_value}">{site_id_description}<!-- end site_id -->
+		</select>
+	</td>
+</tr>
+<!-- end sitelist -->
+<tr class="usual">
+	<td>{DEFAULT_VALUE_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="default_value" value="{default_value}" size="60"> 
+		<span class="small">(Used for <b>Label</b>, <b>TextBox</b> and <b>TextArea</b>)</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{BLOCK_CSS_CLASS_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="property_class" value="{property_class}" size="60"> 
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FIELD_STYLE_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="property_style" value="{property_style}" size="60"> 
+		<span class="small">({OPTION_STYLE_NOTE}, {EG_MSG} 'color: blue;')</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FIELD_SECTION_MSG} *</td>
+	<td colspan="5">
+		<select name="section_id"><!-- begin section_id -->
+			<option {section_id_selected} value="{section_id_value}">{section_id_description}<!-- end section_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FIELD_CONTROL_MSG} *</td>
+	<td colspan="5">
+		<select name="control_type"><!-- begin control_type -->
+			<option {control_type_selected} value="{control_type_value}">{control_type_description}<!-- end control_type -->
+		</select>
+		<span class="small">({CONTROL_TYPE_USE_DESC})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{SHOW_FIELD_MSG}</td>
+	<td colspan="5"><!-- begin property_show -->
+		<input type="radio" name="property_show" id="property_show{property_show_value}" {property_show_checked} value="{property_show_value}"><label for="property_show{property_show_value}">{property_show_description}</label><!-- end property_show -->
+	</td>
+</tr>
+<tr class="usual">
+	<td><label for="required">{FIELD_REQUIRED_MSG}</label></td>
+	<td colspan="5"><input type="checkbox" {required} name="required" id="required" value="1"></td>
+</tr>
+<!-- BEGIN tax_free_block -->
+<tr class="usual">
+	<td><label for="tax_free">{TAX_FREE_MSG}</label></td>
+	<td colspan="5"><input type="checkbox" {tax_free} name="tax_free" id="tax_free" value="1"></td>
+</tr>
+<!-- END tax_free_block -->
+<tr class="middle">
+	<td colspan="6">{OPTIONS_VALUES_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{SQL_TO_OBTAIN_VALUES_MSG}</td>
+	<td colspan="5">
+		<table cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td><textarea name="options_values_sql" rows="3" cols="80">{options_values_sql}</textarea></td>
+			<td>&nbsp;&nbsp;</td>
+			<td valign="top">
+				<span class="small">({EG_MSG} <b>SELECT country_id,country_name FROM va_countries ORDER BY country_id, country_name</b>)</span>
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<tr align="center" class="usual">
+	<td>{ID_MSG}</td>
+	<td class="small">{OPTION_VALUE_MSG}</td>
+	<td class="small">{DEFAULT_MSG}</td>
+	<td class="small">{HIDE_MSG}</td>
+	<td class="small">{DELETE_BUTTON}</td>
+	<td class="small" width="150">&nbsp;</td>
+</tr><!-- begin properties --><!-- begin properties_errors -->
+<tr class="usual" align="center">
+	<td>&nbsp;</td>
+	<td colspan="4" class="errorbg">{errors_list}</td>
+	<td>&nbsp;</td>	
+</tr><!-- end properties_errors -->
+<tr class="usual" align="center">
+	<td>{property_value_id}
+		<input type="hidden" name="property_value_id_{properties_number}" value="{property_value_id}">
+		<input type="hidden" name="property_id_{properties_number}" value="{property_id}">
+	</td>
+	<td align="left"><input class="field" type="text" name="property_value_{properties_number}" value="{property_value}" size="60"></td>
+	<td align="center"><input type="checkbox" name="is_default_value_{properties_number}" {is_default_value} value="1"></td>
+	<td align="center"><input type="checkbox" name="hide_value_{properties_number}" {hide_value} value="1"></td>
+	<td align="center"><input type="checkbox" name="properties_delete_{properties_number}" {properties_delete} value="1"></td>
+	<td>&nbsp;</td>
+</tr><!-- end properties -->
+<tr class="usual">
+	<td>&nbsp;</td>
+	<td colspan="4" align="right">
+		{ADD_MORE_OPTION_VALUES_QST} <span class="button"><input class="submit" type="submit" value={ADD_BUTTON} onClick="document.record.more_properties.value=1">
+	</td>
+	<td>&nbsp;</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td colspan="5">
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onCLick="document.record.operation.value='delete';return confirm('Do you want delete &quot;{property_name}&quot; {OPTION_MSG}?');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="appearance_data" class="tab-data {appearance_class}">
+<table cellspacing="1" cellpadding="4" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="6">{OPTIONS_APPEARANCE_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{CONTROL_STYLE_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="control_style" value="{control_style}" size="60">
+		<span class="small">({CONTROL_STYLE_NOTE}, {EG_MSG} 'color: green;')</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{BEFORE_TITLE_HTML_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="before_name_html" value="{before_name_html}" size="60">
+		<span class="small">({BEFORE_TITLE_HTML_NOTE})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{AFTER_TITLE_HTML_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="after_name_html" value="{after_name_html}" size="60">
+		<span class="small">({AFTER_TITLE_HTML_NOTE})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{BEFORE_CONTROL_HTML_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="before_control_html" value="{before_control_html}" size="60">
+		<span class="small">({BEFORE_CONTROL_HTML_NOTE})</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{AFTER_CONTROL_HTML_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="after_control_html" value="{after_control_html}" size="60">
+		<span class="small">({AFTER_CONTROL_HTML_NOTE})</span>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td colspan="5">
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onCLick="document.record.operation.value='delete';return confirm('Do you want delete &quot;{property_name}&quot; {OPTION_MSG}?');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="javascript_data" class="tab-data {javascript_class}">
+<table cellspacing="1" cellpadding="4" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="6">{JAVASCRIPT_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{ONCHANGE_EVENT_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="onchange_code" value="{onchange_code}" size="60">
+		<span class="small">({EG_MSG} &lt;select onChange="<b>[your code here]</b>"&gt;)</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ONCLICK_EVENT_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="onclick_code" value="{onclick_code}" size="60">
+		<span class="small">({EG_MSG} &lt;input type="radio" onClick="<b>[your code here]</b>"&gt;)</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{CONTROL_CODE_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="control_code" value="{control_code}" size="60">
+		<span class="small">({EG_MSG} &lt;input type="text" <b>[your code here]</b>&gt;)</span>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td colspan="5">
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onCLick="document.record.operation.value='delete';return confirm('Do you want delete &quot;{property_name}&quot; {OPTION_MSG}?');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="regexp_data" class="tab-data {regexp_class}">
+<table cellspacing="1" cellpadding="4" border="0" align="center" width="100%">
+<tr class="middle">
+	<td colspan="6">{REGEXP_SETTINGS_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{VALIDATION_REGEXP_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="validation_regexp" value="{validation_regexp}" size="60">
+		<span class="small">({EG_MSG} <b>/^\d&#123;2&#125;\/\d&#123;2&#125;\/\d&#123;4&#125;$/</b>)</span>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{REGEXP_ERROR_MSG}</td>
+	<td colspan="5">
+		<input class="field" type="text" name="regexp_error" value="{regexp_error}" size="60">
+		<div class="small">({EG_MSG} Field <b>&#123;field_name&#125;</b> doesn't match the following date mask <b>MM/DD/YYYY</b>)</div>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td colspan="5">
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onCLick="document.record.operation.value='delete';return confirm('Do you want delete &quot;{property_name}&quot; {OPTION_MSG}?');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="user_types_data" class="tab-data {user_types_class}">
+	<table cellspacing="1" cellpadding="4" border="0" width="100%">
+	<tr class="usual">
+		<td colspan="3">
+			<input type="checkbox" name="user_types_all" id="user_types_all" {user_types_all} onClick="checkListFields('user_types');" value="1">
+			<label for="user_types_all">{USER_TYPES_ALL_MSG} ({USER_TYPES_ALL_UNTICK_MSG})</label>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td colspan="2">
+	
+			<table width="100%" border="0" cellspacing="1" cellpadding="3">
+			<tr align="center" class="usual">
+				<td width="40%"><b>{AVAILABLE_USER_TYPES_MSG}</b></td>
+				<td width="20%"><b>{OPERATIONS_MSG}</b></td>
+				<td width="40%"><b>{APPLY_FOR_USER_TYPES_MSG}</b></td>
+			</tr>
+			<tr align="center" class="usual">
+				<td width="40%">
+					<select name="available_user_types" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_user_types -->
+						<option value="{list_id}">{list_name}<!-- end available_user_types-->
+					</select>
+				</td>
+				<td width="20%">
+					<span class="button"><input class="submit" readonly type="button" name="add_user_types" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('user_types');"></span>
+					<br><br>
+					<span class="button"><input class="submit" type="button" name="remove_user_types" value="<- {REMOVE_BUTTON}" onClick="removeListFields('user_types');"></span>
+				</td>
+				<td width="40%">
+	
+					<select name="selected_user_types" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_user_types -->
+						<option value="{list_id}">{list_name}<!-- end selected_user_types -->
+					</select>
+				</td>
+			</tr>
+			</table>
+	
+		</td>
+	</tr>
+	<tr class="middle">
+		<td colspan="3">
+			<span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+<div id="sites_data" class="tab-data {sites_class}">
+	<table cellspacing="1" cellpadding="4" border="0" width="100%">
+	<tr class="usual">
+		<td colspan="3">
+			<input type="checkbox" name="sites_all" id="sites_all" {sites_all} onClick="checkListFields('sites');" value="1">
+			<label for="sites_all">{SITES_ALL_MSG} ({SITES_ALL_UNTICK_MSG})</label>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td colspan="2">
+	
+			<table width="100%" border="0" cellspacing="1" cellpadding="3">
+			<tr align="center" class="usual">
+				<td width="40%"><b>{AVAILABLE_SITES_MSG}</b></td>
+				<td width="20%"><b>{OPERATIONS_MSG}</b></td>
+				<td width="40%"><b>{APPLY_FOR_SITES_MSG}</b></td>
+			</tr>
+			<tr align="center" class="usual">
+				<td width="40%">
+					<select name="available_sites" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_sites -->
+						<option value="{site_id}">{site_name}<!-- end available_sites-->
+					</select>
+				</td>
+				<td width="20%">
+					<span class="button"><input class="submit" readonly type="button" name="add_sites" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('sites');"></span>
+					<br><br>
+					<span class="button"><input class="submit" type="button" name="remove_sites" value="<- {REMOVE_BUTTON}" onClick="removeListFields('sites');"></span>
+				</td>
+				<td width="40%">
+	
+					<select name="selected_sites" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_sites -->
+						<option value="{site_id}">{site_name}<!-- end selected_sites -->
+					</select>
+				</td>
+			</tr>
+			</table>
+	
+		</td>
+	</tr>
+	<tr class="middle">
+		<td colspan="3">
+			<span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+</form>
+</div>
+</div>
+
+	
+{admin_footer}
+</body>
+</html>

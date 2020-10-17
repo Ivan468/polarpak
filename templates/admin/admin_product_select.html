@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{PRODUCT_SELECTION_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/win_select.js"></script>
+<script language="JavaScript">
+<!--
+
+function clearSearch() {
+	document.form_list.sw.value = "";
+	document.form_list.submit();
+}
+
+function selectProduct(itemId, itemName, itemPrice)
+{
+	if (window.opener) {
+		var formId = document.form_list.form_id.value;
+		var formName = document.form_list.form_name.value;
+		if (formName && formName != "") {
+			// the new JS for multiple selection
+			selectItem(itemId, itemName);
+		} else {
+			// the old JS for single selection
+			window.opener.setProduct(itemId, itemName, itemPrice, formId);
+			window.opener.focus();
+		}
+	}
+	window.close();
+}
+
+function closeWindow()
+{
+	window.opener.focus();
+	window.close();
+}
+
+//-->
+</script>
+</head>
+
+<body class="popup">
+
+<form action="{admin_product_select_href}" name="form_list">
+<input type="hidden" name="operation" value="1">
+<input type="hidden" name="js_type" value="{js_type}">
+<input type="hidden" name="form_id" value="{form_id}">
+<input type="hidden" name="form_name" value="{form_name}">
+<input type="hidden" name="field_name" value="{field_name}">
+<input type="hidden" name="id_name" value="{id_name}">
+<input type="hidden" name="selection_type" value="{selection_type}">
+<input type="hidden" name="item_fields" value="{item_fields}">
+<input type="hidden" name="items_field" value="{items_field}">
+<input type="hidden" name="items_object" value="{items_object}">
+<input type="hidden" name="item_template" value="{item_template}">
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle">
+	<td colspan="6" align="center"><a href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+<tr>
+	<td colspan="6" class="usual" align="center">
+		<input type="text" name="sw" value="{sw}" class="search">
+		<span class="button"><input type="submit" value="Search" class="submit"></span>
+		<span class="button"><input type="submit" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch()"></span>
+	</td>
+</tr><!-- begin search_results -->
+<tr class="usual" align="center">
+	<td colspan="6">{found_message}</td>
+</tr><!-- end search_results --><!-- begin products_sorters -->
+<tr class="middle" align="center">
+	<td>{sorter_item_id}</td>
+	<td>{sorter_item_name}</td>
+	<td>{sorter_item_code}</td>
+	<td>{sorter_manufacturer_code}</td>
+	<td>{sorter_price}</td>
+	<td>&nbsp;</td>
+</tr><!-- end products_sorters --><!-- begin products -->
+<tr class="usual">
+	<td align="center">{item_id}</td>
+	<td>{item_name}</td>
+	<td>{item_code}</td>
+	<td>{manufacturer_code}</td>
+	<td align="right">{price}</td>
+	<td align="center" style="cursor: pointer;" onclick='{onclick}'>{SELECT_MSG}</td>
+</tr><!-- end products --><!-- begin navigator_block -->
+<tr class="middle">
+	<td colspan="6" align="right">{navigator}</td>
+</tr><!-- end navigator_block -->
+<tr class="middle">
+	<td colspan="6" align="center"><a href="javascript:closeWindow();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+</table>
+
+</form>
+
+</body>
+</html>

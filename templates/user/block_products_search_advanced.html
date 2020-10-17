@@ -1,0 +1,106 @@
+	<form action="{products_search_href}" name="search_form" method="get">
+	<input type="hidden" name="pq" value="{pq}" />
+	<input type="hidden" name="fq" value="{fq}" />
+
+<table width="100%" cellspacing="1" class="padding6px"><!-- begin search_for_block -->
+<tr class="usualbg">
+	<td align="right">
+		&nbsp;{SEARCH_FOR_MSG}
+	</td>
+	<td>
+		<input class="text" type="text" name="search_string" value="{search_string}" size="50" maxlength="128" />
+	</td>
+</tr><!-- end search_for_block --><!-- begin search_in_block -->
+<tr class="usualbg">
+	<td align="right">
+		&nbsp;{SEARCH_IN_MSG} 
+	</td>
+	<td>
+		<!-- begin s_tit_block -->
+		<label><input type="checkbox" name="s_tit" {s_tit} value="1" /> {SEARCH_TITLE_MSG}</label><!-- end s_tit_block -->
+		<!-- begin s_cod_block -->
+		<label><input type="checkbox" name="s_cod" {s_cod} value="1" /> {SEARCH_CODE_MSG}</label><!-- end s_cod_block -->
+		<!-- begin s_des_block -->
+		<label><input type="checkbox" name="s_des" {s_des} value="1" /> {DESCRIPTION_MSG}</label><!-- end s_des_block -->
+	</td>
+</tr><!-- end search_in_block --><!-- begin properties -->
+<tr class="usualbg">
+	<td align="right">
+		&nbsp;{property_name_translation} 
+		<input type="hidden" name="pn_{property_number}" value="{property_name}" />
+	</td>
+	<td>
+		<!-- BEGIN property_select -->
+		<select class="text" name="pv_{property_number}"><!-- begin property_value -->
+			<option {property_value_selected} value="{property_value_value}">{property_value_description}</option><!-- end property_value -->
+		</select>
+		<!-- END property_select -->
+		<!-- BEGIN property_text -->
+		<input class="text" type="text" name="pv_{property_number}" value="{property_value}" size="25" maxlength="128" />
+		<!-- END property_text -->
+	</td>
+</tr><!-- end properties --><!-- begin features -->
+<tr class="usualbg">
+	<td align="right">
+		&nbsp;{feature_name_translation} 
+		<input type="hidden" name="fn_{feature_number}" value="{feature_name}" />
+	</td>
+	<td>
+		<!-- BEGIN feature_select -->
+		<select class="text" name="fv_{feature_number}"><!-- begin feature_value -->
+			<option {feature_value_selected} value="{feature_value_value}">{feature_value_description}</option><!-- end feature_value -->
+		</select>
+		<!-- END feature_select -->
+		<!-- BEGIN feature_text -->
+		<input class="text" type="text" name="fv_{feature_number}" value="{feature_value}" size="25" maxlength="128" />
+		<!-- END feature_text -->
+	</td>
+</tr><!-- end features --><!-- begin search_in_category_block -->
+<tr class="usualbg">
+	<td align="right">
+		&nbsp;{SEARCH_CATEGORY_MSG} 
+	</td>
+	<td>
+		<select class="text" name="category_id"><!-- begin category_id -->
+			<option {category_id_selected} value="{category_id_value}">{category_id_description}</option><!-- end category_id -->
+		</select>
+	</td>
+</tr><!-- end search_in_category_block --><!-- begin manufacturer_block -->
+<tr class="usualbg">
+	<td align="right">
+		&nbsp;{SEARCH_MANUFACTURER_MSG} 
+	</td>
+	<td>
+		<select class="text" name="manf"><!-- begin manufacturer_id -->
+			<option {manufacturer_id_selected} value="{manufacturer_id_value}">{manufacturer_id_description}</option><!-- end manufacturer_id -->
+		</select>
+	</td>
+</tr><!-- end manufacturer_block --><!-- begin price_block -->
+<tr class="usualbg">
+	<td align="right">
+		&nbsp;{SEARCH_PRICE_MSG} ({currency_symbol})
+	</td>
+	<td>
+		<input class="text" type="text" name="lprice" value="{lprice}" size="10" maxlength="16" /> - 
+		<input class="text" type="text" name="hprice" value="{hprice}" size="10" maxlength="16" />
+	</td>
+</tr><!-- end price_block --><!-- begin weight_block -->
+<tr class="usualbg">
+	<td align="right">
+		&nbsp;{SEARCH_WEIGHT_MSG} ({weight_measure})
+	</td>
+	<td>
+		<input class="text" type="text" name="lweight" value="{lweight}" size="10" maxlength="16" /> - 
+		<input class="text" type="text" name="hweight" value="{hweight}" size="10" maxlength="16" />
+	</td>
+</tr><!-- end weight_block -->
+<tr class="middlebg">
+	<td></td>
+	<td>
+		<span class="submit"><input class="submit" type="submit" value="{SEARCH_BUTTON}" /></span>
+		<span class="submit"><input class="submit" type="reset" value="{RESET_BUTTON}" /></span>
+		<span class="submit"><input class="submit" type="button" value="{CLEAR_BUTTON}" onclick="clearFields();" /></span>
+	</td>
+</tr>
+</table>
+</form>

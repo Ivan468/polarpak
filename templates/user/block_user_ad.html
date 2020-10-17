@@ -1,0 +1,450 @@
+<script type="text/javascript" src="js/win_select.js"></script>
+<script type="text/javascript" src="js/ads.js"></script>
+<script type="text/javascript" src="js/product.js"></script>
+<script type="text/javascript" src="js/calendar.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+				
+	function openWindow(pagename, filetype, controlName)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype + '&control_name=' + controlName, 'uploadWin', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=400');
+		uploadWin.focus();
+	}
+
+	function setFilePath(filepath, filetype, controlName)
+	{
+		if(filepath != "")
+		{
+			if (controlName != "") {
+				document.record.elements[controlName].value = filepath;
+				document.record.elements[controlName].focus();
+			} else if(filetype == "ad_small") {
+				document.record.image_small.value = filepath;
+				document.record.image_small.focus();
+			} else if(filetype == "ad_large") {
+				document.record.image_large.value = filepath;
+				document.record.image_large.focus();
+			}
+		}
+	}
+
+	function setAddress(addressType, name, firstName, middleName, lastName, companyId, companyName, email, address1, address2, address3, city, province, stateId, countryId, postalCode, phone, daytimePhone, eveningPhone, cellPhone, fax)
+	{
+		var formObj = document.record;
+		formObj.location_city.value = city;
+		formObj.location_postcode.value = postalCode;
+		var countryObj = formObj.location_country_id;
+		countryObj.selectedIndex = 0;
+		for (var i = 0; i < countryObj.options.length; i++) {
+			if (countryObj.options[i].value == countryId) {
+				countryObj.options[i].selected = true;
+			}
+		}
+		var stateObj = formObj.location_state_id;
+		stateObj.selectedIndex = 0;
+		for (var i = 0; i < stateObj.options.length; i++) {
+			if (stateObj.options[i].value == stateId) {
+				stateObj.options[i].selected = true;
+			}
+		}
+	}
+		
+	var publishPriceMsg = "{ADS_PUBLISH_PRICE_MSG}";
+	var categories = new Array(); // <!-- BEGIN categories_js -->
+	categories["{js_id}"] = new Array("{publish_price}");// <!-- END categories_js -->
+	var days = new Array(); // <!-- BEGIN days_js -->
+	days["{days_id}"] = new Array("{publish_price}");// <!-- END days_js -->
+	var hotDays = new Array(); // <!-- BEGIN hot_days_js -->
+	hotDays["{days_id}"] = new Array("{publish_price}");// <!-- END hot_days_js -->
+	var specialDays = new Array(); // <!-- BEGIN special_days_js -->
+	specialDays["{days_id}"] = new Array("{publish_price}");// <!-- END special_days_js -->
+//]]>
+</script>
+
+		<ul class="tabs" data-form="record" data-js="tabs"><!-- BEGIN tabs -->
+			<li class="{tab_class}" data-tab="{tab_name}"><a href="{tab_href}">{tab_title}</a></li><!-- END tabs -->
+		</ul>
+
+		<div class="clearboth"></div>
+
+<form action="{user_ad_href}" name="record" method="post">
+<input type="hidden" name="operation" value="save" />
+<input type="hidden" name="tab" value="{tab}" />
+<input type="hidden" name="item_id" value="{item_id}" />
+<input type="hidden" name="type_id" value="{type_id}" />
+<input type="hidden" name="currency_left" value="{currency_left}" />
+<input type="hidden" name="currency_right" value="{currency_right}" />
+<input type="hidden" name="currency_rate" value="{currency_rate}" />
+<input type="hidden" name="currency_decimals" value="{currency_decimals}" />
+<input type="hidden" name="currency_point" value="{currency_point}" />
+<input type="hidden" name="currency_separator" value="{currency_separator}" />
+
+<input type="hidden" name="current_categories_ids" value="{current_categories_ids}" />
+<input type="hidden" name="current_date_start" value="{current_date_start}" />
+<input type="hidden" name="current_days_run" value="{current_days_run}" />
+<input type="hidden" name="current_hot_date_start" value="{current_hot_date_start}" />
+<input type="hidden" name="current_hot_days_run" value="{current_hot_days_run}" />
+<input type="hidden" name="current_special_date_start" value="{current_special_date_start}" />
+<input type="hidden" name="current_special_days_run" value="{current_special_days_run}" />
+
+<div id="general_data" class="tab-data {general_class}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table width="100%" cellspacing="1" class="table-data">
+<tr class="middlebg">
+	<td colspan="2">{AD_GENERAL_MSG} </td>
+</tr>
+<tr class="usualbg">
+	<td>{SHOW_ON_SITE_FIELD}</td>
+	<td><input type="checkbox" name="is_shown" {is_shown} value="1" /></td>
+</tr>
+<tr class="usualbg">
+	<td>{CATEGORY_MSG} <span class="required">*</span></td>
+	<td>
+		<select class="text" name="category_id" onchange="calculatePostPrice();"><!-- begin category_id -->
+			<option {category_id_selected} value="{category_id_value}">{category_id_description}</option><!-- end category_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{TITLE_MSG} <span class="required">*</span></td>
+	<td><input class="text" type="text" name="item_title" value="{item_title}" size="50" maxlength="255" /></td>
+</tr>
+<tr class="usualbg">
+	<td>{AD_START_MSG} <span class="required">*</span></td>
+	<td>
+		<input class="text" type="text" name="date_start" value="{date_start}" size="20" maxlength="20" onchange="calculatePostPrice();" />
+		<a HREF="#"
+			onclick="setDateField(document.record.date_start, '{date_edit_format}');
+			top.newWin = window.open('js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/icons/calendar.gif" alt="{CALENDAR_MSG}" align="top" /></a>
+		({date_format_msg})
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{AD_RUNS_MSG} <span class="required">*</span></td>
+	<td>
+		<select class="text" name="days_run" onchange="calculatePostPrice();"><!-- begin days_run -->
+			<option {days_run_selected} value="{days_run_value}">{days_run_description}</option><!-- end days_run -->
+		</select>
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{PRICE_MSG} <span class="required">*</span></td>
+	<td>
+		<input class="text" type="text" name="price" value="{price}" size="20" maxlength="20" /><!-- begin ad_currency_code_block -->
+		<select class="text" name="ad_currency_code"><!-- begin ad_currency_code -->
+			<option {ad_currency_code_selected} value="{ad_currency_code_value}">{ad_currency_code_description}</option><!-- end ad_currency_code -->
+		</select><!-- end ad_currency_code_block --><!-- begin default_currency_block -->
+		({default_currency_code})<!-- end default_currency_block -->
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{AD_QTY_MSG}</td>
+	<td><input class="text" type="text" name="quantity" value="{quantity}" size="20" maxlength="20" /></td>
+</tr>
+<tr class="usualbg">
+	<td>{AD_AVAILABILITY_MSG}</td>
+	<td><input class="text" type="text" name="availability" value="{availability}" size="50" maxlength="255" /></td>
+</tr>
+<tr class="usualbg">
+	<td>{AD_COMPARED_MSG}</td>
+	<td><input type="checkbox" name="is_compared" {is_compared} value="1" /></td>
+</tr><!-- begin properties_block -->
+<tr class="middlebg">
+	<td colspan="2">
+		{AD_PROPERTIES_MSG}
+		<input type="hidden" name="properties_number" value="{properties_number}" />
+	</td>
+</tr><!-- begin properties -->
+<tr class="usualbg">
+	<td>
+		{property_name}
+		<input type="hidden" name="property_id_{property_index}" value="{property_id}" />
+		<input type="hidden" name="property_name_{property_index}" value="{property_name}" />
+		<input type="hidden" name="property_values_{property_index}" value="{property_values}" />
+	</td>
+	<td><!-- begin property_select -->
+		<select class="text" name="property_value_{property_index}"><!-- begin property_value_list -->
+			<option {property_value_list_selected} value="{property_value_list_value}">{property_value_list_description}</option><!-- end property_value_list -->
+		</select><!-- end property_select --><!-- begin property_textbox -->
+		<input class="text" type="text" name="property_value_{property_index}" value="{property_value}" size="50" maxlength="255" /><!-- end property_textbox -->
+	</td>
+</tr><!-- end properties --><!-- end properties_block --><!-- begin features_block -->
+<tr class="middlebg">
+	<td colspan="2">
+		{AD_SPECIFICATION_MSG}
+		<input type="hidden" name="features_number" value="{features_number}" />
+	</td>
+</tr><!-- begin features -->
+<tr class="usualbg">
+	<td>
+		{group_name}: {feature_name}
+		<input type="hidden" name="feature_id_{feature_index}" value="{feature_id}" />
+		<input type="hidden" name="group_id_{feature_index}" value="{group_id}" />
+		<input type="hidden" name="group_name_{feature_index}" value="{group_name}" />
+		<input type="hidden" name="feature_name_{feature_index}" value="{feature_name}" />
+		<input type="hidden" name="feature_values_{feature_index}" value="{feature_values}" />
+	</td>
+	<td><!-- begin feature_select -->
+		<select class="text" name="feature_value_{feature_index}"><!-- begin feature_value_list -->
+			<option {feature_value_list_selected} value="{feature_value_list_value}">{feature_value_list_description}</option><!-- end feature_value_list -->
+		</select><!-- end feature_select --><!-- begin feature_textbox -->
+		<input class="text" type="text" name="feature_value_{feature_index}" value="{feature_value}" size="50" maxlength="255" /><!-- end feature_textbox -->
+	</td>
+</tr><!-- end features --><!-- end features_block -->
+<!-- begin terms_block -->
+<tr class="middlebg">
+	<td colspan="2">{TERMS_MSG}</td>
+</tr>
+<tr class="usualbg">
+	<td>&nbsp;</td>
+	<td>
+		<input type="checkbox" name="terms" {terms} value="1" />
+		(<a href="#" onclick="openTermsWindow('{user_ads_terms_href}'); return false;">{TERMS_USER_DESC}</a>)
+	</td>
+</tr><!-- end terms_block -->
+<tr class="middlebg">
+	<td>&nbsp;</td>
+	<td>
+		<div id="saveNoteGeneral" class="message" style="{save_note_general_style}">{save_note_general}</div>
+		<!-- begin save_button --><span class="submit"><input name="save" class="submit" type="submit" value="{save_button_title}" onclick="document.record.operation.value='save';" /></span><!-- end save_button -->
+		<!-- BEGIN delete --><span class="submit"><input class="submit" id="delete" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{AD_DELETE_CONFIRM_MSG}?');" /></span><!-- END delete -->
+		<span class="submit"><input class="submit" id="cancel" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'" /></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="images_data" class="tab-data {images_class}">
+<table width="100%" cellspacing="1" class="table-data"><!-- begin images_block -->
+<tr class="middlebg">
+	<td colspan="2">{IMAGES_MSG}</td>
+</tr>
+<tr class="usualbg">
+	<td valign="top">{IMAGE_SMALL_MSG}</td>
+	<td>
+		<input class="text" type="text" size="50" maxlength="255" name="image_small" value="{image_small}" /> 
+		&nbsp;<a href="javascript:openWindow('{user_upload_href}', 'ad_small', 'image_small')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{user_select_href}', 'ad_small', 'image_small')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{IMAGE_LARGE_MSG}</td>
+	<td>
+		<input class="text" type="text" size="50" maxlength="255" name="image_large" value="{image_large}" /> 
+		&nbsp;<a href="javascript:openWindow('{user_upload_href}', 'ad_large', 'image_large')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{user_select_href}', 'ad_large', 'image_large')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="middlebg">
+	<td colspan="2">
+		{IMAGES_MSG}
+		<input type="hidden" name="images_number" value="{images_number}" />
+	</td>
+</tr><!-- begin images -->
+<tr class="headerbg">
+	<td colspan="2">{IMAGE_MSG} #{image_index}</td>
+</tr>
+<tr class="usualbg">
+	<td>
+		{TITLE_MSG} 
+		<input type="hidden" name="image_id_{image_index}" value="{image_id}" />
+	</td>
+	<td><input class="text" type="text" name="image_title_{image_index}" value="{image_title}" size="50" maxlength="255" /></td>
+</tr>
+<tr class="usualbg">
+	<td>{IMAGE_SMALL_MSG}</td>
+	<td>
+		<input class="text" type="text" name="image_small_{image_index}" value="{picture_small}" size="50" maxlength="255" />
+		&nbsp;<a href="javascript:openWindow('{user_upload_href}', 'ad_small', 'image_small_{image_index}')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{user_select_href}', 'ad_small', 'image_small_{image_index}')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{IMAGE_LARGE_MSG}</td>
+	<td>
+		<input class="text" type="text" name="image_large_{image_index}" value="{picture_large}" size="50" maxlength="255" />
+		&nbsp;<a href="javascript:openWindow('{user_upload_href}', 'ad_large', 'image_large_{image_index}')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{user_select_href}', 'ad_large', 'image_large_{image_index}')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{AD_IMAGE_DESC_MSG}</td>
+	<td><textarea class="text" name="image_description_{image_index}" cols="50" rows="4">{image_description}</textarea></td>
+</tr><!-- end images --><!-- end images_block -->
+<tr class="middlebg">
+	<td>&nbsp;</td>
+	<td>
+		<div id="saveNoteImages" class="message" style="display:none;"></div><!-- begin save_button -->
+		<span class="submit"><input name="save" class="submit" type="submit" value="{save_button_title}" onclick="document.record.operation.value='save';" /></span><!-- end save_button --><!-- BEGIN delete -->
+		<span class="submit"><input class="submit" id="delete" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{AD_DELETE_CONFIRM_MSG}?');" /></span><!-- END delete -->
+		<span class="submit"><input class="submit" id="cancel" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'" /></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<!-- description block -->
+<div id="ad_desc_data" class="tab-data {ad_desc_class}">
+<table width="100%" cellspacing="1" class="table-data">
+<tr class="middlebg">
+	<td colspan="2">{DESCRIPTION_MSG}</td>
+</tr>
+<tr class="usualbg">
+	<td>{SHORT_DESCRIPTION_MSG}</td>
+	<td><textarea class="text" name="short_description" cols="50" rows="4">{short_description}</textarea></td>
+</tr>
+<tr class="usualbg">
+	<td>{FULL_DESCRIPTION_MSG}</td>
+	<td><textarea class="text" name="full_description" cols="50" rows="8">{full_description}</textarea></td>
+</tr>
+<tr class="middlebg">
+	<td>&nbsp;</td>
+	<td>
+		<div id="saveNoteAdDesc" class="message" style="display:none;"></div><!-- begin save_button -->
+		<span class="submit"><input name="save" class="submit" type="submit" value="{save_button_title}" onclick="document.record.operation.value='save';" /></span><!-- end save_button --><!-- BEGIN delete -->
+		<span class="submit"><input class="submit" id="delete" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{AD_DELETE_CONFIRM_MSG}?');" /></span><!-- END delete -->
+		<span class="submit"><input class="submit" id="cancel" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'" /></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+<div id="location_data" class="tab-data {location_class}">
+<table width="100%" cellspacing="1" class="table-data">
+<tr class="middlebg">
+	<td colspan="2">{AD_LOCATION_MSG}</td>
+</tr>
+<!-- begin select_address -->
+<tr>
+	<td width="40%"></td>
+	<td class="usualbg" width="60%">
+		<a href="#" class="title" onClick='jsonWindow({"url": "{user_address_select_href}", "params": {"select_type": "1"}}); return false;'>{SELECT_ADDRESS_MSG}</a>
+	</td>
+</tr><!-- end select_address --><tr class="usualbg">
+	<td>{CITY_FIELD}</td>
+	<td><input class="text" type="text" name="location_city" value="{location_city}" size="50" maxlength="128" /></td>
+</tr>
+<tr class="usualbg">
+	<td>{ZIP_FIELD}</td>
+	<td><input class="field" type="text" name="location_postcode" value="{location_postcode}" size="20" maxlength="16" /></td>
+</tr>
+<tr class="usualbg">
+	<td>{STATE_FIELD}</td>
+	<td>
+		<select class="text" name="location_state_id"><!-- begin location_state_id -->
+			<option {location_state_id_selected} value="{location_state_id_value}">{location_state_id_description}</option><!-- end location_state_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{COUNTRY_FIELD}</td>
+	<td>
+		<select class="text" name="location_country_id"><!-- begin location_country_id -->
+			<option {location_country_id_selected} value="{location_country_id_value}">{location_country_id_description}</option><!-- end location_country_id -->
+		</select>
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{AD_LOCATION_INFO_MSG}</td>
+	<td><textarea class="text" name="location_info" cols="50" rows="4">{location_info}</textarea></td>
+</tr>
+<tr class="middlebg">
+	<td>&nbsp;</td>
+	<td>
+		<div id="saveNoteLocation" class="message" style="display:none;"></div>
+		<!-- begin save_button --><span class="submit"><input name="save" class="submit" type="submit" value="{save_button_title}" onclick="document.record.operation.value='save';" /></span><!-- end save_button -->
+		<!-- BEGIN delete --><span class="submit"><input class="submit" id="delete" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{AD_DELETE_CONFIRM_MSG}?');" /></span><!-- END delete -->
+		<span class="submit"><input class="submit" id="cancel" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'" /></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<!-- hot offer block -->
+<div id="ad_hot_data" class="tab-data {ad_hot_class}">
+<table width="100%" cellspacing="1" class="table-data">
+<tr class="usualbg">
+	<td colspan="2">
+		<input type="checkbox" name="is_hot" {is_hot} value="1" /> {AD_HOT_ACTIVATE_MSG}
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{AD_HOT_START_MSG} <span class="required">*</span></td>
+	<td>
+		<input class="text" type="text" name="hot_date_start" value="{hot_date_start}" size="20" maxlength="20" onchange="calculatePostPrice();" />
+		<a HREF="#"
+			onclick="setDateField(document.record.hot_date_start, '{date_edit_format}');
+			top.newWin = window.open('js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/icons/calendar.gif" alt="{CALENDAR_MSG}" align="top" /></a>
+		({date_format_msg})
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{ADS_HOT_DAYS_MSG} <span class="required">*</span></td>
+	<td>
+		<select class="text" name="hot_days_run" onchange="calculatePostPrice();"><!-- begin hot_days_run -->
+			<option {hot_days_run_selected} value="{hot_days_run_value}">{hot_days_run_description}</option><!-- end hot_days_run -->
+		</select>
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{AD_HOT_DESCRIPTION_MSG}</td>
+	<td><textarea class="text" name="hot_description" cols="50" rows="4">{hot_description}</textarea></td>
+</tr>
+<tr class="middlebg">
+	<td>&nbsp;</td>
+	<td>
+		<div id="saveNoteAdHot" class="message" style="display:none;"></div>
+		<!-- begin save_button --><span class="submit"><input name="save" class="submit" type="submit" value="{save_button_title}" onclick="document.record.operation.value='save';" /></span><!-- end save_button -->
+		<!-- BEGIN delete --><span class="submit"><input class="submit" id="delete" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{AD_DELETE_CONFIRM_MSG}?');" /></span><!-- END delete -->
+		<span class="submit"><input class="submit" id="cancel" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'" /></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<!-- special offer block -->
+<div id="ad_special_data" class="tab-data {ad_special_class}">
+<table width="100%" cellspacing="1" class="table-data">
+<tr>
+	<td colspan="2" class="usualbg">
+		<input type="checkbox" name="is_special" {is_special} value="1" /> {AD_SPECIAL_ACTIVATE_MSG}
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{AD_SPECIAL_START_MSG} <span class="required">*</span></td>
+	<td>
+		<input class="text" type="text" name="special_date_start" value="{special_date_start}" size="20" maxlength="20" onchange="calculatePostPrice();" />
+		<a HREF="#"
+			onclick="setDateField(document.record.special_date_start, '{date_edit_format}');
+			top.newWin = window.open('js/calendar.html','cal','dependent=yes,width=210,height=230,screenX=200,screenY=300,titlebar=yes'); top.newWin.focus(); return false;">
+		<img src="images/icons/calendar.gif" alt="{CALENDAR_MSG}" align="top" /></a>
+		({date_format_msg})
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{ADS_SPECIAL_DAYS_MSG} <span class="required">*</span></td>
+	<td>
+		<select class="text" name="special_days_run" onchange="calculatePostPrice();"><!-- begin special_days_run -->
+			<option {special_days_run_selected} value="{special_days_run_value}">{special_days_run_description}</option><!-- end special_days_run -->
+		</select>
+	</td>
+</tr>
+<tr class="usualbg">
+	<td>{AD_SPECIAL_DESCRIPTION_MSG}</td>
+	<td><textarea class="text" name="special_description" cols="50" rows="4">{special_description}</textarea></td>
+</tr>
+<tr class="middlebg">
+	<td>&nbsp;</td>
+	<td>
+		<div id="saveNoteAdSpecial" class="message" style="display:none;"></div><!-- begin save_button -->
+		<span class="submit"><input name="save" class="submit" type="submit" value="{save_button_title}" onclick="document.record.operation.value='save';" /></span><!-- end save_button --><!-- BEGIN delete -->
+		<span class="submit"><input class="submit" id="delete" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{AD_DELETE_CONFIRM_MSG}?');" /></span><!-- END delete -->
+		<span class="submit"><input class="submit" id="cancel" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'" /></span>
+	</td>
+</tr>
+</table>
+</div>
+</form>

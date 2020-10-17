@@ -1,0 +1,45 @@
+			<!-- begin no_wishlist --><div class="messagebg">{WISHLIST_NOT_EXISTS_MSG}</div><!-- end no_wishlist -->
+
+			<!-- begin wl_items -->
+			<table cellspacing="1" width="100%" class="table-data">
+			<tr class="middlebg" align="center">
+				<td>&nbsp;</td>
+				<td>{PRODUCT_MSG}</td>
+				<td>{PRICE_MSG}</td>
+				<td>{TYPE_MSG}</td>
+				<td>{WISHLIST_WANTS_MSG}</td>
+				<td>{WISHLIST_HAS_MSG}</td>
+				<td>&nbsp;</td>
+			</tr>
+			<!-- BEGIN wl_rows -->
+			<tr valign="top">
+				<td>
+					<!-- begin wl_image --><a href="{details_url}"><img src="{src}" {width} {height} hspace="5" alt="{alt}" /></a><!-- end wl_image -->
+				</td>
+				<td>
+					<a href="{details_url}"><b>{item_name}</b></a>
+				</td>
+				<td align="right">
+					<span class="ourprice"><b>{wl_price}</b></span>
+				</td>
+				<td align="center">
+					{wl_type}
+				</td>
+				<td align="center">
+					{quantity_wants}
+				</td>
+				<td align="center">
+					{quantity_bought}
+				</td>
+				<td>
+					<a class="button bn-add" href="{cart_url}"><span>{ADD_TO_CART_MSG}</span><img src="images/tr.gif" alt="{ADD_TO_CART_MSG}" /></a> 
+				</td>
+			</tr><!-- END wl_rows -->
+			<!-- BEGIN navigator_block -->
+			<tr>
+				<td colspan="7" align="right">
+					{navigator}
+				</td>
+			</tr><!-- END navigator_block -->
+			</table>
+			<!-- end wl_items -->

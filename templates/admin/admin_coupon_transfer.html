@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {EDIT_COUPON_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/users.js"></script>
+<script language="JavaScript" type="text/javascript" src="../js/win_select.js"></script>
+<script language="JavaScript" type="text/javascript" src="../js/shopping.js"></script>
+<script>
+
+ var currencyCode = "{currency_code}";
+ var currencyLeft = "{currency_left}";
+ var currencyRight = "{currency_right}";
+ var currencyDecimals = "{currency_decimals}";
+ var currencyPoint = "{currency_point}";
+ var currencySeparator = "{currency_separator}";
+
+function calculateFee()
+{
+	var amountObj = document.getElementById("transfer_amount");
+	var transferAmount = parseFloat(amountObj.value);
+	if (isNaN(transferAmount)) { transferAmount = 0; }
+
+	var feeObj = document.getElementById("transfer_fee");
+	var feeAmount = parseFloat(feeObj.getAttribute("data-fee-amount"));
+	var feePercent = parseFloat(feeObj.getAttribute("data-fee-percent"));
+	var transferFee = Math.round(transferAmount * feePercent) / 100 + feeAmount; 
+
+	feeObj.value = formatNumber(transferFee, 2);
+
+	var totalObj = document.getElementById("total-amount");
+	var totalAmount = currencyLeft + formatNumber(transferAmount + transferFee, 2) + currencyRight;
+	totalObj.innerHTML = totalAmount;
+}
+
+function calculateTotal()
+{
+	var amountObj = document.getElementById("transfer_amount");
+	var transferAmount = parseFloat(amountObj.value);
+	if (isNaN(transferAmount)) { transferAmount = 0; }
+
+	var feeObj = document.getElementById("transfer_fee");
+	var transferFee = parseFloat(feeObj.value);
+	if (isNaN(transferFee)) { transferFee = 0; }
+
+	var totalObj = document.getElementById("total-amount");
+	var totalAmount = currencyLeft + formatNumber(transferAmount + transferFee, 2) + currencyRight;
+	totalObj.innerHTML = totalAmount;
+}
+</script>
+</head>
+
+<body class="bodyDboard">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<form action="{admin_coupon_transfer_href}" name="transfer" method="POST">
+<input type="hidden" name="rp" value="{rp}">
+<input type="hidden" name="s_n" value="{s_n}">
+<input type="hidden" name="s_a" value="{s_a}">
+<input type="hidden" name="s_dt" value="{s_dt}">
+<input type="hidden" name="page" value="{page}">
+<input type="hidden" name="sort_ord" value="{sort_ord}">
+<input type="hidden" name="sort_dir" value="{sort_dir}">
+<input type="hidden" name="coupon_id" value="{coupon_id}">
+<input type="hidden" name="order_id" value="{order_id}">
+<input type="hidden" name="operation" value="{operation}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<!-- begin transfer_finished -->
+<div class="message">{transfer_message}</div>
+<!-- end transfer_finished -->
+
+<div class="Form">
+<div class="FormTitle">{VOUCHER_TRANSFER_MSG}</div>
+<div class="FormContent">
+
+	<div class="fm-half">
+			<div class="field fd-amount">
+				<div class="before"></div>
+				<div class="name">
+					{VOUCHER_AMOUNT_MSG}
+				</div>
+				<div class="control">
+					{voucher_amount}
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-amount">
+				<div class="before"></div>
+				<div class="name">
+					{OWNER_MSG}
+				</div>
+				<div class="control">
+					<a class="title" href="{admin_user_href}?user_id={owner_user_id}" target="_blank">{owner_user_name}</a> &lt;{owner_user_email}&gt;
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-amount">
+				<div class="before"></div>
+				<div class="name">
+					{VOUCHER_RECEIVER_MSG}
+				</div>
+				<div class="control">
+					<input type="hidden" name="receiver_user_id" value="{receiver_user_id}">
+					<!-- begin confirm_user_block -->
+					<span id="userName">{selected_user}</span>
+					<!-- end confirm_user_block -->
+					<!-- begin receiver_user_id_block -->
+					<span id="userName">{selected_user}</span>
+					<a class="bn-popup" href="#" onClick="openUsersWindow('{admin_users_select_href}', 'transfer', 'receiver_user_id', 'single'); return false;">{SELECT_USER_MSG}</a>
+		    
+					<div id="userTemplate" style="display:none;"><!-- BEGIN user_template -->
+						<a href="{admin_user_href}?user_id={receiver_user_id}" class="title" target="_blank">{receiver_user_name}</a> &lt;{receiver_user_email}&gt;<!-- end user_template -->
+					</div>
+					<!-- end receiver_user_id_block -->
+				</div>
+				<div class="after"></div>
+			</div>
+
+			<div class="field fd-amount">
+				<div class="before"></div>
+				<div class="name">
+					{TRANSFER_AMOUNT_MSG}
+				</div>
+				<div class="control">
+					<!-- begin confirm_amount_block -->
+					<input type="hidden" name="transfer_amount" value="{confirm_amount}">
+					{confirm_amount_desc}
+					<!-- end confirm_amount_block -->
+					<!-- begin transfer_amount_block -->
+					<input class="field" type="text" id="transfer_amount" autocomplete="off" name="transfer_amount" value="{transfer_amount}" size="10" maxlength="16" oninput="calculateFee();">
+					<!-- end transfer_amount_block -->
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-fee">
+				<div class="before"></div>
+				<div class="name">
+					{TRANSFER_FEE_MSG}
+				</div>
+				<div class="control">
+					<!-- begin confirm_fee_block -->
+					<input type="hidden" name="transfer_fee" value="{confirm_fee}">
+					{confirm_fee_desc}
+					<!-- end confirm_fee_block -->
+					<!-- begin transfer_fee_block -->
+					<input class="field" type="text" id="transfer_fee" autocomplete="off" data-fee-percent="{transfer_fee_percent}" data-fee-amount="{transfer_fee_amount}" name="transfer_fee" value="{transfer_fee}" size="10" maxlength="16" oninput="calculateTotal();">
+					{transfer_fee_desc}
+					<!-- end transfer_fee_block -->
+				</div>
+				<div class="after"></div>
+			</div>
+			<div class="field fd-fee">
+				<div class="before"></div>
+				<div class="name">
+					{TOTAL_AMOUNT_MSG}
+				</div>
+				<div class="control">
+					<span id="total-amount">{total_amount}</span>
+				</div>
+				<div class="after"></div>
+			</div>
+
+			<div class="field fd-buttons">
+				<div class="before"></div>
+				<div class="name"></div>
+				<div class="control">
+					<!-- begin send_button -->
+					<input class="submit" type="submit" value="{SEND_BUTTON}" onclick="document.transfer.operation.value='send'" /> 
+					<!-- end send_button -->
+					<!-- begin confirm_button -->
+					<input class="submit" type="submit" value="{CONFIRM_BUTTON}" onclick="document.transfer.operation.value='confirm'" /> 
+					<!-- end confirm_button -->
+					<!-- begin edit_button -->
+					<input class="submit" type="submit" value="{EDIT_BUTTON}" onclick="document.transfer.operation.value='edit'" /> 
+					<!-- end edit_button -->
+					<!-- begin cancel_button -->
+					<input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.transfer.operation.value='cancel'" /> 
+					<!-- end cancel_button -->
+					<!-- begin back_button -->
+					<input class="submit" type="submit" value="{BACK_MSG}" onclick="document.transfer.operation.value='cancel'" /> 
+					<!-- end back_button -->
+				</div>
+				<div class="after"></div>
+			</div>
+
+	</div>
+
+
+</div>
+</div>
+
+</form>	
+
+
+{admin_footer}
+</body>
+</html>

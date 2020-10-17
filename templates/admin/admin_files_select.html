@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{ADMINISTRATION_MSG} :: {SELECT_FILE_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/files.js"></script>
+<script language="JavaScript">
+<!--
+
+function clearSearch() {
+	document.files_list.sw.value = "";
+	document.files_list.submit();
+}
+
+//-->
+</script>
+</head>
+
+<body class="popup">
+
+<form action="{admin_files_select_href}" name="files_list">
+<input type="hidden" name="operation" value="1">
+<input type="hidden" name="form_name" value="{form_name}">
+<input type="hidden" name="field_name" value="{field_name}">
+<input type="hidden" name="type" value="{type}">
+<input type="hidden" name="item_id" value="{item_id}">
+<input type="hidden" name="item_type_id" value="{item_type_id}">
+
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="middle">
+	<td align="center" colspan="6"><a href="javascript:closeFilesWindow();"><b>{CLOSE_WINDOW_MSG}</b></a></td>
+</tr>
+<tr class="usual" align="center">
+	<td colspan="6">
+		<input type="text" name="sw" value="{sw}" class="search">
+		<span class="button"><input type="submit" value="Search" class="submit"></span>
+		<span class="button"><input type="submit" value="{CLEAR_BUTTON}" class="submit" onClick="clearSearch()"></span>
+	</td>
+</tr>	<!-- begin search_results -->
+<tr class="usual" align="center">
+	<td colspan="6">{found_message}</td>
+</tr><!-- end search_results --><!-- begin sorters -->
+<tr class="middle" align="center">
+	<td>{sorter_file_id}</td>
+	<td>{sorter_file_title}</td>
+	<td>{sorter_file_path}</td>
+	<td>&nbsp;</td>
+</tr><!-- end sorters --><!-- begin files -->
+<tr class="usual">
+	<td align="center">{file_id}</td>
+	<td>{file_title}</td>
+	<td>{file_path}</td>
+	<td align="center" class="small"><a href="javascript:selectFile('{file_id}', '{file_title_js}');">{SELECT_MSG}</a></td>
+</tr><!-- end files -->
+<!-- begin navigator_block -->
+<tr class="middle">
+	<td colspan="6" align="right">{navigator}</td>
+</tr><!-- end navigator_block -->
+<tr class="middle">
+	<td colspan="6" align="center">
+		<a href="javascript:closeFilesWindow();"><b>{CLOSE_WINDOW_MSG}</b></a>
+	</td>
+</tr>
+</table>
+
+</form>
+
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{EXPORT_TEMPLATE_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+function showFilters()
+{
+	var filters = new Array(
+		"items", "categories", "orders", "items_files", 
+		"users", "newsletters_users", "registration_list"
+	);
+	var formObj = document.record;
+	var selectedTable = formObj.table_name.options[formObj.table_name.selectedIndex].value;
+	for (var i = 0; i < filters.length; i++) {
+		var filterTable = filters[i];
+		var filtersBlock = filterTable + "_filters";
+		var filtersDiv = document.getElementById(filtersBlock);
+		if (filtersDiv) {
+			if (filterTable == selectedTable) {
+				filtersDiv.style.display = "block"
+			} else {
+				filtersDiv.style.display = "none"
+			}
+		}
+	}
+	var updateActionObj = document.getElementById("update_action_row");
+	var updateStatusObj = document.getElementById("update_order_status_row");
+	if (selectedTable == "orders") {
+		updateActionObj.style.display = "table-row";
+		updateStatusObj.style.display = "table-row";
+	} else {
+		updateActionObj.style.display = "none";
+		updateStatusObj.style.display = "none";
+	}
+
+
+}
+//-->
+</script>
+</head>
+
+<body class="bodySettings">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<form action="{admin_company_href}" name="record" method="POST">
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="template_id" value="{template_id}">
+
+<div id="tabs"><!-- BEGIN tabs_rows -->
+	<ul id="{row_id}" class="tabRow"><!-- BEGIN tabs -->
+		<li id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+	</ul><!-- END tabs_rows -->
+</div>
+
+<div class="Block clearBoth">
+<div class="BlockContent">
+
+
+<div id="data_general" style="{general_style}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="usual">
+	<td>{TEMPLATE_NAME_MSG} *</td>
+	<td><input type="text" name="template_name" size="60" value="{template_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{DATABASE_TABLE_MSG} *</td>
+	<td>
+		<select name="table_name" onChange="showFilters();"><!-- begin table_name -->
+			<option {table_name_selected} value="{table_name_value}">{table_name_description}<!-- end table_name -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td><!-- BEGIN add_button -->
+		<span class="button"><input class="submit" type="submit" value="{ADD_NEW_MSG}" onclick="document.record.operation.value='save'"></span><!-- END add_button --><!-- BEGIN update_button -->
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onclick="document.record.operation.value='save'"></span><!-- END update_button --><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="data_cronjob" style="{cronjob_style}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="usual">
+	<td>{GENERATE_BY_CRON_MSG}</td>
+	<td><input type="checkbox" name="is_cronjob" id="is_cronjob" value="1" {is_cronjob}></td>
+</tr>
+<tr class="usual">
+	<td>{FILE_PATH_MASK_MSG}</td>
+	<td>
+		<input type="text" name="file_path_mask" size="60" value="{file_path_mask}"> 
+		({EG_MSG}: <b>/home/user/&#123;YYYY}&#123;MM}&#123;DD}&#123;HH}.csv</b>)
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FILE_PATH_MASK_MSG} ({SECOND_COPY_MSG})</td>
+	<td>
+		<input type="text" name="file_path_mask_copy" size="60" value="{file_path_mask_copy}"> 
+		({EG_MSG}: <b>/home/user/&#123;YYYY}&#123;MM}&#123;DD}&#123;HH}_copy.csv</b>)
+	</td>
+</tr>
+<tr class="middle" id="update_action_row" style="{update_action_style}">
+	<td colspan="2">{UPDATE_ACTION_MSG}</td>
+</tr>
+<tr class="usual" id="update_order_status_row" style="{update_order_status_style}">
+	<td>{UPDATE_ORDER_STATUS_MSG}</td>
+	<td>
+		<select name="order_status_update"><!-- begin order_status_update -->
+			<option {order_status_update_selected} value="{order_status_update_value}">{order_status_update_description}<!-- end order_status_update -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td><!-- BEGIN add_button -->
+		<span class="button"><input class="submit" type="submit" value="{ADD_NEW_MSG}" onclick="document.record.operation.value='save'"></span><!-- END add_button --><!-- BEGIN update_button -->
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onclick="document.record.operation.value='save'"></span><!-- END update_button --><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+<div id="data_ftp" style="{ftp_style}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="usual">
+	<td>{FTP_UPLOAD_MSG}</td>
+	<td><input type="checkbox" name="ftp_upload" id="ftp_upload" value="1" {ftp_upload}></td>
+</tr>
+<tr class="usual">
+	<td>{FTP_PASSIVE_MODE_MSG}</td>
+	<td><input type="checkbox" name="ftp_passive_mode" id="ftp_passive_mode" value="1" {ftp_passive_mode}></td>
+</tr>
+<tr>
+	<td>{FTP_TRANSFER_MODE_MSG}</td>
+	<td><!-- BEGIN ftp_transfer_mode -->
+		<input type="radio" name="ftp_transfer_mode" id="ftp_transfer_mode{ftp_transfer_mode_value}" {ftp_transfer_mode_checked} value="{ftp_transfer_mode_value}">
+		<label for="ftp_transfer_mode{ftp_transfer_mode_value}">{ftp_transfer_mode_description}</label><!-- END ftp_transfer_mode -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FTP_HOST_MSG}</td>
+	<td>
+		<table border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td><input type="text" name="ftp_host" size="60" value="{ftp_host}"></td>
+			<td>&nbsp;{ADMIN_PORT_MSG}:&nbsp;</td>
+			<td><input type="text" name="file_port" size="10" value="{file_port}"></td>
+		</tr>
+		<tr>
+			<td>{EG_MSG}: <b>ftp.example.com</b></td>
+			<td></td>
+			<td>{EG_MSG}: <b>21</b></td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FTP_LOGIN_MSG}</td>
+	<td>
+		<input type="text" name="ftp_login" size="60" value="{ftp_login}"> 
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FTP_PASSWORD_MSG}</td>
+	<td>
+		<input type="password" name="ftp_password" size="60" value="{ftp_password}"> 
+	</td>
+</tr>
+<tr class="usual">
+	<td>{FTP_PATH_MSG}</td>
+	<td>
+		<input type="text" name="ftp_path" size="60" value="{ftp_path}"> 
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td><!-- BEGIN add_button -->
+		<span class="button"><input class="submit" type="submit" value="{ADD_NEW_MSG}" onclick="document.record.operation.value='save'"></span><!-- END add_button --><!-- BEGIN update_button -->
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onclick="document.record.operation.value='save'"></span><!-- END update_button --><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="data_filters" style="{filters_style}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr>
+	<td>
+
+		<div id="orders_filters" style="{orders_filters_style}">
+			<table border="0" cellpadding="3" cellspacing="1" width="380">
+			<tr class="usual">
+				<td>{BY_ORDER_NUMBER_MSG}:</td>
+				<td><input type="text" name="o_s_on" value="{o_s_on}" class="search"></td>
+			</tr>
+			<tr class="usual">
+				<td>{BY_NAME_EMAIL_MSG}:</td>
+				<td><input type="text" name="o_s_ne" value="{o_s_ne}" class="search"></td>
+			</tr>
+			<tr class="usual">
+				<td>{BY_KEYWORD_MSG}, {SERIAL_NUMBER_MSG}:</td>
+				<td><input type="text" name="o_s_kw" value="{o_s_kw}" class="search"></td>
+			</tr>
+			<tr class="usual">
+				<td>{FROM_DATE_MSG}:</td>
+				<td>
+					<input type="text" name="o_s_sd" value="{o_s_sd}" class="search">
+					<span class="small">({date_edit_format})</span>
+				</td>
+			</tr>
+			<tr class="usual">
+				<td>{TO_DATE_MSG}:</td>
+				<td>
+					<input type="text" name="o_s_ed" value="{o_s_ed}" class="search">
+					<span class="small">({date_edit_format})</span>
+				</td>
+			</tr>
+			<tr class="usual">
+				<td valign="top">{ADMIN_WHERE_STATUS_IS_MSG}:</td>
+				<td>
+						<select name="o_s_os" class="search"><!-- BEGIN o_s_os -->
+							<option {o_s_os_selected} value="{o_s_os_value}">{o_s_os_description}<!-- END o_s_os -->
+						</select>
+				</td>
+			</tr>
+			<tr class="usual">
+				<td>{PAID_STATUS_MSG}:</td>
+				<td><!-- BEGIN o_s_pd -->
+					<input type="radio" name="o_s_pd" id="o_s_pd{o_s_pd_value}" {o_s_pd_checked} value="{o_s_pd_value}">
+					<label for="o_s_pd{o_s_pd_value}">{o_s_pd_description}</label><!-- END o_s_pd -->
+				</td>
+			</tr>
+			<tr class="usual">
+				<td>{SHIP_TO_MSG} {COUNTRY_FIELD}:</td>
+				<td>
+					<select name="o_s_ci" class="search" style="width: 220px;"><!-- BEGIN o_s_ci -->
+						<option {o_s_ci_selected} value="{o_s_ci_value}">{o_s_ci_description}<!-- END o_s_ci -->
+					</select>
+				</td>
+			</tr>
+			<tr class="usual">
+				<td>{SHIP_TO_MSG} {STATE_FIELD}:</td>
+				<td>
+					<select name="o_s_si" class="search"><!-- BEGIN o_s_si -->
+						<option {o_s_si_selected} value="{o_s_si_value}">{o_s_si_description}<!-- END o_s_si -->
+					</select>
+				</td>
+			</tr>
+			<tr class="usual">
+				<td>{CREDIT_CARD_TYPE_MSG}:</td>
+				<td>
+					<select name="o_s_cct" class="search"><!-- BEGIN o_s_cct -->
+						<option {o_s_cct_selected} value="{o_s_cct_value}">{o_s_cct_description}<!-- END o_s_cct -->
+					</select>
+				</td>
+			</tr>
+			<tr class="usual">
+				<td>{TAKE_ORDERS_MSG}:</td>
+				<td><!-- BEGIN o_s_ex -->
+					<input type="radio" name="o_s_ex" id="o_s_ex{o_s_ex_value}" {o_s_ex_checked} value="{o_s_ex_value}">
+					<label for="o_s_ex{o_s_ex_value}">{o_s_ex_description}</label><!-- END o_s_ex -->
+
+					<img onmouseover="showHint(this, 'exportedHint');" onmouseout="hideHint('exportedHint');" src="images/question.gif" border="0" align="top" alt="" title="" />
+					<div id="exportedHint" class="hintPopup">{EXPORTED_FILTER_DESC}</div>
+
+				</td>
+			</tr>
+			<!-- begin sitelist -->
+			<tr class="usual">
+				<td>{ADMIN_SITE_MSG}:</td>
+				<td>
+					<select name="o_s_sti" class="search"><!-- BEGIN o_s_sti -->
+						<option {o_s_sti_selected} value="{o_s_sti_value}">{o_s_sti_description}<!-- END o_s_sti -->
+					</select>
+				</td>
+			</tr><!-- end sitelist -->
+			</table>
+		</div>
+
+		<div id="items_filters" style="{items_filters_style}">
+			<table border="0" cellpadding="3" cellspacing="1" width="380">
+			<tr class="usual">
+				<td>{PROD_STOCK_MSG}</td>
+				<td><select name="i_sl"><!-- begin i_sl -->
+						<option {i_sl_selected} value="{i_sl_value}">{i_sl_description}<!-- end i_sl -->
+					</select></td>
+			</tr>
+			<tr class="usual">
+				<td>{SALES_MSG}</td>
+				<td><select name="i_ss"><!-- begin i_ss -->
+						<option {i_ss_selected} value="{i_ss_value}">{i_ss_description}<!-- end i_ss -->
+					</select></td>
+			</tr>
+			<tr class="usual">
+				<td>{ADMIN_SHOW_MSG}</td>
+				<td><select name="i_sit"><!-- begin i_sit -->
+						<option {i_sit_selected} value="{i_sit_value}">{i_sit_description}<!-- end i_sit -->
+					</select></td>
+			</tr>
+			<tr class="usual">
+				<td>{IS_APPROVED_MSG}:</td>
+				<td><select name="i_ap"><!-- begin i_ap -->
+						<option {i_ap_selected} value="{i_ap_value}">{i_ap_description}<!-- end i_ap -->
+					</select></td>
+			</tr>
+			</table>
+		</div>
+
+		<div id="categories_filters" style="{categories_filters_style}">
+			{NO_FILTERS_AVAILABLE_MSG}
+		</div>
+
+		<div id="items_files_filters" style="{items_files_filters_style}">
+			{NO_FILTERS_AVAILABLE_MSG}
+		</div>
+
+		<div id="users_filters" style="{users_filters_style}">
+			{NO_FILTERS_AVAILABLE_MSG}
+		</div>
+
+		<div id="newsletters_users_filters" style="{newsletters_users_filters_style}">
+			{NO_FILTERS_AVAILABLE_MSG}
+		</div>
+
+		<div id="registration_list_filters" style="{registration_list_filters_style}">
+			{NO_FILTERS_AVAILABLE_MSG}
+		</div>
+
+	</td>
+</tr>
+<tr class="middle">
+	<td><!-- BEGIN add_button -->
+		<span class="button"><input class="submit" type="submit" value="{ADD_NEW_MSG}" onclick="document.record.operation.value='save'"></span><!-- END add_button --><!-- BEGIN update_button -->
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onclick="document.record.operation.value='save'"></span><!-- END update_button --><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+</div>
+</div>
+
+</form>	
+
+
+{admin_footer}
+</body>
+</html>

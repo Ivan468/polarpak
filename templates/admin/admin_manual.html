@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html><head><title>{MANUAL_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript" type= "text/javascript" src="../js/blocks.js"></script>
+<script language="JavaScript" type= "text/javascript" src="../js/ajax.js"></script>
+<script language="JavaScript">
+
+function clearSearch()
+{
+	document.manual_search.search_string.value = "";
+}
+
+function moveNode(aObj)
+{
+	var liObj = vaParentLI(aObj); 
+	var id = liObj.getAttribute("data-id");
+	var parentUL = vaParentJS(liObj);
+
+	liObj.className += " node-move";
+	parentUL.className += " tree-move";
+	parentUL.setAttribute("data-move-id", id);
+}
+
+function moveCancel(aObj)
+{
+	var liObj = vaParentLI(aObj); 
+	var id = liObj.getAttribute("data-id");
+	var parentUL = vaParentJS(liObj);
+
+	liObj.className = liObj.className.replace(/node-move/gi, "").trim();
+	parentUL.className = parentUL.className.replace(/tree-move/gi, "").trim();
+	parentUL.removeAttribute("data-move-id");
+}
+
+function moveBelow(aObj)
+{
+	var liObj = vaParentLI(aObj); 
+	var belowId = liObj.getAttribute("data-id");
+	var parentUL = vaParentJS(liObj);
+	var moveId = parentUL.getAttribute("data-move-id");
+
+	// visual move node to new parent
+	var moveNode = parentUL.querySelector("[data-id='"+moveId+"']");
+	liObj.parentNode.insertBefore(moveNode, liObj.nextSibling);
+	// remove move classes
+	moveNode.className = moveNode.className.replace(/node-move/gi, "").trim();
+	parentUL.className = parentUL.className.replace(/tree-move/gi, "").trim();
+	parentUL.removeAttribute("data-move-id");
+	vaSpin(moveNode.id); // show loading mode for moving mode
+
+	// re-parse new tree to update data-level
+	vaTreeParse(parentUL, "", 0);
+
+	// ajax call to move node to new location 
+	var url = "admin_manual.php?ajax=1&operation=below&below_id="+encodeURIComponent(belowId)+"&move_id="+encodeURIComponent(moveId);
+	callAjax(url, articleMoved, moveNode.id);
+}
+
+function moveSublevel(aObj)
+{
+	var liObj = vaParentLI(aObj); 
+	var topId = liObj.getAttribute("data-id");
+	var parentUL = vaParentJS(liObj);
+	var moveId = parentUL.getAttribute("data-move-id");
+
+	// visual move node to new parent
+	var moveNode = parentUL.querySelector("[data-id='"+moveId+"']");
+
+	// remove move classes
+	moveNode.className = moveNode.className.replace(/node-move/gi, "").trim();
+	parentUL.className = parentUL.className.replace(/tree-move/gi, "").trim();
+	parentUL.removeAttribute("data-move-id");
+	// check if selected node has UL element or create it
+	var subUL = liObj.querySelector("ul");
+	if (subUL) {
+		subUL.appendChild(moveNode);
+		vaSpin(liObj.id); // show loading mode for parent mode
+		// open node if it's opened
+		var regExp = /node-open/g;
+		if (!regExp.test(liObj.className)) {
+			liObj.className = (liObj.className + " node-open").trim();
+		}
+		// ajax call to move node to new location 
+		var url = "admin_manual.php?ajax=1&operation=sublevel&top_id="+encodeURIComponent(topId)+"&move_id="+encodeURIComponent(moveId);
+		callAjax(url, articleMoved, liObj.id);
+	} else {
+		var regExp = /node-childs/g;
+		if (!regExp.test(liObj.className)) {
+			liObj.className = (liObj.className + " node-childs node-open").trim();
+		} else {
+			liObj.className = (liObj.className + " node-open").trim();
+		}
+		vaSpin(liObj.id); // show loading mode for parent mode
+		moveNode.parentNode.removeChild(moveNode);
+		// ajax call to move node to new location 
+		var url = "admin_manual.php?ajax=1&operation=subload&top_id="+encodeURIComponent(topId)+"&move_id="+encodeURIComponent(moveId);
+		callAjax(url, vaTreeLoaded, liObj.id);
+	}
+
+	// re-parse new tree to update data-level
+	vaTreeParse(parentUL, "", 0);
+
+}
+
+function articleMoved(response, liId)
+{
+	var data = JSON.parse(response);
+	vaStopSpin(liId); 
+	if (data.errors && data.errors != "") {
+		alert(data.errors);
+	}
+}
+
+
+</script>
+</head>
+
+<body class="bodyDboard">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<div class="CategoriesNav">
+
+	<div class="Block">
+	<div class="BlockTitle">{MANUALS_TITLE}</div>
+	<div class="BlockContent">
+		<table width="100%" border="0" cellspacing="1" cellpadding="6">
+			<!-- begin list_block --><!-- begin list_category -->
+			<tr class="usual"> 
+				<td><a href="{admin_manual_href}?category_id={list_category_id}"><b>{list_category_name}</b></a></td>
+				<td align="center"><a href="{admin_manual_category_href}?category_id={list_category_id}">{EDIT_MSG}</a></td>
+			</tr><!-- end list_category --><!-- begin list_manual -->
+			<tr class="usual"> 
+				<td>
+					&nbsp;&nbsp;&mdash;&nbsp;<a href="{admin_manual_href}?manual_id={manual_id}">{manual_title}</a>
+				</td>
+				<td align="center"><a href="{admin_manual_edit_href}?category_id={category_id}&manual_id={manual_id}">{EDIT_MSG}</a></td>
+			</tr><!-- end list_manual --><!-- end list_block -->				
+			<tr>
+				<td class="middle" colspan="2">
+					<a href="{admin_manual_category_href}">{NEW_CATEGORY_MSG}</a><!-- begin new_manual_link -->&nbsp;|&nbsp;<a href="{admin_manual_edit_href}">{SUPPORT_STATUS_NEW_MSG} {MANUAL_MSG}</a><!-- end new_manual_link -->
+				</td>
+			</tr>
+		</table>
+	</div>
+	</div>
+
+	<div class="Block">
+	<div class="BlockTitle">{SEARCH_TITLE}</div>
+	<div class="BlockContent">
+
+		<div class="searchForm">
+
+			<form name="manual_search" action="{admin_manual_href}" method="GET">
+
+			<div>{SEARCH_IN_MSG}:</div>
+
+			<select name="search_manual" class="search"><!-- BEGIN search_manual -->
+				<option {search_manual_selected} value="{search_manual_value}">{search_manual_description}<!-- END search_manual -->
+			</select>
+
+			<div>{SEARCH_FOR_MSG}:</div>
+			<input class="field" type="text" name="search_string" value="{search_string}" size="16" />
+		
+			<br/>
+			<span class="button"><input type="submit" class="submit" value="{SEARCH_BUTTON}"/></span>
+			<span class="button"><input type="submit" class="submit" onclick="clearSearch();" value="{CLEAR_BUTTON}"/></span>
+
+			</form>
+		</div>
+
+	</div>
+	</div>
+
+	<div class="Block">
+	<div class="BlockTitle">{GO_TO_MSG}</div>
+	<div class="BlockContent">
+		<table width="100%" border="0" cellspacing="1" cellpadding="4">
+			<tr><td>
+				<form name="manual_goto" method="GET" action="{admin_manual_article__href}">
+				<input type="hidden" name="manual_id" value="{manual_id}">
+				<input class="field" type="text" name="section_goto" value="" size="16">
+				<span class="button"><input type="submit" class="submit" value="{GO_BUTTON}"/></span>
+				</form>
+			</td></tr>
+		</table>
+	</div>
+	</div>
+
+</div>
+
+<div class="ItemsList">
+
+	<!-- BEGIN articles_search --> 
+	<div class="Block">
+	<div class="BlockTitle">{SEARCH_RESULTS_MSG}</div>
+	<div class="BlockContent">
+		<div class="articlesSearch">
+
+			<div class="message">{found_message}</div>
+
+			<!-- begin found_manuals -->
+			<div class="manualTitle">{found_manual_title}</div>
+			<ul>
+				<!-- begin found_articles -->
+				<li>
+					<a href="{admin_manual_article_href}?article_id={article_id}&manual_id={article_manual_id}">{section_number} {article_title} [#{article_id}]</a>
+					<a class="tinyButton" href="{admin_manual_article_href}?article_id={article_id}&manual_id={article_manual_id}">{EDIT_MSG}</a>
+					<a class="tinyButton" href="{admin_manual_article_href}?parent_article_id={article_id}&manual_id={article_manual_id}">{ADD_BUTTON}</a>
+				</li><!-- END found_articles -->
+			</ul>
+			<!-- end found_manuals -->
+
+			<!-- begin navigator_block -->
+			<div class="formLinks">
+				{navigator}
+			</div><!-- end navigator_block -->
+
+		</div>
+
+	</div>
+	</div>
+		<!-- END articles_search --> 
+
+	<div class="Block">
+	<div class="BlockTitle">{title_block}</div>
+	<div class="BlockContent">
+
+		<!-- begin block_message --><div class="messagebg">{message_list}</div><!-- end block_message -->
+
+		<div class="manual-articles">
+			<ul id="manual-articles-{manual_id}" data-js="tree" data-js-type="{js_type}" class="tree" data-pb-id="{manual_id}" data-script="admin_manual.php">
+				<!-- BEGIN nodes -->
+				<li class="{node_class}" id="node-{manual_id}-{node_id}" data-id="{node_id}">
+					<i class="fa expand"></i>
+					<!-- begin node_image --><a href="{node_url}"><img class="node-image" src="{src}" alt="{alt}" /></a><!-- end node_image -->
+					<a class="{restricted_class}" href="{node_url}" title="{a_title}">{node_title}</a>
+
+					<a class="ico-default ico-edit-article" href="{admin_manual_article_href}?article_id={node_id}&manual_id={manual_id}" alt="{EDIT_MSG}" title="{EDIT_MSG}"></a>
+					<a class="ico-default ico-new-article" href="{admin_manual_article_href}?parent_article_id={node_id}&manual_id={manual_id}" alt="{ADD_NEW_MSG}" title="{ADD_NEW_MSG}"></a>
+					<a class="ico-default ico-move" alt="{MOVE_MSG}" title="{MOVE_MSG}" onclick="moveNode(this);"></a>
+
+					<a class="ico-default ico-below" alt="{PUT_AFTER_ARTICLE_MSG}" title="{PUT_AFTER_ARTICLE_MSG}" onclick="moveBelow(this);"></a>
+					<a class="ico-default ico-sublevel" alt="{SET_AS_SUBARTICLE_MSG}" title="{SET_AS_SUBARTICLE_MSG}" onclick="moveSublevel(this);"></a>
+					<a class="ico-default ico-cancel" alt="{CANCEL_BUTTON}" title="{CANCEL_BUTTON}" onclick="moveCancel(this);"></a>
+
+					<!-- BEGIN subnodes_block --><ul>{subnodes}</ul><!-- END subnodes_block --> 
+				</li>
+				<!-- END nodes -->
+			</ul>
+		</div>
+
+
+		<!-- begin new_article_link -->
+		<div class="formLinks">
+			<a href="{admin_manual_article_href}?manual_id={manual_id}">{ADD_NEW_MSG}</a>
+		</div><!-- end new_article_link -->
+
+
+	</div>
+	</div>
+</div>
+
+{admin_footer}
+
+</body>
+</html>

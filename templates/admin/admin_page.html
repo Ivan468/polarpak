@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<title>{CUSTOM_PAGES_MSG} :: {EDIT_MSG}</title>
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<link rel="stylesheet" href="../styles/editor.css" type="text/css">
+<script language="JavaScript" type="text/javascript" src="../js/editor.js"></script>
+<script language="JavaScript" type="text/javascript" src="../js/list_fields.js"></script>
+<script language="JavaScript">
+<!--
+var list_fields_names = new Array('user_types','sites');
+//-->
+</script>
+{CKEditor_tag}
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+
+<ul class="tabRow"><!-- BEGIN tabs -->
+	<li onClick="changeTab('{tab_name}'); return false;" id="{tab_id}" class="{tab_class}"><a class="tabA" href="#" onClick="changeTab('{tab_name}'); return false;">{tab_title}</a></li><!-- END tabs -->
+</ul>
+
+<div class="Form">
+<div class="FormContent">
+
+<form action="{admin_page_href}" name="record" method="POST" onSubmit="selectListFieldsAll(); submit_editor(Array('editor_pb'));">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="page_id" value="{page_id}">
+<input type="hidden" name="tab" value="{tab}">
+<input type="hidden" name="user_types" value="">
+<input type="hidden" name="sites" value="">
+
+<div id="data_general" style="{general_style}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="usual">
+	<td colspan="2" class="usual">
+		<div class="small floatRight">{ASTERISK_MSG}</div>
+		<input type="checkbox" name="is_showing" id="is_showing" {is_showing} value="1"> 
+		<label for="is_showing">{ALLOW_ACCESS_TO_PAGE_MSG}</label>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{GENERAL_PAGE_INFO_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{PAGE_CODE_MSG}	*</td>
+	<td class="small">
+		<input class="field" type="text" name="page_code" value="{page_code}" maxlength="16">
+		({PAGE_CODE_NOTE}: {page_href}?page={page_code})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{META_TITLE_MSG} *</td>
+	<td><input class="field" type="text" name="page_title" size="80" value="{page_title}"></td>
+</tr>
+<!-- BEGIN friendly_url_block -->
+<tr class="usual">
+	<td>{FRIENDLY_URL_MSG}</td>
+	<td><input class="field" type="text" name="friendly_url" value="{friendly_url}" size="80" maxlength="255"></td>
+</tr>
+<!-- END friendly_url_block -->
+<tr class="usual">
+	<td>{PAGE_ORDER_MSG} *</td>
+	<td><input class="field"  type="text" name="page_order" size="10" value="{page_order}"></td>
+</tr>
+<tr class="usual">
+	<td><label for="is_site_map">{SHOW_IN_SITEMAP_MSG}</label></td>
+	<td><input type="checkbox" name="is_site_map" id="is_site_map" {is_site_map} value="1"></td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{PAGE_TYPES_MSG}</td>
+</tr><!-- begin is_html_block -->
+<tr class="usual">
+	<td>{PAGE_FORMAT_MSG}</td>
+	<td><!-- begin is_html -->
+		<input type="radio" name="is_html" id="is_html{is_html_value}" {is_html_checked} value="{is_html_value}">
+		<label for="is_html{is_html_value}">{is_html_description}</label><!-- end is_html -->
+	</td>
+</tr><!-- end is_html_block -->
+<tr class="usual">
+	<td>{WINDOW_TYPE_MSG}</td>
+	<td><!-- begin page_type -->
+		<input type="radio" name="page_type" id="page_type{page_type_value}" {page_type_checked} value="{page_type_value}">
+		<label for="page_type{page_type_value}">{page_type_description}</label><!-- end page_type -->
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{PAGE_SOURCES_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{REDIRECT_TO_URL_MSG}</td>
+	<td><input class="field" type="text" name="page_url" size="80" value="{page_url}"></td>
+</tr>
+<tr class="usual">
+	<td>{GET_BODY_FROM_FILE_MSG}</td>
+	<td><input class="field" type="text" name="page_path" size="80" value="{page_path}"></td>
+</tr>
+<tr class="usual">
+	<td>{PAGE_BODY_MSG}</td>
+	<td>{editor_error}
+		<textarea class="text" id="pb" name="page_body" style="display: block; width: 565px; height: 200px;">{page_body}</textarea>
+		<!-- begin pb_ext_editor -->
+		<script type="text/javascript">
+			var pbEditor = CKEDITOR.replace('pb');{ckfinder}
+		</script><!-- end pb_ext_editor -->
+		<!-- begin pb_int_editor -->
+		<script language= "JavaScript" type= "text/javascript">
+		<!--
+			var editor_pb = new VA_HTMLeditor('content_pb','../','{html_editor}');
+			editor_pb.text_field_name = 'page_body';
+			editor_pb.formname = 'record';
+			editor_pb.css_file = '{css_file}';
+			editor_pb.displayEditor('editor_pb', 565, 250);
+		//-->
+		</script><!-- end pb_int_editor -->
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{META_DATA_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>{META_TITLE_MSG}</td>
+	<td><input class="field" type="text" name="meta_title" value="{meta_title}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{META_KEYWORDS_MSG}</td>
+	<td><input class="field" type="text" name="meta_keywords" value="{meta_keywords}" size="80" maxlength="255"></td>
+</tr>
+<tr class="usual">
+	<td>{META_DESCRIPTION_MSG}</td>
+	<td><textarea name="meta_description" cols="80" rows="3">{meta_description}</textarea></td>
+</tr>
+<tr class="usual">
+	<td>{META_DATA_MSG}</td>
+	<td><textarea name="meta_data" cols="80" rows="5">{meta_data}</textarea></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{confirm_delete}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="data_user_types" style="{user_types_style}">
+<table cellspacing="1" cellpadding="6" border="0" width="100%">
+<tr class="usual">
+	<td colspan="3">
+		<input type="checkbox" name="user_types_all" id="user_types_all" {user_types_all} onClick="checkListFields('user_types');" value="1">
+		<label for="user_types_all">Show this page for all users types, including unregistered users (untick this checkbox to select users types manually)</label>
+	</td>
+</tr>
+<tr align="center" class="middle">
+	<td width="45%"><b>{AVAILABLE_USER_TYPES_MSG}</b></td>
+	<td width="10%"><b>{OPERATIONS_MSG}</b></td>
+	<td width="45%"><b>Show this page for users types in the list below</b></td>
+</tr>
+<tr align="center" class="usual">
+	<td>
+		<select name="available_user_types" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_user_types -->
+			<option value="{type_id}">{type_name}<!-- end available_user_types -->
+		</select>
+	</td>
+	<td>
+		<span class="button"><input class="submit" readonly type="button" name="add_user_types" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('user_types');"></span>
+		<br><br>
+		<span class="button"><input class="submit" type="button" name="remove_user_types" value="<- {REMOVE_BUTTON}" onClick="removeListFields('user_types');"></span>
+	</td>
+	<td>
+		<select name="selected_user_types" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_user_types -->
+			<option value="{type_id}">{type_name}<!-- end selected_user_types -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="3"><span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+<!-- begin sitelist-->
+<div id="data_sites" style="{sites_style}">
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+<tr class="usual">
+	<td colspan="3">
+		<input type="checkbox" name="sites_all" id="sites_all" {sites_all} onClick="checkListFields('sites');" value="1">
+		<label for="sites_all">Use this page for all sites (untick this checkbox to select sites manually)</label>
+	</td>
+</tr>
+<tr align="center" class="middle">
+	<td width="45%"><b>{AVAILABLE_SITES_MSG}</b></td>
+	<td width="10%"><b>{OPERATIONS_MSG}</b></td>
+	<td width="45%"><b>{USE_ITEM_SITES_MSG}</b></td>
+</tr>
+<tr align="center" class="usual">
+	<td>
+		<select name="available_sites" MULTIPLE size="10"  style="width: 300px;"><!-- begin available_sites -->
+			<option value="{site_id}">{site_name}<!-- end available_sites-->
+		</select>
+	</td>
+	<td>
+		<span class="button"><input class="submit" readonly type="button" name="add_sites" value="&nbsp;&nbsp; {ADD_BUTTON}  -> &nbsp;&nbsp;" onClick="addListFields('sites');"></span>
+		<br><br>
+		<span class="button"><input class="submit" type="button" name="remove_sites" value="<- {REMOVE_BUTTON}" onClick="removeListFields('sites');"></span>
+	</td>
+	<td>
+		<select name="selected_sites" MULTIPLE size="10" style="width: 300px;"><!-- begin selected_sites -->
+			<option value="{site_id}">{site_name}<!-- end selected_sites -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="3"><span class="button"><input class="submit" type="submit" value=" {save_button} " onCLick="document.record.operation.value='save'"></span></td>
+</tr>
+</table>
+</div>
+<!-- end sitelist-->
+
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+<script language="JavaScript">
+<!--
+	checkListFieldsAll();
+//-->
+</script>
+</body>
+</html>

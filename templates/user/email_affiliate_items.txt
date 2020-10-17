@@ -1,0 +1,14 @@
+======================================================
+[{PROD_TITLE_COLUMN}] [{PROD_PRICE_COLUMN}] [{COMMISSION_AMOUNT_COLUMN}] [{PROD_QTY_COLUMN}] [{TOTAL_MSG}]
+======================================================<!-- begin text_affiliate_items -->
+[ 
+  {item_name}<!-- begin text_affiliate_items_item_code -->
+  {PROD_CODE_MSG}: {item_code}<!-- end text_affiliate_items_item_code --><!-- begin text_affiliate_items_manufacturer_code -->
+  {MANUFACTURER_CODE_MSG}: {manufacturer_code}<!-- end text_affiliate_items_manufacturer_code -->	
+  {item_properties}
+]	
+[{price}] : [{affiliate_commission}] x [{quantity}] = [{affiliate_commission_total}] 
+------------------------------------------------------<!-- end text_affiliate_items -->
+======================================================
+{TOTAL_MSG}: {affiliate_commission_sum} 
+======================================================

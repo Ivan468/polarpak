@@ -1,0 +1,17 @@
+<nav class="pagination">
+
+	<ul>
+		<!-- begin pn_first --><li class="pn-first"><a href="{navigating_href}" data-js="link" title="{FIRST_PAGE_MSG}"><span>{FIRST_PAGE_MSG}</span></a></li><!-- end pn_first -->
+		<!-- begin pn_prev --><li class="pn-prev"><a href="{navigating_href}" data-js="link" title="{PREV_PAGE_MSG}"><span>{PREV_PAGE_MSG}</span></a></li><!-- end pn_prev -->
+		<!-- begin pn_before --><li class="pn-page"><a href="{navigating_href}" data-js="link"><span>{page_number}</span></a></li><!-- end pn_before -->
+		<!-- begin pn_active --><li class="pn-active"><a href="" onclick="return false;"><span>{current_page}</span></a></li><!-- end pn_active -->
+		<!-- begin pn_after --><li class="pn-page"><a href="{navigating_href}" data-js="link"><span>{page_number}</span></a></li><!-- end pn_after -->
+		<!-- begin pn_next --><li class="pn-next"><a href="{navigating_href}" data-js="link" title="{NEXT_PAGE_MSG}"><span>{NEXT_PAGE_MSG}</span></a></li><!-- end pn_next -->
+		<!-- begin pn_last --><li class="pn-last"><a href="{navigating_href}" data-js="link" title="{LAST_PAGE_MSG}"><span>{LAST_PAGE_MSG}</span></a></li><!-- end pn_last -->
+	</ul>
+
+	<div class="pn-summary">
+		<span class="pn-name">{PAGE_MSG}</span> <span class="pn-current">{current_page}</span> <span class="pn-of">{OF_PAGE_MSG}</span> <span class="pn-total">{total_pages}</span>
+	</div>
+	<div class="clear"></div>
+</nav>

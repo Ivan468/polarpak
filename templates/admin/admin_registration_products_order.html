@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{PRODUCT_REGISTRATION_MSG} :: {CHANGE_PRODUCTS_ORDER_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+<!--
+
+	function moveLink(oldLink, newLink)
+	{
+		var oldObject = null; var newObject = null;
+		if(oldLink == 'list') {
+			oldObject = document.layout.available_products;
+		} else if (oldLink == 'left') {
+			oldObject = document.layout.shown_products;
+		} else {
+			alert("Wrong object type"); return;
+		}
+		if(newLink == 'list') {
+			newObject = document.layout.available_products;
+		} else if (newLink == 'left') {
+			newObject = document.layout.shown_products;
+		} else {
+			alert("Wrong object type"); return;
+		}
+		
+		var selectedIndex = oldObject.selectedIndex;
+
+		if(selectedIndex == -1) {
+			alert('Please select link');
+		} else {
+			newObject.options[newObject.length] = new Option(oldObject.options[selectedIndex].text, oldObject.options[selectedIndex].value);
+			oldObject.options[selectedIndex] = null;
+		}
+	}
+
+	function changeOrder(column, order) 
+	{
+		var columnObject = null;
+		if (column == 'left') {
+			columnObject = document.layout.shown_products;
+		} else {
+			alert("Wrong object type"); return;
+		}
+		var selectedIndex = columnObject.selectedIndex;
+		var incrementIndex = (order == 'up') ? -1 : 1;
+
+		if(selectedIndex == -1) {
+			alert('Please select link');
+		} else {
+			var selectedValue = columnObject.options[selectedIndex].value;
+			var selectedText = columnObject.options[selectedIndex].text;
+			if((order == 'up' && selectedIndex != 0) ||
+				(order == 'down' && selectedIndex != (columnObject.length - 1))) {
+				columnObject.options[selectedIndex].value = columnObject.options[selectedIndex + incrementIndex].value;
+				columnObject.options[selectedIndex].text = columnObject.options[selectedIndex + incrementIndex].text;
+				columnObject.options[selectedIndex + incrementIndex].value = selectedValue;
+				columnObject.options[selectedIndex + incrementIndex].text = selectedText;
+				columnObject.options[selectedIndex].selected = false;
+				columnObject.options[selectedIndex + incrementIndex].selected = true;
+			} 
+		}
+	}
+
+	function prepareLists()
+	{
+		var valuesList = "";
+		for(var i = 0; i < document.layout.available_products.length; i++) {
+			if(i > 0) valuesList += ","
+			valuesList += document.layout.available_products.options[i].value;
+		}
+		document.layout.available_list.value = valuesList;
+		valuesList = "";
+		for(var i = 0; i < document.layout.shown_products.length; i++) {
+			if(i > 0) valuesList += ","
+			valuesList += document.layout.shown_products.options[i].value;
+		}
+		document.layout.shown_list.value = valuesList;
+	}
+
+//-->
+</script>
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{CHANGE_PRODUCTS_ORDER_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_registration_products_order_href}" name="layout" method="POST" onSubmit="prepareLists();">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="available_list" value="">
+<input type="hidden" name="shown_list" value="">
+<input type="hidden" name="parent_category_id" value="{parent_category_id}">
+
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->		
+<table align="center" width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr align="center" class="middle">
+	<td>{AVAILABLE_PRODCUTS_MSG}</td>
+	<td>{SHOWN_ON_SITE_MSG}</td>
+</tr>	
+<tr align="center">
+	<td>
+		<table border="0" cellspacing="0" cellpadding="2">
+		<tr valign="top">
+			<td>
+				<select name="available_products" size="10" style="width: 300px;"><!-- BEGIN available_products -->
+					<option value="{available_products_value}">{available_products_description}<!-- END available_products -->
+					<option>&nbsp;
+				</select>
+			</td>
+			<td>
+				&nbsp;<a href="#" onClick="moveLink('list', 'left');return false;"><img src="../images/move_right.gif" border="0" width="16" height="16" alt="{ADD_LINK_MSG}"></a><br>
+				&nbsp;<a href="#" onClick="moveLink('list', 'left');return false;"><img src="../images/move_right.gif" border="0" width="16" height="16" alt="{ADD_LINK_MSG}"></a>
+			</td>
+		</tr></table>
+	</td>
+	<td>
+		<table border="0" cellspacing="0" cellpadding="2">
+		<tr valign="top">
+			<td>
+				<select name="shown_products" size="10" style="width: 300px;"><!-- BEGIN shown_products -->
+					<option value="{shown_products_value}">{shown_products_description}<!-- END shown_products -->
+					<option>&nbsp; 
+				</select>
+			</td>
+			<td>
+				&nbsp;<a href="#" onClick="changeOrder('left', 'up');return false;" onDblClick="changeOrder('left', 'up');return false;"><img src="../images/move_up.gif" border="0" width="16" height="16" alt="{MOVE_MSG} Up"></a><br>
+				&nbsp;<a href="#" onClick="changeOrder('left', 'down');return false;" onDblClick="changeOrder('left', 'down');return false;"><img src="../images/move_down.gif" border="0" width="16" height="16" alt="{MOVE_MSG} Down"></a><br>
+				&nbsp;<a href="#" onClick="moveLink('left', 'list');return false;"><img src="../images/remove.gif" border="0" width="16" height="16" alt="Remove Link"></a>
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<tr align="right" class="middle">
+	<td colspan="2">
+		<span class="button"><input type="submit" value="{UPDATE_BUTTON}" onCLick="document.layout.operation.value='save'"></span>
+		<span class="button"><input type="submit" value="{CANCEL_BUTTON}" onCLick="document.layout.operation.value='cancel'"></span>
+	</td>
+</tr>	
+</table>
+
+<script language="JavaScript">
+<!--
+
+	document.layout.available_products.options[document.layout.available_products.length - 1] = null;
+	document.layout.shown_products.options[document.layout.shown_products.length - 1] = null;
+
+-->
+</script>
+</form>
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

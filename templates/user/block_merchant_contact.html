@@ -1,0 +1,45 @@
+		<!-- begin contact_errors --><div class="errorbg"><!-- begin fill_error -->{PROVIDE_INFO_MSG}<!-- end fill_error --> <!-- begin db_error -->{DATABASE_ERROR_MSG}<!-- end db_error --> {errors_list}</div><br /><!-- end contact_errors -->
+		<!-- begin contact_request_sent --><div class="messagebg">{CONTACT_REQUEST_SENT_MSG}</div><br /><!-- end contact_request_sent -->
+
+<form name="review" action="{contact_href}#contact_merchant" method="post">
+<input type="hidden" name="rnd" value="{rnd}" />
+<input type="hidden" name="operation" value="1" />
+<input type="hidden" name="user" value="{user}" />
+<input type="hidden" name="item_id" value="{item_id}" />
+<table width="100%" cellspacing="1" align="center" class="padding6px">
+<tr class="usualbg">
+	<td colspan="2" class="smallText" align="right">{ASTERISK_MSG}&nbsp;</td>
+</tr>
+<tr class="usualbg">
+	<td class="{user_name_class}">&nbsp;{CONTACT_USER_NAME_FIELD} *</td>
+	<td class="{user_name_class}"><input class="text" type="text" name="user_name" size="42" value="{user_name}" maxlength="64" /></td>
+</tr>
+<tr class="usualbg">
+	<td class="{user_email_class}">&nbsp;{CONTACT_USER_EMAIL_FIELD} *</td>
+	<td class="{user_email_class}"><input class="text" type="text" name="user_email" size="42" value="{user_email}" maxlength="128" /></td>
+</tr>
+<tr class="usualbg">
+	<td class="{summary_class}">&nbsp;{CONTACT_SUMMARY_FIELD} *</td>
+	<td class="{summary_class}"><input class="text" type="text" name="summary" size="42" value="{summary}" /></td>
+</tr>
+<tr class="usualbg">
+	<td class="{description_class}">&nbsp;{CONTACT_DESCRIPTION_FIELD} *</td>
+	<td class="{description_class}"><textarea name="description" cols="40" rows="10">{description}</textarea></td>
+</tr>
+<!-- begin validation_number_block -->
+<tr class="usualbg">
+	<td class="{validation_class}">&nbsp;{VALIDATION_CODE_FIELD} *</td>
+	<td class="{validation_class}">
+		&nbsp;<input class="field" type="text" name="validation_number" size="4" value="{validation_number}" />
+		&nbsp;<img src="validation_image.php" align="absmiddle" />
+	</td>
+</tr>
+<!-- end validation_number_block -->
+<tr class="usualbg">
+	<td></td>
+	<td>
+		<span class="submit"><input class="submit" type="submit" value="{SEND_BUTTON}" /></span>
+	</td>
+</tr>
+</table>
+</form>

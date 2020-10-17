@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {SUPPORT_PRIORITIES_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+</head>
+<body class="commonbg">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{SUPPORT_PRIORITIES_MSG}</div>
+<div class="BlockContent">
+
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr align="center" class="middle">
+	<td>{sorter_priority_id}</td>
+	<td>{sorter_priority_name}</td>
+	<td>{sorter_is_default}</td>
+	<td>&nbsp;</td>
+</tr><!-- BEGIN records -->
+<tr class="usual" align="center">
+	<td>{priority_id}</td>
+	<td align="left">{priority_name}</td>
+	<td>{is_default}</td>
+	<td><a href="{admin_support_priority_href}?priority_id={priority_id}">{EDIT_PRIORITY_MSG}</a></td>
+</tr><!-- END records --><!-- BEGIN no_records -->
+<tr class="usual">
+	<td colspan="4">{NO_RECORDS}</td>
+</tr><!-- END no_records -->
+<tr class="middle">
+	<td colspan="4">
+		<div class="floatRight"><!-- begin navigator_block -->{navigator}<!-- end navigator_block --></div>
+		<a href="{admin_support_priority_href}">{NEW_PRIORITY_MSG}</a>
+	</td>
+</tr>
+</table>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

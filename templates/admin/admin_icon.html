@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>{ADMINISTRATION_MSG} :: {EDIT_ICON_MSG}</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+
+<script language="JavaScript">
+<!--
+
+	function openWindow(pagename, filetype)
+	{
+		var uploadWin = window.open (pagename + '?filetype=' + filetype, 'uploadWindow', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500');
+		uploadWin.focus();
+	}
+
+	function setFileName(filename, filetype)
+	{
+		var siteUrl = '{site_url}';
+		if (filename != "" && filetype == "emoticon")
+		{
+			document.record.icon_image.value = siteUrl + "images/emoticons/" + filename;
+			document.record.icon_image.focus();
+		}
+	}
+
+//-->
+</script>
+
+</head>
+<body class="commonbg">
+
+{admin_header} 
+{block_leftside_breadcrumbs}
+<div class="Block">
+<div class="BlockTitle">{EDIT_ICON_MSG}</div>
+<div class="BlockContent">
+
+<form action="{admin_icon_href}" name="record" method="POST">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="icon_id" value="{icon_id}">
+<!-- BEGIN errors --><div class="errorbg">{errors_list}</div><!-- END errors -->
+
+<table border="0" cellspacing="1" cellpadding="6" width="100%">
+<tr class="usual">
+	<td><label for="is_active">{IS_ACTIVE_MSG}</label></td>
+	<td colspan="5"><input type="checkbox" name="is_active" id="is_active" {is_active} value="1"></td>
+</tr>
+<tr class="usual">
+	<td><label for="show_for_user">{SHOW_FOR_USER_MSG}</label></td>
+	<td><input type="checkbox" name="show_for_user" id="show_for_user" {show_for_user} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{ICON_ORDER_MSG} *</td>
+	<td><input class="field" type="text" size="20" name="icon_order" value="{icon_order}"></td>
+</tr>
+<tr class="usual">
+	<td>{ICON_CODE_MSG} *</td>
+	<td>
+		<input class="field" type="text" size="20" name="icon_code" value="{icon_code}">
+		&nbsp; {FOR_EXAMPLE_MSG}: <b>|:-)</b>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ICON_IMAGE_MSG} *</td>
+	<td>
+		<input class="field" type="text" name="icon_image" value="{icon_image}" size="80" maxlength="255"> 
+		&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'emoticon')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+		&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'emoticon')"><b>{SELECT_IMAGE_MSG}</b></a>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{ICON_NAME_MSG}</td>
+	<td><input class="field" type="text" size="80" name="icon_name" value="{icon_name}"></td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</form>	
+
+</div>
+</div>
+
+{admin_footer}
+</body>
+</html>

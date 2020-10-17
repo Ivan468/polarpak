@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>..:: {ADMINISTRATION_MSG} :: {CUSTOM_BLOCKS_MSG} ::..</title>
+<meta http-equiv="Content-Type" content="text/html; charset={CHARSET}">
+<link rel="stylesheet" href="styles/admin.css" type="text/css">
+<script language="JavaScript">
+function clearSearch() {
+		document.search_blocks.search_block.value = "";
+		document.search_blocks.submit();
+
+	}
+</script>
+</head>
+
+<body class="bodySbuilder">
+{admin_header} 
+{block_leftside_breadcrumbs}
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+<td valign="top" width="75%" class="paddingRight">
+
+<div class="Block">
+<div class="BlockTitle">Edit Custom Form Field</div>
+<div class="BlockContent">
+
+<form action="{admin_field_href}" name="record" method="post">
+<input type="hidden" name="operation" value="save">
+<input type="hidden" name="field_id" value="{field_id}">
+<input type="hidden" name="more_fields" value="0">
+<input type="hidden" name="number_fields" value="{number_fields}">
+<input type="hidden" name="section_id" value="{section_id}">
+
+<table cellspacing="1" cellpadding="4" border="0" align="center" width="100%">
+<!-- BEGIN errors -->
+<tr>
+	<td colspan="6" class="usual" align="center">
+		<div class="error">{errors_list}</div>
+	</td>
+</tr><!-- END errors -->
+<tr class="usual">
+	<td nowrap>
+		&nbsp;Field Order *
+	</td>
+	<td colspan="5">
+		&nbsp;<input class="field" type="text" name="field_order" value="{field_order}" size="12">
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>
+		&nbsp;Field Name *
+	</td>
+	<td colspan="5">
+		&nbsp;<input class="field" type="text" name="field_name" value="{field_name}" size="60">
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>
+		&nbsp;{DEFAULT_VALUE_MSG}
+	</td>
+	<td colspan="5">
+		&nbsp;<input class="field" type="text" name="default_value" value="{default_value}" size="60"> 
+		<font size=1>(Used for <b>Label</b>, <b>TextBox</b> and <b>TextArea</b>)</font>
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>
+		&nbsp;Field Control *
+	</td>
+	<td colspan="5">
+		&nbsp;<select name="control_type"><!-- begin control_type -->
+			<option {control_type_selected} value="{control_type_value}">{control_type_description}<!-- end control_type -->
+		</select>
+		<font size=1>({CONTROL_TYPE_USE_DESC})</font>
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>
+		&nbsp;Field Required
+	</td>
+	<td colspan="5">
+		<input type="checkbox" {required} name="required" value="1">
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="6">
+		&nbsp;{OPTIONS_APPEARANCE_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>
+		&nbsp;Class Name
+	</td>
+	<td colspan="5">
+		&nbsp;<input class="field" type="text" name="control_style" value="{control_style}" size="60">
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>
+		&nbsp;{BEFORE_TITLE_HTML_MSG}
+	</td>
+	<td colspan="5">
+		&nbsp;<input class="field" type="text" name="before_name_html" value="{before_name_html}" size="60">
+		<font size=1>({BEFORE_TITLE_HTML_NOTE})</font>
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>
+		&nbsp;{AFTER_TITLE_HTML_MSG}
+	</td>
+	<td colspan="5">
+		&nbsp;<input class="field" type="text" name="after_name_html" value="{after_name_html}" size="60">
+		<font size=1>({AFTER_TITLE_HTML_NOTE})</font>
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>
+		&nbsp;{BEFORE_CONTROL_HTML_MSG}
+	</td>
+	<td colspan="5">
+		&nbsp;<input class="field" type="text" name="before_control_html" value="{before_control_html}" size="60">
+		<font size=1>({BEFORE_CONTROL_HTML_NOTE})</font>
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>
+		&nbsp;{AFTER_CONTROL_HTML_MSG}
+	</td>
+	<td colspan="5">
+		&nbsp;<input class="field" type="text" name="after_control_html" value="{after_control_html}" size="60">
+		<font size=1>({AFTER_CONTROL_HTML_NOTE})</font>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="6">
+		&nbsp;{JAVASCRIPT_SETTINGS_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>
+		&nbsp;{ONCHANGE_EVENT_MSG}
+	</td>
+	<td colspan="5">
+		&nbsp;<input class="field" type="text" name="onchange_code" value="{onchange_code}" size="60">
+		<font size=1>({EG_MSG} &lt;select onChange="<b>[your code here]</b>"&gt;)</font>
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>
+		&nbsp;{ONCLICK_EVENT_MSG}
+	</td>
+	<td colspan="5">
+		&nbsp;<input class="field" type="text" name="onclick_code" value="{onclick_code}" size="60">
+		<font size=1>({EG_MSG} &lt;input type="radio" onClick="<b>[your code here]</b>"&gt;)</font>
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>
+		&nbsp;{CONTROL_CODE_MSG}
+	</td>
+	<td colspan="5">
+		&nbsp;<input class="field" type="text" name="control_code" value="{control_code}" size="60">
+		<font size=1>({EG_MSG} &lt;input type="text" <b>[your code here]</b>&gt;)</font>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="6">
+		&nbsp;{REGEXP_SETTINGS_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>
+		&nbsp;{VALIDATION_REGEXP_MSG}
+	</td>
+	<td colspan="5">
+		&nbsp;<input class="field" type="text" name="validation_regexp" value="{validation_regexp}" size="60">
+		<font size=1>({EG_MSG} <b>/^\d&#123;2&#125;\/\d&#123;2&#125;\/\d&#123;4&#125;$/</b>)</font>
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>
+		&nbsp;{REGEXP_ERROR_MSG}
+	</td>
+	<td colspan="5">
+		&nbsp;<input class="field" type="text" name="regexp_error" value="{regexp_error}" size="60">
+		<font size=1>({EG_MSG} Field <b>&#123;field_name&#125;</b> doesn't match the following date mask <b>MM/DD/YYYY</b>)</font>
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="6">
+		&nbsp;{OPTIONS_VALUES_MSG}
+	</td>
+</tr>
+<tr class="usual">
+	<td nowrap>
+		&nbsp;{SQL_TO_OBTAIN_VALUES_MSG}
+	</td>
+	<td colspan="5">
+		<table cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td><textarea name="options_values_sql" rows="3" cols="80">{options_values_sql}</textarea></td>
+			<td>&nbsp;&nbsp;</td>
+			<td valign="top"><font size=1>
+				({EG_MSG} <b>SELECT country_id,country_name FROM va_countries ORDER BY country_order, country_name</b>)
+				</font>
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<tr align="center" class="usual">
+	<td>
+		&nbsp;{ID_MSG}&nbsp;
+	</td>
+	<td class="small">
+		{OPTION_VALUE_MSG}
+	</td>
+	<td class="small">
+		{DEFAULT_MSG}
+	</td>
+	<td class="small">
+		{HIDE_MSG}
+	</td>
+	<td class="small">
+		{DELETE_BUTTON}
+	</td>
+	<td class="small" width="275">
+		&nbsp;
+	</td>
+</tr><!-- begin fields --><!-- begin fields_errors -->
+<tr class="usual" align="center">
+	<td>&nbsp;</td>
+	<td colspan="4">
+		<div class="error">{errors_list}</div>
+	</td>
+	<td>&nbsp;</td>	
+</tr><!-- end fields_errors -->
+<tr class="usual" align="center">
+	<td>
+		&nbsp;{field_value_id}&nbsp;
+		<input type="hidden" name="field_value_id_{fields_number}" value="{field_value_id}">
+		<input type="hidden" name="field_id_{fields_number}" value="{field_id}">
+	</td>
+	<td align="left">
+		<input class="field" type="text" name="field_value_{fields_number}" value="{field_value}" size="60">
+	</td>
+	<td align="center">
+		<input type="checkbox" name="is_default_value_{fields_number}" {is_default_value} value="1">
+	</td>
+	<td align="center">
+		<input type="checkbox" name="hide_value_{fields_number}" {hide_value} value="1">
+	</td>
+	<td align="center">
+		<input type="checkbox" name="fields_delete_{fields_number}" {fields_delete} value="1">
+	</td>
+	<td>&nbsp;</td>
+</tr><!-- end fields -->
+<tr class="usual">
+	<td>&nbsp;</td>
+	<td colspan="4" align="right">
+		{ADD_MORE_OPTION_VALUES_QST} <input class="submit" type="submit" value={ADD_BUTTON} onClick="document.record.more_fields.value=1">&nbsp;
+	</td>
+	<td>&nbsp;</td>
+<tr class="middle">
+	<td></td>
+	<td colspan="5">
+		<input class="submit" type="submit" value="{save_button}" onCLick="document.record.operation.value='save'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- BEGIN delete -->
+		<input class="submit" type="submit" value="{DELETE_BUTTON}" onCLick="document.record.operation.value='delete';return confirm('Do you want delete &quot;{field_name}&quot; option?');">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- END delete -->
+		<input class="submit" type="submit" value="{CANCEL_BUTTON}" onCLick="document.record.operation.value='cancel'">&nbsp;
+	</td>
+</tr>
+</table>
+</form>
+
+</div>
+</div>
+
+</td>
+</tr>
+</table>	
+
+{admin_footer}
+</body>
+</html>
