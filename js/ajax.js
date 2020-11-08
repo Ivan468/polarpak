@@ -85,14 +85,11 @@ function postAjax(url, someFunction, someParams, formObject, postParams) {
 		}
 
 		xmlHttp[reqId].onreadystatechange = function() { loadedAjax(reqId, someFunction, someParams, ""); };  
-    xmlHttp[reqId].open('POST', url, true);
-    xmlHttp[reqId].setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    //xmlHttp[reqId].setRequestHeader("Content-length", params.length);
-    //xmlHttp[reqId].setRequestHeader("Connection", "close");
-    xmlHttp[reqId].send(params);
-
+		xmlHttp[reqId].open('POST', url, true);
+		xmlHttp[reqId].setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xmlHttp[reqId].send(params);
 	} else {
-			alert("Function is not defined for AJAX call.");
+		alert("Function is not defined for AJAX call.");
 	}
 	return false;
 }

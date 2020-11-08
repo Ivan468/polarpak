@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_upgrade.php                                        ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -188,6 +188,12 @@
 				include_once("./admin_upgrade_sqls_5.6.php");
 			}
 
+			if (comp_vers("5.7", $current_db_version) == 1) {
+				include_once("./admin_upgrade_sqls_5.7.php");
+			}
+			if (comp_vers("5.8", $current_db_version) == 1) {
+				include_once("./admin_upgrade_sqls_5.8.php");
+			}
 
 			set_session("session_errors", $errors);
 			set_session("session_queries_failed", $queries_failed);

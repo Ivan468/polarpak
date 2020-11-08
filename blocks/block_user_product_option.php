@@ -48,13 +48,11 @@
 	$use_on_table_default = get_setting_value($product_settings, "option_on_table_default", 0);
 	$use_on_grid_default = get_setting_value($product_settings, "option_on_grid_default", 0);
 	$use_on_second_default = get_setting_value($product_settings, "option_on_second_default", 0);
-	$use_on_checkout_default = get_setting_value($product_settings, "option_on_checkout_default", 0);
 	$show_use_on_list = get_setting_value($product_settings, "show_option_on_list", 0);
 	$show_use_on_details = get_setting_value($product_settings, "show_option_on_details", 0);
 	$show_use_on_table = get_setting_value($product_settings, "show_option_on_table", 0);
 	$show_use_on_grid = get_setting_value($product_settings, "show_option_on_grid", 0);
 	$show_use_on_second = get_setting_value($product_settings, "show_option_on_second", 0);
-	$show_use_on_checkout = get_setting_value($product_settings, "show_option_on_checkout", 0);
 
 	$show_control_style = get_setting_value($product_settings, "show_option_control_style", 0);
 	$show_start_html = get_setting_value($product_settings, "show_option_start_html", 0);
@@ -130,13 +128,11 @@
 	$r->add_checkbox("use_on_table", INTEGER);
 	$r->add_checkbox("use_on_grid", INTEGER);
 	$r->add_checkbox("use_on_second", INTEGER);
-	$r->add_checkbox("use_on_checkout", INTEGER);
 	$r->change_property("use_on_list", SHOW, $show_use_on_list);
 	$r->change_property("use_on_details", SHOW, $show_use_on_details);
 	$r->change_property("use_on_grid", SHOW, $show_use_on_grid);
 	$r->change_property("use_on_table", SHOW, $show_use_on_table);
 	$r->change_property("use_on_second", SHOW, $show_use_on_second);
-	$r->change_property("use_on_checkout", SHOW, $show_use_on_checkout);
 
 	$r->add_checkbox("required", INTEGER);
 	if ($show_control_style) {
@@ -182,7 +178,6 @@
 	if (!$show_use_on_table) { $r->set_value("use_on_table", $use_on_table_default); }
 	if (!$show_use_on_grid) { $r->set_value("use_on_grid", $use_on_grid_default); }
 	if (!$show_use_on_second) { $r->set_value("use_on_second", $use_on_second_default); }
-	if (!$show_use_on_checkout) { $r->set_value("use_on_checkout", $use_on_checkout_default); }
 	$r->set_value("sites_all", 1); // use for all sites by default for all users
 
 	$ipv = new VA_Record($table_prefix . "items_properties_values", "properties");
@@ -312,7 +307,6 @@
 		if ($use_on_table_default) { $r->set_value("use_on_table", 1); }
 		if ($use_on_grid_default) { $r->set_value("use_on_grid", 1); }
 		if ($use_on_second_default) { $r->set_value("use_on_second", 1); }
-		if ($use_on_checkout_default) { $r->set_value("use_on_checkout", 1); }
 
 		$number_properties = 5;
 	}
@@ -323,7 +317,7 @@
 	$r->set_parameters();
 
 	$tabs_parse["general"] = true;
-	if ($show_use_on_list || $show_use_on_details || $show_use_on_table || $show_use_on_grid || $show_use_on_second || $show_use_on_checkout) {
+	if ($show_use_on_list || $show_use_on_details || $show_use_on_table || $show_use_on_grid || $show_use_on_second) {
 		$t->parse("show_option_block", false);	
 	}
 	$html_tab = false;

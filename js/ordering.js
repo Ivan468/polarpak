@@ -1628,8 +1628,7 @@ function changeCountry()
 		if (orderForm.delivery_country_id) { refreshPage = false; }
 	}
 	if (refreshPage) {
-		orderForm.operation.value = "refresh";
-		orderForm.submit();
+		refreshOrderForm(orderForm);
 	}
 }
 
@@ -1651,8 +1650,7 @@ function changeState()
 		if (orderForm.delivery_country_id.selectedIndex == 0) { refreshPage = false; }
 	}
 	if (refreshPage) {
-		orderForm.operation.value = "refresh";
-		orderForm.submit();
+		refreshOrderForm(orderForm);
 	}
 }
 
@@ -1675,8 +1673,9 @@ function changeZip()
 		if (orderForm.delivery_country_id.selectedIndex == 0) { refreshPage = false; }
 	}
 	if (refreshPage) {
-		orderForm.operation.value = "refresh";
-		orderForm.submit();
+		refreshOrderForm(orderForm);
+		//orderForm.operation.value = "refresh";
+		//orderForm.submit();
 	}
 }
 
@@ -2071,6 +2070,86 @@ function updateStates(pbId, controlType, countryValue)
 		if (!deliveryCountryObj) { updateStates(pbId, "delivery", countryId); }
 	}
 	
+}
+
+function updateOrderItem(itemObj)
+{
+	var orderForm = vaParent(itemObj, "FORM");
+	var cart = itemObj.getAttribute("data-cart");
+	var cartItemId = itemObj.getAttribute("data-cart-item-id");
+	if (orderForm && cart && cartItemId) {
+		orderForm.operation.value = "refresh";
+		orderForm.ajax.value = "1";
+		var cellObj = vaParent(itemObj, "TD");
+		if (cellObj) { vaSpin(cellObj); }
+
+		if (orderForm.cart) {
+			orderForm.cart.value = cart;
+		} else {
+			var inputObj = document.createElement("input"); 
+			inputObj.type = "hidden";
+			inputObj.name = "cart";
+			inputObj.value = cart;
+			orderForm.appendChild(inputObj);  
+		}
+		if (orderForm.cart_id) {
+			orderForm.cart_id.value = cartItemId;
+		} else {
+			var inputObj = document.createElement("input"); 
+			inputObj.type = "hidden";
+			inputObj.name = "cart_id";
+			inputObj.value = cartItemId;
+			orderForm.appendChild(inputObj);  
+		}
+		if (cart.toUpperCase() == "QTY") {
+			if (!orderForm.new_quantity) {
+				var inputObj = document.createElement("input"); 
+				inputObj.type = "hidden";
+				inputObj.name = "new_quantity";
+				orderForm.appendChild(inputObj);  
+			}
+			orderForm.new_quantity.value = itemObj.value;
+		}
+
+		var pbId = orderForm.pb_id.value;
+		var htmlId = "pb_"+pbId; 
+		var url = "block.php?pb_id=" + encodeURIComponent(pbId);
+		postAjax(url, replaceOrderBlock, htmlId, orderForm);
+	}
+}
+
+function refreshOrderForm(orderForm)
+{
+	if (!orderForm) {
+		orderForm = document.order_info;
+	}
+	if (orderForm.tagName.toUpperCase() != "FORM") {
+		orderForm = vaParent(orderForm, "FORM");
+	}
+	if (orderForm) {
+		orderForm.operation.value = 'refresh'; 
+		var pbId = orderForm.pb_id.value;
+		var htmlId = "pb_"+pbId; 
+		var url = "block.php?pb_id=" + encodeURIComponent(pbId);
+		vaSpin(htmlId);
+		postAjax(url, replaceOrderBlock, htmlId, orderForm);
+	}
+}
+
+function replaceOrderBlock(responseData, htmlId) {
+	try { 
+		responseData = JSON.parse(responseData); 
+	} catch(e){
+		alert("Bad response: " + responseData);
+	}
+	// check for redirect first 
+	if (responseData.location) {
+		window.location = responseData.location;
+		return;
+	} else {
+		replaceBlock(responseData.block, htmlId);
+		vaOPC(); // init script for updated order form
+	}
 }
 
 function refreshForm()

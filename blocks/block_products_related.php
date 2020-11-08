@@ -69,7 +69,7 @@
 	if ($cms_block_code == "products_related") {
 		$related_type_join  = " LEFT JOIN " . $table_prefix . "items_related rel ON i.item_id=rel.related_id";
 		$related_type_where = " rel.item_id=" . $db->tosql($item_id, INTEGER);
-		$related_type_order = " ORDER BY rel.related_order, i.item_id ";
+		$related_type_order = " rel.related_order, i.item_id ";
 		
 		$t->set_var("related_products_title", RELATED_PRODUCTS_TITLE);
 		$product_page = "product_details.php";
@@ -79,7 +79,7 @@
 	} elseif ($cms_block_code == "forum_related_products") {
 		$related_type_join  = " LEFT JOIN " . $table_prefix . "items_forum_topics rel ON i.item_id=rel.item_id ";
 		$related_type_where = " rel.thread_id=" . $db->tosql($thread_id, INTEGER);
-		$related_type_order = " ORDER BY rel.item_order, i.item_id ";
+		$related_type_order = " rel.item_order, i.item_id ";
 		
 		$t->set_var("related_products_title", RELATED_PRODUCTS_TITLE);
 		$product_page = "forum_topic.php";
@@ -89,7 +89,7 @@
 	} elseif ($cms_block_code == "articles_related_products") {
 		$related_type_join  = " LEFT JOIN " . $table_prefix . "articles_items_related rel ON i.item_id=rel.item_id";
 		$related_type_where = " rel.article_id=" . $db->tosql($article_id, INTEGER);
-		$related_type_order = " ORDER BY rel.item_order, i.item_id ";
+		$related_type_order = " rel.item_order, i.item_id ";
 		
 		$t->set_var("related_products_title", ARTICLE_RELATED_PRODUCTS_TITLE);		
 		$product_page = "article.php";								
@@ -121,7 +121,7 @@
 	} elseif ($cms_block_code == "articles_category_products_relat" || $cms_block_code == "articles_category_products_related") {
 		$related_type_join  = " LEFT JOIN " . $table_prefix . "articles_categories_items rel ON i.item_id=rel.item_id";
 		$related_type_where = " rel.category_id=" . $db->tosql($category_id, INTEGER);
-		$related_type_order = " ORDER BY rel.related_order, i.item_id ";
+		$related_type_order = " rel.related_order, i.item_id ";
 		
 		$t->set_var("related_products_title", CATEGORY_RELATED_PRODUCTS_TITLE);
 
@@ -188,32 +188,17 @@
 	$page_param = "ri_page";
 	$pages_number = 10;
 		
-	$select  = " i.item_id, i.item_type_id, i.item_name, i.a_title, i.friendly_url, ";
-	$select .= " i.buying_price, i." . $price_field . ", i.".$properties_field.", i." . $sales_field . ", i.is_sales, i.is_price_edit, i.tax_id, i.tax_free, ";
-	$select .= " i.tiny_image, i.tiny_image_alt, i.small_image, i.small_image_alt, i.big_image, i.big_image_alt, super_image, ";
-	$select .= " i.short_description, i.full_description, i.highlights, i.special_offer, i.notes, ";
-	$select .= " i.use_stock_level, i.stock_level, i.disable_out_of_stock, ";
-	$select .= " st_in.shipping_time_desc AS in_stock_message, st_out.shipping_time_desc AS out_stock_message, ";
-	$select .= " i.issue_date, i.date_added, i.date_modified ";
-	$join = array(
-		$related_type_join,
-		" LEFT JOIN " . $table_prefix . "shipping_times st_in ON i.shipping_in_stock=st_in.shipping_time_id ",
-		" LEFT JOIN " . $table_prefix . "shipping_times st_out ON i.shipping_out_stock=st_out.shipping_time_id ",
-	);
-	$where = $related_type_where;
-	$order = $related_type_order;
-
-	$sql_params = array("select" => $select, "join" => $join, "where" => $where, "order" => $order, "access_field" => true);
-	$sql = VA_Products::sql($sql_params, VIEW_CATEGORIES_ITEMS_PERM);
-
-	$sql_params = array("select" => "COUNT(*)", "join" => $related_type_join, "where" => $where);
-	$count_sql = VA_Products::sql($sql_params, VIEW_CATEGORIES_ITEMS_PERM);
+	// prepare params for VA_Products class to show products
+	$sql_params = array();
+	$sql_params["where"][] = $related_type_where;
+	$sql_params["join"][]  = $related_type_join;
+	$sql_params["order"][] = $related_type_order;
+	$sql_params["group"][] = "rel.related_order, i.item_id";
 
 	// override params:
 	$params = array(
 		"pb_id" => $pb_id,
-		"sql" => $sql,
-		"count_sql" => $count_sql,
+		"sql" => $sql_params,
 		"recs" => $records_per_page,
 		"page_param" => $page_param,
 		"pages" => $pages_number,
@@ -233,5 +218,3 @@
 	if ($products_number) {
 		$block_parsed = true;
 	}
-
-?>

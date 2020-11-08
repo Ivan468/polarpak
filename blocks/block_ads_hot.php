@@ -7,6 +7,9 @@
 	// get global ads settings
 	if (!isset($ads_settings)) { $ads_settings = get_settings("ads"); }
 
+	$hot_columns = get_setting_value($vars, "ads_hot_cols", 1);
+	$records_per_page = get_setting_value($vars, "ads_hot_recs", 10);
+
 	// check ads parameters
 	$ad_category_id = 0; $ad_category_name = "";
 	if ($cms_page_code == "ads_list" || $cms_page_code == "ad_details") {
@@ -24,6 +27,7 @@
 	$t->set_var("hot_rows", "");
 	$t->set_var("hot_cols", "");
 	$t->set_var("top_category_name", $ad_category_name);
+	$t->set_var("columns_class", "cols-".$hot_columns);
 
 	$friendly_urls = get_setting_value($settings, "friendly_urls", 0);
 	$friendly_extension = get_setting_value($settings, "friendly_extension", "");
@@ -55,7 +59,6 @@
 	$allowed_items_ids = VA_Ads::find_all_ids("i.item_id IN (" . $db->tosql($items_ids, INTEGERS_LIST) . ")", VIEW_CATEGORIES_ITEMS_PERM);
 	$total_records = count($items_ids);
 	
-	$records_per_page = get_setting_value($vars, "ads_hot_recs", 10);
 	$pages_number = 5;
 	$n = new VA_Navigator($settings["templates_dir"], "navigator.html", $current_page);
 	$page_number = $n->set_navigator("hot_navigator", "hot_page", SIMPLE, $pages_number, $records_per_page, $total_records, false, $pass_parameters);
@@ -70,7 +73,6 @@
 	$db->query($sql);
 	if($db->next_record())
 	{
-		$hot_columns = get_setting_value($vars, "ads_hot_cols", 1);
 		$t->set_var("hot_column", (100 / $hot_columns) . "%");
 		$hot_number = 0;
 		do
@@ -129,6 +131,9 @@
 				$t->set_var("restricted_class", "");
 			}
 			
+			$column_index = ($hot_number % $hot_columns) ? ($hot_number % $hot_columns) : $hot_columns;
+			$t->set_var("column_class", "col-".$column_index);
+
 			$t->parse("hot_cols");
 			if($hot_number % $hot_columns == 0) {
 				$t->parse("hot_rows");

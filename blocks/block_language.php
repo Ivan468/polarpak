@@ -1,16 +1,28 @@
 <?php
 
+	global $current_page;
 	$friendly_urls = get_setting_value($settings, "friendly_urls", 0);
 	$friendly_extension = get_setting_value($settings, "friendly_extension", "");
 
 	$default_title = va_message("LANGUAGE_TITLE");
 	$language_selection = get_setting_value($vars, "language_selection", 1);
 	$block_type = get_setting_value($vars, "block_type");
+	$template_type = get_setting_value($vars, "template_type", "");
+	$tag_name = get_setting_value($vars, "tag_name", "");
 
-	if ($language_selection != "bar" && $language_selection != "header" && $block_type != "built-in") {
-		$html_template = get_setting_value($block, "html_template", "block_language.html"); 
-		$t->set_file("block_body", $html_template);
+	if ($block_type != "bar" && $block_type != "header" && $template_type != "built-in") {
+		if ($template_type == "default") {
+			$html_template = "block_language.html"; 
+		} else {
+			$html_template = get_setting_value($block, "html_template", "block_language.html"); 
+		}
+		if ($block_type == "sub-block") {
+		  $t->set_file($vars["tag_name"], $html_template);
+		} else {
+		  $t->set_file("block_body", $html_template);
+		}
 	}
+
 
 	$remove_parameters = array();
 	if ($friendly_urls && isset($page_friendly_url) && $page_friendly_url) {

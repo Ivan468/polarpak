@@ -7,9 +7,10 @@ document.onkeyup = function(evt) {
 
 function reloadBlock(pbId, htmlId, pbParams)
 {
-	var url = "block.php?ajax=1&pb_id=" + encodeURIComponent(pbId);
-	if (pbParams) { url += "&" + pbParams; }
 	if (!htmlId) { htmlId = "pb_"+pbId; }
+	var url = "block.php?ajax=1&pb_id=" + encodeURIComponent(pbId);
+	url += "&html_id=" + encodeURIComponent(htmlId); 
+	if (pbParams) { url += "&" + pbParams; }
 	vaSpin(htmlId); // start spinning effect till block loaded
 	callAjax(url, vaBlockData, htmlId);
 }
@@ -35,7 +36,7 @@ function replaceBlock(blockContent, htmlId)
 		vaNavLi(newBlockObj);
 	} else {
 		// check children expand and pagination objects
-		var jsObjs = document.querySelectorAll("[data-js]");
+		var jsObjs = newBlockObj.querySelectorAll("[data-js]");
 		for (var j = 0; j < jsObjs.length; j++) {
 			var jsObj = jsObjs[j];
 			var jsValue = jsObj.getAttribute("data-js").toLowerCase();
@@ -46,6 +47,8 @@ function replaceBlock(blockContent, htmlId)
 				vaLinkParse(jsObj);
 			} else if (jsValue == "rating") {
 				vaRatingParse(jsObj);
+			} else if (jsValue == "reload") {
+				vaReloadParse(jsObj);
 			} 
 		}
 
@@ -99,49 +102,89 @@ function showMessageBlock(msgText, controlId)
 	popupObj.style.top  = popupTop+"px";
 }
 
-function showPopupBlock(msg)
+function showPopupBlock(paramsObj)
 {
-	if (msg.match(/^[a-z0-9\-\_]+$/) ) {
-		if (document.getElementById(msg)) {
-			msg = document.getElementById(msg).innerHTML;
+	// delete popup block if it was initialized before
+	hidePopupBlock();
+
+	var params = {}; var templateObj;
+	if (typeof paramsObj === "object") {
+		if (paramsObj instanceof Element) {
+			var elementParams = {"data-body": "body", "data-title": "title", "data-message": "message", "data-desc": "desc", "data-template": "template"}
+			for(var elKey in elementParams) {
+				if (paramsObj.hasAttribute(elKey)) {
+					params[elementParams[elKey]] = paramsObj.getAttribute(elKey);
+				}
+			}
+		} else {
+			params = paramsObj;
 		}
+	} else {
+		if (paramsObj.match(/^[a-z0-9\-\_]+$/) ) {
+			if (document.getElementById(paramsObj)) {
+				paramsObj = document.getElementById(paramsObj).innerHTML;
+			}
+		}
+		params["body"] = paramsObj;
 	}
 
-	// delete popup block if it was initialized before
-	hidePopupFrame();
+	// get or create a new popup template to add body and other parameters
+	if (params.template == "empty" || params.template == "custom") {
+		templateObj = document.createElement("div");
+	} else if (params.template == "default") {
+		templateObj = document.getElementById("popupTemplate");
+	} else {
+		templateObj = document.getElementById(params.template);
+	}
 
-	var pageSize = getPageSize()
+	if (!templateObj) {
+		templateObj = document.createElement("div");
+	}
+	// check if we can add popup body and other parameters
+	if (params.body) {
+		var popupBody = templateObj.querySelector(".popup-body");
+		if (popupBody) {
+			popupBody.innerHTML = params.body;
+		} else {
+			templateObj.innerHTML = params.body;
+		}
+	}
 
 	// add popup area
 	var areaObj = document.createElement("div");
 	areaObj.id = "popupArea";
 	areaObj.className = "popup-area";
+	areaObj.style.zIndex = "10000";
+	areaObj.onclick = function() { hidePopupBlock(); };
 	document.body.insertBefore(areaObj, document.body.firstChild);
+	// add popup close block to area
+	var popupClose = document.createElement("div");
+	popupClose.className = "popup-close";
+	areaObj.insertBefore(popupClose, areaObj.firstChild);
+	// create popup block
+	var popupObj = document.createElement("div");
+	popupObj.id = "popupBlock";
+	popupObj.style.zIndex = "20000";
+	popupObj.style.position = "absolute";
+	popupObj.innerHTML = templateObj.innerHTML;
+	//document.body.insertBefore(popupObj, document.body.firstChild);
+	document.body.appendChild(popupObj);
 
-	var popupObj = document.getElementById("popupBlock");
-	if (popupObj) {
-		var popupBody = popupObj.querySelector(".popup-body");
-		popupBody.innerHTML = msg;
-		popupObj.style.display = "block";
+	var pageSize = getPageSize()
 
-		// move popup to the center
-		var popupWidth = popupObj.offsetWidth;
-		var popupHeight = popupObj.offsetHeight
-		var popupLeft = (pageSize[0] - popupWidth)/2;
-		var popupTop = (pageSize[1] - popupHeight)/2;
-		if (popupLeft < 0) { popupLeft = 0; }
-		if (popupTop < 0) { popupTop = 0; }
-		// if page was scrolled move popup window to scrolled height
-		if (document.body.scrollTop || document.documentElement.scrollTop) {
-			popupTop += (document.body.scrollTop || document.documentElement.scrollTop);
-		}
-  
-		popupObj.style.left = popupLeft + "px";
-		popupObj.style.top = popupTop + "px";
-
-	} else {
-		areaObj.innerHTML = msg;
+	// move popup to the center
+	var popupWidth = popupObj.offsetWidth;
+	var popupHeight = popupObj.offsetHeight
+	var popupLeft = (pageSize[0] - popupWidth)/2;
+	var popupTop = (pageSize[1] - popupHeight)/2;
+	if (popupLeft < 0) { popupLeft = 0; }
+	if (popupTop < 0) { popupTop = 0; }
+	// if page was scrolled move popup window to scrolled height
+	if (document.body.scrollTop || document.documentElement.scrollTop) {
+		popupTop += (document.body.scrollTop || document.documentElement.scrollTop);
 	}
+	popupObj.style.left = popupLeft + "px";
+	popupObj.style.top = popupTop + "px";
 }
 
 function hidePopupBlock()
@@ -153,7 +196,7 @@ function hidePopupBlock()
 	}
 	var popupObj = document.getElementById("popupBlock");
 	if (popupObj) {
-		popupObj.style.display = "none";
+		popupObj.parentNode.removeChild(popupObj);
 	}
 }
 

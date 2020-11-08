@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  support_messages.php                                     ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -122,7 +122,7 @@ $messages = array(
 	"INCOMING_EMAIL_MSG" => "Incoming Email",
 	"INCOMING_EMAIL_DESC" => "The email address where messages will be sent",
 	"OUTGOING_EMAIL_MSG" => "Outgoing Email",
-	"OUTGOING_EMAIL_DESC" => "The email address which will be used in the 'From' field in all help desk email notifications when pipe settings are matched. Leave it blank if you don't want override your settings for 'From' field.",
+	"OUTGOING_EMAIL_DESC" => "The email address which will be used in the 'From' field in all help desk email notifications when pipe settings are matched and 'From' field wasn't set for notification. In case 'Outgoing Email' field is empty 'Incoming Email' field value will be used automatically.",
 
 );
 $va_messages = array_merge($va_messages, $messages);

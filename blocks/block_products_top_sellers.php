@@ -58,7 +58,8 @@
 	$select .= " i.use_stock_level, i.stock_level, i.disable_out_of_stock, ";
 	$select .= " i.issue_date, i.date_added, i.date_modified ";
 	
-	$sql_params["select"] = $select;	
+	//$sql_params["select"] = $select;	
+	$sql_params["select"] = "i.item_id, SUM(oi.quantity) AS item_id_counts";
 	$sql_params["join"][] = " INNER JOIN " . $table_prefix . "orders_items oi ON i.item_id=oi.item_id ";
 	$sql_params["join"][] = " INNER JOIN " . $table_prefix . "orders o ON oi.order_id=o.order_id  ";
 	$sql_params["where"][] = " o.order_placed_date >=" . $db->tosql($order_placed_date, DATETIME);
@@ -87,13 +88,11 @@
 	} elseif (strlen($bestsellers_status) && $bestsellers_status != "ANY") {
 		$sql_params["where"][] = " o.order_status=" . $db->tosql($bestsellers_status, INTEGER);
 	}	
-	$sql_params["access_field"] = true;
-	$sql = VA_Products::sql($sql_params, VIEW_CATEGORIES_ITEMS_PERM);
 
 	// override params:
 	$params = array(
 		"pb_id" => $pb_id,
-		"sql" => $sql,
+		"sql" => $sql_params,
 		"recs" => $bestsellers_records,
 		"page_number" => 1,
 		"pages" => 1,
@@ -113,5 +112,3 @@
 	if ($products_number) {
 		$block_parsed = true;
 	}
-
-?>

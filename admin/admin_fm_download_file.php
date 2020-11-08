@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_fm_download_file.php                               ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -15,13 +15,17 @@
 	include_once($root_folder_path . "includes/record.php");
 	include_once($root_folder_path . "includes/sorter.php");
 	include_once($root_folder_path . "includes/navigator.php");
+	include_once($root_folder_path . "includes/file_functions.php");
 	include_once($root_folder_path . "includes/admin_fm_functions.php");
 	
 	include_once("./admin_common.php");
 	include_once("./admin_fm_config.php");
 
 	check_admin_security("filemanager");
-	$dir_path = check_dir_path(get_param("dir_path"));
+
+	// get dir
+	fm_dir($dir, $site_dir, $top_dir);
+	$dir_path = $dir; // assign variable used in script
 	$download_file = terminator(get_param("download_file"));
 	
 	$error = check_dir_and_file($dir_path, $download_file, "download");
@@ -39,4 +43,3 @@
 		set_session("fm_error",$error);
 		header("Location: " . $host."admin_fm.php?root_dir=".$dir_path);
 	}
-?>

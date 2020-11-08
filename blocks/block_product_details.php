@@ -324,7 +324,7 @@
 		$is_sales = $db->f("is_sales");
 		$sales_price = $db->f($sales_field);
 		$coupons_ids = ""; $coupons_discount = ""; $coupons_applied = array();
-		get_sales_price($price, $is_sales, $sales_price, $item_id, $item_type_id, $coupons_ids, $coupons_discount, $coupons_applied);
+		get_sales_price($price, $is_sales, $sales_price, $item_id, $item_type_id, "", "", $coupons_ids, $coupons_discount, $coupons_applied);
 		
 		$discount_applicable = 1;
 		$q_prices = get_quantity_price($item_id, 1);

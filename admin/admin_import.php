@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_import.php                                         ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -23,10 +23,11 @@
 	include_once($root_folder_path . "includes/order_recalculate.php");
 	include_once($root_folder_path . "includes/order_items.php");
 	include_once($root_folder_path . "includes/order_links.php");
-	include_once($root_folder_path . "messages/".$language_code."/cart_messages.php");
-	include_once($root_folder_path . "messages/".$language_code."/reviews_messages.php");
-	include_once($root_folder_path . "messages/".$language_code."/download_messages.php");
 	include_once("./admin_common.php");
+	// include custom message once more time to override messages above
+	if (file_exists($root_folder_path ."messages/".$language_code."/custom_messages.php")) {
+		include($root_folder_path ."messages/".$language_code."/custom_messages.php");
+	}
 
 	check_admin_security("import_export");
 
@@ -124,10 +125,10 @@
 	$sql = " SELECT * FROM " . $table_prefix . "sites ";
 	$db->query($sql);
 	while ($db->next_record()) {
-		$site_id = $db->f("site_id");
+		$db_site_id = $db->f("site_id");
 		$short_name = trim(get_translation($db->f("short_name")));
 		$site_name = trim(get_translation($db->f("site_name")));
-		$sites[$site_id] = array("short_name" => $short_name, "site_name" => $site_name);
+		$sites[$db_site_id] = array("short_name" => $short_name, "site_name" => $site_name);
 	}
 
 	if ($table == "items") {
@@ -218,7 +219,7 @@
 			while ($db->next_record()) {
 				$property_id = $db->f("property_id");
 				$property_name = $db->f("property_name");
-				$db_columns["order_property_" . $property_id] = array(get_translation($property_name), TEXT, 5, false, $table_prefix . "order_properties");
+				//$db_columns["order_property_" . $property_id] = array(get_translation($property_name), TEXT, 5, false, $table_prefix . "order_properties");
 			}
 
 			$sql = " SELECT property_name FROM " . $table_prefix . "items_properties GROUP BY property_name";
@@ -705,8 +706,10 @@
 				$data_type = $column_info["data_type"];
 				$field_type = $column_info["field_type"];
 				$field_required = $column_info["required"];
+				$sql_null = isset($column_info["sql_null"]) ? $column_info["sql_null"] : true;
 				$default_value = isset($column_info["default"]) ? $column_info["default"] : "";
 				$field_related_table = isset($column_info["related_table"]) ? $column_info["related_table"] : "";
+				$column_date_format = isset($column_info["date_format"]) ? $column_info["date_format"] : "";
 			} else {
 				// old format
 				$column_title = $column_info[0];
@@ -715,14 +718,15 @@
 				$field_required = $column_info[3];
 				$default_value = isset($column_info[4]) ? $column_info[4] : "";
 				$field_related_table = "";
+				$column_date_format = "";
 			}
 
 			$columns[] = array(
 				"name" => $column_name, "source" => $column_source, "data" => $column_data, 
-				"title" => $column_title, "data_type" => $data_type, "field_type" => $field_type, "required" => $field_required, "default" => $default_value, "related_table" => $field_related_table,
+				"title" => $column_title, "data_type" => $data_type, "date_format" => $column_date_format,
+				"field_type" => $field_type, "required" => $field_required, "default" => $default_value, "related_table" => $field_related_table,
 			);
 			// 1 - WHERE_DB_FIELD 2 - USUAL_DB_FIELD 3 - FOREIGN_DB_FIELD 4 - HIDE_DB_FIELD 5 - RELATED_DB_FIELD 6 - CUSTOM_FIELD   
-
 			if ($field_type == WHERE_DB_FIELD) {
 				$imp->r->add_where($column_name, $data_type, $column_title);
 				$imp->r->change_property($column_name, USE_IN_INSERT, true);
@@ -736,10 +740,12 @@
 				$imp->r->change_property($column_name, USE_IN_UPDATE, false); 
 			}
 
-			// if it not where and relate field and source available we re-initiliaze field
+			// if it not where and related field and source available we re-initiliaze field
 			if ($field_type != WHERE_DB_FIELD && $field_type != RELATED_DB_FIELD && strlen($column_source)) {
 				$imp->r->add_textbox($column_name, $data_type, $column_title);
-				if ($data_type == DATE) {
+				if ($column_date_format) {
+					$imp->r->change_property($column_name, VALUE_MASK, $column_date_format);
+				} else if ($data_type == DATE) {
 					$imp->r->change_property($column_name, VALUE_MASK, $date_edit_format);
 				} elseif ($data_type == DATETIME) {
 					$imp->r->change_property($column_name, VALUE_MASK, $datetime_edit_format);
@@ -758,6 +764,9 @@
 				if ($column_name == "friendly_url") {
 					$imp->r->change_property("friendly_url", REGEXP_MASK, FRIENDLY_URL_REGEXP);
 					$imp->r->change_property("friendly_url", REGEXP_ERROR, ALPHANUMERIC_ALLOWED_ERROR);
+				}
+				if (!$sql_null) {
+					$imp->r->change_property($column_name, USE_SQL_NULL, false); 
 				}
 			}
 
@@ -787,6 +796,8 @@
 					$imp->r->change_property("order_status_name", USE_IN_INSERT, false); 
 					$imp->r->change_property("order_status_name", USE_IN_UPDATE, false); 
 				} else if ($column_name == "order_status_name") {
+					$imp->r->change_property("order_status_name", USE_IN_INSERT, false); 
+					$imp->r->change_property("order_status_name", USE_IN_UPDATE, false); 
 					if (!$imp->r->parameter_exists("order_status")) {
 						$imp->r->add_textbox("order_status", TEXT, "{ORDER_STATUS_MSG} ({ID_MSG})");
 						$imp->r->change_property("order_status", USE_IN_INSERT, false); 
@@ -805,10 +816,16 @@
 					$imp->r->remove_parameter("shipping_type_desc"); // remove to add after both fields in case both fields available
 					$imp->r->add_textbox("shipping_type_desc", TEXT, "SHIPPING_DESCRIPTION_MSG");
 				} 
+				if ($column_name == "shipping_type_desc") {
+					if (!$imp->r->parameter_exists("shipping_type_code")) {
+						$imp->r->add_textbox("shipping_type_code", TEXT, "SHIPPING_CODE_MSG");
+					}
+				}
 				if ($column_name == "shipping_type_id" || $column_name == "shipping_type_code" || $column_name == "shipping_type_desc") {
 					$imp->r->remove_parameter("shipping_cost"); // always remove to add field after all shipping fields 
 					$imp->r->add_textbox("shipping_cost", TEXT, "SHIPPING_COST_MSG");
 				}
+
 				if ($column_name == "payment_id") {
 					// add readable name field for order status
 					$imp->r->add_textbox("payment_name", TEXT, "PAYMENT_NAME_MSG");
@@ -824,6 +841,11 @@
 					$imp->r->change_property("payment_name", USE_IN_INSERT, false); 
 					$imp->r->change_property("payment_name", USE_IN_UPDATE, false); 
 				} 	
+
+				if (preg_match("/^order_property_/", $column_name)) {
+					$imp->r->change_property($column_name, USE_IN_INSERT, false); 
+					$imp->r->change_property($column_name, USE_IN_UPDATE, false); 
+				}
 			}
 		}
 		// save information for import about all used columns
@@ -848,6 +870,7 @@
 				$default_value = isset($column_info["default"]) ? $column_info["default"] : "";
 				$field_preview = isset($column_info["preview"]) ? $column_info["preview"] : "";
 				$field_related_table = isset($column_info["related_table"]) ? $column_info["related_table"] : "";
+				$column_date_format = isset($column_info["date_format"]) ? $column_info["date_format"] : "";
 			} else {
 				// old format
 				$column_title = $column_info[0];
@@ -857,11 +880,13 @@
 				$default_value = isset($column_info[4]) ? $column_info[4] : "";
 				$field_preview = false;
 				$field_related_table = "";
+				$column_date_format = "";
 			}
 
 			$columns[] = array(
 				"name" => $column_name, "source" => $column_source, "data" => $column_data,
-				"title" => $column_title, "data_type" => $data_type, "field_type" => $field_type, "required" => $field_required, "default" => $default_value, "related_table" => $field_related_table,
+				"title" => $column_title, "data_type" => $data_type, "date_format" => $column_date_format,
+				"field_type" => $field_type, "required" => $field_required, "default" => $default_value, "related_table" => $field_related_table,
 			);
 
 			if ($column_source == "ignore") { 
@@ -889,7 +914,9 @@
 				$imp->rr->change_property($column_name, USE_IN_UPDATE, false); 
 			}
 
-			if ($data_type == DATE) {
+			if ($column_date_format) {
+				$imp->rr->change_property($column_name, VALUE_MASK, $column_date_format);
+			} else if ($data_type == DATE) {
 				$imp->rr->change_property($column_name, VALUE_MASK, $date_edit_format);
 			} elseif ($data_type == DATETIME) {
 				$imp->rr->change_property($column_name, VALUE_MASK, $datetime_edit_format);
@@ -969,7 +996,10 @@
 			$prev_item_id = 0;
 
 			//while ($is_next_row) {
+			$data_index = 0; 
+			// start reading data from file
 			foreach($imp->data as $k => $data_assoc) {
+				$data_index++;
 				$t->set_var("cols", "");
 				$column_number = 0;
 
@@ -1175,7 +1205,7 @@
 				if ($import_related_table) {
 					$related_where_set = ($is_related_where && $imp->rr->check_where());
 					if ($related_where_set) {
-						$sql  = " SELECT " . $related_table_pk . " FROM " . $related_table_name . "";
+						$sql  = " SELECT " . $related_table_pk . " FROM " . $related_table_name . " ";
 						$sql .= $imp->rr->get_where();
 						$db->query($sql);
 						if ($db->next_record()) {
@@ -1190,7 +1220,7 @@
 					$form_data = array();
 					if ($is_exists) {
 						$form_data = $existed_data;
-					} else if ($imp->r->get_value("user_id")) {
+					} else if ($imp->r->parameter_exists("user_id") && $imp->r->get_value("user_id")) {
 						$user_id = $imp->r->get_value("user_id");
 						$sql = " SELECT * FROM ".$table_prefix."users ";
 						$sql .= " WHERE user_id=".$db->tosql($user_id, INTEGER);
@@ -1204,7 +1234,7 @@
 							$imp->r->parameters["user_id"][IS_VALID] = false;
 							$imp->r->parameters["user_id"][ERROR_DESC] = $error_desc;
 						}
-					} else if ($imp->r->get_value("user_login")) {
+					} else if ($imp->r->parameter_exists("user_login") && $imp->r->get_value("user_login")) {
 						$user_login = $imp->r->get_value("user_login");
 						$sql  = " SELECT * FROM ".$table_prefix."users ";
 						$sql .= " WHERE login=".$db->tosql($user_login, TEXT);
@@ -1234,8 +1264,10 @@
 						$item_id = $imp->rr->parameter_exists("item_id") ? $imp->rr->get_value("item_id") : "";
 						$item_code = $imp->rr->parameter_exists("item_code") ? $imp->rr->get_value("item_code") : "";
 						$manufacturer_code = $imp->rr->parameter_exists("manufacturer_code") ? $imp->rr->get_value("manufacturer_code") : "";
-						if ($is_exists) {
-							$product_data = $existed_data;
+						if ($related_exists) {
+							$product_data = $related_data;
+							$imp->rr->set_value("item_id", $related_data["item_id"]);
+							$imp->rr->set_value("item_type_id", $related_data["item_type_id"]);
 						} else if (strlen($item_id) || (($match_item_code || $match_manufacturer_code) && (strlen($item_code) || strlen($manufacturer_code)))) {
 							$sql  = " SELECT * FROM ".$table_prefix."items ";
 							$where = "";
@@ -1369,6 +1401,7 @@
 					}
 				}
 				// end populating user data from existed order or from users table
+
 				if ($table == "orders") {
 					before_order_save();
 				}
@@ -1489,9 +1522,12 @@
 						}
 					}
 					// end preview related data block
-
-					$t->parse("preview_rows", true);
-					$t->set_var("preview_values", "");
+					//if ($imp->r->errors || $imp->rr->errors) {
+					// show data only for first 100 records
+					if ($data_index <= 100) {
+						$t->parse("preview_rows", true);
+					}
+					$t->set_var("preview_values", "");	
 				} else {
 					// import data to database
 					// start insert / update records	
@@ -1519,10 +1555,14 @@
 							if ($imp->r->insert_record()) {
 								$records_added++;
 								if ($table_pk) {
-									$pk_id = $db->last_insert_id();
-									$new_item_id = $pk_id;
-									if ($imp->r->parameter_exists($table_pk)) {
-										$imp->r->set_value($table_pk, $pk_id); 
+									if ($imp->r->parameter_exists($table_pk) && strlen($imp->r->get_value($table_pk))) {
+										$pk_id = $imp->r->get_value($table_pk);
+									} else {
+										$pk_id = $db->last_insert_id();
+										$new_item_id = $pk_id;
+										if ($imp->r->parameter_exists($table_pk)) {
+											$imp->r->set_value($table_pk, $pk_id); 
+										}
 									}
 								}
 							} else {
@@ -1532,37 +1572,75 @@
 			  
 						$new_item_id = $pk_id;
 						if ($import_related_table) {
-							$imp->rr->set_value("order_id", $pk_id);
-							$imp->rr->set_value("site_id", $imp->r->get_value("site_id"));
-							$imp->rr->set_value("user_id", $imp->r->get_value("user_id"));
-							$imp->rr->set_value("user_type_id", $imp->r->get_value("user_type_id"));
+							if ($related_table_name == $table_prefix . "orders_items") {
+								$imp->rr->set_value("order_id", $pk_id);
+								$imp->rr->set_value("site_id", $imp->r->get_value("site_id"));
+								$imp->rr->set_value("user_id", $imp->r->get_value("user_id"));
+								$imp->rr->set_value("user_type_id", $imp->r->get_value("user_type_id"));
+							}
 							if ($related_exists) {
 								if ($imp->rr->update_record()) {
 									$related_pk_id = $imp->rr->get_value($related_table_pk); 
 								}
 							} else {
 								if ($imp->rr->insert_record()) {
-									$related_pk_id = $db->last_insert_id();
+									if ($imp->rr->parameter_exists($related_table_pk) && strlen($imp->rr->get_value($related_table_pk))) {
+										$related_pk_id = $imp->rr->get_value($related_table_pk);
+									} else {
+										$related_pk_id = $db->last_insert_id();
+									}
 								}
 							}
-							if ($related_pk_id && count($related_coupons)) {
-								foreach ($related_coupons as $coupon_id => $coupon_data) {
-									$imp->rc->set_value("order_id", $pk_id);
-									$imp->rc->set_value("order_item_id", $related_pk_id);
-									$imp->rc->set_value("coupon_id", $coupon_id);
-									$imp->rc->set_value("coupon_code", $coupon_data["coupon_code"]);
-									$imp->rc->set_value("coupon_title", $coupon_data["coupon_title"]);
-									$imp->rc->set_value("discount_amount", $coupon_data["discount_amount"]);
-									$imp->rc->set_value("discount_tax_amount", $coupon_data["discount_amount"]);
-									$imp->rc->set_value("discount_type", $coupon_data["discount_type"]);
-									$imp->rc->insert_record();
-									// increase coupon uses by one
-									$sql  = " UPDATE " . $table_prefix . "coupons ";
-									$sql .= " SET coupon_uses=coupon_uses+1 ";
-									$sql .= " WHERE coupon_id=" . $db->tosql($coupon_id, INTEGER);
-									$db->query($sql);
+							if ($related_pk_id) {
+								// check if there are related fields which we need to update for related table record
+								foreach ($imp->columns[$related_table_name] as $column_index => $column_info) {
+									$field_type = $column_info["field_type"];
+									if ($field_type == RELATED_DB_FIELD) {
+										$column_name = $column_info["name"];
+										$column_source = $column_info["source"];
+										$column_data = $column_info["data"];
+										$column_related_table = $column_info["related_table"];
+										// based on source get related value
+										if ($column_source == "csv" || $column_source == "xml") {
+											$source_target = $header_data[$column_data]["title"];
+											if(function_exists("mb_strtolower")) {
+												$source_target = mb_strtolower($source_target, "UTF-8");
+											} else {
+												$source_target = strtolower($source_target);
+											}
+											$source_target = str_replace(" ", "_", $source_target);
+											$related_value = get_value_by_key($data_assoc, $source_target);
+										} else {
+											$related_value = $column_data;
+										}
+										if ($column_related_table == $table_prefix."orders_items_properties") {
+											update_orders_items_properties($related_pk_id, $pk_id, $related_value);
+										}
+									}
 								}
+								// end related fields check
+								// check if there are coupons available for related record
+								if (count($related_coupons)) {
+									foreach ($related_coupons as $coupon_id => $coupon_data) {
+										$imp->rc->set_value("order_id", $pk_id);
+										$imp->rc->set_value("order_item_id", $related_pk_id);
+										$imp->rc->set_value("coupon_id", $coupon_id);
+										$imp->rc->set_value("coupon_code", $coupon_data["coupon_code"]);
+										$imp->rc->set_value("coupon_title", $coupon_data["coupon_title"]);
+										$imp->rc->set_value("discount_amount", $coupon_data["discount_amount"]);
+										$imp->rc->set_value("discount_tax_amount", $coupon_data["discount_amount"]);
+										$imp->rc->set_value("discount_type", $coupon_data["discount_type"]);
+										$imp->rc->insert_record();
+										// increase coupon uses by one
+										$sql  = " UPDATE " . $table_prefix . "coupons ";
+										$sql .= " SET coupon_uses=coupon_uses+1 ";
+										$sql .= " WHERE coupon_id=" . $db->tosql($coupon_id, INTEGER);
+										$db->query($sql);
+									}
+								}
+								// end coupons update for related record
 							}
+
 						}
 
 
@@ -1678,19 +1756,26 @@
 							// check related fields
 							foreach ($imp->columns[$table_name] as $column_index => $column_info) {
 								$field_type = $column_info["field_type"];
-								if ($field_type == RELATED_DB_FIELD) {
+								if ($field_type == USUAL_DB_FIELD || $field_type == RELATED_DB_FIELD) {
 									$column_name = $column_info["name"];
 									$column_source = $column_info["source"];
 									$column_data = $column_info["data"];
 									$related_prop_table = $column_info["related_table"];
-									$source_target = isset($header_data[$column_data]["title"]) ? $header_data[$column_data]["title"] : $column_data;
-									
-									//$related_value = isset($data[$related_col - 1]) ? $data[$related_col - 1] : "";
-									$col_n = str_replace(" ", "_", ($column_data));
-									$related_value = get_value_by_key($data_assoc, $col_n);
-			          
-									if ($related_prop_table == $table_prefix . "order_properties") {
-										update_orders_properties($pk_id, $related_value, $source_target);
+									// based on source get related value
+									if ($column_source == "csv" || $column_source == "xml") {
+										$source_target = $header_data[$column_data]["title"];
+										if(function_exists("mb_strtolower")) {
+											$source_target = mb_strtolower($source_target, "UTF-8");
+										} else {
+											$source_target = strtolower($source_target);
+										}
+										$source_target = str_replace(" ", "_", $source_target);
+										$related_value = get_value_by_key($data_assoc, $source_target);
+									} else {
+										$related_value = $column_data;
+									}
+									if ($related_prop_table == $table_prefix . "orders_properties") {
+										update_orders_properties($pk_id, $related_value, $db_columns[$column_name]);
 									} elseif ($related_prop_table == $table_prefix . "users_properties") {
 										update_user_properties($pk_id, $related_value);
 									} elseif ($related_prop_table == $table_prefix . "items_properties") {
@@ -1726,7 +1811,7 @@
 				//$data = fgetcsv($fp, 65536, $delimiter_char);
 				//$is_next_row = is_array($data);
 			}
-			// end processing rows
+			// end reading file data 
 			fclose($fp);
 
 			if ($operation == "import") {
@@ -1927,7 +2012,8 @@
 			}
 		}
 		if ($imp->r->parameter_exists("site_id") && $imp->r->is_empty("site_id") && $imp->r->is_empty("site_name")) {
-			$imp->r->set_value("site_id", $site_id);
+			$param_site_id = get_session("session_site_id");
+			$imp->r->set_value("site_id", $param_site_id);
 		}
 		// end Site ID checks
 
@@ -1958,7 +2044,8 @@
 		}
 		// check shipping parameters
 		$order_shipment = array(); $shipping_type_id = "";
-		if (!$imp->r->is_empty("shipping_type_id")) {
+		//if (!$imp->r->is_empty("shipping_type_id")) {
+		if ($imp->r->get_value("shipping_type_id")) {
 			$shipping_type_id = $imp->r->get_value("shipping_type_id");
 			if (isset($order_shipments[$shipping_type_id])) {
 				$order_shipment = $order_shipments[$shipping_type_id];
@@ -2028,9 +2115,10 @@
 					$order_shipment = $order_shipments[$shipping_type_id];
 				}
 			} else {
-				$sql  = " SELECT * FROM ".$table_prefix."shipping_types ";
-				$sql .= " WHERE shipping_type_desc=".$db->tosql($shipping_type_desc, TEXT);
-				$sql .= " AND is_active=1 ";
+				$sql  = " SELECT st.* FROM ".$table_prefix."shipping_types st ";
+				$sql .= " INNER JOIN ".$table_prefix."shipping_modules sm ON st.shipping_module_id=sm.shipping_module_id";
+				$sql .= " WHERE st.shipping_type_desc=".$db->tosql($shipping_type_desc, TEXT);
+				$sql .= " AND st.is_active=1 AND sm.is_active=1 ";
 				$db->query($sql);
 				if ($db->next_record()) {
 					$shipping_type_id = $db->f("shipping_type_id");
@@ -2066,7 +2154,7 @@
 			$payment_id = $imp->r->get_value("payment_id");
 			if (isset($payment_systems[$payment_id])) {
 				$payment_name = $payment_systems[$payment_id]["payment_name"];
-				$imp->r->set_value("payment_name", $payment_data["payment_name"]);
+				$imp->r->set_value("payment_name", $payment_name);
 			} else {
   			$error_desc = str_replace("{field_name}", $imp->r->get_property_value("payment_id", CONTROL_DESC), va_message("INCORRECT_VALUE_MESSAGE"));
 				$imp->r->parameters["payment_id"][IS_VALID] = false;
@@ -2119,8 +2207,10 @@
 			if ($imp->rr->parameter_exists("quantity") && $imp->rr->is_empty("quantity")) {
 				$imp->rr->set_value("quantity", 1);
 			}
+			if ($imp->rr->parameter_exists("item_type_id") && $imp->rr->is_empty("item_type_id")) {
+				$imp->rr->set_value("item_type_id", 1);
+			}
 		}
-
 		// parse dates, modified in excel
 		if (!$imp->r->is_empty("order_placed_date")) {
 			$order_placed_date = $imp->r->get_value("order_placed_date");
@@ -2416,14 +2506,52 @@
 
 	function update_orders_items_properties($order_item_id, $order_id, $related_value) 
 	{
-		global $db, $table_prefix, $column_name;
-		if (!$related_value) return false;
-		$property_name   = substr($column_name, 20);	
-		$property_id         = 0;
-		$property_values_ids = array();	
-		$additional_price    = 0;
-		$additional_weight   = 0;
+		global $db, $table_prefix;
 
+		$related_value = trim($related_value);
+		if (!$related_value) { return; }
+
+		// prepare properties list
+		$item_properties = array(); $property_index = 0;
+		$delimited_values = preg_split("/[\n\r;]+/", $related_value);
+		foreach ($delimited_values as $index => $delimited_value) {
+			$property_data = explode(":", $delimited_value, 2);
+			if (count($property_data) == 2) {
+				$item_properties[$property_index] = array("name" => $property_data[0], "value" =>  $property_data[1]);
+				$property_index++;
+			} else {
+				if ($property_index > 0) {
+					// add property data to the previous property value
+					$item_properties[($property_index-1)]["value"] .= "; ".$property_data[0];
+				} else {
+					$item_properties[$property_index] = array("name" => $property_data[0], "value" =>  "");
+					$property_index++;
+				}
+			}
+		}
+
+		foreach ($item_properties as $property_data) {
+      $property_name = $property_data["name"];
+      $property_value = $property_data["value"];
+			$property_id         = 0;
+			$property_values_ids = array();	
+			$additional_price    = 0;
+			$additional_weight   = 0;
+			
+			$sql  = " INSERT INTO " . $table_prefix . "orders_items_properties ";
+			$sql .= " (order_id, order_item_id, property_id, property_values_ids, property_name, property_value, additional_price, additional_weight) ";
+			$sql .= " VALUES (" . $db->tosql($order_id, INTEGER) . ", " ;
+			$sql .= $db->tosql($order_item_id, INTEGER) . ", " ;
+			$sql .= $db->tosql($property_id, INTEGER, true, false) . ", " ;
+			$sql .= $db->tosql(implode(',', $property_values_ids), TEXT, true, false) . ", " ;
+			$sql .= $db->tosql($property_name, TEXT) . ", " ;
+			$sql .= $db->tosql($property_value, TEXT) . ", ";
+			$sql .= $db->tosql($additional_price,  FLOAT) . ", ";
+			$sql .= $db->tosql($additional_weight, FLOAT) . ") ";
+			$db->query($sql);
+		}
+
+		/*
 		$sql  = " SELECT property_id, additional_price FROM " . $table_prefix . "items_properties WHERE property_name=" . $db->tosql($property_name, TEXT);
 		$db->query($sql);
 		if ($db->next_record()) {
@@ -2441,19 +2569,8 @@
 					$additional_weight += $db->f('additional_weight');				
 				}
 			}
-		}	
+		}	//*/
 
-		$sql  = " INSERT INTO " . $table_prefix . "orders_items_properties ";
-		$sql .= " (order_id, order_item_id, property_id, property_values_ids, property_name, property_value, additional_price, additional_weight) ";
-		$sql .= " VALUES (" . $db->tosql($order_id, INTEGER) . ", " ;
-		$sql .= $db->tosql($order_item_id, INTEGER) . ", " ;
-		$sql .= $db->tosql($property_id, INTEGER, true, false) . ", " ;
-		$sql .= $db->tosql(implode(',', $property_values_ids), TEXT, true, false) . ", " ;
-		$sql .= $db->tosql($property_name, TEXT) . ", " ;
-		$sql .= $db->tosql($related_value, TEXT) . ", ";
-		$sql .= $db->tosql($additional_price,  FLOAT, true, false) . ", ";
-		$sql .= $db->tosql($additional_weight, FLOAT, true, false) . ") ";
-		$db->query($sql);
 	}
 
 	function after_orders_save($order_id) {
@@ -2462,56 +2579,69 @@
 		$db->query($sql);		
 	}
 
-	function update_orders_properties($item_id, $related_value, $column_data) 
+	function update_orders_properties($order_id, $related_value, $property_data) 
 	{
 		global $db, $table_prefix, $column_name;
-		$property_id = substr($column_name, 15);
 
-		$property_order  = 0;
-		$property_type   = 1;
-		$property_name   = $column_data;
-		$property_price  = 0;
-		$property_weight = 0;
-		$property_tax_free = 0;
-		$property_value_id = 0;
-		$tmp = explode (";", $related_value);
-		foreach ($tmp AS $property_value) {
-			$property_value = trim($property_value);
-			$sql  = " SELECT p.property_order,p.property_type,p.property_name,p.tax_free, ";
-			$sql .= " pv.property_price, pv.property_weight, pv.property_value_id ";
-			$sql .= " FROM ( " . $table_prefix . "order_custom_properties p ";
-			$sql .= " LEFT JOIN " . $table_prefix . "order_custom_values pv ON pv.property_id=p.property_id) ";
-			$sql .= " WHERE p.property_id=" . $db->tosql($property_id, INTEGER);
-			$sql .= " AND ( pv.property_value=" . $db->tosql($property_value , TEXT);
-			$sql .= " OR  pv.property_value_id=" . $db->tosql($property_value , TEXT) . ")";
+		$related_value = trim($related_value);
+		if (!strlen($related_value)) { return; }
+
+		$property_id = $property_data["property_id"];
+		$property_order = $property_data["property_order"];
+		$property_code = $property_data["property_code"];
+		$property_name = $property_data["property_name"];
+		$property_type = $property_data["property_type"];
+		$control_type = $property_data["control_type"];
+		$tax_free = $property_data["tax_free"];
+
+		$property_values = explode(";", $related_value);
+		foreach ($property_values as $property_value) {
+			// before adding a new order property check if it was probably already added to exclude double adding of the same properties when order has more than one product
+			$sql  = " SELECT order_property_id FROM ".$table_prefix."orders_properties ";
+			$sql .= " WHERE order_id=".$db->tosql($order_id, INTEGER);
+			$sql .= " AND property_id=".$db->tosql($property_id, INTEGER);
+			$sql .= " AND property_value=".$db->tosql($property_value, TEXT);
 			$db->query($sql);
-			if ($db->next_record()) {
-				$property_order    = $db->f('property_order');
-				$property_type     = $db->f('property_type');
-				$property_name     = $db->f('property_name');
-				$property_price    += $db->f('property_price');
-				$property_weight   += $db->f('property_weight');
-				$property_tax_free = $db->f('tax_free');
-				$property_value_id = $db->f('property_value_id');
+			if (!$db->next_record()) {
+				$property_price  = 0;
+				$property_weight = 0;
+				$actual_weight = 0;
+				$property_value_id = "";
+				$property_value = trim($property_value);
+				if ($control_type == "CHECKBOXLIST" ||  $control_type == "RADIOBUTTON" || $control_type == "LISTBOX") {
+					$sql  = " SELECT pv.property_value_id, pv.property_price, pv.property_weight, pv.actual_weight ";
+					$sql .= " FROM " . $table_prefix . "order_custom_values pv  ";
+					$sql .= " WHERE pv.property_id=" . $db->tosql($property_id, INTEGER);
+					$sql .= " AND (pv.property_value=" . $db->tosql($property_value , TEXT);
+					$sql .= " OR  pv.property_value_id=" . $db->tosql($property_value , TEXT) . ")";
+					$db->query($sql);
+					if ($db->next_record()) {
+						$property_price    = $db->f("property_price");
+						$property_weight   = $db->f("property_weight");
+						$actual_weight     = $db->f("actual_weight");
+						$property_value_id = $db->f("property_value_id");
+					}
+				}
+		  
+				$sql  = " INSERT INTO " . $table_prefix . "orders_properties ";
+				$sql .= " (order_id, property_id, property_order, property_type, property_code, property_name, property_value, property_value_id, property_price, property_weight, actual_weight, tax_free) ";
+				$sql .= " VALUES (";
+				$sql .= $db->tosql($order_id, INTEGER) . ", " ;
+				$sql .= $db->tosql($property_id, INTEGER) . ", " ;
+				$sql .= $db->tosql($property_order, INTEGER, true, false) . ", " ;
+				$sql .= $db->tosql($property_type, INTEGER, true, false) . ", " ;
+				$sql .= $db->tosql($property_code, TEXT) . ", " ;
+				$sql .= $db->tosql($property_name, TEXT) . ", " ;
+				$sql .= $db->tosql($related_value, TEXT) . ", ";
+				$sql .= $db->tosql($property_value_id, INTEGER) . ", ";
+				$sql .= $db->tosql($property_price,  FLOAT, true, false) . ", ";
+				$sql .= $db->tosql($property_weight, FLOAT, true, false) . ", " ;
+				$sql .= $db->tosql($actual_weight, FLOAT, true, false) . ", " ;
+				$sql .= $db->tosql($tax_free, INTEGER, true, false) . ") ";
+				$db->query($sql);
 			}
 		}
-		if ($property_value_id) {
-			$related_value = $property_value_id;
-		}
-		$sql  = " INSERT INTO " . $table_prefix . "orders_properties ";
-		$sql .= " (order_id, property_id, property_order, property_type, property_name, property_value,property_price,property_weight,tax_free) ";
-		$sql .= " VALUES (" . $db->tosql($item_id, INTEGER) . ", " ;
-		$sql .= $db->tosql($property_id, INTEGER) . ", " ;
-		$sql .= $db->tosql($property_order, INTEGER, true, false) . ", " ;
-		$sql .= $db->tosql($property_type, INTEGER, true, false) . ", " ;
-		$sql .= $db->tosql($property_name, TEXT) . ", " ;
-		$sql .= $db->tosql($related_value, TEXT) . ", ";
-		$sql .= $db->tosql($property_price,  FLOAT, true, false) . ", ";
-		$sql .= $db->tosql($property_weight, FLOAT, true, false) . ", " ;
-		$sql .= $db->tosql($property_tax_free , INTEGER, true, false) . ") ";
-		$db->query($sql);
 	}
-
 
 	function update_user_properties($user_id, $related_value) 
 	{
@@ -2685,7 +2815,7 @@
 				$item_type_id = 0;
 
 				$sql  = " INSERT INTO " . $table_prefix . "items_properties ";
-				$sql .= " (property_id, item_id, item_type_id, property_order, property_name, property_description, control_type, required, use_on_list, use_on_details, use_on_checkout) VALUES (";
+				$sql .= " (property_id, item_id, item_type_id, property_order, property_name, property_description, control_type, required, use_on_list, use_on_details) VALUES (";
 				$sql .= $db->tosql($property_id, INTEGER) . ", ";
 				$sql .= $db->tosql($item_id, INTEGER) . ", ";
 				$sql .= $db->tosql($item_type_id, INTEGER) . ", ";
@@ -3032,8 +3162,8 @@
 				$imp->rr->change_property("user_type_id", USE_SQL_NULL, false);
 			}
 			if (!$imp->rr->parameter_exists("item_type_id")) {
-				$imp->rr->add_textbox("item_type_id", TEXT, "{PROD_TYPE_MSG} ({ID_MSG}) ");
-				$imp->rr->change_property("item_type_id", SHOW, false); 
+				$imp->rr->add_textbox("item_type_id", TEXT, "{PROD_TYPE_MSG} ({ID_MSG})");
+				//$imp->rr->change_property("item_type_id", SHOW, false); 
 			}
 		}
 
@@ -3095,3 +3225,28 @@ function get_value_by_key($array, $key)
 	}
 	return "";
 }
+
+/*
+CREATE TABLE va_orders_properties (
+  `order_property_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `order_id` INT(11) DEFAULT '0',
+  `property_id` INT(11) DEFAULT '0',
+  `property_order` INT(11) DEFAULT '1',
+  `property_type` INT(11) DEFAULT '0',
+  `property_name` VARCHAR(255) NOT NULL,
+  `property_value_id` INT(11),
+  `property_value` TEXT,
+  `property_price` DOUBLE(16,2) DEFAULT '0',
+  `property_points_amount` DOUBLE(16,4) DEFAULT '0',
+  `property_weight` DOUBLE(16,4) DEFAULT '0',
+  `actual_weight` DOUBLE(16,4),
+  `tax_free` TINYINT DEFAULT '0'
+
+property_type 
+1 - Shopping Cart
+2 - Personal Details
+3 - Delivery Details
+4 - Payment Details
+5 - Shipping Module
+6 - Shipping Method
+*/

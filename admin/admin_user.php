@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_user.php                                           ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -146,9 +146,12 @@
 	// prepare custom options 
 	$pp = array(); $pn = 0;
 	$sql  = " SELECT upp.* ";
-	$sql .= " FROM (" . $table_prefix . "user_profile_properties upp ";
-	$sql .= " INNER JOIN " . $table_prefix . "user_profile_sections ups ON upp.section_id=ups.section_id) ";
-	$sql .= " WHERE user_type_id=" . $db->tosql($type_id, INTEGER);
+	$sql .= " FROM " . $table_prefix . "user_profile_properties upp ";
+	$sql .= " INNER JOIN " . $table_prefix . "user_profile_sections ups ON upp.section_id=ups.section_id ";
+	$sql .= " LEFT JOIN " . $table_prefix . "user_profile_properties_types uppt ON upp.property_id=uppt.property_id ";
+	$sql .= " LEFT JOIN " . $table_prefix . "user_profile_properties_sites upps ON upp.property_id=upps.property_id ";
+	$sql .= " WHERE (upp.user_types_all=1 OR uppt.user_type_id=" . $db->tosql($type_id, INTEGER).") ";
+	//$sql .= " AND (upp.sites_all=1 OR upps.site_id=" . $db->tosql($site_id, INTEGER).") ";
 	$sql .= " AND ups.is_active=1 ";
 	$sql .= " AND property_show IN (1,2,3) "; 
 	$sql .= " ORDER BY property_order, property_id ";

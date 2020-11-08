@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  cart_messages.php                                        ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -114,7 +114,7 @@ $messages = array(
 	"ON_TABLE_VIEW_MSG" => "on table view list",
 	"ON_GRID_VIEW_MSG" => "on grid view list",
 	"ON_SEPARATE_PAGE_MSG" => "on separate page",
-	"ON_CHECKOUT_PROCESS_MSG" => "on checkout process",
+	"ON_CHECKOUT_MSG" => "on checkout",
 	"PROD_PREVIEW_URL_MSG" => "Product Preview URL",
 	"CONDITION_MSG" => "Condition",
 	"CONDITIONS_MSG" => "Conditions",
@@ -581,6 +581,7 @@ $messages = array(
 	"ORDER_DETAILS_MSG" => "Order Details",
 	"PERSONAL_AND_DELIVERY_DATA_MSG" => "Personal and Delivery Data",
 	"PAYMENT_DETAILS_MSG" => "Payment Details",
+	"PAYMENT_PROCESSING_MSG" => "Payment Processing",
 	"CHECKOUT_SUCCESS_TITLE" => "Your order was successfully submitted!",
 	"CHECKOUT_SUCCESS_MSG" => "Thank you for your order. Your reference number is {order_id}!",
 	"CHECKOUT_PENDING_TITLE" => "Your order is pending...",

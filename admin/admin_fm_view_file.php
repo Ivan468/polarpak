@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_fm_view_file.php                                   ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -13,6 +13,7 @@
 
 	include_once("./admin_config.php");
 	include_once($root_folder_path . "includes/common.php");
+	include_once($root_folder_path . "includes/file_functions.php");
 	include_once($root_folder_path . "includes/admin_fm_functions.php");
 	include_once($root_folder_path . "includes/record.php");
 	include_once($root_folder_path . "includes/sorter.php");
@@ -34,8 +35,10 @@
 	$t->set_var("admin_conf_href", "admin_conf_filemanager.php");
 	$t->set_var("admin_newfile_href", "admin_fm_newfile.php");
 
+	// get dir
+	fm_dir($dir, $site_dir, $top_dir);
+	$dir_path = $dir; // assign variable used in script
 	$view_file = terminator(get_param("view_file"));
-	$dir_path = check_dir_path(get_param("dir_path"));
 	
 	$error = check_dir_and_file($dir_path, $view_file, "view");
 	
@@ -60,7 +63,7 @@
 			$t->set_var("view_content", $view_content);
 		}
 		elseif(in_array($ext, $array_image_file)) {
-			$t->set_var("view_content", "<img src='" . $dir_path . "/" . $view_file . "'>");;
+			$t->set_var("view_content", "<img src='" . $dir . "/" . $view_file . "'>");;
 		}
 		elseif(in_array($ext, $array_download_file)) {
 			$t->set_var("view_content", "");

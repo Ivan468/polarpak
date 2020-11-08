@@ -79,7 +79,6 @@
 	$r->add_textbox("use_on_list", INTEGER);
 	$r->add_textbox("use_on_details", INTEGER);
 	$r->add_textbox("use_on_second", INTEGER);
-	$r->add_textbox("use_on_checkout", INTEGER);
 	// sites field
 	$r->add_textbox("sites_all", INTEGER);
 
@@ -129,7 +128,6 @@
 			$r->set_value("use_on_list", 1);
 			$r->set_value("use_on_details", 1);
 			$r->set_value("use_on_second", 1);
-			$r->set_value("use_on_checkout", 1);
 			if (strlen($property_id))
 			{
 				$r->update_record();

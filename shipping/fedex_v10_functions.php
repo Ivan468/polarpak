@@ -4,7 +4,34 @@
 	{
 		global $r, $shipping_weight, $state_code, $country_code, $postal_code, $shipping_city, $shipping_street;
 		global $goods_total, $currency, $shipping_weight, $shipping_weight_measure, $city, $address1, $fedex_service;
-		global $language_code, $shipping_packages;
+		global $language_code, $shipping_packages, $default_currency_code;
+
+		$fedex_currencies = array(
+			"ARS" => "ARN", // Argentinian Peso
+			"BMD" => "BMD", // Bermuda Dollar
+			"CID" => "CID", // Cayman Dollars 
+			"CLP" => "CHP", // Chilean Peso
+			"DOP" => "RDD", // Dominican Peso
+			"XCD" => "ECD", // E. Caribbean Dollar
+			"IDR" => "RPA", // Indonesian Rupiah
+			"JMD" => "JAD", // Jamaican Dollar
+			"JPY" => "JYE", // Japanese Yen
+			"KWD" => "KUD", // Kuwaiti Dinar
+			"MXN" => "NMP", // New Mexican Peso
+			"TWD" => "NTD", // New Taiwan Dollar
+			"RUB" => "RUR", // Russian Rouble
+			"SGD" => "SID", // Singapore Dollar
+			"KRW" => "WON", // South Korean Won
+			"CHF" => "SFR", // Swiss Francs
+			"GBP" => "UKL", // UK Pounds Sterling
+			"AED" => "DHS", // United Arab Emirates Dirham
+			"UYU" => "UYP", // Uruguay New Peso
+			"VES" => "VEF", // Venezuela Bolivar Fuerte
+		);
+		$currency_code = $default_currency_code;
+		if (!$currency_code) { $currency_code = $currency["code"]; }
+		$currency_code = strtoupper($currency_code);
+		$fedex_currency_code = get_setting_value($fedex_currencies, $currency_code, $currency_code);
 
 		// define some parameters
 		$errors = "";
@@ -12,6 +39,13 @@
 		$origin_state_code = isset($module_params["StateOrProvinceCode"]) ? $module_params["StateOrProvinceCode"] : "";
 		$origin_postal_code = isset($module_params["PostalCode"]) ? $module_params["PostalCode"] : "";
 		$origin_country_code = isset($module_params["CountryCode"]) ? $module_params["CountryCode"] : "";
+
+		// check Insurance parameter
+		$insurance = false;
+		$insurance_param = strtolower(get_setting_value($module_params, "Insurance", "Y"));
+		if ($insurance_param == "true" || $insurance_param == "yes" || $insurance_param == "y") {
+			$insurance = true;
+		}
 		
 		$week_day = date("w");
 		if ($week_day == 0) {
@@ -20,6 +54,11 @@
 			$days_off = 2;
 		} else {
 			$days_off = 0;
+		}
+
+		$shipping_packages_price = 0; // calculate total price of all packages
+		foreach ($shipping_packages as $package_id => $package) {
+			$shipping_packages_price += $package["price"];
 		}
 		
 		$ship_date = mktime (0, 0, 0, date("n"), date("j") + $days_off, date("Y"));
@@ -58,9 +97,13 @@
 		$xml.= "		<v10:ShipTimestamp>".date("Y-m-d", $ship_date)."T00:00:00-00:00</v10:ShipTimestamp>\n";
 		$xml.= "		<v10:DropoffType>REGULAR_PICKUP</v10:DropoffType>\n";
 		$xml.= "		<v10:PackagingType>YOUR_PACKAGING</v10:PackagingType>\n";
-		$xml.= "		<v10:TotalInsuredValue>\n";
-		$xml.= "			".add_line_fedex("Currency",$currency["code"]);
-		$xml.= "		</v10:TotalInsuredValue>\n";
+		if ($insurance && $shipping_packages_price > 0) {
+			$xml.= "		<v10:TotalInsuredValue>\n";
+			$xml.= "			".add_line_fedex("Currency",$fedex_currency_code);
+			$xml.= "			".add_line_fedex("Amount",$shipping_packages_price);
+			$xml.= "		</v10:TotalInsuredValue>\n";
+		}
+		$xml.= "		".add_line_fedex("PreferredCurrency", $fedex_currency_code);
 		$xml.= "		<v10:Shipper>\n";
 		$xml.= "			<v10:Address>\n";
 		$xml.= "				".add_line_fedex("StreetLines",$module_params["StreetLines"]);
@@ -146,10 +189,12 @@
 			$xml2.= "			<v10:SequenceNumber>".$j."</v10:SequenceNumber>\n";
 			$xml2.= "			<v10:GroupPackageCount>"."1"."</v10:GroupPackageCount>\n";
 
-			$xml2.= "			<v10:InsuredValue>\n";
-			$xml2.= "				".add_line_fedex("Currency",$currency["code"]);
-			$xml2.= "				".add_line_fedex("Amount",$prod_cost);
-			$xml2.= "			</v10:InsuredValue>\n";
+			if ($insurance) {
+				$xml2.= "			<v10:InsuredValue>\n";
+				$xml2.= "				".add_line_fedex("Currency",$fedex_currency_code);
+				$xml2.= "				".add_line_fedex("Amount",doubleval($prod_cost));
+				$xml2.= "			</v10:InsuredValue>\n";
+			}
 			$xml2.= "			<v10:Weight>\n";
 			$xml2.= "				".add_line_fedex("Units",$module_params["WeightUnits"]);
 			$xml2.= "				".add_line_fedex("Value",$weight);
@@ -169,7 +214,6 @@
 			$xml2.= "		</v10:RequestedPackageLineItems>\n";
 
 		}
-
 		$xml.= "		<v10:PackageCount>".$j."</v10:PackageCount>\n";
 
 //		$xml.= "		<v10:PackageDetail>INDIVIDUAL_PACKAGES</v10:PackageDetail>\n";
@@ -184,6 +228,7 @@
 		$xml.= "</SOAP-ENV:Envelope>\n";
 
 		return $xml;
+
 	}
 	
 	function add_line_fedex($parameter,$value,$v3="v10:",$parameter2 = "",$int=""){
@@ -274,4 +319,3 @@
         return $tree; 
     }
 
-?>

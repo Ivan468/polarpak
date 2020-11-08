@@ -83,11 +83,15 @@
 		$pages = 1;
 	}
 
+	// prepare params for VA_Products class to show products
+	$sql_params = array();
+	$sql_params["where"][]  = $sql_where;
+	$sql_params["order"][]  = $sql_order;
+
 	// override params:
 	$params = array(
 		"pb_id" => $pb_id,
-		"sql_where" => $sql_where,
-		"sql_order" => $sql_order,
+		"sql" => $sql_params,
 		"count_no" => $count_no,
 		"recs" => $records_per_page,
 		"max_recs" => $max_recs,
@@ -110,5 +114,3 @@
 	if ($products_number) {
 		$block_parsed = true;
 	}
-
-?>

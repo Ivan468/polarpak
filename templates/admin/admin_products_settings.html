@@ -320,8 +320,8 @@
 			<th>{COLUMN_NAME_MSG}</th>
 			<th>{OVERRIDE_VALUE_MSG}</th>
 			<th>{DEFAULT_VALUE_MSG}</th>
-			<th>{ON_BASKET_PAGE_MSG}</th>
-			<th>{ON_CHECKOUT_PROCESS_MSG}</th>
+			<th>{ON_CART_PAGE_MSG}</th>
+			<th>{ON_CHECKOUT_MSG}</th>
 			<th>{ON_INVOICE_MSG}</th>
 			<th>{ON_EMAIL_MSG}</th>
 		</tr>
@@ -556,35 +556,80 @@
 		<select name="quantity_control_list"><!-- begin quantity_control_list -->
 			<option {quantity_control_list_selected} value="{quantity_control_list_value}">{quantity_control_list_description}<!-- end quantity_control_list -->
 		</select>
-		<img onmouseover="showHint(this, 'qtyListHint');" onmouseout="hideHint('qtyListHint');" src="images/question.gif" border="0" align="top" alt="" title="">
-		<div id="qtyListHint" class="hintPopup">{PRODUCTS_QUANTITY_CONTROL_NOTE}</div>
 		({ON_PROD_LIST_MSG})
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link">
+			<div class="help-popup">
+				<div class="popup-body">
+					{PRODUCTS_QUANTITY_CONTROL_NOTE}
+				</div>
+			</div>
+		</i>
+
 		<br />
 		<select name="quantity_control_table"><!-- begin quantity_control_table -->
 			<option {quantity_control_table_selected} value="{quantity_control_table_value}">{quantity_control_table_description}<!-- end quantity_control_table -->
 		</select>
-		<img onmouseover="showHint(this, 'qtyListHint');" onmouseout="hideHint('qtyListHint');" src="images/question.gif" border="0" align="top" alt="" title="">
 		({ON_TABLE_VIEW_MSG})
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link">
+			<div class="help-popup">
+				<div class="popup-body">
+					{PRODUCTS_QUANTITY_CONTROL_NOTE}
+				</div>
+			</div>
+		</i>
+
 		
 		<br />
 		<select name="quantity_control_grid"><!-- begin quantity_control_grid -->
 			<option {quantity_control_grid_selected} value="{quantity_control_grid_value}">{quantity_control_grid_description}<!-- end quantity_control_grid -->
 		</select>
-		<img onmouseover="showHint(this, 'qtyListHint');" onmouseout="hideHint('qtyListHint');" src="images/question.gif" border="0" align="top" alt="" title="">
 		({ON_GRID_VIEW_MSG})
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link">
+			<div class="help-popup">
+				<div class="popup-body">
+					{PRODUCTS_QUANTITY_CONTROL_NOTE}
+				</div>
+			</div>
+		</i>
 		<br />
 		<select name="quantity_control_details"><!-- begin quantity_control_details -->
 			<option {quantity_control_details_selected} value="{quantity_control_details_value}">{quantity_control_details_description}<!-- end quantity_control_details -->
 		</select>
-		<img onmouseover="showHint(this, 'qtyListHint');" onmouseout="hideHint('qtyListHint');" src="images/question.gif" border="0" align="top" alt="" title="">
 		({ON_PROD_DETAILS_MSG})
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link">
+			<div class="help-popup">
+				<div class="popup-body">
+					{PRODUCTS_QUANTITY_CONTROL_NOTE}
+				</div>
+			</div>
+		</i>
+
 		<br />
 		<select name="quantity_control_basket"><!-- begin quantity_control_basket -->
 			<option {quantity_control_basket_selected} value="{quantity_control_basket_value}">{quantity_control_basket_description}<!-- end quantity_control_basket -->
 		</select>
-		<img onmouseover="showHint(this, 'qtyBasketHint');" onmouseout="hideHint('qtyBasketHint');" src="images/question.gif" border="0" align="top" alt="" title="">
-		<div id="qtyBasketHint" class="hintPopup">{BASKET_QUANTITY_CONTROL_NOTE}</div>
-		({ON_BASKET_PAGE_MSG})
+		({ON_CART_PAGE_MSG})
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link">
+		<div class="help-popup">
+			<div class="popup-body">
+				{CART_QUANTITY_CONTROL_NOTE}
+			</div>
+		</div>
+		</i>
+
+		<br />
+		<select name="quantity_control_checkout"><!-- begin quantity_control_checkout -->
+			<option {quantity_control_checkout_selected} value="{quantity_control_checkout_value}">{quantity_control_checkout_description}<!-- end quantity_control_checkout -->
+		</select>
+		({ON_CHECKOUT_MSG})
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link">
+		<div class="help-popup">
+			<div class="popup-body">
+				{CHECKOUT_QUANTITY_CONTROL_NOTE}
+			</div>
+		</div>
+		</i>
+
 	</td>
 </tr>
 <tr class="middle">
@@ -602,6 +647,7 @@
 		</select> 
 	</td>
 </tr>
+
 <tr class="usual">
 	<td>{NEW_MARK_NOTE}</td>
 	<td>
@@ -653,6 +699,20 @@
 	<td colspan="2">{PROD_APPEARANCE_MSG}</td>
 </tr>
 <tr class="usual">
+	<td>
+		{CART_SUBPRODUCT_NAME_MSG} 
+	</td>
+	<td>
+		<input class="field" type="text" size="80" name="cart_subitem_name" value="{cart_subitem_name}">
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">
+				{CART_SUBPRODUCT_NAME_DESC}
+			</div>
+		</div>
+	</td>
+</tr>
+<tr class="usual">
 	<td>{PRICE_MATRIX_MSG}</td>
 	<td >
 		<div class="floatLeft half30"><input type="checkbox" {price_matrix_list} name="price_matrix_list" id="price_matrix_list" value="1">
@@ -673,7 +733,7 @@
 		<div class="floatLeft half30"><input type="checkbox" {item_code_details} name="item_code_details" id="item_code_details" value="1">
 		<label for="item_code_details">{ON_PROD_DETAILS_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {item_code_basket} name="item_code_basket" id="item_code_basket" value="1">
-		<label for="item_code_basket">{ON_BASKET_PAGE_MSG}</label></div>
+		<label for="item_code_basket">{ON_CART_PAGE_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {item_code_checkout} name="item_code_checkout" id="item_code_checkout" value="1">
 		<label for="item_code_checkout">{ON_ORDERS_CHECKOUT_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {item_code_invoice} name="item_code_invoice" id="item_code_invoice" value="1">
@@ -697,7 +757,7 @@
 		<div class="floatLeft half30"><input type="checkbox" {manufacturer_code_details} name="manufacturer_code_details" id="manufacturer_code_details" value="1">
 		<label for="manufacturer_code_details">{ON_PROD_DETAILS_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {manufacturer_code_basket} name="manufacturer_code_basket" id="manufacturer_code_basket" value="1">
-		<label for="manufacturer_code_basket">{ON_BASKET_PAGE_MSG}</label></div>
+		<label for="manufacturer_code_basket">{ON_CART_PAGE_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {manufacturer_code_checkout} name="manufacturer_code_checkout" id="manufacturer_code_checkout" value="1">
 		<label for="manufacturer_code_checkout">{ON_ORDERS_CHECKOUT_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {manufacturer_code_invoice} name="manufacturer_code_invoice" id="manufacturer_code_invoice" value="1">
@@ -791,7 +851,7 @@
 		<div class="floatLeft half30"><input type="checkbox" {hide_shipping_details} name="hide_shipping_details" id="hide_shipping_details" value="1">
 		<label for="hide_shipping_details">{ON_PROD_DETAILS_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {hide_shipping_basket} name="hide_shipping_basket" id="hide_shipping_basket" value="1">
-		<label for="hide_shipping_basket">{ON_BASKET_PAGE_MSG}</label></div>
+		<label for="hide_shipping_basket">{ON_CART_PAGE_MSG}</label></div>
 	</td>
 </tr>
 <tr class="usual">
@@ -871,7 +931,7 @@
 		<div class="floatLeft half30"><input type="checkbox" {points_price_details} name="points_price_details" id="points_price_details" value="1"> 
 		<label for="points_price_details">{ON_PROD_DETAILS_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {points_price_basket} name="points_price_basket" id="points_price_basket" value="1"> 
-		<label for="points_price_basket">{ON_BASKET_PAGE_MSG}</label></div>
+		<label for="points_price_basket">{ON_CART_PAGE_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {points_price_checkout} name="points_price_checkout" id="points_price_checkout" value="1"> 
 		<label for="points_price_checkout">{ON_ORDERS_CHECKOUT_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {points_price_invoice} name="points_price_invoice" id="points_price_invoice" value="1"> 
@@ -922,7 +982,7 @@
 		<div class="floatLeft half30"><input type="checkbox" {reward_points_details} name="reward_points_details" id="reward_points_details" value="1"> 
 		<label for="reward_points_details">{ON_PROD_DETAILS_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {reward_points_basket} name="reward_points_basket" id="reward_points_basket" value="1"> 
-		<label for="reward_points_basket">{ON_BASKET_PAGE_MSG}</label></div>
+		<label for="reward_points_basket">{ON_CART_PAGE_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {reward_points_checkout} name="reward_points_checkout" id="reward_points_checkout" value="1"> 
 		<label for="reward_points_checkout">{ON_ORDERS_CHECKOUT_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {reward_points_invoice} name="reward_points_invoice" id="reward_points_invoice" value="1"> 
@@ -989,7 +1049,7 @@
 		<div class="floatLeft half30"><input type="checkbox" {reward_credits_details} name="reward_credits_details" id="reward_credits_details" value="1"> 
 		<label for="reward_credits_details">{ON_PROD_DETAILS_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {reward_credits_basket} name="reward_credits_basket" id="reward_credits_basket" value="1"> 
-		<label for="reward_credits_basket">{ON_BASKET_PAGE_MSG}</label></div>
+		<label for="reward_credits_basket">{ON_CART_PAGE_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {reward_credits_checkout} name="reward_credits_checkout" id="reward_credits_checkout" value="1"> 
 		<label for="reward_credits_checkout">{ON_ORDERS_CHECKOUT_MSG}</label></div>
 		<div class="floatLeft half30"><input type="checkbox" {reward_credits_invoice} name="reward_credits_invoice" id="reward_credits_invoice" value="1"> 

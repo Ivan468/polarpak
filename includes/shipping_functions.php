@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  shipping_functions.php                                   ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -13,9 +13,9 @@
 
 function get_shipping_types($delivery_country_id, $delivery_state_id, $delivery_postal_code, $delivery_site_id, $user_type_id, $delivery_items, $call_center = 0)
 {
-	global $db, $table_prefix, $site_id, $country_code, $postal_code, $order_total, $state_code, $r, $errors;
+	global $db, $table_prefix, $site_id, $country_code, $postal_code, $city, $order_total, $state_code, $r, $errors;
 	global $goods_total_full, $total_quantity;
-	global $shipping_packages, $shipping_items_total, $shipping_weight, $shipping_quantity, $cms_page_code, $va_shipment_grouping;
+	global $shipping_packages, $shipping_items_total, $shipping_goods_total, $shipping_weight, $shipping_quantity, $cms_page_code, $va_shipment_grouping;
 
 	// remove space symbols to match postal code with shipping methods
 	$check_postal_code = trim($delivery_postal_code);

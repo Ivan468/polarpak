@@ -115,7 +115,6 @@
 	$r->add_checkbox("use_on_table", INTEGER);
 	$r->add_checkbox("use_on_grid", INTEGER);
 	$r->add_checkbox("use_on_second", INTEGER);
-	$r->add_checkbox("use_on_checkout", INTEGER);
 
 	$r->change_property("use_on_list", SHOW, $show_use_on_list);
 	$r->change_property("use_on_details", SHOW, $show_use_on_details);
@@ -225,7 +224,6 @@
 		if($is_valid)
 		{
 			$r->set_value("property_type_id", 3);
-			$r->set_value("use_on_checkout", 0);
 			if(strlen($property_id))
 			{
 				$r->update_record();

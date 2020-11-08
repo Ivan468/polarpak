@@ -198,10 +198,9 @@
 
 		$block_parsed = true;
 	} else if ($sq) {
-		$t->set_var("query", htmlspecialchars($sq));
+		$no_records_msg = str_replace("{search_string}", htmlspecialchars($sq), va_message("NO_MATCHING_RECORDS_MSG"));
+		$t->set_var("NO_RECORDS_MSG", $no_records_msg);
 		$t->parse("no_results", false);
 
 		$block_parsed = true;
 	}
-
-?>

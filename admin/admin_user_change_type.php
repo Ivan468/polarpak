@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_user_change_type.php                               ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -231,6 +231,20 @@
 				}
 				$sql .= " WHERE user_id=" . $db->tosql($user_id, INTEGER);
 				$db->query($sql);
+
+				if ($current_user_type_id != $type_id) {
+					// update type for previously saved orders and it items
+					$sql  = " UPDATE " . $table_prefix . "orders ";
+					$sql .= " SET user_type_id=" . $db->tosql($type_id, INTEGER);
+					$sql .= " WHERE user_id=" . $db->tosql($user_id, INTEGER);
+					$db->query($sql);
+
+					$sql  = " UPDATE " . $table_prefix . "orders_items ";
+					$sql .= " SET user_type_id=" . $db->tosql($type_id, INTEGER);
+					$sql .= " WHERE user_id=" . $db->tosql($user_id, INTEGER);
+					$db->query($sql);
+				}
+
 
 				// check if subscription was changed to return credits
 				if ($current_subscription_id != $subscription_id) {

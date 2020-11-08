@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  paypal_ipn.php                                           ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -16,6 +16,7 @@
  */
 
 	$is_admin_path = true;
+	$tracking_ignore = true;
 	$root_folder_path = "../";
 	ini_set("display_errors", "1");
 	error_reporting(E_ALL);
@@ -155,7 +156,9 @@
 		$payment_amount   = get_param("mc_gross");
  		$receiver_email   = get_param("receiver_email");
 		$pending_reason   = get_param("pending_reason");
+		$reason_code      = get_param("reason_code");
 		$pending_message  = "";
+		$error_message    = "";
 
 		if (strtolower($payment_status) == "pending") {
 			$pending_message = strlen($pending_reason) ? $pending_reason : "Pending";
@@ -172,8 +175,10 @@
 		} else if (strtolower(trim($business_email)) != strtolower(trim($receiver_email))) {	// check that receiver_email is your Primary PayPal email
 			$error_message = "Wrong receiver email - " . $receiver_email;
 		} else {
-			// check that payment_amount/payment_currency are correct
-			$error_message = check_payment($order_id, $payment_amount, $payment_currency);
+			// check that payment_amount/payment_currency are correct for non-refunded payments as refund amount could be different
+			if (strtolower($payment_status) != "refunded" && strtolower($reason_code) != "refund") {
+				$error_message = check_payment($order_id, $payment_amount, $payment_currency);
+			}
 		}
 
 		// get statuses
@@ -209,7 +214,18 @@
 			$message_type = "pending";
 			$t->set_var("pending_desc", $pending_message);
 			$t->set_var("pending_message", $pending_message);
-			$order_status = $pending_status_id;
+			if ($pending_status_id) {
+				$order_status = $pending_status_id;
+				$update_status = true;
+			} else {
+				$sql  = " SELECT status_id FROM " . $table_prefix . "order_statuses ";
+				$sql .= " WHERE status_type='PENDING' ";
+				$db->query($sql);
+				if ($db->next_record()) {
+					$order_status = $db->f("status_id");
+					$update_status = true;
+				}
+			}
 			$sql  = " UPDATE " . $table_prefix . "orders ";
 			$sql .= " SET pending_message=" . $db->tosql($pending_message, TEXT);
 			$sql .= " , transaction_id=" . $db->tosql($transaction_id, TEXT);

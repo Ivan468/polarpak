@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_site.php                                           ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -135,11 +135,8 @@
 		$r->change_property("site_url", PARSE_NAME, "edit_site_url");
 		$r->change_property("site_url", REQUIRED, true);
 		$r->change_property("site_url", REGEXP_MASK, $domain_start_regexp);
-		$r->change_property("site_url", USE_IN_INSERT, false);
 		$r->add_textbox("admin_url", TEXT, va_message("SITE_URL_MSG")." (".va_message("BACK_END_MSG").")");
 		$r->change_property("admin_url", REGEXP_MASK, $domain_start_regexp);
-		$r->change_property("admin_url", USE_IN_INSERT, false);
-
 		$r->add_textbox("site_class", TEXT);
 
 		$r->add_textbox("site_description", TEXT, va_message("SITE_DESCRIPTION_MSG"));

@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_support_reply.php                                  ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -249,8 +249,9 @@
 	// get information about ticket
 	$ticket_date = ""; $ticket_dep_id = ""; $ticket_type_id = ""; $ticket_product_id = "";
 	$ticket_mail_cc = ""; $ticket_mail_bcc = "";
+	$ticket_user_id = ""; $ticket_user_type_id = ""; $ticket_user_login = "";
 	$sql  = " SELECT s.support_id, s.dep_id, s.support_type_id, s.support_product_id, ";
-	$sql .= " s.user_id, u.user_type_id, s.user_name, s.user_email, s.mail_cc, s.mail_bcc, ";
+	$sql .= " s.user_id, u.login, u.user_type_id, s.user_name, s.user_email, s.mail_cc, s.mail_bcc, ";
 	$sql .= " s.remote_address, s.identifier, s.mail_headers, s.mail_body_html, s.mail_body_text, ";
 	$sql .= " s.environment, p.product_name, st.type_name, s.summary, s.description, ";
 	$sql .= " ss.status_name, ss.status_id, sp.priority_name, s.date_added, s.date_modified, ";
@@ -268,6 +269,9 @@
 	if ($db->next_record())
 	{
 		$dep_id = $db->f("dep_id");
+		$ticket_user_id = $db->f("user_id");
+		$ticket_user_login = $db->f("login");
+		$ticket_user_type_id = $db->f("user_type_id");
 		$user_id = $db->f("user_id");
 		$user_type_id = $db->f("user_type_id");
 		$ticket_dep_id = $db->f("dep_id");
@@ -285,6 +289,7 @@
 		$initial_mail_body_text = $db->f("mail_body_text");
 		$identifier = $db->f("identifier");
 		$environment = $db->f("environment");
+		$product_name = $db->f("product_name");
 		$remote_address = $db->f("remote_address");
 		$site_name = $db->f("site_name");
 		if ($sitelist) {
@@ -341,19 +346,20 @@
 		
 		//---------------------------------------------------------------
 		$t->set_var("user_email", $user_email);
-		$t->set_var("mail_cc", $ticket_mail_cc);
+		if ($ticket_mail_cc) {
+			$t->set_var("mail_cc", $ticket_mail_cc);
+			$t->sparse("mail_cc_block", false);
+		} else {
+			$t->set_var("mail_cc_block", "");
+		}
 
-		$t->set_var("environment", htmlspecialchars($environment));
+
 		$remote_address_desc = $remote_address;
 		if ($remote_address_desc && function_exists("geoip_country_code_by_name")) {
 			$geoip_country_code = @geoip_country_code_by_name($remote_address);
 			if ($geoip_country_code) { $remote_address_desc .= " (".$geoip_country_code.")"; }
 		}
 		$t->set_var("remote_address_desc", htmlspecialchars($remote_address_desc));
-
-		$product_name = $db->f("product_name");
-		$t->set_var("product_name", $product_name);
-		$t->set_var("product", $product_name);
 
 		$t->set_var("assign_to", $db->f("assign_to"));
 		$t->set_var("type", get_translation($db->f("type_name")));
@@ -383,22 +389,19 @@
 		$t->set_var("request_description", nl2br(htmlspecialchars($description)));
 		$last_message = $description;
 
-		$identifier_html = htmlspecialchars($identifier);
 		if ($identifier) {
-			$sql  = " SELECT order_id FROM " . $table_prefix . "orders ";
-			$sql .= " WHERE order_id=" . $db->tosql($identifier, INTEGER);
-			$sql .= " OR transaction_id=" . $db->tosql($identifier, TEXT);
-			$sql .= " OR invoice_number=" . $db->tosql($identifier, TEXT);
-			$db->query($sql);
-			if ($db->next_record()) {
-				$order_id = $db->f("order_id");
-				$identifier_html = "<a href=\"" . $order_details_site_url . "admin_order.php?order_id=" . $order_id ."\">" . htmlspecialchars($identifier) . "</a>";
-			} else {
-				$identifier_html = htmlspecialchars($identifier) . APPROPRIATE_CODE_ERROR_MSG;
-			}
+			$t->set_var("identifier", htmlspecialchars($identifier));
+			$t->sparse("identifier_block", false);
 		}
-		$t->set_var("identifier", htmlspecialchars($identifier));
-		$t->set_var("identifier_html", $identifier_html);
+		if ($environment) {
+			$t->set_var("environment", htmlspecialchars($environment));
+			$t->sparse("environment_block", false);
+		}
+		if ($product_name) {
+			$t->set_var("product_name", $product_name);
+			$t->set_var("product", $product_name);
+			$t->sparse("product_block", false);
+		}
 
 		// update request viewed information
 		$sql  = " UPDATE " . $table_prefix . "support_messages SET date_viewed=" . $db->tosql(va_time(), DATETIME);
@@ -731,6 +734,7 @@
 				// get added message_id
 				$new_message_id = $db->last_insert_id();
 				$r->set_value("message_id", $new_message_id);
+				$mail_notices = array(); // save here all notifications which will be sent
 
 				$date_added_string = va_date($datetime_show_format, $date_added);
 				$support_url = $settings["site_url"] . "support_messages.php?support_id=" . $support_id . "&vc=" . $vc;
@@ -917,7 +921,12 @@
 						$email_headers["return_path"] = get_setting_value($support_settings, "assign_admin_return_path");
 						$email_headers["mail_type"] = get_setting_value($support_settings, "assign_admin_message_type");
 		    
-						va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+						$mail_sent = va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+
+						if ($mail_sent) { 
+							$email_headers["to"] = $mail_to;
+							$mail_notices["global_assign_admin_mail"] = $email_headers; 
+						}
 					} // end global assignment admin notification
 		    
 					// department assignment admin notification
@@ -934,7 +943,12 @@
 						$email_headers["return_path"] = get_setting_value($dep_assign_admin_mail, "assign_admin_return_path");
 						$email_headers["mail_type"] = get_setting_value($dep_assign_admin_mail, "assign_admin_message_type");
 		    
-						va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+						$mail_sent = va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+
+						if ($mail_sent) { 
+							$email_headers["to"] = $mail_to;
+							$mail_notices["dep_assign_admin_mail"] = $email_headers; 
+						}
 					} // end department assignment admin notification
 
 					// global assignment by manager notification
@@ -950,7 +964,12 @@
 						$email_headers["return_path"] = get_setting_value($support_settings, "assign_manager_return_path");
 						$email_headers["mail_type"] = get_setting_value($support_settings, "assign_manager_message_type");
 		    
-						va_mail($admin_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+						$mail_sent = va_mail($admin_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+
+						if ($mail_sent) { 
+							$email_headers["to"] = $admin_email;
+							$mail_notices["global_assign_manager_mail"] = $email_headers; 
+						}
 					} // end global assignment by manager notification
 		    
 					// department assignment by manager notification
@@ -966,7 +985,12 @@
 						$email_headers["return_path"] = get_setting_value($dep_assign_manager_mail, "assign_manager_return_path");
 						$email_headers["mail_type"] = get_setting_value($dep_assign_manager_mail, "assign_manager_message_type");
 		    
-						va_mail($admin_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+						$mail_sent = va_mail($admin_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+
+						if ($mail_sent) { 
+							$email_headers["to"] = $admin_email;
+							$mail_notices["dep_assign_manager_mail"] = $email_headers; 
+						}
 					} // end department assignment by manager notification
 					
 					// global assignment to manager notification
@@ -982,7 +1006,12 @@
 						$email_headers["return_path"] = get_setting_value($support_settings, "assign_to_return_path");
 						$email_headers["mail_type"] = get_setting_value($support_settings, "assign_to_message_type");
 		    
-						va_mail($admin_email_assigned_to, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+						$mail_sent = va_mail($admin_email_assigned_to, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+
+						if ($mail_sent) { 
+							$email_headers["to"] = $admin_email_assigned_to;
+							$mail_notices["global_assign_to_mail"] = $email_headers; 
+						}
 					} // end global assignment to manager notification
 		    
 					// department assignment to manager notification
@@ -998,7 +1027,12 @@
 						$email_headers["return_path"] = get_setting_value($dep_assign_to_mail, "assign_to_return_path");
 						$email_headers["mail_type"] = get_setting_value($dep_assign_to_mail, "assign_to_message_type");
 		    
-						va_mail($admin_email_assigned_to, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+						$mail_sent = va_mail($admin_email_assigned_to, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+
+						if ($mail_sent) { 
+							$email_headers["to"] = $admin_email_assigned_to;
+							$mail_notices["dep_assign_to_mail"] = $email_headers; 
+						}
 					} // end department assignment to manager notification
 
 
@@ -1015,7 +1049,12 @@
 						$email_headers["return_path"] = get_setting_value($support_settings, "assign_user_return_path");
 						$email_headers["mail_type"] = get_setting_value($support_settings, "assign_user_message_type");
 		    
-						va_mail($user_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+						$mail_sent = va_mail($user_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+
+						if ($mail_sent) { 
+							$email_headers["to"] = $user_email;
+							$mail_notices["global_assign_user_mail"] = $email_headers; 
+						}
 					} // end global assignment user notification
 		    
 					// department assignment user notification
@@ -1031,7 +1070,12 @@
 						$email_headers["return_path"] = get_setting_value($dep_assign_user_mail, "assign_user_return_path");
 						$email_headers["mail_type"] = get_setting_value($dep_assign_user_mail, "assign_user_message_type");
 		    
-						va_mail($user_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+						$mail_sent = va_mail($user_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+
+						if ($mail_sent) { 
+							$email_headers["to"] = $user_email;
+							$mail_notices["dep_assign_user_mail"] = $email_headers; 
+						}
 					} // end department assignment user notification
 
 					// end assignment notification block 
@@ -1045,7 +1089,12 @@
 						$forward_subject = $r->get_value("forward_subject");
 						$forward_message = get_setting_value($support_settings, "forward_mail_message", $message_text);
 		    
-						va_mail($forward_to, $forward_subject, $forward_message, $forward_headers, $attachments, $mail_tags);
+						$mail_sent = va_mail($forward_to, $forward_subject, $forward_message, $forward_headers, $attachments, $mail_tags);
+
+						if ($mail_sent) { 
+							$forward_headers["to"] = $forward_to;
+							$mail_notices["forward"] = $forward_headers; 
+						}
 					} // end department assignment user notification
 
 				} else if ($operation == "other") {
@@ -1099,7 +1148,12 @@
 						$email_headers["return_path"] = get_setting_value($support_settings, "manager_reply_user_return_path");
 						$email_headers["mail_type"] = get_setting_value($support_settings, "manager_reply_user_message_type");
 		    
-						va_mail($ticket_user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+						$mail_sent = va_mail($ticket_user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+
+						if ($mail_sent) { 
+							$email_headers["to"] = $ticket_user_email;
+							$mail_notices["global_manager_reply_user_mail"] = $email_headers; 
+						}
 					}
 					// end global customer notification
 		    
@@ -1131,7 +1185,12 @@
 						$email_headers["return_path"] = get_setting_value($dep_manager_reply_user_mail, "manager_reply_user_return_path");
 						$email_headers["mail_type"] = get_setting_value($dep_manager_reply_user_mail, "manager_reply_user_message_type");
 		    
-						va_mail($ticket_user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+						$mail_sent = va_mail($ticket_user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+
+						if ($mail_sent) { 
+							$email_headers["to"] = $ticket_user_email;
+							$mail_notices["dep_manager_reply_user_mail"] = $email_headers; 
+						}
 					}
 					// end department customer notification
 		    
@@ -1152,7 +1211,12 @@
 						$email_headers["return_path"] = get_setting_value($support_settings, "manager_reply_manager_return_path");
 						$email_headers["mail_type"] = get_setting_value($support_settings, "manager_reply_manager_message_type");
 		    
-						va_mail($from_admin_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+						$mail_sent = va_mail($from_admin_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+
+						if ($mail_sent) { 
+							$email_headers["to"] = $from_admin_email;
+							$mail_notices["global_manager_reply_manager_mail"] = $email_headers; 
+						}
 					} // end global manager notification
 		    
 					// department manager notification
@@ -1172,7 +1236,12 @@
 						$email_headers["return_path"] = get_setting_value($dep_manager_reply_manager_mail, "manager_reply_manager_return_path");
 						$email_headers["mail_type"] = get_setting_value($dep_manager_reply_manager_mail, "manager_reply_manager_message_type");
 		    
-						va_mail($from_admin_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+						$mail_sent = va_mail($from_admin_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+
+						if ($mail_sent) { 
+							$email_headers["to"] = $from_admin_email;
+							$mail_notices["dep_manager_reply_manager_mail"] = $email_headers; 
+						}
 					} // end department manager notification
 		    
 					// global admin notification
@@ -1194,7 +1263,12 @@
 						$email_headers["return_path"] = get_setting_value($support_settings, "manager_reply_admin_return_path");
 						$email_headers["mail_type"] = get_setting_value($support_settings, "manager_reply_admin_message_type");
 		    
-						va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+						$mail_sent = va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+
+						if ($mail_sent) { 
+							$email_headers["to"] = $mail_to;
+							$mail_notices["global_manager_reply_admin_mail"] = $email_headers; 
+						}
 					} // end global admin notification
 		    
 					// department admin notification
@@ -1216,11 +1290,32 @@
 						$email_headers["return_path"] = get_setting_value($dep_manager_reply_admin_mail, "manager_reply_admin_return_path");
 						$email_headers["mail_type"] = get_setting_value($dep_manager_reply_admin_mail, "manager_reply_admin_message_type");
 		    
-						va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+						$mail_sent = va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+
+						if ($mail_sent) { 
+							$email_headers["to"] = $mail_to;
+							$mail_notices["dep_manager_reply_admin_mail"] = $email_headers; 
+						}
 					} // end department admin notification
 
 				} // end manager reply notification
 
+
+				// update mail notices which were sent 
+				if (is_array($mail_notices) && count($mail_notices)) {
+					// remove empty mail headers
+					foreach ($mail_notices as $mail_code => $mail_headers) {
+						foreach ($mail_headers as $header_key => $header_value) {
+							if (!strlen($header_value)) {
+								unset($mail_notices[$mail_code][$header_key]);
+							}
+						}						
+					}
+					$sql  = " UPDATE ".$table_prefix."support_messages ";
+					$sql .= " SET mail_notices=".$db->tosql(json_encode($mail_notices), TEXT);
+					$sql .= " WHERE message_id=" . $db->tosql($new_message_id, INTEGER);
+					$db->query($sql);
+				}
 
 				// update main ticket data
 				$sql  = " UPDATE " . $table_prefix . "support SET ";
@@ -1276,6 +1371,7 @@
 	if ($db->next_record()) {
 		$orders_stats = true;
 	} else {
+		/*
 		$where = " WHERE name=" . $db->tosql($user_name, TEXT);
 		$name_parts = explode(" ", $user_name, 2);
 		if (sizeof($name_parts) == 1) {
@@ -1287,7 +1383,7 @@
 		$db->query($sql.$where.$group_by);
 		if ($db->next_record()) {
 			$orders_name_stats = true;
-		}
+		}//*/
 	}
 
 	if ($orders_stats || $orders_name_stats) {
@@ -1354,7 +1450,7 @@
 			if (!$ticket_status) { $ticket_status = $ticket_status_id; }
 			$tickets_number = $db->f("tickets_number");
 			$tickets_number_sum += $tickets_number; 
-			$admin_tickets_url->add_parameter("status_id", CONSTANT, $ticket_status_id);
+			$admin_tickets_url->add_parameter("s_st", CONSTANT, $ticket_status_id);
 
 			$t->set_var("ticket_status", $ticket_status);
 			$t->set_var("tickets_number", $tickets_number);
@@ -1362,7 +1458,7 @@
 			$t->sparse("tickets_statuses", true);
 		} while ($db->next_record());
 
-		$admin_tickets_url->add_parameter("status_id", CONSTANT, "");
+		$admin_tickets_url->add_parameter("s_st", CONSTANT, "");
 		$admin_tickets_url->add_parameter("s_in", CONSTANT, 2);
 		$t->set_var("admin_tickets_url", $admin_tickets_url->get_url());
 		$t->set_var("tickets_number_sum", $tickets_number_sum);
@@ -1619,15 +1715,27 @@
 		$t->set_var("forward_subject_block", "");
   
 		$posted_user_name = strlen($user_name) ? $user_name . " <" . $user_email . ">" : $user_email;
-		if ($user_id) {
+		if ($ticket_user_id) {
 			$posted_user_class = "site-user";
-			$posted_user_type = ($user_type_id && isset($user_types[$user_type_id])) ? $user_types[$user_type_id] : va_message("NOT_AVAILABLE_MSG");
+			$posted_user_type = ($ticket_user_type_id && isset($user_types[$ticket_user_type_id])) ? $user_types[$ticket_user_type_id] : va_message("NOT_AVAILABLE_MSG");
 		} else {
 			$posted_user_class = "site-guest";
 			$posted_user_type = va_message("GUEST_MSG");
 		}
 
 		$t->set_var("status", NEW_MSG);
+		if ($ticket_user_id) {
+			$au = new VA_URL("admin_user.php");
+			$au->add_parameter("user_id", CONSTANT, $ticket_user_id);
+			$t->set_var("ticket_user_id", htmlspecialchars($ticket_user_id));
+			$t->set_var("ticket_user_login", htmlspecialchars($ticket_user_login));
+			$t->set_var("admin_user_url", htmlspecialchars($au->get_url()));
+
+			$t->parse("ticket_user_login_block", false);
+		} else {
+			$t->set_var("ticket_user_login_block", "");
+		}
+		$t->set_var("ticket_user_type", htmlspecialchars($posted_user_type));
 		$t->set_var("posted_user_name", htmlspecialchars($posted_user_name));
 		$t->set_var("posted_user_class", htmlspecialchars($posted_user_class));
 		$t->set_var("posted_user_type", htmlspecialchars($posted_user_type));
@@ -1742,17 +1850,36 @@
 	if (!$operation) { $operation = $tab; }
 
 	// check last message
-	$sql  = " SELECT sm.admin_id_assign_by,sm.admin_id_assign_to,a.admin_name ";
-	$sql .= " FROM (" . $table_prefix . "support_messages sm ";
-	$sql .= " LEFT JOIN " . $table_prefix . "admins a ON a.admin_id=sm.admin_id_assign_by) ";
+	$sql  = " SELECT sm.support_status_id, sm.mail_notices, sm.forward_mail, ";
+	$sql .= " sm.admin_id_assign_by, aby.admin_name AS admin_assigned_by, ";
+	$sql .= " sm.admin_id_assign_to, ato.admin_name AS admin_assigned_to ";
+	$sql .= " FROM ((" . $table_prefix . "support_messages sm ";
+	$sql .= " LEFT JOIN " . $table_prefix . "admins aby ON aby.admin_id=sm.admin_id_assign_by) ";
+	$sql .= " LEFT JOIN " . $table_prefix . "admins ato ON ato.admin_id=sm.admin_id_assign_to) ";
 	$sql .= " WHERE sm.support_id=" . $db->tosql($support_id, INTEGER);
 	$sql .= " ORDER BY sm.date_added DESC ";
 	$db->RecordsPerPage = 1;
 	$db->PageNumber = 1;
 	$db->query($sql);
 	if ($db->next_record()) {
+		$message_status_id = $db->f("support_status_id");
 		$admin_id_assign_by = $db->f("admin_id_assign_by");
+		$admin_assigned_by = $db->f("admin_assigned_by");
+		if ($admin_id_assign_by && !strlen($admin_assigned_by)) {
+			$admin_assigned_by = va_message("ID_MSG").": ".$admin_id_assign_by;
+		}
 		$admin_id_assign_to = $db->f("admin_id_assign_to");
+		$admin_assigned_to = $db->f("admin_assigned_to");
+		if ($admin_id_assign_to && !strlen($admin_assigned_to)) {
+			$admin_assigned_to = va_message("ID_MSG").": ".$admin_id_assign_to;
+		}
+		$mail_notices = json_decode($db->f("mail_notices"), true);
+		$forward_mail = json_decode($db->f("forward_mail"), true);
+		if (is_array($forward_mail) && !isset($mail_notices["forward"])) {
+			// convert to new format
+			$mail_notices["forward"] = $forward_mail;
+		}
+
 		$return_to_admin = $db->f("admin_name");
 		if ($admin_id_assign_by != $session_admin_id && $admin_id_assign_to == $session_admin_id) {
 			$reply_to_name = str_replace("{name}", $admin_assign_by, va_message("REPLY_TO_NAME_MSG"));
@@ -1761,7 +1888,55 @@
 			$t->set_var("return_to_admin", $return_to_admin);
 			$t->set_var("admin_id_return_to", $admin_id_assign_by);
 		}
+		// check status
+		if (isset($support_statuses[$message_status_id])) {
+			$status_data = $support_statuses[$message_status_id];
+			$status_type = strtoupper($status_data["status_type"]);
+			if ($status_type == "ADMIN_REPLY") {
+				$t->set_var("answered_by", htmlspecialchars($admin_assigned_by));
+				$t->sparse("answered_by_block", false);
+			} else if ($status_type == "ADMIN_ASSIGNMENT") {
+				$t->set_var("assigned_by", htmlspecialchars($admin_assigned_by));
+				$t->sparse("assigned_by_block", false);
+				$t->set_var("assigned_to", htmlspecialchars($admin_assigned_to));
+				$t->sparse("assigned_to_block", false);
+			} else if ($status_type == "FORWARD") {
+				if ($admin_assigned_by) {
+					$t->set_var("forwarded_by", htmlspecialchars($admin_assigned_by));
+					$t->sparse("forwarded_by_block", false);
+				}
+				if (isset($mail_notices["forward"])) {
+					$forwarded_to = $mail_notices["forward"]["to"];
+					if (isset($mail_notices["forward"]["cc"]) && $mail_notices["forward"]["cc"]) {
+						$forwarded_to .= ", ".$mail_notices["forward"]["cc"];
+					}
+					if (isset($mail_notices["forward"]["bcc"]) && $mail_notices["forward"]["bcc"]) {
+						$forwarded_to .= ", ".$mail_notices["forward"]["bcc"];
+					}
+					$t->set_var("forwarded_to", htmlspecialchars($forwarded_to));
+					$t->sparse("forwarded_to_block", false);
+					unset($mail_notices["forward"]);
+				}
+			}
+		}
+		if (is_array($mail_notices) && count($mail_notices)) {
+			$notice_sent_to = "";
+			foreach ($mail_notices as $mail_notice) {
+				if ($notice_sent_to) { $notice_sent_to .= ", "; }
+				$notice_sent_to .= $mail_notice["to"];
+				if (isset($mail_notices["forward"]["cc"]) && $mail_notices["forward"]["cc"]) {
+					$notice_sent_to .= ", ".$mail_notices["forward"]["cc"];
+				}
+				if (isset($mail_notices["forward"]["bcc"]) && $mail_notices["forward"]["bcc"]) {
+					$notice_sent_to .= ", ".$mail_notices["forward"]["bcc"];
+				}
+			}
+			$t->set_var("notice_sent_to", htmlspecialchars($notice_sent_to));
+			$t->sparse("notice_sent_to_block", false);
+		}
+
 	}
+
 
 	$tab = parse_tabs($tabs, $tab);
 
@@ -1778,4 +1953,3 @@
 	}
 	
 	$t->pparse("main");
-

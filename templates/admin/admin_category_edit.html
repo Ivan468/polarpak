@@ -52,11 +52,14 @@
 
 		if(filename != "" && filetype == "category")
 		{
-			document.record.image.value = siteUrl + "images/categories/" + filename;
-			document.record.image.focus();
+			document.record.image_small.value = siteUrl + "images/categories/" + filename;
+			document.record.image_small.focus();
+		} else if(filename != "" && filetype == "category_tiny") {
+			document.record.image_tiny.value = siteUrl + "images/categories/tiny/" + filename;
+			document.record.image_tiny.focus();
 		} else if(filename != "" && filetype == "category_small") {
-			document.record.image.value = siteUrl + "images/categories/small/" + filename;
-			document.record.image.focus();
+			document.record.image_small.value = siteUrl + "images/categories/small/" + filename;
+			document.record.image_small.focus();
 		} else if(filename != "" && filetype == "category_large") {
 			document.record.image_large.value = siteUrl + "images/categories/large/" + filename;
 			document.record.image_large.focus();
@@ -131,6 +134,10 @@ var list_fields_names = new Array('sites');
 <table width="100%" border="0" cellspacing="1" cellpadding="6">
 	<tr class="middle">
 		<td colspan="2">{ADMIN_GENERAL_MSG}</td>
+	</tr>
+	<tr  class="usual">
+		<th>{ID_MSG}</th>
+		<th>{category_id}</th>
 	</tr>
 	<tr class="usual">
 		<td><label for="is_showing">{SHOW_ON_SITE_FIELD}</label></td>
@@ -254,33 +261,6 @@ var list_fields_names = new Array('sites');
 		</td>
 	</tr>				
 	<tr class="middle">
-		<td colspan="2">{IMAGES_MSG}</td>
-	</tr>
-	<tr class="usual">
-		<td>{IMAGE_SMALL_MSG}</td>
-		<td>
-			<input class="field" type="text" name="image" value="{image}" size="80" maxlength="255">
-			&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'category_small')"><b>{UPLOAD_IMAGE_MSG}</b></a>
-			&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'category_small')"><b>{SELECT_IMAGE_MSG}</b></a>
-		</td>
-	</tr>
-	<tr class="usual">
-		<td>{IMAGE_SMALL_ALT_MSG}</td>
-		<td><input class="field" type="text" name="image_alt" value="{image_alt}" size="80" maxlength="255"></td>
-	</tr>
-	<tr class="usual">
-		<td>{IMAGE_LARGE_MSG}</td>
-		<td>
-			<input class="field" type="text" name="image_large" value="{image_large}" size="80" maxlength="255">
-			&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'category_large')"><b>{UPLOAD_IMAGE_MSG}</b></a>
-			&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'category_large')"><b>{SELECT_IMAGE_MSG}</b></a>
-		</td>
-	</tr>
-	<tr class="usual">
-		<td>{IMAGE_LARGE_ALT_MSG}</td>
-		<td><input class="field" type="text" name="image_large_alt" value="{image_large_alt}" size="80" maxlength="255"></td>
-	</tr>
-	<tr class="middle">
 		<td colspan="2">{PROD_APPEARANCE_MSG}</td>
 	</tr>
 	<tr class="usual">
@@ -300,6 +280,54 @@ var list_fields_names = new Array('sites');
 		</td>
 	</tr>
 </table>
+</div>
+
+<div id="images_data" class="tab-data {images_class}">
+	<table width="100%" border="0" cellspacing="1" cellpadding="6">
+	<tr class="middle">
+		<td colspan="2">{IMAGES_MSG}</td>
+	</tr>
+	<tr class="usual">
+		<td>{IMAGE_TINY_MSG}</td>
+		<td>
+			<input class="field" type="text" name="image_tiny" value="{image_tiny}" size="80" maxlength="255">
+			&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'category_tiny')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+			&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'category_tiny')"><b>{SELECT_IMAGE_MSG}</b></a>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td>{IMAGE_TINY_ALT_MSG}</td>
+		<td><input class="field" type="text" name="image_tiny_alt" value="{image_tiny_alt}" size="80" maxlength="255"></td>
+	</tr>
+	<tr class="usual">
+		<td>{IMAGE_SMALL_MSG}</td>
+		<td>
+			<input class="field" type="text" name="image_small" value="{image_small}" size="80" maxlength="255">
+			&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'category_small')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+			&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'category_small')"><b>{SELECT_IMAGE_MSG}</b></a>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td>{IMAGE_SMALL_ALT_MSG}</td>
+		<td><input class="field" type="text" name="image_small_alt" value="{image_small_alt}" size="80" maxlength="255"></td>
+	</tr>
+	<tr class="usual">
+		<td>{IMAGE_LARGE_MSG}</td>
+		<td>
+			<input class="field" type="text" name="image_large" value="{image_large}" size="80" maxlength="255">
+			&nbsp;<a href="javascript:openWindow('{admin_upload_href}', 'category_large')"><b>{UPLOAD_IMAGE_MSG}</b></a>
+			&nbsp;|&nbsp; <a href="javascript:openWindow('{admin_select_href}', 'category_large')"><b>{SELECT_IMAGE_MSG}</b></a>
+		</td>
+	</tr>
+	<tr class="usual">
+		<td>{IMAGE_LARGE_ALT_MSG}</td>
+		<td><input class="field" type="text" name="image_large_alt" value="{image_large_alt}" size="80" maxlength="255"></td>
+	</tr>
+	<tr class="middle">
+		<td>&nbsp;</td>
+		<td>{save}</td>
+	</tr>
+	</table>
 </div>
 
 

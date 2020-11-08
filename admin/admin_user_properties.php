@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_user_properties.php                                ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -60,7 +60,7 @@
 
 	// get properties first
 	$user_properties = array(); $property_ids = array();
-	$sql  = " SELECT upp.property_id, upp.property_name, ups.section_name, upp.property_show, upp.required, upp.control_type, ";
+	$sql  = " SELECT upp.property_id, upp.property_name, upp.property_order, ups.section_name, upp.property_show, upp.required, upp.control_type, ";
 	$sql .= " upp.user_types_all, upp.sites_all ";
 	$sql .= " FROM (" . $table_prefix . "user_profile_properties upp ";
 	$sql .= " LEFT JOIN " . $table_prefix . "user_profile_sections ups ON upp.section_id=ups.section_id) ";
@@ -110,6 +110,8 @@
 		foreach ($user_properties as $property_id => $data) {
 			$property_name = get_translation($data["property_name"]);
 			$section_name = get_translation($data["section_name"]);
+			$property_order = $data["property_order"];
+
 			$property_show = get_setting_value($property_show_values, $data["property_show"], "");
 			$control_type = $data["control_type"];
 			$control_name = isset($controls[$control_type]) ? $controls[$control_type] : $control_type;
@@ -132,6 +134,7 @@
 
 			$t->set_var("property_id",   $property_id);
 			$t->set_var("property_name", $property_name);
+			$t->set_var("property_order", $property_order);
 			$t->set_var("property_required_desc", $property_required_desc);
 			$t->set_var("property_required_class", $property_required_class);
 			$t->set_var("property_required_url", $arps->get_url());

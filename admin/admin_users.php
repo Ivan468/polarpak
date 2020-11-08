@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_users.php                                          ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -241,6 +241,7 @@
 				if (strlen($where)) { $where .= " AND "; }
 				$s_ne_sql = $db->tosql($sw[$si], TEXT, false);
 				$where .= " (u.email LIKE '%" . $s_ne_sql . "%'";
+				$where .= " OR u.delivery_email LIKE '%" . $s_ne_sql . "%'";
 				$where .= " OR u.login LIKE '%" . $s_ne_sql . "%'";
 				$where .= " OR u.name LIKE '%" . $s_ne_sql . "%'";
 				$where .= " OR u.first_name LIKE '%" . $s_ne_sql . "%'";
@@ -325,7 +326,7 @@
 
 	$users = array();
 
-	$sql  = " SELECT u.user_id, u.name, u.login, u.first_name, u.last_name, u.company_name, u.email, u.is_approved, ";
+	$sql  = " SELECT u.user_id, u.name, u.login, u.first_name, u.last_name, u.company_name, u.email, u.delivery_email, u.is_approved, ";
 	$sql .= " u.total_points, u.credit_balance, ut.type_name, ";
 	$sql .= " u.registration_date, u.registration_ip, u.modified_ip, u.last_visit_date, u.last_visit_ip ";
 	$sql .= " FROM (" . $from_b . $table_prefix . "users u LEFT JOIN " . $table_prefix . "user_types ut ON u.user_type_id=ut.type_id) ".$from;
@@ -344,6 +345,7 @@
 			$user_name = $db->f("company_name");
 		}
 		$email = $db->f("email");
+		$delivery_email = $db->f("delivery_email");
 		$user_type = get_translation($db->f("type_name"));
 		$is_approved = $db->f("is_approved");
 		$total_points = $db->f("total_points");
@@ -358,6 +360,7 @@
 			"login" =>           $login, 
 			"user_name" =>       $user_name, 
 			"email" =>           $email, 
+			"delivery_email" =>  $delivery_email, 
 			"user_type" =>       $user_type, 
 			"is_approved" =>     $is_approved, 
 			"total_points" =>    $total_points, 
@@ -391,16 +394,17 @@
 		$user_index = 0;
 		foreach ($users as $user_id => $user_info) {
 
-			$login=          $user_info["login"];           
-			$user_name=      $user_info["user_name"];       
-			$email=          $user_info["email"];           
-			$user_type=      $user_info["user_type"];       
-			$is_approved=    $user_info["is_approved"];     
-			$total_points=   $user_info["total_points"];    
-			$credit_balance= $user_info["credit_balance"];   
-			$registration_ip=$user_info["registration_ip"];  
-			$modified_ip=    $user_info["modified_ip"];     
-			$last_visit_ip=  $user_info["last_visit_ip"];   
+			$login =          $user_info["login"];           
+			$user_name =      $user_info["user_name"];       
+			$email =          $user_info["email"];           
+			$delivery_email = $user_info["delivery_email"];
+			$user_type =      $user_info["user_type"];       
+			$is_approved =    $user_info["is_approved"];     
+			$total_points =   $user_info["total_points"];    
+			$credit_balance = $user_info["credit_balance"];   
+			$registration_ip =$user_info["registration_ip"];  
+			$modified_ip =    $user_info["modified_ip"];     
+			$last_visit_ip =  $user_info["last_visit_ip"];   
 			$registration_date = $user_info["registration_date"];   
 			$last_visit_date   = $user_info["last_visit_date"];   
 
@@ -436,7 +440,15 @@
 			$t->set_var("user_id", $user_id);
 			$t->set_var("name", htmlspecialchars($user_name));
 			$t->set_var("login", htmlspecialchars($login));
-			$t->set_var("email", $email);
+			if ($email) {
+				$t->set_var("email", htmlspecialchars($email));	
+				$t->sparse("email_block", false);	
+			} else if ($delivery_email) {
+				$t->set_var("email", htmlspecialchars($delivery_email));	
+				$t->sparse("email_block", false);	
+			} else {
+				$t->set_var("email_block", "");	
+			}
 			$t->set_var("user_type", $user_type);
 			$t->set_var("is_approved", $is_approved);
 			$t->set_var("total_points", number_format(doubleval($total_points), $points_decimals));

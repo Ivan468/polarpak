@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_credit_card_info.php                               ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -63,50 +63,110 @@
 	$r->add_textbox("intro_text", TEXT);
 
 	// set up html form parameters
-	$r->add_checkbox("show_cc_name", INTEGER);
-	$r->add_checkbox("show_cc_first_name", INTEGER);
-	$r->add_checkbox("show_cc_last_name", INTEGER);
-	$r->add_checkbox("show_cc_number", INTEGER);
-	$r->add_checkbox("show_cc_start_date", INTEGER);
-	$r->add_checkbox("show_cc_expiry_date", INTEGER);
-	$r->add_checkbox("show_cc_type", INTEGER);
-	$r->add_checkbox("show_cc_issue_number", INTEGER);
-	$r->add_checkbox("show_cc_security_code", INTEGER);
-	$r->add_checkbox("show_pay_without_cc", INTEGER);
+	$r->add_checkbox("show_payment_full_name", INTEGER);
+	$r->add_checkbox("show_payment_first_name", INTEGER);
+	$r->add_checkbox("show_payment_middle_name", INTEGER);
+	$r->add_checkbox("show_payment_last_name", INTEGER);
+	$r->add_checkbox("show_payment_company_name", INTEGER);
+	$r->add_checkbox("show_payment_email", INTEGER);
+	$r->add_checkbox("show_payment_address1", INTEGER);
+	$r->add_checkbox("show_payment_address2", INTEGER);
+	$r->add_checkbox("show_payment_address3", INTEGER);
+	$r->add_checkbox("show_payment_city", INTEGER);
+	$r->add_checkbox("show_payment_province", INTEGER);
+	$r->add_checkbox("show_payment_country_id", INTEGER);
+	$r->add_checkbox("show_payment_state_id", INTEGER);
+	$r->add_checkbox("show_payment_postal_code", INTEGER);
+	$r->add_checkbox("show_payment_phone", INTEGER);
+	$r->add_checkbox("show_payment_daytime_phone", INTEGER);
+	$r->add_checkbox("show_payment_evening_phone", INTEGER);
+	$r->add_checkbox("show_payment_cell_phone", INTEGER);
+
+	$r->add_checkbox("show_payment_card_number", INTEGER);
+	$r->add_checkbox("show_payment_card_start_date", INTEGER);
+	$r->add_checkbox("show_payment_card_expiry_date", INTEGER);
+	$r->add_checkbox("show_payment_card_type_id", INTEGER);
+	$r->add_checkbox("show_payment_card_issue_number", INTEGER);
+	$r->add_checkbox("show_payment_card_security_code", INTEGER);
    
-	$r->add_checkbox("cc_name_required", INTEGER);
-	$r->add_checkbox("cc_first_name_required", INTEGER);
-	$r->add_checkbox("cc_last_name_required", INTEGER);
-	$r->add_checkbox("cc_number_required", INTEGER);
-	$r->add_checkbox("cc_start_date_required", INTEGER);
-	$r->add_checkbox("cc_expiry_date_required", INTEGER);
-	$r->add_checkbox("cc_type_required", INTEGER);
-	$r->add_checkbox("cc_issue_number_required", INTEGER);
-	$r->add_checkbox("cc_security_code_required", INTEGER);
-	$r->add_checkbox("pay_without_cc_required", INTEGER);
+	$r->add_checkbox("payment_full_name_required", INTEGER);
+	$r->add_checkbox("payment_first_name_required", INTEGER);
+	$r->add_checkbox("payment_middle_name_required", INTEGER);
+	$r->add_checkbox("payment_last_name_required", INTEGER);
+	$r->add_checkbox("payment_company_name_required", INTEGER);
+	$r->add_checkbox("payment_email_required", INTEGER);
+	$r->add_checkbox("payment_address1_required", INTEGER);
+	$r->add_checkbox("payment_address2_required", INTEGER);
+	$r->add_checkbox("payment_address3_required", INTEGER);
+	$r->add_checkbox("payment_city_required", INTEGER);
+	$r->add_checkbox("payment_province_required", INTEGER);
+	$r->add_checkbox("payment_country_id_required", INTEGER);
+	$r->add_checkbox("payment_state_id_required", INTEGER);
+	$r->add_checkbox("payment_postal_code_required", INTEGER);
+	$r->add_checkbox("payment_phone_required", INTEGER);
+	$r->add_checkbox("payment_daytime_phone_required", INTEGER);
+	$r->add_checkbox("payment_evening_phone_required", INTEGER);
+	$r->add_checkbox("payment_cell_phone_required", INTEGER);
+
+	$r->add_checkbox("payment_card_number_required", INTEGER);
+	$r->add_checkbox("payment_card_start_date_required", INTEGER);
+	$r->add_checkbox("payment_card_expiry_date_required", INTEGER);
+	$r->add_checkbox("payment_card_type_id_required", INTEGER);
+	$r->add_checkbox("payment_card_issue_number_required", INTEGER);
+	$r->add_checkbox("payment_card_security_code_required", INTEGER);
 	
 	// add checkboxes for Call Center
-	$r->add_checkbox("call_center_show_cc_name", INTEGER);
-	$r->add_checkbox("call_center_show_cc_first_name", INTEGER);
-	$r->add_checkbox("call_center_show_cc_last_name", INTEGER);
-	$r->add_checkbox("call_center_show_cc_number", INTEGER);
-	$r->add_checkbox("call_center_show_cc_start_date", INTEGER);
-	$r->add_checkbox("call_center_show_cc_expiry_date", INTEGER);
-	$r->add_checkbox("call_center_show_cc_type", INTEGER);
-	$r->add_checkbox("call_center_show_cc_issue_number", INTEGER);
-	$r->add_checkbox("call_center_show_cc_security_code", INTEGER);
-	$r->add_checkbox("call_center_show_pay_without_cc", INTEGER);
+	$r->add_checkbox("call_center_show_payment_full_name", INTEGER);
+	$r->add_checkbox("call_center_show_payment_first_name", INTEGER);
+	$r->add_checkbox("call_center_show_payment_middle_name", INTEGER);
+	$r->add_checkbox("call_center_show_payment_last_name", INTEGER);
+	$r->add_checkbox("call_center_show_payment_company_name", INTEGER);
+	$r->add_checkbox("call_center_show_payment_email", INTEGER);
+	$r->add_checkbox("call_center_show_payment_address1", INTEGER);
+	$r->add_checkbox("call_center_show_payment_address2", INTEGER);
+	$r->add_checkbox("call_center_show_payment_address3", INTEGER);
+	$r->add_checkbox("call_center_show_payment_city", INTEGER);
+	$r->add_checkbox("call_center_show_payment_province", INTEGER);
+	$r->add_checkbox("call_center_show_payment_country_id", INTEGER);
+	$r->add_checkbox("call_center_show_payment_state_id", INTEGER);
+	$r->add_checkbox("call_center_show_payment_postal_code", INTEGER);
+	$r->add_checkbox("call_center_show_payment_phone", INTEGER);
+	$r->add_checkbox("call_center_show_payment_daytime_phone", INTEGER);
+	$r->add_checkbox("call_center_show_payment_evening_phone", INTEGER);
+	$r->add_checkbox("call_center_show_payment_cell_phone", INTEGER);
+
+	$r->add_checkbox("call_center_show_payment_card_number", INTEGER);
+	$r->add_checkbox("call_center_show_payment_card_start_date", INTEGER);
+	$r->add_checkbox("call_center_show_payment_card_expiry_date", INTEGER);
+	$r->add_checkbox("call_center_show_payment_card_type_id", INTEGER);
+	$r->add_checkbox("call_center_show_payment_card_issue_number", INTEGER);
+	$r->add_checkbox("call_center_show_payment_card_security_code", INTEGER);
    
-	$r->add_checkbox("call_center_cc_name_required", INTEGER);
-	$r->add_checkbox("call_center_cc_first_name_required", INTEGER);
-	$r->add_checkbox("call_center_cc_last_name_required", INTEGER);
-	$r->add_checkbox("call_center_cc_number_required", INTEGER);
-	$r->add_checkbox("call_center_cc_start_date_required", INTEGER);
-	$r->add_checkbox("call_center_cc_expiry_date_required", INTEGER);
-	$r->add_checkbox("call_center_cc_type_required", INTEGER);
-	$r->add_checkbox("call_center_cc_issue_number_required", INTEGER);
-	$r->add_checkbox("call_center_cc_security_code_required", INTEGER);
-	$r->add_checkbox("call_center_pay_without_cc_required", INTEGER);
+	$r->add_checkbox("call_center_payment_full_name_required", INTEGER);
+	$r->add_checkbox("call_center_payment_first_name_required", INTEGER);
+	$r->add_checkbox("call_center_payment_middle_name_required", INTEGER);
+	$r->add_checkbox("call_center_payment_last_name_required", INTEGER);
+	$r->add_checkbox("call_center_payment_company_name_required", INTEGER);
+	$r->add_checkbox("call_center_payment_email_required", INTEGER);
+	$r->add_checkbox("call_center_payment_address1_required", INTEGER);
+	$r->add_checkbox("call_center_payment_address2_required", INTEGER);
+	$r->add_checkbox("call_center_payment_address3_required", INTEGER);
+	$r->add_checkbox("call_center_payment_city_required", INTEGER);
+	$r->add_checkbox("call_center_payment_province_required", INTEGER);
+	$r->add_checkbox("call_center_payment_country_id_required", INTEGER);
+	$r->add_checkbox("call_center_payment_state_id_required", INTEGER);
+	$r->add_checkbox("call_center_payment_postal_code_required", INTEGER);
+	$r->add_checkbox("call_center_payment_phone_required", INTEGER);
+	$r->add_checkbox("call_center_payment_daytime_phone_required", INTEGER);
+	$r->add_checkbox("call_center_payment_evening_phone_required", INTEGER);
+	$r->add_checkbox("call_center_payment_cell_phone_required", INTEGER);
+
+	$r->add_checkbox("call_center_payment_card_number_required", INTEGER);
+	$r->add_checkbox("call_center_payment_card_start_date_required", INTEGER);
+	$r->add_checkbox("call_center_payment_card_expiry_date_required", INTEGER);
+	$r->add_checkbox("call_center_payment_card_type_id_required", INTEGER);
+	$r->add_checkbox("call_center_payment_card_issue_number_required", INTEGER);
+	$r->add_checkbox("call_center_payment_card_security_code_required", INTEGER);
 
 	$r->add_textbox("cc_allowed", TEXT);
 	$r->add_textbox("cc_forbidden", TEXT);

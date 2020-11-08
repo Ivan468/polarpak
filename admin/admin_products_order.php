@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_products_order.php                                 ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -87,6 +87,7 @@
 	$sql .= " FROM (" . $table_prefix . "items i ";
 	$sql .= " LEFT JOIN " . $table_prefix . "items_categories ic ON i.item_id=ic.item_id ) ";
 	$sql .= " WHERE ic.category_id = " . $db->tosql($parent_category_id, INTEGER);
+	$sql .= " AND (i.parent_item_id IS NULL OR i.parent_item_id=0) ";
 	$sql .= " ORDER BY ic.item_order, i.item_order, i.item_id DESC ";
 	$db->query($sql);
 	while($db->next_record())

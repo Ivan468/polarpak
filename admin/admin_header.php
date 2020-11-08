@@ -2,15 +2,22 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_header.php                                         ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
 */
 
 
+	// set global js settings if they are available
+	if (isset($js_settings) && is_array($js_settings) && count($js_settings) > 0) {
+		$script_var = "var vaSettings = ".json_encode($js_settings).";";
+		$script_tag = "<script>".$script_var."</script>";
+		$t->set_block("head_tag", $script_tag);
+		$t->parse_to("head_tag", "head_tags", true);
+	}
 	// set javascript first
 	set_script_tag("../js/ajax.js", true, "admin_header");
 	set_script_tag("../js/admin.js", true, "admin_header");

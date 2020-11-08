@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_cms_block_settings.php                             ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -202,6 +202,8 @@
 	$required_message_js = str_replace("\"", "\\\"", $required_message_js);
 	$t->set_var("required_message_js", $required_message_js);
 	$t->set_var("current_date", va_date("YYYY-MM-DD, H:mm, WWWW", $current_date));
+	// set important init script
+	set_script_tag("../js/init.js", false, "hidden_blocks");
 
 	$tag_name = get_setting_value($block_params, "tag_name", "");
 	$layout_type = get_setting_value($block_params, "layout_type", "");
@@ -633,4 +635,3 @@
 
 	$t->pparse("main");
 
-?>

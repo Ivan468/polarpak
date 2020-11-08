@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  shopping_functions.php                                   ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -26,6 +26,11 @@
 		$cart_item_id = ""; // current active cart item and related id in va_saved_items table
 		$wish_item_id = ""; // id from va_saved_items table for previously saved product
 		$order_item_id = ""; // id from va_orders_items table for previously saved order 
+
+		$parent_item_id = "";
+		$parent_item_name = "";
+		$cart_item_name = ""; // product name which will be shown in the cart and saved in the order
+		$cart_subitem_name = get_setting_value($settings, "cart_subitem_name");
 
 		if ($type == "cart") {
 			$cart_item_id = $db_item_id;
@@ -104,7 +109,7 @@
 		}
 
 		if (!$is_error) {
-			$sql  = " SELECT i.item_type_id,i.item_name,i.".$price_field.",i.is_price_edit,i.is_sales,i.".$sales_field.",i.buying_price,";
+			$sql  = " SELECT i.parent_item_id, i.item_type_id,i.item_name,i.cart_item_name,i.".$price_field.",i.is_price_edit,i.is_sales,i.".$sales_field.",i.buying_price,";
 			$sql .= " i.tax_id,i.tax_free,i.stock_level, i.min_quantity,i.max_quantity,i.quantity_increment, ";
 			$sql .= " i.use_stock_level,i.hide_out_of_stock,i.disable_out_of_stock, ";
 			$sql .= " it.is_user_voucher ";
@@ -113,9 +118,11 @@
 			$sql .= " WHERE i.item_id=" . $db->tosql($sc_item_id, INTEGER);
 			$db->query($sql);
 			if ($db->next_record()) {
+				$parent_item_id = $db->f("parent_item_id");
 				$item_type_id = $db->f("item_type_id");
 				$is_user_voucher = $db->f("is_user_voucher");
 				$item_name = $db->f("item_name");
+				$cart_item_name = $db->f("cart_item_name");
 				$stock_level = $db->f("stock_level");
 				$use_stock_level = $db->f("use_stock_level");
 				$hide_out_of_stock = $db->f("hide_out_of_stock");
@@ -141,7 +148,7 @@
 					$price = $sc_price;
 				} else {
 					$coupons_ids = ""; $coupons_discount = ""; $coupons_applied = array();
-					get_sales_price($price, $is_sales, $sales_price, $sc_item_id, $item_type_id, $coupons_ids, $coupons_discount, $coupons_applied);
+					get_sales_price($price, $is_sales, $sales_price, $sc_item_id, $item_type_id, "", "", $coupons_ids, $coupons_discount, $coupons_applied);
 					$price = calculate_price($price, $is_sales, $sales_price);
 				}
 				$properties_buying = 0;
@@ -182,7 +189,7 @@
 				"ITEM_TYPE_ID"	=> 0,
 				"ITEM_NAME" => $sc_item_name,
 				"ERROR" => PROD_NOT_AVAILABLE_ERROR."<br>",
-				"PROPERTIES"	=> "", "PROPERTIES_PRICE"	=> 0, "PROPERTIES_PERCENTAGE"	=> 0,
+				"PROPERTIES"	=> "", "PROPERTIES_INFO" => "", "PROPERTIES_PRICE"	=> 0, "PROPERTIES_PERCENTAGE"	=> 0,
 				"PROPERTIES_BUYING"	=> 0, "PROPERTIES_DISCOUNT" => 0, 
 				"PROPERTIES_EXISTS" => 0, "PROPERTIES_REQUIRED" => 0, "PROPERTIES_MESSAGE" => "",
 				"COMPONENTS" => "",
@@ -201,6 +208,27 @@
 				return false;
 			}
 		}
+
+		// check parent name and product name which will be shown in the cart
+		if ($parent_item_id) {
+			$sql  = " SELECT i.item_type_id,i.item_name,i.".$price_field.",i.is_price_edit,i.is_sales,i.".$sales_field.",i.buying_price,";
+			$sql .= " i.tax_id,i.tax_free,i.stock_level, i.min_quantity,i.max_quantity,i.quantity_increment, ";
+			$sql .= " i.use_stock_level,i.hide_out_of_stock,i.disable_out_of_stock ";
+			$sql .= " FROM " . $table_prefix . "items i ";
+			$sql .= " WHERE i.item_id=" . $db->tosql($parent_item_id, INTEGER);
+			$db->query($sql);
+			if ($db->next_record()) {
+				$parent_item_name = $db->f("item_name");
+				if (!strlen($cart_item_name) && $cart_subitem_name) {	
+					$search_tags = array("{parent_name}", "{parent_item_name}", "{item_name}", "{product_name}", "{sub_name}", "{subitem_name}", "{sub_item_name}", "{subproduct_name}", "{sub_product_name}");
+					$replace_values = array($parent_item_name, $parent_item_name, $item_name, $item_name, $item_name, $item_name, $item_name, $item_name, $item_name);
+					$cart_item_name = str_replace($search_tags, $replace_values, $cart_subitem_name);
+				}
+			} else {	
+				$parent_item_id = "";
+			}
+		}
+		if (strlen($cart_item_name)) { $item_name = $cart_item_name; }
 
 		// calculate summary stock levels for products and options available in the cart
 		$stock_levels = array();
@@ -371,7 +399,7 @@
 		if ($cart == "QTY") {
 			$properties = $shopping_cart[$sc_index]["PROPERTIES"];
 			if (!is_array($properties)) { $properties = array(); }
-			$product_properties = $shopping_cart[$sc_index]["PROPERTIES_INFO"];
+			$product_properties = isset($shopping_cart[$sc_index]["PROPERTIES_INFO"]) ? $shopping_cart[$sc_index]["PROPERTIES_INFO"] : array();
 			if (!is_array($product_properties)) { $product_properties = array(); }
 			$components = $shopping_cart[$sc_index]["COMPONENTS"];
 		} else {
@@ -755,7 +783,7 @@
 				if ($item["ITEM_ID"] == $sc_item_id) {
 					$item_properties = $item["PROPERTIES"];
 					if (!is_array($item_properties)) { $item_properties = array(); }
-					$item_properties_info = $item["PROPERTIES_INFO"];
+					$item_properties_info = isset($item["PROPERTIES_INFO"]) ? $item["PROPERTIES_INFO"] : array();
 					if (!is_array($item_properties_info)) { $item_properties_info = array(); }
 					if ($item_properties_info == $product_properties) {
 						// compare if new product and product in the cart has the same options values
@@ -847,7 +875,7 @@
 							$sub_buying = $db->f("buying_price");
 							$sub_sales = $db->f($sales_field);
 							$coupons_ids = ""; $coupons_discount = ""; $coupons_applied = array();
-							get_sales_price($sub_price, $sub_is_sales, $sub_sales, $sub_item_id, $sub_item_type_id, $coupons_ids, $coupons_discount, $coupons_applied);
+							get_sales_price($sub_price, $sub_is_sales, $sub_sales, $sub_item_id, $sub_item_type_id, "", "", $coupons_ids, $coupons_discount, $coupons_applied);
 							if ($sub_is_sales && $sub_sales > 0) {
 								$sub_price = $sub_sales;
 							}
@@ -912,7 +940,7 @@
 				$options_step = 1; // now only one step available
 				$all_properties = $shopping_cart[$update_cart_id]["PROPERTIES"];
 				if (!is_array($all_properties)) { $all_properties = array(); }
-				$all_properties_info = $shopping_cart[$update_cart_id]["PROPERTIES_INFO"];
+				$all_properties_info = isset($shopping_cart[$update_cart_id]["PROPERTIES_INFO"]) ? $shopping_cart[$update_cart_id]["PROPERTIES_INFO"] : array();
 				if (!is_array($all_properties_info)) { $all_properties_info = array(); }
 				if (count($all_properties)) {
 					foreach ($all_properties_info as $property_id => $property_info) {
@@ -982,11 +1010,12 @@
 				// prepare cart item array and save to the session
 				$item = array (
 					"ITEM_ID"	=> intval($sc_item_id),
-					"ITEM_TYPE_ID"	=> $item_type_id,
-					"CART_ITEM_ID"	=> $cart_item_id,
-					"WISH_ITEM_ID"	=> $wish_item_id,
-					"ORDER_ITEM_ID"	=> $order_item_id,
+					"ITEM_TYPE_ID"  => $item_type_id,
+					"CART_ITEM_ID"  => $cart_item_id,
+					"WISH_ITEM_ID"  => $wish_item_id,
+					"ORDER_ITEM_ID" => $order_item_id,
 					"SAVED_TYPE_ID" => get_param("saved_type_id"),
+					"PARENT_ITEM_ID"=> $parent_item_id,
 					"ITEM_NAME" => $item_name,
 					"STATUS" => $item_status,
 					"ERROR" => $sc_errors,
@@ -1016,9 +1045,6 @@
 				$shopping_cart[] = $item;
 				end($shopping_cart);
 				$new_cart_id = key($shopping_cart);
-				if ($cart == "WISHLIST") {
-					//add_to_saved_items($shopping_cart, $new_cart_id, 0, true);
-				}
 			}
 			$item_added = true;
 		}
@@ -1120,7 +1146,10 @@
 			}
 			if ($cart_id) {
 				// after login re-check user country data
-				user_country($country_id, $country_code);
+				$country_settings = user_settings();
+				$country_id = get_setting_value($country_settings, "country_id");
+				$country_code = get_setting_value($country_settings, "country_code");
+
 				// set user_id, session and date it was updated for cart
 				$db_cart_id = $cart_id;
 				set_session("db_cart_id", $cart_id);
@@ -1139,7 +1168,9 @@
 			if (!$db_cart_id) {
 				// check ip and country data for user
 				$user_ip = get_ip();
-				user_country($country_id, $country_code);
+				$country_settings = user_settings();
+				$country_id = get_setting_value($country_settings, "country_id");
+				$country_code = get_setting_value($country_settings, "country_code");
 
 				$sql = " INSERT INTO ".$table_prefix."saved_carts (";
 				$sql .= "site_id, user_id, cart_type, cart_name, cart_total, cart_added, cart_updated, country_id, country_code, user_ip) VALUES (";
@@ -1275,7 +1306,7 @@
 		if (strlen($db_cart_id) && is_array($saving_items) && count($saving_items) > 0) {
 			foreach ($saving_items as $si_id => $saving_item) {
 				$db_cart_item_id = get_setting_value($saving_item, "CART_ITEM_ID");
-				$saved_type_id = $saving_item["SAVED_TYPE_ID"]; // saved type for wishlist
+				$saved_type_id = isset($saving_item["SAVED_TYPE_ID"]) ? $saving_item["SAVED_TYPE_ID"] : ""; // saved type for wishlist
 				$price = $saving_item["PRICE"] + $saving_item["PROPERTIES_PRICE"] + $saving_item["COMPONENTS_PRICE"];
 				$quantity = $saving_item["QUANTITY"];
 				// begin: save shopping cart item in database
@@ -1544,7 +1575,7 @@
 		}
 	}
 
-	function set_quantity_control($quantity_limit, $stock_level, $control_type, $form_name, $control_index = "", $zero_quantity = false, $min_quantity = 1, $max_quantity = "", $quantity_increment = 1)
+	function set_quantity_control($quantity_limit, $stock_level, $control_type, $form_name, $control_index = "", $zero_quantity = false, $min_quantity = 1, $max_quantity = "", $quantity_increment = 1, $control_prefix = "", $selected_qty = "")
 	{
 		global $settings, $t;
 		$quantity_control = "";
@@ -1569,7 +1600,11 @@
 					$quantity_control .= "<option value=\"0\">0</option>";
 				}
 				for ($i = $min_quantity; $i <= $show_max_quantity; $i = $i + $quantity_increment) {
-					$quantity_control .= "<option value=\"" . $i ."\">" . $i . "</option>";
+					$selected = "";
+					if ($selected_qty && $selected_qty == $i) {
+						$selected = " selected ";
+					}
+					$quantity_control .= "<option ".$selected." value=\"" . $i ."\">" . $i . "</option>";
 				}
 				$quantity_control .= "</select>";
 			} elseif (strtoupper($control_type) == "TEXTBOX") {
@@ -1589,12 +1624,12 @@
 			$hidden_control = "<input type=\"hidden\" name=\"".$quantity_name."\" value=\"0\" />";
 		}
 		$t->set_var("quantity_name", $quantity_name);
-		if ($quantity_control) {
+		if (strlen($quantity_control)) {
 			$t->set_var("quantity_control", $quantity_control);
-			$t->sparse("quantity", false);
+			$t->sparse($control_prefix."quantity", false);
 		} else {
 			$t->set_var("quantity_control", $hidden_control);
-			$t->set_var("quantity", $hidden_control);
+			$t->set_var($control_prefix."quantity", "");
 		}
 	}
 
@@ -1660,7 +1695,7 @@
 		return $price;
 	}
 
-	function get_sales_price(&$price, &$is_sales, &$sales_price, $item_id, $item_type_id, &$coupons_ids, &$coupons_discount, &$coupons_applied, $sales_type = "price")
+	function get_sales_price(&$price, &$is_sales, &$sales_price, $item_id, $item_type_id, $parent_item_id, $parent_type_id, &$coupons_ids, &$coupons_discount, &$coupons_applied, $sales_type = "price")
 	{
 		global $db, $dbs, $table_prefix, $site_id, $sales_coupons;
 		$db_rsi = $db->set_rsi("s");
@@ -1815,7 +1850,7 @@
 					$is_sales = $db->f("is_sales");
 					$sales_price = $db->f($sales_field);
 					$coupons_ids = ""; $coupons_discount = ""; $coupons_applied = array();
-					get_sales_price($price, $is_sales, $sales_price, $item_id, $item_type_id, $coupons_ids, $coupons_discount, $coupons_applied);
+					get_sales_price($price, $is_sales, $sales_price, $item_id, $item_type_id, "", "", $coupons_ids, $coupons_discount, $coupons_applied);
 					$product_price = calculate_price($price, $is_sales, $sales_price);
 				} else {
 					$product_price = isset($item["PRICE"]) ? $item["PRICE"] : "";
@@ -1889,7 +1924,7 @@
 			$base_price = ""; $user_price = ""; $user_price_action = "";
 			if (!strlen($component_price)) {
 				$coupons_ids = ""; $coupons_discount = ""; $coupons_applied = array();
-				get_sales_price($sub_price, $sub_is_sales, $sub_sales, $sub_item_id, $sub_item_type_id, $coupons_ids, $coupons_discount, $coupons_applied);
+				get_sales_price($sub_price, $sub_is_sales, $sub_sales, $sub_item_id, $sub_item_type_id, "", "", $coupons_ids, $coupons_discount, $coupons_applied);
 				if ($sub_is_sales && $sub_sales > 0) {
 					$base_price = $sub_sales;
 				} else {
@@ -1969,6 +2004,7 @@
 
 	function get_option_price($additional_price, $buying_price, $properties_percent, $discount_applicable, $discount_type, $discount_amount)
 	{
+		$additional_price = doubleval($additional_price);
 		if ($properties_percent) {
 			$additional_price -= round((doubleval($additional_price) * doubleval($properties_percent)) / 100, 2);
 		}
@@ -1980,7 +2016,7 @@
 			}
 		}
 
-		return doubleval($additional_price);
+		return $additional_price;
 	}
 
 	function get_stock_levels(&$items_stock, &$options_stock)
@@ -2256,6 +2292,7 @@
 	{
 		global $db, $table_prefix;
 
+		$db->set_rsi(0);
 		// delete all properties
 		$properties_ids = "";
 		$sql = " SELECT property_id FROM " . $table_prefix ."items_properties WHERE item_id IN (" . $db->tosql($items_ids, INTEGERS_LIST) . ")";
@@ -2305,6 +2342,17 @@
 		$db->query("DELETE FROM " . $table_prefix . "items_serials WHERE item_id IN (" . $db->tosql($items_ids, INTEGERS_LIST) . ")");
 		$db->query("DELETE FROM " . $table_prefix . "items_prices WHERE item_id IN (" . $db->tosql($items_ids, INTEGERS_LIST) . ")");
 		$db->query("DELETE FROM " . $table_prefix . "keywords_items WHERE item_id IN (" . $db->tosql($items_ids, INTEGERS_LIST) . ")");
+
+		// check if there are any sub products available for deleted parent products which should be deleted as well
+		$sub_ids = array();
+		$sql = " SELECT item_id FROM " . $table_prefix ."items WHERE parent_item_id IN (" . $db->tosql($items_ids, INTEGERS_LIST) . ")";
+		$db->query($sql);
+		while ($db->next_record()) {
+			$sub_ids[] = $db->f("item_id");
+		}
+		if (count($sub_ids)) {
+			delete_products($sub_ids);
+		}
 	}
 
 	function delete_categories($categories_ids)
@@ -2320,18 +2368,18 @@
 			$category_id = $db->f("category_id");
 			$category_path = $db->f("category_path");
 			if (!in_array($category_id, $categories)) {
+				$db->set_rsi("s");
 				$categories[] = $category_id;
 				$sql  = " SELECT category_id FROM " . $table_prefix . "categories ";
 				$sql .= " WHERE category_path LIKE '" . $db->tosql($category_path.$category_id.",", TEXT, false) . "%'";
-				$db->query($sql, "s");
+				$db->query($sql);
 				while($db->next_record()) {
 					$categories[] = $db->f("category_id");
 				}
-				$db->set_rsi(0);
 			}
+			$db->set_rsi(0);
 		}
 
-		$db->set_rsi(0);
 		if (is_array($categories) && sizeof($categories) > 0) {
 			$categories_ids = join(",", $categories);
 			$db->query("DELETE FROM " . $table_prefix . "categories WHERE category_id IN (" . $db->tosql($categories_ids, INTEGERS_LIST) . ")");
@@ -2342,15 +2390,19 @@
 			$db->query("DELETE FROM " . $table_prefix . "categories_columns WHERE category_id IN (" . $db->tosql($categories_ids, INTEGERS_LIST) . ")");
 		}
 
-		// delete products that are not assigned to any category 
-		$sql  = " SELECT i.item_id FROM (" . $table_prefix ."items i ";
+		// delete products that are not assigned to any category or parent product
+		$db->set_rsi("s");
+		$sql  = " SELECT i.item_id FROM ((" . $table_prefix ."items i ";
 		$sql .= " LEFT JOIN " . $table_prefix . "items_categories ic ON i.item_id=ic.item_id) ";
-		$sql .= " WHERE ic.category_id IS NULL ";
+		$sql .= " LEFT JOIN " . $table_prefix . "items pi ON i.parent_item_id=pi.item_id) ";
+		$sql .= " WHERE ic.category_id IS NULL AND pi.item_id IS NULL ";
 		$db->query($sql);
 		while ($db->next_record()) {
 			$item_id = $db->f("item_id");
 			delete_products($item_id);
+			$db->set_rsi("s");
 		}
+		$db->set_rsi(0);
 	}
 
 	function check_coupons($auto_apply = true)
@@ -3195,7 +3247,7 @@
 		return $product_params;
 	}
 
-	function set_product_params($product_params)
+	function set_product_params($product_params, $tag_name = "product_params")
 	{
 		global $t, $currency, $settings;
 		$params = "";
@@ -3204,7 +3256,7 @@
 			$param_value = prepare_js_value($param_value);
 			$params .= $param_name."=".$param_value;
 		}
-		$t->set_var("product_params", $params);
+		$t->set_var($tag_name, $params);
 	}
 
 	function calculate_control_price($values_ids, $values_text, $property_price_type, $property_price_amount, $free_price_type, $free_price_amount)

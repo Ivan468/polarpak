@@ -305,7 +305,12 @@
 <tr class="{row_style}" id="tr_user_{user_index}">
 	<td align="center"><input type="checkbox" name="id_{user_index}" value="{user_id}" onClick="checkUsers();"></td>
 	<td align="center">{user_id}</td>
-	<td><a href="{admin_user_edit_url}">{name}</a> &lt;<a href="mailto:{email}" style="font-style: italic;">{email}</a>&gt;</td>
+	<td>
+		<a href="{admin_user_edit_url}">{name}</a> 
+		<!-- begin email_block -->
+		&lt;<a href="mailto:{email}" style="font-style: italic;">{email}</a>&gt;
+		<!-- end email_block -->
+	</td>
 	<td align="center"><a href="{admin_user_change_type_url}">{user_type}</a></td>
 	<td align="center">{is_approved}</td>
 	<td align="center">{orders_amount}</td>

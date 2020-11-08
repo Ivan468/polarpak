@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  order_items_properties.php                               ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -103,7 +103,6 @@
 					"control_type" => $db->f("control_type"),
 					"control_style" => $db->f("control_style"),
 					"required" => $db->f("required"),
-					"use_on_checkout" => $db->f("use_on_checkout"),
 					"start_html" => $db->f("start_html"),
 					"middle_html" => $db->f("middle_html"),
 					"before_control_html" => $db->f("before_control_html"),
@@ -145,7 +144,7 @@
 				$parent_property_id = $option["parent_property_id"];
 				$parent_value_id = $option["parent_value_id"];
 				$property_price_type = $option["property_price_type"];
-				$property_price = $option["property_price"];
+				$property_price = doubleval($option["property_price"]);
 				$free_price_type = $option["free_price_type"];
 				$free_price_amount = $option["free_price_amount"];
 				$percentage_price_type = $option["percentage_price_type"];
@@ -155,7 +154,6 @@
 				$control_type = $option["control_type"];
 				$control_style = $option["control_style"];
 				$property_required = $option["required"];
-				$use_on_checkout = $option["use_on_checkout"];
 				$start_html = $option["start_html"];
 				$middle_html = $option["middle_html"];
 				$before_control_html = $option["before_control_html"];
@@ -262,7 +260,7 @@
 						$property_width = $property_values["width"];
 						$property_height = $property_values["height"];
 						property_sizes($property_id, $property_width, $property_height, $size_price, $min_width, $max_width, $min_height, $max_height, $prices);
-						$property_price += $size_price;
+						$property_price += doubleval($size_price);
 						$pr_values["width"] = $property_values["width"];
 						$pr_values["height"] = $property_values["height"];
 					} else {

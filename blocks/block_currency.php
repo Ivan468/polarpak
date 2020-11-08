@@ -1,15 +1,29 @@
 <?php
 
-	$default_title = CURRENCY_TITLE;
+	global $current_page;
+	$default_title = va_message("CURRENCY_TITLE");
 	
 	$friendly_urls = get_setting_value($settings, "friendly_urls", 0);
 	$friendly_extension = get_setting_value($settings, "friendly_extension", "");
 
 	$currency_selection = get_setting_value($vars, "currency_selection", 1);
-	if ($currency_selection != "bar" && $currency_selection != "header") {
-		$html_template = get_setting_value($block, "html_template", "block_currency.html"); 
-	  $t->set_file("block_body", $html_template);
+	$tag_name = get_setting_value($vars, "tag_name", "");
+	$block_type = get_setting_value($vars, "block_type");
+	$template_type = get_setting_value($vars, "template_type", "");
+
+	if ($block_type != "bar" && $block_type != "header" && $template_type != "built-in") {
+		if ($template_type == "default") {
+			$html_template = "block_currency.html"; 
+		} else {
+			$html_template = get_setting_value($block, "html_template", "block_currency.html"); 
+		}
+		if ($block_type == "sub-block") {
+		  $t->set_file($vars["tag_name"], $html_template);
+		} else {
+		  $t->set_file("block_body", $html_template);
+		}
 	}
+
 	$t->set_var("currencies", "");
 	$t->set_var("currencies_images", "");
 
@@ -97,7 +111,5 @@
 		}
 	}
 
-
 	$block_parsed = true;
 
-?>

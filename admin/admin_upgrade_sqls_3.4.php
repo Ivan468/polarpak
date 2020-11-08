@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_upgrade_sqls_3.4.php                               ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -86,7 +86,6 @@
 			$sqls[] = "ALTER TABLE " . $table_prefix . "items MODIFY COLUMN is_compared TINYINT default '0'";
 			$sqls[] = "ALTER TABLE " . $table_prefix . "items_properties MODIFY COLUMN use_on_list TINYINT default '1'";
 			$sqls[] = "ALTER TABLE " . $table_prefix . "items_properties MODIFY COLUMN use_on_details TINYINT default '1'";
-			$sqls[] = "ALTER TABLE " . $table_prefix . "items_properties MODIFY COLUMN use_on_checkout TINYINT default '0'";
 			$sqls[] = "ALTER TABLE " . $table_prefix . "items_properties MODIFY COLUMN use_on_second TINYINT default '0'";
 			$sqls[] = "ALTER TABLE " . $table_prefix . "items_properties MODIFY COLUMN required TINYINT default '0'";
 			$sqls[] = "ALTER TABLE " . $table_prefix . "items_properties_values MODIFY COLUMN use_stock_level TINYINT default '0'";
@@ -256,7 +255,6 @@
 			$sqls[] = "ALTER TABLE " . $table_prefix . "items ALTER COLUMN is_compared BYTE";
 			$sqls[] = "ALTER TABLE " . $table_prefix . "items_properties ALTER COLUMN use_on_list BYTE";
 			$sqls[] = "ALTER TABLE " . $table_prefix . "items_properties ALTER COLUMN use_on_details BYTE";
-			$sqls[] = "ALTER TABLE " . $table_prefix . "items_properties ALTER COLUMN use_on_checkout BYTE";
 			$sqls[] = "ALTER TABLE " . $table_prefix . "items_properties ALTER COLUMN use_on_second BYTE";
 			$sqls[] = "ALTER TABLE " . $table_prefix . "items_properties ALTER COLUMN required BYTE";
 			$sqls[] = "ALTER TABLE " . $table_prefix . "items_properties_values ALTER COLUMN use_stock_level BYTE";

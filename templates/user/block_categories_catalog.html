@@ -2,40 +2,37 @@
 		<!-- BEGIN catalog_rows -->
 		<!-- BEGIN catalog_top -->
 			<div class="col {column_class}">
-				<div class="category">
-					<i class="fa list"></i>
+				<div class="category {category_class}">
 
-					<div class="before-image">
-						{top_title_block}
-						{category_rss}
+					<div class="category-name before-image">
+						<a class="link lk-category-name {restricted_class}" href="{list_url}" title="{top_a_title}">{catalog_top_name}</a>
 					</div>
 
-					<!-- begin image_after -->
-					<div class="image-block">
-						<!-- begin image_after_small -->
-						<a class="link img-small" href="{list_url}" title="{top_a_title}"><img class="image img-small" src="{src}" alt="{alt}" /></a><!-- end image_after_small -->
-						<!-- begin image_after_large -->
-						<a class="link img-large" href="{list_url}" title="{top_a_title}"><img class="image img-large" src="{src}" alt="{alt}" /></a><!-- end image_after_large -->
+					<!-- begin category_image -->
+					<div class="category-image">
+						<!-- begin image_tiny -->
+						<a class="link lk-image-tiny" href="{list_url}" title="{top_a_title}"><img class="image img-tiny" src="{src}" alt="{alt}" /></a><!-- end image_tiny -->
+						<!-- begin image_small -->
+						<a class="link lk-image-small" href="{list_url}" title="{top_a_title}"><img class="image img-small" src="{src}" alt="{alt}" /></a><!-- end image_small -->
+						<!-- begin image_large -->
+						<a class="link lk-image-large" href="{list_url}" title="{top_a_title}"><img class="image img-large" src="{src}" alt="{alt}" /></a><!-- end image_large -->
 					</div>
-					<!-- end image_after -->
+					<!-- end category_image -->
 
-					<div class="after-image">
-						<!-- begin top_title_block -->
-						<a class="link category-title {restricted_class}" href="{list_url}" title="{top_a_title}">{catalog_top_name}</a><!-- end top_title_block -->
-						<!-- begin category_rss -->
-						<a class="link rss" href="{rss_href}?category_id={catalog_top_id}"><img class="image rss" src="images/ico-rss.gif" alt="RSS" /></a><!-- end category_rss -->
+					<div class="category-name after-image">
+						<a class="link lk-category-name {restricted_class}" href="{list_url}" title="{top_a_title}">{catalog_top_name}</a>
 					</div>
 
 
-						<div class="category-desc">
-							<!-- begin short_description -->
-							<div class="desc desc-short">{desc_text}</div><!-- end short_description -->
-							<!-- begin full_description -->
-							<div class="desc desc-full">{desc_text}</div><!-- end full_description -->
-						</div>
+					<div class="category-desc">
+						<!-- begin short_description -->
+						<div class="desc desc-short">{desc_text}</div><!-- end short_description -->
+						<!-- begin full_description -->
+						<div class="desc desc-full">{desc_text}</div><!-- end full_description -->
+					</div>
 
 					<!-- begin catalog_sub -->
-					<ul class="subcategories">
+					<ul class="category-subs">
 						<!-- begin sub_categories -->
 						<li><a class="link sub-category {restricted_class}" href="{sub_url}" title="{sub_a_title}">{catalog_sub_name}</a></li><!-- end sub_categories -->
 						<!-- begin sub_categories_more -->

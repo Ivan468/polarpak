@@ -500,6 +500,10 @@ function updateAttachments(attachmentsFiles)
 			</td>
 			<td align="right">
 				{property_name} ({property_value})&nbsp;
+				<!-- begin property_notes_block -->
+				<i data-js="expand" data-class="note-popup" class="ico-help popup-link"></i>
+				<div class="cart-note"><div class="note-popup">{property_notes}</div></div>
+				<!-- end property_notes_block -->
 			</td>
 		</tr>
 		</table>
@@ -716,7 +720,6 @@ function updateAttachments(attachmentsFiles)
 		<!-- begin delivery_properties -->
 		{property_name}: <b>{property_value}</b> {property_price}<br>
 		<!-- end delivery_properties -->
-
 		<!-- <br><a href="admin_order_edit.php?order_id={order_id}&p_d=3">{EDIT_MSG}</a> -->
 	</div><!-- end delivery -->
 </div>

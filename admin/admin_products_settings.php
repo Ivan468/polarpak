@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_products_settings.php                              ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -69,6 +69,7 @@
 	$t->set_var("admin_tax_rates_href", "admin_tax_rates.php");
 	$t->set_var("admin_column_code_href", "admin_column_code.php");
 
+	$t->set_var("CART_SUBPRODUCT_NAME_DESC", va_message("CART_SUBPRODUCT_NAME_DESC"));
 	$t->set_var("hide_add_message", str_replace("{button_name}", va_message("ADD_TO_CART_MSG"), va_message("HIDE_BUTTON_MSG")));
 	$t->set_var("hide_view_message", str_replace("{button_name}", va_message("VIEW_CART_MSG"), va_message("HIDE_BUTTON_MSG")));
 	$t->set_var("hide_goto_message", str_replace("{button_name}", va_message("GOTO_CHECKOUT_MSG"), va_message("HIDE_BUTTON_MSG")));
@@ -115,7 +116,7 @@
 
 	$controls =
 		array(
-			array("NONE",  va_message("NONE_MSG")),
+			array("LABEL",  va_message("LABEL_MSG")),
 			array("LISTBOX", va_message("LISTBOX_MSG")),
 			array("TEXTBOX", va_message("TEXTBOX_MSG"))
 			);
@@ -279,6 +280,8 @@
 	$r->add_select("quantity_control_grid", TEXT, $product_controls);
 	$r->add_select("quantity_control_details", TEXT, $product_controls);
 	$r->add_select("quantity_control_basket", TEXT, $controls);
+	$r->add_select("quantity_control_checkout", TEXT, $controls);
+
 	$r->add_radio("confirm_add", TEXT, $confirm_add);
 	$r->add_radio("redirect_to_cart", TEXT, $basket_actions);
 	$r->add_checkbox("hide_add_limit", INTEGER);
@@ -335,6 +338,8 @@
 	$r->add_radio("zero_product_action", INTEGER, $zero_product_actions);
 	$r->add_textbox("zero_product_warn", TEXT);
 	
+	$r->add_textbox("cart_subitem_name", TEXT);
+
 	$r->add_checkbox("price_matrix_list", INTEGER);
 	$r->add_checkbox("price_matrix_details", INTEGER);
 
@@ -731,10 +736,12 @@
 				// update product settings
 				$new_settings = array();
 				foreach ($r->parameters as $key => $value) {
-					$new_settings[$key] = $value[CONTROL_VALUE];
+					if ($r->get_property_value($key, USE_IN_INSERT)) {
+						$new_settings[$key] = $value[CONTROL_VALUE];
+					}
 				}
 				update_settings('products', $param_site_id, $new_settings);
-	  
+ 
 				// update/add categories columns
 				$cc_eg->set_values("category_id", 0);
 				$cc_eg->update_all($columns_number);

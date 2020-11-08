@@ -45,24 +45,26 @@
   $t->set_file("block_body", $html_template);
 	$t->set_var("top_category_name",     PRODUCTS_TITLE);
 
+	$products_shown = false;
 	$recent_columns = get_setting_value($vars, "products_recent_cols", 1);
 	$recently_viewed = get_session("session_recently_viewed");
-	$params = array(
-		"pb_id" => $pb_id,
-		"ids" => $recently_viewed,
-		"recs" => $recent_records,
-		"cols" => $recent_columns,
-		"qty" => "no",
-		"image" => $image_type_name,
-		"desc" => $desc_field,
-		"add" => $bn_add,
-		"view" => $bn_view,
-		"goto" => $bn_goto,
-		"wish" => $bn_wish,
-		"more" => $bn_more,
-	);
-
-	$products_shown = VA_Products::show_products($params);
+	if ($recently_viewed) {
+		$params = array(
+			"pb_id" => $pb_id,
+			"ids" => $recently_viewed,
+			"recs" => $recent_records,
+			"cols" => $recent_columns,
+			"qty" => "no",
+			"image" => $image_type_name,
+			"desc" => $desc_field,
+			"add" => $bn_add,
+			"view" => $bn_view,
+			"goto" => $bn_goto,
+			"wish" => $bn_wish,
+			"more" => $bn_more,
+		);
+		$products_shown = VA_Products::show_products($params);
+	}
 
 	if ($products_shown) {
 		$block_parsed = true;

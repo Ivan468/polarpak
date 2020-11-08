@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  support_parser.php                                       ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -36,6 +36,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
 // get/set parameters
 global $is_admin_path, $is_sub_folder;
 $is_sub_folder = ((isset($is_admin_path) && $is_admin_path) || (isset($is_sub_folder) && $is_sub_folder)) ? true : false; 
+$mail_notices = array(); // save here all notifications which will be sent
 
 // check command line options:
 // -i incoming@email.com
@@ -865,7 +866,12 @@ if ($fp) {
 				$email_headers["mail_type"] = get_setting_value($support_settings, "manager_reply_user_message_type");
 				$email_headers["Auto-Submitted"] = "auto-generated";
 
-				va_mail($ticket_user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+				$mail_sent = va_mail($ticket_user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+
+				if ($mail_sent) { 
+					$email_headers["to"] = $ticket_user_email;
+					$mail_notices["global_manager_reply_user_mail"] = $email_headers; 
+				}
 			}
 			// end global customer notification
 
@@ -898,7 +904,12 @@ if ($fp) {
 				$email_headers["mail_type"] = get_setting_value($dep_manager_reply_user_mail, "manager_reply_user_message_type");
 				$email_headers["Auto-Submitted"] = "auto-generated";
 
-				va_mail($ticket_user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+				$mail_sent = va_mail($ticket_user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+
+				if ($mail_sent) { 
+					$email_headers["to"] = $ticket_user_email;
+					$mail_notices["dep_manager_reply_user_mail"] = $email_headers; 
+				}
 			}
 			// end department customer notification
 
@@ -920,7 +931,12 @@ if ($fp) {
 				$email_headers["mail_type"] = get_setting_value($support_settings, "manager_reply_manager_message_type");
 				$email_headers["Auto-Submitted"] = "auto-generated";
 
-				va_mail($from_admin_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+				$mail_sent = va_mail($from_admin_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+
+				if ($mail_sent) { 
+					$email_headers["to"] = $from_admin_email;
+					$mail_notices["global_manager_reply_manager_mail"] = $email_headers; 
+				}
 			} // end global manager notification
 
 			// department manager notification
@@ -941,7 +957,12 @@ if ($fp) {
 				$email_headers["mail_type"] = get_setting_value($dep_manager_reply_manager_mail, "manager_reply_manager_message_type");
 				$email_headers["Auto-Submitted"] = "auto-generated";
 
-				va_mail($from_admin_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+				$mail_sent = va_mail($from_admin_email, $manager_subject, $manager_message, $email_headers, $attachments, $mail_tags);
+
+				if ($mail_sent) { 
+					$email_headers["to"] = $from_admin_email;
+					$mail_notices["dep_manager_reply_manager_mail"] = $email_headers; 
+				}
 			} // end department manager notification
 
 			// global admin notification
@@ -964,7 +985,12 @@ if ($fp) {
 				$email_headers["mail_type"] = get_setting_value($support_settings, "manager_reply_admin_message_type");
 				$email_headers["Auto-Submitted"] = "auto-generated";
 
-				va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+				$mail_sent = va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+
+				if ($mail_sent) { 
+					$email_headers["to"] = $mail_to;
+					$mail_notices["global_manager_reply_admin_mail"] = $email_headers; 
+				}
 			} // end global admin notification
 
 			// department admin notification
@@ -987,7 +1013,12 @@ if ($fp) {
 				$email_headers["mail_type"] = get_setting_value($dep_manager_reply_admin_mail, "manager_reply_admin_message_type");
 				$email_headers["Auto-Submitted"] = "auto-generated";
 
-				va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+				$mail_sent = va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+
+				if ($mail_sent) { 
+					$email_headers["to"] = $mail_to;
+					$mail_notices["dep_manager_reply_admin_mail"] = $email_headers; 
+				}
 			} // end department admin notification
 		}
 
@@ -1028,7 +1059,12 @@ if ($fp) {
 					$email_headers["mail_type"] = get_setting_value($support_settings, "new_admin_message_type");
 					$email_headers["Auto-Submitted"] = "auto-generated";
 		    
-					va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $mail_to;
+						$mail_notices["global_new_admin_mail"] = $email_headers; 
+					}
 				} // end admin notification
 
 				// send department email notification to admin
@@ -1051,7 +1087,12 @@ if ($fp) {
 					$email_headers["mail_type"] = get_setting_value($dep_new_admin_mail, "new_admin_message_type");
 					$email_headers["Auto-Submitted"] = "auto-generated";
 		    
-					va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $mail_to;
+						$mail_notices["dep_new_admin_mail"] = $email_headers; 
+					}
 				} // end department admin notification
 
 				// send global email notification to user 
@@ -1072,7 +1113,12 @@ if ($fp) {
 					$email_headers["mail_type"] = get_setting_value($support_settings, "new_user_message_type");
 					$email_headers["Auto-Submitted"] = "auto-generated";
 		    
-					va_mail($from_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($from_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $from_email;
+						$mail_notices["global_new_user_mail"] = $email_headers; 
+					}
 				} // end user notification
 
 				// send department email notification to user 
@@ -1093,7 +1139,12 @@ if ($fp) {
 					$email_headers["mail_type"] = get_setting_value($dep_new_user_mail, "new_user_message_type");
 					$email_headers["Auto-Submitted"] = "auto-generated";
 		    
-					va_mail($from_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($from_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $from_email;
+						$mail_notices["dep_new_user_mail"] = $email_headers; 
+					}
 				} // end department user notification
 
 				// end new ticket notification block
@@ -1132,7 +1183,12 @@ if ($fp) {
 					$email_headers["mail_type"] = get_setting_value($support_settings, "user_reply_admin_message_type");
 					$email_headers["Auto-Submitted"] = "auto-generated";
 		    
-					va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $mail_to;
+						$mail_notices["global_user_reply_admin_mail"] = $email_headers; 
+					}
 				} // end admin global notification
 
 				// send department email notification to admin
@@ -1155,7 +1211,12 @@ if ($fp) {
 					$email_headers["mail_type"] = get_setting_value($dep_user_reply_admin_mail, "user_reply_admin_message_type");
 					$email_headers["Auto-Submitted"] = "auto-generated";
 		    
-					va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $mail_to;
+						$mail_notices["dep_user_reply_admin_mail"] = $email_headers; 
+					}
 				} // end admin department notification
 
 				// send global email notification to user 
@@ -1176,7 +1237,12 @@ if ($fp) {
 					$email_headers["mail_type"] = get_setting_value($support_settings, "user_reply_user_message_type");
 					$email_headers["Auto-Submitted"] = "auto-generated";
 		    
-					va_mail($from_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($from_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $from_email;
+						$mail_notices["global_user_reply_user_mail"] = $email_headers; 
+					}
 				} // end user global notification
 
 				// send department email notification to user 
@@ -1197,13 +1263,41 @@ if ($fp) {
 					$email_headers["mail_type"] = get_setting_value($dep_user_reply_user_mail, "user_reply_user_message_type");
 					$email_headers["Auto-Submitted"] = "auto-generated";
 		    
-					va_mail($from_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($from_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $from_email;
+						$mail_notices["dep_user_reply_user_mail"] = $email_headers; 
+					}
 				} // end user department notification
 
 				// end reply notification block
 			}
 		}
 		// end sending notifications for new ticket or user reply
+
+				// update mail notices which were sent 
+		if (is_array($mail_notices) && count($mail_notices)) {
+			// remove empty mail headers
+			foreach ($mail_notices as $mail_code => $mail_headers) {
+				foreach ($mail_headers as $header_key => $header_value) {
+					if (!strlen($header_value)) {
+						unset($mail_notices[$mail_code][$header_key]);
+					}
+				}						
+			}
+			if ($new_thread) {
+				$sql  = " UPDATE ".$table_prefix."support ";
+				$sql .= " SET mail_notices=".$db->tosql(json_encode($mail_notices), TEXT);
+				$sql .= " WHERE support_id=" . $db->tosql($ticket_id, INTEGER);
+				$db->query($sql);
+			} else {
+				$sql  = " UPDATE ".$table_prefix."support_messages ";
+				$sql .= " SET mail_notices=".$db->tosql(json_encode($mail_notices), TEXT);
+				$sql .= " WHERE message_id=" . $db->tosql($message_id, INTEGER);
+				$db->query($sql);
+			}
+		}
 
 
 	} else {

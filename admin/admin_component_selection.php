@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_component_selection.php                            ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -135,7 +135,6 @@
 	$r->add_checkbox("use_on_table", INTEGER);
 	$r->add_checkbox("use_on_grid", INTEGER);
 	$r->add_checkbox("use_on_second", INTEGER);
-	$r->add_checkbox("use_on_checkout", INTEGER);
 	$r->add_checkbox("required", INTEGER);
 	$r->add_textbox("start_html", TEXT);
 	$r->add_textbox("middle_html", TEXT);
@@ -233,7 +232,6 @@
 				$r->set_value("sites_all", 1);
 			}
 			$r->set_value("property_type_id", 3);
-			$r->set_value("use_on_checkout", 0);
 			if (strlen($property_id))
 			{
 				$r->update_record();

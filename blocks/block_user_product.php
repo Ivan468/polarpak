@@ -768,7 +768,6 @@
 											"required" => $db->f("required"),
 											"use_on_list" => $db->f("use_on_list"), "use_on_details" => $db->f("use_on_details"), 
 											"use_on_table" => $db->f("use_on_table"), "use_on_grid" => $db->f("use_on_grid"), 
-											"use_on_checkout" => $db->f("use_on_checkout"),
 											"sites_all" => $db->f("sites_all"),
 											"start_html" => $db->f("start_html"), "middle_html" => $db->f("middle_html"), "end_html" => $db->f("end_html"),
 											"control_code" => $db->f("control_code"), "onchange_code" => $db->f("onchange_code"), "onclick_code" => $db->f("onclick_code"),
@@ -793,7 +792,6 @@
 									$ip->add_textbox("use_on_details", INTEGER);
 									$ip->add_textbox("use_on_table", INTEGER);
 									$ip->add_textbox("use_on_grid", INTEGER);
-									$ip->add_textbox("use_on_checkout", INTEGER);
 									$ip->add_textbox("sites_all", INTEGER);
 									$ip->add_textbox("start_html", TEXT);
 									$ip->add_textbox("middle_html", TEXT);
@@ -849,7 +847,6 @@
 										$ip->set_value("use_on_details", $item_properties[$i]["use_on_details"]);
 										$ip->set_value("use_on_table", $item_properties[$i]["use_on_table"]);
 										$ip->set_value("use_on_grid", $item_properties[$i]["use_on_grid"]);
-										$ip->set_value("use_on_checkout", $item_properties[$i]["use_on_checkout"]);
 										$ip->set_value("sites_all", $item_properties[$i]["sites_all"]);
 										$ip->set_value("start_html", $item_properties[$i]["start_html"]);
 										$ip->set_value("middle_html", $item_properties[$i]["middle_html"]);

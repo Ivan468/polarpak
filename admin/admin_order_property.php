@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_order_property.php                                 ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -36,8 +36,8 @@
 
 	// start building breadcrumb
 	$settings_page = "admin_menu.php?code=settings";
-	$custom_breadcrumb[$settings_page] = SETTINGS_MSG;
-	$custom_breadcrumb["admin_order_info.php"] = ORDERS_MSG;
+	$custom_breadcrumb[$settings_page] = va_message("SETTINGS_MSG");
+	$custom_breadcrumb["admin_order_info.php"] = va_message("ORDERS_MSG");
 
 	if ($payment_id) {
 		check_admin_security("payment_systems");
@@ -48,8 +48,8 @@
 		if ($db->next_record()) {
 			$custom_module_name = strip_tags($db->f("payment_name"));
 
-			$custom_breadcrumb["admin_payment_systems.php"] = PAYMENT_SYSTEMS_MSG;
-			$custom_breadcrumb["admin_order_properties.php?payment_id=".$payment_id] = $custom_module_name." :: ".CUSTOM_FIELDS_MSG;
+			$custom_breadcrumb["admin_payment_systems.php"] = va_message("PAYMENT_SYSTEMS_MSG");
+			$custom_breadcrumb["admin_order_properties.php?payment_id=".$payment_id] = $custom_module_name." :: ".va_message("CUSTOM_FIELDS_MSG");
 
 			$rp = "admin_credit_card_info.php?payment_id=".$payment_id;
 		} else {
@@ -68,9 +68,9 @@
 			$shipping_module_name = strip_tags($db->f("shipping_module_name"));
 			$custom_module_name = strip_tags($db->f("shipping_type_desc"));
 
-			$custom_breadcrumb["admin_shipping_modules.php"] = SHIPPING_MODULES_MSG;
-			$custom_breadcrumb["admin_shipping_module.php?shipping_module_id=".$param_module_id] = $shipping_module_name." :: ".SHIPPING_METHODS_MSG;
-			$custom_breadcrumb["admin_order_properties.php?shipping_type_id=".$shipping_type_id] = $custom_module_name." :: ".CUSTOM_FIELDS_MSG;
+			$custom_breadcrumb["admin_shipping_modules.php"] = va_message("SHIPPING_MODULES_MSG");
+			$custom_breadcrumb["admin_shipping_module.php?shipping_module_id=".$param_module_id] = $shipping_module_name." :: ".va_message("SHIPPING_METHODS_MSG");
+			$custom_breadcrumb["admin_order_properties.php?shipping_type_id=".$shipping_type_id] = $custom_module_name." :: ".va_message("CUSTOM_FIELDS_MSG");
 
 			$rp = "admin_order_properties.php?shipping_type_id=".$shipping_type_id;
 		} else {
@@ -86,8 +86,8 @@
 		if ($db->next_record()) {
 			$custom_module_name = strip_tags($db->f("shipping_module_name"));
 
-			$custom_breadcrumb["admin_shipping_modules.php"] = SHIPPING_MODULES_MSG;
-			$custom_breadcrumb["admin_order_properties.php?shipping_module_id=".$shipping_module_id] = $custom_module_name." :: ".CUSTOM_FIELDS_MSG;
+			$custom_breadcrumb["admin_shipping_modules.php"] = va_message("SHIPPING_MODULES_MSG");
+			$custom_breadcrumb["admin_order_properties.php?shipping_module_id=".$shipping_module_id] = $custom_module_name." :: ".va_message("CUSTOM_FIELDS_MSG");
 
 			$rp = "admin_order_properties.php?shipping_module_id=".$shipping_module_id;
 		} else {
@@ -96,13 +96,13 @@
 		}
 	} else {
 		check_admin_security("order_profile");
-		$custom_module_name = ORDER_PROFILE_PAGE_MSG;
-		$custom_breadcrumb["admin_order_properties.php"] = $custom_module_name." :: ".CUSTOM_FIELDS_MSG;
+		$custom_module_name = va_message("ORDER_PROFILE_PAGE_MSG");
+		$custom_breadcrumb["admin_order_properties.php"] = $custom_module_name." :: ".va_message("CUSTOM_FIELDS_MSG");
 
 		$rp = "admin_order_info.php?tab=custom_fields";
 	}
 
-	$custom_breadcrumb["admin_order_property.php?property_id=".urlencode($property_id)] = EDIT_MSG;
+	$custom_breadcrumb["admin_order_property.php?property_id=".urlencode($property_id)] = va_message("EDIT_MSG");
 
 	$t = new VA_Template($settings["admin_templates_dir"]);
 	$t->set_file("main","admin_order_property.html");
@@ -110,18 +110,18 @@
 	$t->set_var("admin_order_property_href", "admin_order_property.php");
 	$t->set_var("admin_payment_systems_href", "admin_payment_systems.php");
 	$t->set_var("admin_payment_system_href", "admin_payment_system.php");
-	$t->set_var("CONFIRM_DELETE_JS", str_replace("{record_name}", CUSTOM_FIELDS_MSG, CONFIRM_DELETE_MSG));	
+	$t->set_var("CONFIRM_DELETE_JS", str_replace("{record_name}", va_message("CUSTOM_FIELDS_MSG"), va_message("CONFIRM_DELETE_MSG")));	
 
 	$controls = 
 		array(			
 			array("", ""),  
-			array("CHECKBOXLIST", CHECKBOXLIST_MSG),
-			array("LABEL",        LABEL_MSG),
-			array("LISTBOX",      LISTBOX_MSG),
-			array("RADIOBUTTON",  RADIOBUTTON_MSG),
-			array("TEXTAREA",     TEXTAREA_MSG),
-			array("TEXTBOX",      TEXTBOX_MSG),
-			array("HIDDEN",       HIDDEN_MSG),
+			array("CHECKBOXLIST", va_message("CHECKBOXLIST_MSG")),
+			array("LABEL",        va_message("LABEL_MSG")),
+			array("LISTBOX",      va_message("LISTBOX_MSG")),
+			array("RADIOBUTTON",  va_message("RADIOBUTTON_MSG")),
+			array("TEXTAREA",     va_message("TEXTAREA_MSG")),
+			array("TEXTBOX",      va_message("TEXTBOX_MSG")),
+			array("HIDDEN",       va_message("HIDDEN_MSG")),
 		);
 
 	$property_type = ""; $property_types = array();
@@ -135,18 +135,18 @@
 		$property_types = 
 			array(			
 				array("", ""),
-				array("1", ADMIN_CART_MSG),
-				array("2", PERSONAL_DETAILS_MSG),
-				array("3", DELIVERY_DETAILS_MSG)
+				array("1", va_message("ADMIN_CART_MSG")),
+				array("2", va_message("PERSONAL_DETAILS_MSG")),
+				array("3", va_message("DELIVERY_DETAILS_MSG"))
 			);
 	}
 
 	$property_show =
 		array(
-			array(-1, DONT_SHOW_MSG),
-			array(0, FOR_ALL_ORDERS_MSG),
-			array(1, ONLY_WEB_ORDERS_MSG),
-			array(2, ONLY_FOR_CALL_CENTRE_MSG)
+			array(-1, va_message("DONT_SHOW_MSG")),
+			array(0, va_message("FOR_ALL_ORDERS_MSG")),
+			array(1, va_message("ONLY_WEB_ORDERS_MSG")),
+			array(2, va_message("ONLY_FOR_CALL_CENTRE_MSG"))
 		);
 
 	// set up html form parameters

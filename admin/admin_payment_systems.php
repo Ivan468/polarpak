@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_payment_systems.php                                ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -75,12 +75,12 @@
 	$s = new VA_Sorter($settings["admin_templates_dir"], "sorter_img.html", "admin_payment_systems.php");
 	$s->set_parameters(false, true, true, false);
 	$s->set_default_sorting(4, "asc");
-	$s->set_sorter(ID_MSG, "sorter_payment_id", "1", "payment_id");
-	$s->set_sorter(PAYMENT_SYSTEM_NAME_MSG, "sorter_payment_name", "2", "payment_name");
-	$s->set_sorter(ADMIN_ORDER_MSG, "sorter_payment_order", "3", "payment_order, payment_id");
-	$s->set_sorter(ACTIVE_MSG, "sorter_is_active", "4", "is_active", "is_active DESC, payment_order, payment_id ", "is_active ASC");
-	$s->set_sorter(CALL_CENTER_MSG, "sorter_is_call_center", "5", "is_call_center", "is_call_center DESC, payment_order, payment_id ", "is_call_center ASC");
-	$s->set_sorter(DEFAULT_MSG, "sorter_is_default", "6", "is_default");
+	$s->set_sorter(va_message("ID_MSG"), "sorter_payment_id", "1", "payment_id");
+	$s->set_sorter(va_message("PAYMENT_NAME_MSG"), "sorter_payment_name", "2", "payment_name");
+	$s->set_sorter(va_message("ADMIN_ORDER_MSG"), "sorter_payment_order", "3", "payment_order, payment_id");
+	$s->set_sorter(va_message("ACTIVE_MSG"), "sorter_is_active", "4", "is_active", "is_active DESC, payment_order, payment_id ", "is_active ASC");
+	$s->set_sorter(va_message("CALL_CENTER_MSG"), "sorter_is_call_center", "5", "is_call_center", "is_call_center DESC, payment_order, payment_id ", "is_call_center ASC");
+	$s->set_sorter(va_message("DEFAULT_MSG"), "sorter_is_default", "6", "is_default");
 
 	$n = new VA_Navigator($settings["admin_templates_dir"], "navigator.html", "admin_payment_systems.php");
 
@@ -128,9 +128,9 @@
 			$is_active = $db->f("is_active");
 			$is_default = $db->f("is_default");
 			$is_call_center = $db->f("is_call_center");
-			$active = ($is_active == 1) ? "<b>".YES_MSG."</b>" : NO_MSG;
-			$default_desc = ($is_default == 1) ? "<b>".YES_MSG."</b>" : NO_MSG;
-			$call_center_desc = ($is_call_center == 1) ? "<b>".YES_MSG."</b>" : NO_MSG;
+			$active = ($is_active == 1) ? "<b>".va_message("YES_MSG")."</b>" : va_message("NO_MSG");
+			$default_desc = ($is_default == 1) ? "<b>".va_message("YES_MSG")."</b>" : va_message("NO_MSG");
+			$call_center_desc = ($is_call_center == 1) ? "<b>".va_message("YES_MSG")."</b>" : va_message("NO_MSG");
 			$operation = ($is_active == 1) ? "Off" : "On";
 			$call_operation = ($is_call_center == 1) ? "call-off" : "call-on";
 			$default_operation = ($is_default == 1) ? "default-off" : "default-on";
@@ -156,5 +156,3 @@
 
 	$t->set_var("admin_href", "admin.php");
 	$t->pparse("main");
-
-?>

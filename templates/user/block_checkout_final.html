@@ -1,1 +1,17 @@
+	<!-- begin final_message_block -->
 	<div class="final-message">{final_message}</div>
+	<!-- end final_message_block -->
+
+	<!-- begin payment_waiting_block -->
+	<div data-js="reload" data-timeout="{waiting_time}" data-pb-id="{pb_id}" class="payment-waiting">
+		<i class="spin"></i>
+		<div class="waiting-text">
+			Your payment is processing which could takes a couple of minutes.<br>
+			Please do not close the browser window until you will see the final response about your transaction.<br>
+			Attempt to receive payment data <b>{waiting_attempt}</b> of <b>{waiting_attempts}</b>.
+		</div>	
+		<div class="clear"></div>
+	</div>
+	<!-- end payment_waiting_block  -->
+
+

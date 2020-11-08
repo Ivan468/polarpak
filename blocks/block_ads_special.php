@@ -8,10 +8,14 @@
 	if (!isset($ads_settings)) { $ads_settings = get_settings("ads"); }
 	if (!isset($ad_category_id)) { $ad_category_id = 0; }
 
+	$special_columns = get_setting_value($vars, "ads_special_cols", 1);
+	$records_per_page = get_setting_value($vars, "ads_special_recs", 10);
+
 	$html_template = get_setting_value($block, "html_template", "block_ads_special.html"); 
   $t->set_file("block_body", $html_template);
 	$t->set_var("special_rows", "");
 	$t->set_var("special_cols", "");
+	$t->set_var("columns_class", "cols-".$special_columns);
 
 	$friendly_urls = get_setting_value($settings, "friendly_urls", 0);
 	$friendly_extension = get_setting_value($settings, "friendly_extension", "");
@@ -41,7 +45,6 @@
 	$allowed_items_ids = VA_Ads::find_all_ids("i.item_id IN (" . $db->tosql($items_ids, INTEGERS_LIST) . ")", VIEW_CATEGORIES_ITEMS_PERM);
 	$total_records = count($items_ids);
 	
-	$records_per_page = get_setting_value($vars, "ads_special_recs", 10);
 	$pages_number = 5;
 	$n = new VA_Navigator($settings["templates_dir"], "navigator.html", $current_page);
 	$page_number = $n->set_navigator("special_navigator", "special_page", SIMPLE, $pages_number, $records_per_page, $total_records, false, $pass_parameters);
@@ -56,8 +59,6 @@
 	$db->query($sql);
 	if($db->next_record())
 	{
-		$special_columns = get_setting_value($vars, "ads_special_cols", 1);
-		$t->set_var("special_column", (100 / $special_columns) . "%");
 		$special_number = 0;
 		do
 		{
@@ -115,6 +116,9 @@
 				$t->set_var("restricted_class", "");
 			}
 			
+			$column_index = ($special_number % $special_columns) ? ($special_number % $special_columns) : $special_columns;
+			$t->set_var("column_class", "col-".$column_index);
+
 			$t->parse("special_cols");
 			if($special_number % $special_columns == 0) {
 				$t->parse("special_rows");

@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_select.php                                         ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -64,7 +64,7 @@
 		while ($db->next_record()) {
 			$download_info[$db->f("setting_name")] = $db->f("setting_value");
 		}
-		$downloads_dir = get_setting_value($download_info, "downloads_admins_dir", "../");
+		$downloads_dir = get_setting_value($download_info, "downloads_admins_dir", "../downloads/");
 		if (!preg_match("/[\/\\\\]$/", $downloads_dir)) { $downloads_dir .= "/"; }
 	}
 
@@ -101,6 +101,8 @@
 		$files_dir = "../images/articles/super/";
 	} elseif ($filetype == "category") {
 		$files_dir = "../images/categories/";
+	} elseif ($filetype == "category_tiny") {
+		$files_dir = "../images/categories/tiny/";
 	} elseif ($filetype == "category_small") {
 		$files_dir = "../images/categories/small/";
 	} elseif ($filetype == "category_large") {

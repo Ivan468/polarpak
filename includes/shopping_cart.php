@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  shopping_cart.php                                        ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -171,7 +171,7 @@
 								}
 
 							}
-							if ($cart == "WISHLIST" || $sc_quantity == 0) {
+							if ($cart == "WISHLIST" && $sc_quantity == 0) {
 								// if there is no quantity for wishlist use default minimum value
 								$sc_quantity = ""; 
 							}
@@ -310,6 +310,8 @@
 					$shopping_cart = get_session("shopping_cart");
 					if (is_array($shopping_cart) && isset($shopping_cart[$cart_id])) {
 
+						$type_param_value = get_param("type");
+						if ($type_param_value) { $type = $type_param_value; } else { $type = ""; }
 						$sc_item_id = $shopping_cart[$cart_id]["ITEM_ID"];
 						$sc_price = $shopping_cart[$cart_id]["PRICE"];
 						$new_quantity = get_param("new_quantity");

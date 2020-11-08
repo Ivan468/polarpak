@@ -1,14 +1,26 @@
 <?php
 
+	global $cms_page_code;
 	include_once("./messages/" . $language_code . "/cart_messages.php");
 	include_once("./includes/products_functions.php");
 
 	$default_title = "{search_name} &nbsp; {SEARCH_TITLE}";
 
-	$block_type = get_setting_value($vars, "block_type", "");
-	if ($block_type != "bar" && $block_type != "header") {
-		$html_template = get_setting_value($block, "html_template", "block_search.html"); 
-    $t->set_file("block_body", $html_template);
+	$tag_name = get_setting_value($vars, "tag_name");
+	$block_type = get_setting_value($vars, "block_type");
+	$template_type = get_setting_value($vars, "template_type");
+
+	if ($block_type != "bar" && $block_type != "header" && $template_type != "built-in") {
+		if ($template_type == "default") {
+			$html_template = "block_search.html"; 
+		} else {
+			$html_template = get_setting_value($block, "html_template", "block_search.html"); 
+		}
+		if ($block_type == "sub-block") {
+		  $t->set_file($vars["tag_name"], $html_template);
+		} else {
+		  $t->set_file("block_body", $html_template);
+		}
 	}
 
 	$friendly_urls = get_setting_value($settings, "friendly_urls", 0);

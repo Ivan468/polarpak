@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  shipping_calculator.php                                  ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -544,6 +544,9 @@
 			}
 		}
 
+		if ($shipping_errors) {
+			$r->errors .= $shipping_errors;
+		}
 		if ($r->errors) {
 			$t->set_var("shipping", "");
 			$t->set_var("errors_list", $r->errors);

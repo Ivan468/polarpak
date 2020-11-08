@@ -40,6 +40,7 @@
 		$order_info_url = $site_url . get_custom_friendly_url("order_info.php");
 	}
 	if (!$is_ssl && $secure_user_login && $secure_redirect && preg_match("/^https/i", $secure_url)) {
+		header("HTTP/1.1 302 Found");
 		header("Location: " . $checkout_url);
 		exit;
 	}
@@ -57,10 +58,12 @@
 			} else {
 				$user_profile_url = $site_url . get_custom_friendly_url("user_profile.php");
 			}
+			header("HTTP/1.1 302 Found");
 			header ("Location: " . $user_profile_url);
 			exit;
 		} else if ($new_user == "expired") {
 			// check secure option
+			header("HTTP/1.1 302 Found");
 			header("Location: " . $order_info_url);
 			exit;
 		}
@@ -80,6 +83,7 @@
 		if (strlen($rp)) {
 			$basket_url .=  "?rp=" . urlencode($rp);
 		}
+		header("HTTP/1.1 302 Found");
 		header("Location: " . $basket_url);
 		exit;
 	}
@@ -96,6 +100,7 @@
 	set_session("session_payment_id", "");
 	if (get_session("session_user_id"))
 	{
+		header("HTTP/1.1 302 Found");
 		header("Location: " . $order_info_url);
 		exit;
 	}

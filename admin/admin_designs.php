@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_designs.php                                        ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -112,7 +112,7 @@
 				if (file_exists("../styles/".$layout_name_lc.".css")) {
 					$filepath = "../styles/".$layout_name_lc.".css";
 				} else {
-					$layout_error = ADMIN_ERROR_MSG.": ".STYLE_NAME_MSG;
+					$layout_error = va_message("ERROR_MSG").": ".va_message("STYLE_NAME_MSG");
 				}
 			}
 	

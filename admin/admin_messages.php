@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_messages.php                                       ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -31,6 +31,7 @@
 	include_once("./admin_header.php");
 	include_once("./admin_footer.php");
 
+
 	$messages_per_page = 1000;
 	$navigator_pages = 10;
 	$page = intval(get_param("page"));
@@ -44,6 +45,14 @@
 
 	$language_code = get_language();
 	$sw = get_param("sw");
+
+	$messages_url = new VA_URL("admin_messages.php", false);
+	$messages_url->add_parameter("sw", CONSTANT, $sw);
+	$messages_url->add_parameter("lang", CONSTANT, $language_code);
+	$messages_url->add_parameter("page", CONSTANT, $page);
+
+	$section_url= new VA_URL("admin_messages_export", false);
+	$section_url->add_parameter("lang", CONSTANT, $language_code);
 
 	// getting languages list
 	$sql = " SELECT language_code, language_name, language_image FROM " . $table_prefix . "languages WHERE show_for_user=1 ";
@@ -69,7 +78,7 @@
 			}	      
 			$language_href .= "lang=" . $row_language_code; 
 			$t->set_var("language_href", $language_href);
-		 
+	 
 			$t->parse("languages_images", true);
 		}
 	}
@@ -120,15 +129,14 @@
 				}
 				$t->set_var("section_title", $file_section);
 				$t->set_var("language_filename", $file);
-				if ($language_code){
-					$section_href = "?language_code=" . $language_code . "&";
-				} else {
-					$section_href = "?";
-				}
-				$section_href .= "section=" . $file_section ;
-				$t->set_var("section_href", $section_href);
 				$t->set_var("file_section", htmlspecialchars($file_section));
 				$t->set_var("section_name", htmlspecialchars($file_section));
+
+				$section_url->add_parameter("section", CONSTANT, $file_section);
+				$t->set_var("section_url", $section_url->get_url("admin_messages.php"));
+				$t->set_var("export_url", $section_url->get_url("admin_messages_export.php"));
+				$t->set_var("import_url", $section_url->get_url("admin_messages_import.php"));
+
 				$t->parse("sections",true);
 				// end files block show
 
@@ -228,7 +236,7 @@
 	} 
 
 	if (strlen($sw)) {
-		$found_message = str_replace("{found_records}", $total_messages_found, va_message("FOUND_MESSAGES_MSG"));
+		$found_message = str_replace("{found_records}", $total_messages_found, va_message("FOUND_RECORDS_MSG"));
 		$found_message = str_replace("{search_string}", htmlspecialchars($sw), $found_message);
 		$t->set_var("found_message", $found_message);
 		$t->sparse("search_results", false);

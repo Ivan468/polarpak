@@ -1,16 +1,31 @@
 <?php
 
+	global $current_page;
 	$default_title = "{LOGIN_TITLE}";
 
 	// check admin call center and users permissions
 	$permissions = get_admin_permissions();
 	$users_perm = get_setting_value($permissions, "site_users", 0);
 
+	$tag_name = get_setting_value($vars, "tag_name", "");
 	$block_type = get_setting_value($vars, "block_type", "");
-	if ($block_type != "bar" && $block_type != "header") {
-		$html_template = get_setting_value($block, "html_template", "block_login.html"); 
-    $t->set_file("block_body", $html_template);
+	$template_type = get_setting_value($vars, "template_type", "");
+	$html_id = "pb_".$pb_id;
+	if ($block_type != "bar" && $block_type != "header" && $template_type != "built-in") {
+		if ($template_type == "default") {
+			$html_template = "block_login.html"; 
+		} else {
+			$html_template = get_setting_value($block, "html_template", "block_login.html"); 
+		}
+		if ($block_type == "sub-block") {
+			$html_id = "login_".$pb_id;
+		  $t->set_file($vars["tag_name"], $html_template);
+		} else {
+			$html_id = "pb_".$pb_id;
+		  $t->set_file("block_body", $html_template);
+		}
 	}
+	$t->set_var("html_id", $html_id);
   $t->set_var("call_center_users_href", "call_center_users.php");
 
 	if ($users_perm) {
@@ -43,11 +58,7 @@
 	$query_string = transfer_params("", true);
 	$return_page = get_param("return_page");
 	if (!$return_page) {
-		if ($is_ssl) {
-			$return_page = $secure_url . $current_page . $query_string;
-		} else {
-			$return_page = $site_url . $current_page . $query_string;
-		}
+		$return_page = $site_url . $current_page . $query_string;
 		$return_page .= "#block_login_".$pb_id;
 	}
 

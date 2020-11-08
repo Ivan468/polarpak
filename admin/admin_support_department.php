@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_support_department.php                             ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -21,10 +21,32 @@
 
 	check_admin_security("support_departments");
 
-	$operation = get_param("operation");
+	$ajax = get_param("ajax");
 	$dep_id = get_param("dep_id");
+	$operation = get_param("operation");
 
+	if ($ajax) {
+		if ($operation == "override") {
+			$override_field = get_param("override_field");
+			$override_value = get_param("override_value");
+			if ($dep_id && preg_match("/^[0-9a-z_]+$/i", $override_field)) {	
+				$sql  = " UPDATE ".$table_prefix . "support_departments SET ";
+				$sql .= $override_field."=".$db->tosql($override_value, TEXT);
+				$sql .= " WHERE dep_id=".$db->tosql($dep_id, INTEGER);
+				$db->query($sql);
+			}
+		}
+		exit;
+	}
 
+	// global JS parameters for messages
+	$number_rules_msg = va_message("NUMBER_RULES_MSG");
+	$number_rules_msg = str_replace("{number_rules}", "[number_rules]", $number_rules_msg);
+	if (!isset($js_settings["messages"])) {
+		$js_settings["messages"] = array();
+	}
+	$js_settings["messages"]["NUMBER_RULES_MSG"] = $number_rules_msg;
+	$js_settings["messages"]["NO_RULES_MSG"] = va_message("NO_RULES_MSG");
 
 	// start building breadcrumb
 	$va_trail = array(
@@ -38,11 +60,13 @@
 	$t->set_file("main","admin_support_department.html");
 
 	set_script_tag("../js/list_fields.js", true);
+	set_script_tag("../js/rule.js", true);
 
 	$t->set_var("admin_support_href", "admin_support.php");
 	$t->set_var("admin_support_dep_edit_href", "admin_support_dep_edit.php");
 	$t->set_var("admin_support_departments_href", "admin_support_departments.php");
 	$t->set_var("admin_support_help_href", "admin_support_help.php");
+	$t->set_var("admin_support_params_href", "admin_support_params.php");
 	$t->set_var("admin_email_help_href", "admin_email_help.php");
 	$t->set_var("CONFIRM_DELETE_JS", str_replace("{record_name}", va_message("SUPPORT_DEPARTMENT_FIELD"), va_message("CONFIRM_DELETE_MSG")));
 
@@ -99,18 +123,29 @@
 	// predefined fields and other department settings
 	$r->add_textbox("dep_settings", TEXT);
 
-	// mail fields	
+	// mail fields and their fields for override rules 
 	$r->add_textbox("new_admin_mail", TEXT);
+	$r->add_textbox("over_new_admin_mail", TEXT);
 	$r->add_textbox("new_user_mail", TEXT);
+	$r->add_textbox("over_new_user_mail", TEXT);
 	$r->add_textbox("user_reply_admin_mail", TEXT);
+	$r->add_textbox("over_user_reply_admin_mail", TEXT);
 	$r->add_textbox("user_reply_user_mail", TEXT);
+	$r->add_textbox("over_user_reply_user_mail", TEXT);
 	$r->add_textbox("manager_reply_admin_mail", TEXT);
+	$r->add_textbox("over_manager_reply_admin_mail", TEXT);
 	$r->add_textbox("manager_reply_manager_mail", TEXT);
+	$r->add_textbox("over_manager_reply_manager_mail", TEXT);
 	$r->add_textbox("manager_reply_user_mail", TEXT);
+	$r->add_textbox("over_manager_reply_user_mail", TEXT);
 	$r->add_textbox("assign_admin_mail", TEXT);
+	$r->add_textbox("over_assign_admin_mail", TEXT);
 	$r->add_textbox("assign_manager_mail", TEXT);
+	$r->add_textbox("over_assign_manager_mail", TEXT);
 	$r->add_textbox("assign_to_mail", TEXT);
+	$r->add_textbox("over_assign_to_mail", TEXT);
 	$r->add_textbox("assign_user_mail", TEXT);
+	$r->add_textbox("over_assign_user_mail", TEXT);
 
 	// predefined controls and mail fields with related controls
 	$json_fields = array(
@@ -478,6 +513,36 @@
 		$t->set_var("admin_name", $admin_name);
 		$t->set_var("admin_checkbox", $admin_checkbox);
 		$t->parse ("admin_rows", true);
+	}
+
+	$over_fields = array(
+		"over_new_admin_mail", 
+		"over_new_user_mail", 
+		"over_user_reply_admin_mail", 
+		"over_user_reply_user_mail", 
+		"over_manager_reply_admin_mail", 
+		"over_manager_reply_manager_mail", 
+		"over_manager_reply_user_mail", 
+		"over_assign_admin_mail", 
+		"over_assign_manager_mail", 
+		"over_assign_to_mail", 
+		"over_assign_user_mail", 
+	);
+	foreach ($over_fields as $fi => $over_field) {
+		$rules_number = 0;
+		$over_value = $r->get_value($over_field);
+		if ($over_value) {
+			$over_value = json_decode($over_value, true);
+			if (is_array($over_value)) {
+				$rules_number = count($over_value);;
+			}
+		}
+		if ($rules_number > 0) {
+			$over_message = str_replace("{number_rules}", $rules_number, va_message("NUMBER_RULES_MSG"));
+		} else {
+			$over_message = va_message("NO_RULES_MSG");
+		}
+		$t->set_var($over_field."_message", $over_message);
 	}
 
 	$r->set_parameters();

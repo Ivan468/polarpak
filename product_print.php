@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  product_print.php                                        ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -193,7 +193,7 @@
 		$sql .= " FROM " . $table_prefix . "items_properties";
 		$sql .= " WHERE (item_id=". $db->tosql($item_id, INTEGER) . " OR item_type_id=" . $db->tosql($item_type_id, INTEGER) . ") ";
 		$sql .= " AND control_type <> 'TEXTAREA' AND control_type <> 'TEXTBOX' AND control_type <> 'TEXTBOXLIST'";
-		$sql .= " AND (use_on_list=1 OR use_on_details=1 OR use_on_checkout=1 OR use_on_second=1) ";		
+		$sql .= " AND (use_on_list=1 OR use_on_details=1 OR use_on_second=1) ";		
 		$sql .= " ORDER BY property_id";		
 		$db->query($sql);
 		while ($db->next_record()) {	

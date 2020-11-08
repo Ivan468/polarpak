@@ -376,7 +376,7 @@
 	$sql  = " SELECT oe.event_id, oe.event_date, oe.event_type, oe.event_name, oe.event_description ";
 	$sql .= " FROM " . $table_prefix . "orders_events oe ";
 	$sql .= " WHERE order_id=" . $db->tosql($order_id, INTEGER);
-	$sql .= " AND event_type IN ('update_order_status', 'status_notification_sent') ";
+//	$sql .= " AND event_type IN ('update_order_status', 'status_notification_sent') ";
 	$sql .= " ORDER BY oe.event_date ASC ";
 	$db->query($sql);
 	if ($db->next_record()) {

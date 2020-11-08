@@ -260,6 +260,7 @@
 			{ 
 				$message_id = $db->last_insert_id();
 				$r->set_value("message_id", $message_id);
+				$mail_notices = array(); // save here all notifications which will be sent
 
 				// update attachments
 				$sql  = " UPDATE " . $table_prefix . "support_attachments ";
@@ -364,18 +365,19 @@
 					$admin_message = get_setting_value($support_settings, "user_reply_admin_message", $message_text);
 		    
 					$email_headers = array();
-					if ($outgoing_email) {
-						$email_headers["from"] = $outgoing_email;	
-					} else {
-						$email_headers["from"] = get_setting_value($support_settings, "user_reply_admin_from", $settings["admin_email"]); 
-					}
+					$email_headers["from"] = get_setting_value($support_settings, "user_reply_admin_from", $outgoing_email); 
 					$email_headers["cc"] = get_setting_value($support_settings, "user_reply_admin_cc");
 					$email_headers["bcc"] = get_setting_value($support_settings, "user_reply_admin_bcc");
 					$email_headers["reply_to"] = get_setting_value($support_settings, "user_reply_admin_reply_to");
 					$email_headers["return_path"] = get_setting_value($support_settings, "user_reply_admin_return_path");
 					$email_headers["mail_type"] = get_setting_value($support_settings, "user_reply_admin_message_type");
 		    
-					va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $mail_to;
+						$mail_notices["global_user_reply_admin_mail"] = $email_headers; 
+					}
 				} // end admin global notification
 
 				// send department email notification to admin
@@ -386,18 +388,19 @@
 					$admin_message = get_setting_value($dep_user_reply_admin_mail, "user_reply_admin_message", $message_text);
 		    
 					$email_headers = array();
-					if ($outgoing_email) {
-						$email_headers["from"] = $outgoing_email;	
-					} else {
-						$email_headers["from"] = get_setting_value($dep_user_reply_admin_mail, "user_reply_admin_from", $settings["admin_email"]); 
-					}
+					$email_headers["from"] = get_setting_value($dep_user_reply_admin_mail, "user_reply_admin_from", $outgoing_email); 
 					$email_headers["cc"] = get_setting_value($dep_user_reply_admin_mail, "user_reply_admin_cc");
 					$email_headers["bcc"] = get_setting_value($dep_user_reply_admin_mail, "user_reply_admin_bcc");
 					$email_headers["reply_to"] = get_setting_value($dep_user_reply_admin_mail, "user_reply_admin_reply_to");
 					$email_headers["return_path"] = get_setting_value($dep_user_reply_admin_mail, "user_reply_admin_return_path");
 					$email_headers["mail_type"] = get_setting_value($dep_user_reply_admin_mail, "user_reply_admin_message_type");
 		    
-					va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $mail_to;
+						$mail_notices["global_user_reply_admin_mail"] = $email_headers; 
+					}
 				} // end admin department notification
 
 				// send global email notification to user 
@@ -406,18 +409,19 @@
 					$user_message = get_setting_value($support_settings, "user_reply_user_message", $message_text);
 		    
 					$email_headers = array();
-					if ($outgoing_email) {
-						$email_headers["from"] = $outgoing_email;	
-					} else {
-						$email_headers["from"] = get_setting_value($support_settings, "user_reply_user_from", $settings["admin_email"]);
-					}
+					$email_headers["from"] = get_setting_value($support_settings, "user_reply_user_from", $outgoing_email);
 					$email_headers["cc"] = get_setting_value($support_settings, "user_reply_user_cc");
 					$email_headers["bcc"] = get_setting_value($support_settings, "user_reply_user_bcc");
 					$email_headers["reply_to"] = get_setting_value($support_settings, "user_reply_user_reply_to");
 					$email_headers["return_path"] = get_setting_value($support_settings, "user_reply_user_return_path");
 					$email_headers["mail_type"] = get_setting_value($support_settings, "user_reply_user_message_type");
 		    
-					va_mail($user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $user_email;
+						$mail_notices["global_user_reply_user_mail"] = $email_headers; 
+					}
 				} // end user global notification
 
 				// send department email notification to user 
@@ -426,19 +430,36 @@
 					$user_message = get_setting_value($dep_user_reply_user_mail, "user_reply_user_message", $message_text);
 		    
 					$email_headers = array();
-					if ($outgoing_email) {
-						$email_headers["from"] = $outgoing_email;	
-					} else {
-						$email_headers["from"] = get_setting_value($dep_user_reply_user_mail, "user_reply_user_from", $settings["admin_email"]);
-					}
+					$email_headers["from"] = get_setting_value($dep_user_reply_user_mail, "user_reply_user_from", $outgoing_email);
 					$email_headers["cc"] = get_setting_value($dep_user_reply_user_mail, "user_reply_user_cc");
 					$email_headers["bcc"] = get_setting_value($dep_user_reply_user_mail, "user_reply_user_bcc");
 					$email_headers["reply_to"] = get_setting_value($dep_user_reply_user_mail, "user_reply_user_reply_to");
 					$email_headers["return_path"] = get_setting_value($dep_user_reply_user_mail, "user_reply_user_return_path");
 					$email_headers["mail_type"] = get_setting_value($dep_user_reply_user_mail, "user_reply_user_message_type");
 
-					va_mail($user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $user_email;
+						$mail_notices["global_user_reply_user_mail"] = $email_headers; 
+					}
 				} // end user department notification
+
+				// update mail notices which were sent 
+				if (is_array($mail_notices) && count($mail_notices)) {
+					// remove empty mail headers
+					foreach ($mail_notices as $mail_code => $mail_headers) {
+						foreach ($mail_headers as $header_key => $header_value) {
+							if (!strlen($header_value)) {
+								unset($mail_notices[$mail_code][$header_key]);
+							}
+						}						
+					}
+					$sql  = " UPDATE ".$table_prefix."support_messages ";
+					$sql .= " SET mail_notices=".$db->tosql(json_encode($mail_notices), TEXT);
+					$sql .= " WHERE message_id=" . $db->tosql($message_id, INTEGER);
+					$db->query($sql);
+				}
 
         // update support request info
 				$sql  = " UPDATE " . $table_prefix . "support SET ";

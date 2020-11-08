@@ -2,22 +2,33 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  vat_check.php                                            ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
 */
 
 
-	function vat_check($vat, $ms = "")
+	function vat_check($vat, $ms = "", &$vat_response)
 	{
 		global $vat_remote_exception_countries;
-		
+
+		$vies_system_errors = "warning";
 		$result = "";
-		$valid = false;
+		$vat_valid = false;
 		$connected = true;
+		$vat_response = array(
+			"valid" => false,
+			"country_code" => "",
+			"vat_number" => "",
+			"name" => "",
+			"address" => "",
+			"error" => "",
+			"warning" => "",
+			"message" => "",
+		);
 
 		$chars_remove = array(" ", "-", ",", ".", "/", "\\");
 		$vat = strtoupper(str_replace($chars_remove, "", $vat));
@@ -28,56 +39,56 @@
 			$vat = $matches[2];
 		}
 		if (!strlen($ms)) {
+			$vat_response["error"] = "Can't obtain country code for VAT number.";
 			return false;
-		}
-	
-		$url = "http://ec.europa.eu/taxation_customs/vies/viesquer.do";
-		$parsed_url = parse_url($url);
-		$server = $parsed_url["host"];
-		$path = $parsed_url["path"];
-	
-		if (is_array($vat_remote_exception_countries) && in_array($ms, $vat_remote_exception_countries)) {
-			$connected = false;
+		} 
+
+		if (!extension_loaded("soap")) {
+			$error_message = "Can't find SOAP module for PHP to validate VAT number against online.";
+			if ($vies_system_errors == "error") {
+				$vat_response["error"] = $error_message;
+				return false;
+			} else if ($vies_system_errors == "warning") {
+				$vat_response["warning"] = $error_message;
+			}
 		} else {
-			$fp = @fsockopen($server, 80, $errno, $errstr, 5);
-			if (!$fp) {
-				$connected = false;
-			} else {
-				$out  = "GET " . $path . "?ms=" . $ms . "&vat=" . $vat . "&iso=" . $ms . "&BtnSubmitVat=Verify HTTP/1.1\r\n";
-				$out .= "Accept: text/xml\r\n";
-				$out .= "Accept: charset=ISO-8859-1\r\n";
-				$out .= "User-agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\r\n";
-				$out .= "Host: $server\r\n";
-				$out .= "Connection: Close\r\n\r\n";
-				
-				fwrite($fp, $out);
-				while (!feof($fp)) {
-					$result .= fgets($fp, 4096);
+			// use WSDL service to validate VAT number
+			try {
+				ini_set("soap.wsdl_cache_enabled", "0");
+				//$test_url = "http://ec.europa.eu/taxation_customs/vies/checkVatTestService.wsdl";
+				$wsdl_url = "https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl";
+				$soap_client = new SoapClient($wsdl_url, array('trace' => 1)); 
+	    
+				//$soap_functions = $soap_client->__getFunctions();
+				$request = array("countryCode" => $ms, "vatNumber" => $vat);
+				$response = $soap_client->checkVat($request);
+				if ($response->valid) {
+					$vat_response["valid"] = true;
+					$vat_response["message"] = "Valid VAT number";
+					$vat_response["country_code"] = $response->countryCode;
+					$vat_response["vat_number"] = $response->vatNumber;
+					$vat_response["name"] = $response->name;
+					$vat_response["address"] = $response->address;
+					return true;
+				} else {
+					$vat_response["error"] = "Invalid VAT Number";
+					$vat_response["country_code"] = $response->countryCode;
+					$vat_response["vat_number"] = $response->vatNumber;
+					return false;
 				}
-				fclose($fp);
-			}
-		
-			if ($result) {
-				//echo htmlspecialchars($result) . "<hr>";
-				$result = str_replace("\r", "", $result);
-				$result = str_replace("\n", "", $result);
-				if (preg_match("/Yes, valid VAT number/i", $result)) {
-					$valid = true;
+			} catch (SoapFault $exception) {
+				$error_message  = $exception->faultstring."<br>";
+				$error_message .= "Error Code: " . $exception->faultcode;
+				if ($vies_system_errors == "error") {
+					$vat_response["error"] = $error_message;
+					return false;
+				} else if ($vies_system_errors == "warning") {
+					$vat_response["warning"] = $error_message;
 				}
-				else if (preg_match("/No, invalid VAT number/i", $result)) {
-					$valid = false;
-				}
-				else {
-					$connected = false;
-				}
-			}
-			else {
-				$connected = false;
 			}
 		}
 
-		// Call VAT verification
-		if (!$connected) {
+		// VAT verification accordingly to specific rules
 			$vat_regexp = array(
 				"AT" => array("/^U(\d{8})$/"),					//** Austria
 				"BE" => array("/^(\d{9}\d?)$/"),				//** Belgium 
@@ -125,14 +136,16 @@
 					if (preg_match($re, $vat, $matches)) {
 						$vatnumber = $matches[1];
 						break;
-			    	}
+		    	}
 				}
-			}
-			else {
-				// no RegExp set for this country code
+			} else {
+				$vat_response["error"] = "No regular expression available for country code: " . $ms;
 				return false;
 			}
-			if (strlen($vatnumber) == 0) return false;
+			if (strlen($vatnumber) == 0) {
+				$vat_response["error"] = "Your VAT Number couldn't be matched.";
+				return false;
+			}
 
 			switch ($ms) {
 				// Checks the check digits of an Austrian VAT number.
@@ -157,9 +170,9 @@
 				  
 					// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 					if ($total == substr($vatnumber, 7, 1)) 
-				    	$valid = true;
+				    	$vat_valid = true;
 					else 
-				    	$valid = false;
+				    	$vat_valid = false;
 					break;
 
 				// Checks the check digits of a Belgium VAT number.
@@ -168,15 +181,15 @@
 					if (strlen($vatnumber) == 9) $vatnumber = "0" . $vatnumber;
 					  
 					if (97 - substr($vatnumber, 0, 8) % 97 == substr($vatnumber, 8, 2)) 
-						$valid = true;
+						$vat_valid = true;
 					else 
-						$valid = false;
+						$vat_valid = false;
 					break;
 
 				// Checks the check digits of a Bulgaria VAT number.
 				case "BG":
 					if (preg_match("/^[23]/", $vatnumber) && substr($vatnumber, 1, 2) <> "22"){
-						$valid = false;
+						$vat_valid = false;
 						break;
 					}
 					$total = 0;
@@ -192,21 +205,21 @@
 					$total = 11 - $total % 11;
 					if ($total == 11) $total = 0;
 					if ($total == 10){
-						$valid = false;
+						$vat_valid = false;
 						break;
 					}
 					  
 					// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 					if ($total == substr($vatnumber, 9, 1)) 
-						$valid = true;
+						$vat_valid = true;
 					else
-						$valid = false;
+						$vat_valid = false;
 					break;
 
 				// Checks the check digits of a Cyprus VAT number.
 				case "CY":
 					if (!preg_match("/^[013459]/", $vatnumber)){
-						$valid = false;
+						$vat_valid = false;
 						break;
 					}
 					$total = 0;
@@ -226,9 +239,9 @@
 					$total = chr($total + 65);
 					// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 					if ($total == substr($vatnumber, 8, 1))
-						$valid = true;
+						$vat_valid = true;
 					else
-						$valid = false;
+						$vat_valid = false;
 					break;
 
 				// Checks the check digits of a Czech Republic VAT number.
@@ -239,7 +252,7 @@
 					// Only do check digit validation for standard VAT numbers
 					if (strlen($vatnumber) != 8) 
 					{
-						$valid = true;
+						$vat_valid = true;
 					}
 					else 
 					{
@@ -253,9 +266,9 @@
 						  
 						// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 						if ($total == substr($vatnumber, 7, 1)) 
-							$valid = true;
+							$vat_valid = true;
 						else 
-							$valid = false;
+							$vat_valid = false;
 					}
     				break;
 
@@ -280,9 +293,9 @@
 					  
 					// Compare it with the last two characters of the VAT number. If the same, then it is a valid check digit.
 					if ($checkdigit == substr($vatnumber, 8, 1))
-						$valid = true;
+						$vat_valid = true;
 					else 
-						$valid = false;
+						$vat_valid = false;
 					break;
 
 				// Checks the check digits of a Danish VAT number.
@@ -298,9 +311,9 @@
 					  
 					// The remainder should be 0 for it to be valid..
 					if ($total == 0) 
-						$valid = true;
+						$vat_valid = true;
 					else 
-						$valid = false;
+						$vat_valid = false;
 					break;
 
 				// Checks the check digits of an Estonian VAT number.
@@ -317,9 +330,9 @@
 					  
 					// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 					if ($total == substr($vatnumber, 8, 1))
-						$valid = true;
+						$vat_valid = true;
 					else
-						$valid = false;
+						$vat_valid = false;
 					break;
 
 				// Checks the check digits of a Greek VAT number.
@@ -339,9 +352,9 @@
 					  
 					// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 					if ($total == substr($vatnumber, 8, 1)) 
-						$valid = true;
+						$vat_valid = true;
 					else
-						$valid = false;
+						$vat_valid = false;
 					break;
 
 				// Checks the check digits of a Spanish VAT number.
@@ -371,9 +384,9 @@
 						// Compare it with the last character of the VAT number. If it is the same, 
 						// then it's a valid check digit.
 						if ($total == substr($vatnumber, 8, 1)) 
-							$valid = true;
+							$vat_valid = true;
 						else
-							$valid = false;
+							$vat_valid = false;
 					}
 					  
 					// Non-profit companies
@@ -396,13 +409,13 @@
 						// Compare it with the last character of the VAT number. If it is the same, 
 						// then it's a valid check digit.
 						if ($total == substr($vatnumber, 8, 1)) 
-							$valid = true;
+							$vat_valid = true;
 						else 
-							$valid = false;
+							$vat_valid = false;
 					}
 					else 
 					{ 
-						$valid = true;
+						$vat_valid = true;
 					}
 					break;
 
@@ -420,16 +433,16 @@
 					  
 					// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 					if ($total == substr($vatnumber, 7, 1)) 
-						$valid = true;
+						$vat_valid = true;
 					else
-						$valid = false;
+						$vat_valid = false;
 					break;
 
 				// Checks the check digits of a French VAT number.
 				case "FR":
 					if (!preg_match("/^\d{11}$/", $vatnumber))
 					{
-						$valid = true;
+						$vat_valid = true;
 					}
 					else 
 					{
@@ -441,9 +454,9 @@
 						  
 						// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 						if ($total == substr($vatnumber, 0, 2)) 
-							$valid = true;
+							$vat_valid = true;
 						else
-							$valid = false;
+							$vat_valid = false;
 					}
 					break;
 
@@ -452,7 +465,7 @@
 					// Only inspect check digit of 9 character numbers
 					if (strlen($vatnumber) != 9) 
 					{
-						$valid = true;
+						$vat_valid = true;
 					}
 					else 
 					{
@@ -470,9 +483,9 @@
 						// If the same, then it is a valid check digit.
 						$total = abs($total);
 						if ($total == substr($vatnumber, 7, 2)) 
-							$valid = true;
+							$vat_valid = true;
 						else  
-							$valid = false;
+							$vat_valid = false;
 					}
 					break;
 
@@ -489,9 +502,9 @@
 					}
 					// Now check that we have the right check digit
 					if (($product + substr($vatnumber,10,1)*1) % 10 == 1) {
-						$valid = true;
+						$vat_valid = true;
 					} else {
-						$valid = false;
+						$vat_valid = false;
 					}
 
 					break;
@@ -510,9 +523,9 @@
 					  
 					// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 					if ($total == substr($vatnumber, 7, 1)) 
-						$valid = true;
+						$vat_valid = true;
 					else 
-						$valid = false;
+						$vat_valid = false;
 					break;
 
 				// Checks the check digits of an Irish VAT number.
@@ -537,9 +550,9 @@
 					  
 					// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 					if ($total == substr($vatnumber, 7, 1)) 
-						$valid = true;
+						$vat_valid = true;
 					else
-						$valid = false;
+						$vat_valid = false;
 					break;
 
 				// Checks the check digits of an Italian VAT number.
@@ -552,14 +565,14 @@
 					$temp = intval(substr($vatnumber, 0, 7));
 					if ($temp == 0) 
 					{
-						$valid = false;
+						$vat_valid = false;
 					}
 					else 
 					{
 						$temp = intval(substr($vatnumber, 7, 3));
 						if (($temp < 1) || ($temp > 201)) 
 						{
-							$valid = false;
+							$vat_valid = false;
 						}
 						else
 						{
@@ -579,9 +592,9 @@
 					  
 							// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 							if ($total == substr($vatnumber, 10, 1)) 
-								$valid = true;
+								$vat_valid = true;
 							else
-								$valid = false;
+								$vat_valid = false;
 						}
 					}
 					break;
@@ -591,7 +604,7 @@
 					// Only do check digit validation for standard VAT numbers
 					if (strlen($vatnumber) != 9)
 					{
-						$valid = true;
+						$vat_valid = true;
 					}
 					else
 					{
@@ -613,18 +626,18 @@
 					  
 					  	// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 						if ($total == substr($vatnumber, 8, 1)) 
-							$valid = true;
+							$vat_valid = true;
 						else
-							$valid = false;
+							$vat_valid = false;
 					}
 					break;
 
 				// Checks the check digits of a Luxembourg VAT number.
 				case "LU":
 					if (substr($vatnumber, 0, 6) % 89 == substr($vatnumber, 6, 2)) 
-						$valid = true;
+						$vat_valid = true;
 					else
-						$valid =  false;
+						$vat_valid =  false;
 					break;
 
 				// Checks the check digits of a Latvian VAT number.
@@ -632,7 +645,7 @@
 					// Only check the legal bodies
 					if (preg_match("/^[0-3]/", $vatnumber))
 					{
-						$valid = true;
+						$vat_valid = true;
 					}
 					else
 					{
@@ -653,9 +666,9 @@
 					  
 						// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 						if ($total == substr($vatnumber, 10, 1)) 
-							$valid = true;
+							$vat_valid = true;
 						else
-							$valid = false;
+							$vat_valid = false;
 					}
 					break;
 
@@ -672,9 +685,9 @@
 					  
 					// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 					if ($total == substr($vatnumber, 6, 2))
-						$valid = true;
+						$vat_valid = true;
 					else
-						$valid = false;
+						$vat_valid = false;
 					break;
 
 				// Checks the check digits of a Dutch VAT number.
@@ -691,9 +704,9 @@
 					
 					// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 					if ($total == substr($vatnumber, 8, 1))
-						$valid = true;
+						$vat_valid = true;
 					else
-						$valid = false;
+						$vat_valid = false;
 					break;
 
 				// Checks the check digits of a Polish VAT number.
@@ -710,9 +723,9 @@
 
 					// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 					if ($total == substr($vatnumber, 9, 1))
-						$valid = true;
+						$vat_valid = true;
 					else
-						$valid = false;
+						$vat_valid = false;
 					break;
 
 				// Checks the check digits of a Portugese VAT number.
@@ -729,9 +742,9 @@
   
 					// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 					if ($total == substr($vatnumber, 8, 1))
-						$valid = true;
+						$vat_valid = true;
 					else
-						$valid = false;
+						$vat_valid = false;
 					break;
 
 				// Checks the check digits of a Romanian VAT number.
@@ -739,7 +752,7 @@
 					if (strlen($vatnumber) > 10 && strlen($vatnumber) <= 13) // Natural persons
 					{
 						if (preg_match("/^[12346]/", $vatnumber)) {
-							$valid = false;
+							$vat_valid = false;
 							break;
 						}
 
@@ -748,27 +761,27 @@
 						$day = intval(substr($vatnumber, 5, 2));
 
 						if ($day < 1 || $day > 31) {
-							$valid = false;
+							$vat_valid = false;
 							break;
 						}
 						if ($month < 1 || $month > 12) {
-							$valid = false;
+							$vat_valid = false;
 							break;
 						}
 						if ($month == 2) // February
 						{
 							if ($year % 4 > 0 && $day > 28){
-								$valid = false;
+								$vat_valid = false;
 								break;
 							} elseif ($year % 4 == 0 && $day > 29){
-								$valid = false;
+								$vat_valid = false;
 								break;
 							}
 						}
 						elseif ($month == 4 || $month == 6 || $month == 9 || $month == 11)
 						{
 							if ($day > 30) {
-								$valid = false;
+								$vat_valid = false;
 								break;
 							}
 						}
@@ -788,9 +801,9 @@
 						  
 						// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 						if ($total == substr($vatnumber, 12, 1))
-							$valid = true;
+							$vat_valid = true;
 						else
-							$valid = false;
+							$vat_valid = false;
 							
 					} 
 					elseif (strlen($vatnumber) >= 2 && strlen($vatnumber) <= 10) // Legal persons
@@ -810,9 +823,9 @@
 						  
 						// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 						if ($total == substr($vatnumber, 9, 1))
-							$valid = true;
+							$vat_valid = true;
 						else
-							$valid = false;
+							$vat_valid = false;
 					}
 					
 					break;
@@ -839,9 +852,9 @@
   
 					// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 					if ($total == substr($vatnumber, 9, 1))
-						$valid = true;
+						$vat_valid = true;
 					else
-						$valid = false;
+						$vat_valid = false;
 					break;
 
 				// Checks the check digits of a Slovenian VAT number.
@@ -858,9 +871,9 @@
   
 					// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 					if ($total == substr($vatnumber, 7, 1))
-						$valid = true;
+						$vat_valid = true;
 					else
-						$valid = false;
+						$vat_valid = false;
 					break;
 					
 				// Checks the check digits of a Slovak VAT number.
@@ -879,15 +892,21 @@
   
 					// Compare it with the last character of the VAT number. If it is the same, then it's a valid check digit.
 					if ($total == substr($vatnumber, 9, 1))
-						$valid = true;
+						$vat_valid = true;
 					else
-						$valid = false;
+						$vat_valid = false;
 					break;
 			}
 
+		$vat_response["valid"] = $vat_valid;
+		$vat_response["country_code"] = $ms;
+		$vat_response["vat_number"] = $vat;
+		if ($vat_valid) {
+			$vat_response["message"] = "VAT number passed validation rules.";
+		} else {
+			$vat_response["error"] = "VAT Number has not passed validation rules.";
 		}
 		
-		return $valid;
+		return $vat_valid;
 	}
 
-?>

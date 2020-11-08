@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_dump_apply.php                                     ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -129,7 +129,7 @@
 								} else if (!$drop_table_syntax) {
 									// if there is an error occurred and it's not drop syntax show error
 									$queries_failed++;
-									$errors .= "<b>".ADMIN_ERROR_MSG."</b>: " . htmlspecialchars($db->error_desc) . "<br>";
+									$errors .= "<b>".va_message("ERROR_MSG")."</b>: " . htmlspecialchars($db->error_desc) . "<br>";
 									$errors .= "<b>SQL</b>: " . htmlspecialchars($sql) . "<br><br>";
 									output_block_info($queries_failed, "queriesFailed", false);
 									output_block_info($errors, "queriesErrors", true);
@@ -176,5 +176,3 @@
 		echo "<script language=\"JavaScript\" type=\"text/javascript\">".$eol."<!--".$eol."updateBlockInfo('".$message."','".$control_name."');".$eol."//-->".$eol."</script>".$eol;
 		flush();
 	}
-
-?>

@@ -111,146 +111,254 @@ function updateAttachments(attachmentsFiles)
 <div class="BlockTitle">{summary}</div>
 <div class="BlockContent">
 
-<table border="0" cellpadding="2" cellspacing="1" width="100%">
-<tr><td valign="top" width="33%">	
-	
-	<!-- begin user info -->
-	<table border="0" cellpadding="4" cellspacing="1" width="100%">
-    <tr valign="top" class="middle">
-    	<td colspan="2">{CUSTOMER_DETAILS_MSG}</td>
-    </tr>
-    <tr valign="top">
-    	<td class="middle" width="30%" nowrap>{CUSTOMER_NAME_MSG}</td>
-    	<td class="usual">{user_name}</td>
-    </tr>
-    <tr valign="top">
-    	<td class="middle">{CUSTOMER_EMAIL_MSG}</td>
-    	<td class="usual">{user_email}</td>
-    </tr>
-    <tr valign="top">
-    	<td class="middle">{EMAIL_CC_MSG} {EMAIL_FIELD}</td>
-    	<td class="usual">{mail_cc}</td>
-    </tr>
-    <tr valign="top">
-    	<td class="middle">{IDENTIFIER_MSG}</td>
-    	<td class="usual">{identifier}</td>
-    </tr>
-    <tr valign="top">
-    	<td class="middle">{ENVIRONMENT_MSG}</td>
-    	<td class="usual">{environment}</td>
-    </tr>
-    <tr valign="top">
-    	<td class="middle">{CUSTOMER_IP_MSG}</td>
-    	<td class="usual ip-data">
+<div>
+
+<div class="ticket-data">
+	<div class="head">{CUSTOMER_DETAILS_MSG}</div>
+
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{PROFILE_TITLE}</div> 
+			<div class="value {posted_user_class}">
+				<!-- begin ticket_user_login_block -->
+				<a href="{admin_user_url}" class="user-login">{ticket_user_login}</a> 
+				<span class="user-id">(#{ticket_user_id})</span>
+				<!-- end ticket_user_login_block -->
+				<span class="user-type">{ticket_user_type}</span></div>
+			<div class="after"></div>
+		</div>
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{CUSTOMER_NAME_MSG}</div> 
+			<div class="value">{user_name}</div>
+			<div class="after"></div>
+		</div>
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{CUSTOMER_EMAIL_MSG}</div> 
+			<div class="value">{user_email}</div>
+			<div class="after"></div>
+		</div>
+		<!-- begin mail_cc_block -->
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{EMAIL_CC_MSG}</div> 
+			<div class="value">{mail_cc}</div>
+			<div class="after"></div>
+		</div>
+		<!-- end mail_cc_block -->
+		<div class="field fd-ip">
+			<div class="before"></div>
+			<div class="name">{CUSTOMER_IP_MSG}</div> 
+			<div class="value ip-data">
 				<span class="ip-address {ip_class}">{remote_address_desc}</span> 
 				<a class="bn-tiny ip-edit" href="{admin_order_black_url}" onClick="openEditWindow('{admin_order_black_url}'); return false;" data-add-text="{ADD_TO_BLACK_LIST_MSG}" data-edit-text="{EDIT_BUTTON} / {REMOVE_BUTTON}">{ip_edit_text}</a>
-			</td>
-    </tr>
-    <tr valign="top">
-    	<td class="middle">{ADMIN_PRODUCT_MSG}</td>
-    	<td class="usual">{product_name}</td>
-    </tr><!-- begin custom_properties -->
-	<tr valign="top">
-    	<td class="middle">{property_name}</td>
-    	<td class="usual">{property_value}</td>
-    </tr><!-- end custom_properties -->
-    </table>
-    
-</td><td valign="top" width="33%">	
-
-	<table border="0" cellpadding="4" cellspacing="1" width="100%">
-    <tr class="middle">
-    	<td colspan="2">{ADMIN_STATISTIC_MSG}</td>
-    </tr><!-- begin orders_name_stats -->
-    <tr class="middlebg">
-    	<td colspan="2" >
-			Search by name: found 
-			<a href="{admin_orders_url}"><b>{orders_number_sum}</b></a> order(s) for '<b>{user_name}</b>'
-    	</td>
-    </tr><!-- end orders_name_stats --><!-- begin orders_stats -->
-    <tr class="middle">
-    	<td width="40%">{ORDERS_MSG}</td>
-    	<td width="60%"><a href="{admin_orders_url}"><b>{orders_number_sum}</b></a> ({orders_total_sum})</td>
-    </tr><!-- end orders_stats -->
-		<!-- begin orders_statuses -->
-    <tr valign="top">
-    	<td class="usual">{order_status}</td>
-    	<td class="usual"><a href="{admin_orders_url}"><b>{orders_number}</b></a> ({orders_total})</td>
-    </tr><!-- end orders_statuses -->
+			</div>
+			<div class="after"></div>
+		</div><!-- begin orders_stats -->
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{ORDERS_MSG}</div> 
+			<div class="value">
+				<div class="popup-expand" data-class="popup-cell" data-js="expand">
+					<span class="t2itle">{orders_number_sum}</span> ({orders_total_sum})<i class="ico-toggle expand"></i>
+					<div class="clear"></div>
+				</div>
+				<div class="popup-cell">
+					<table border="0" cellspacing="0" cellpadding="4" width="100%">
+						<tr class="middle" align="center">
+							<td>{STATUS_MSG}</td>
+							<td>{ORDERS_MSG}</td>
+							<td>{AMOUNT_MSG}</td>
+						</tr><!-- begin orders_statuses -->
+						<tr class=usual>
+							<td>{order_status}</td>
+							<td align="center">{orders_number}</td>
+							<td align="right">{orders_total}</td>
+						</tr><!-- end orders_statuses -->
+						<tr class="middle">
+							<td><a href="{admin_orders_url}">{TOTAL_MSG}</a></td>
+							<td align="center">{total_orders}</td>
+							<td align="right">{total_goods}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="after"></div>
+		</div><!-- end orders_stats -->
 		<!-- begin tickets_stats -->
-    <tr class="middle">
-    	<td width="40%">{TICKETS_MSG}</td>
-    	<td width="60%"><a href="{admin_tickets_url}"><b>{tickets_number_sum}</b></a></td>
-    </tr><!-- end tickets_stats -->
-		<!-- begin tickets_statuses -->
-    <tr valign="top">
-    	<td class="usual">{ticket_status}</td>
-    	<td class="usual"><a href="{admin_tickets_url}"><b>{tickets_number}</b></a></td>
-    </tr><!-- end tickets_statuses -->
-    </table>	
-	
-</td><td valign="top" width="33%">	
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{TICKETS_MSG}</div> 
+			<div class="value">
+				<div class="popup-expand" data-class="popup-cell" data-js="expand">
+					{tickets_number_sum} <i class="ico-toggle expand"></i>
+					<div class="clear"></div>
+				</div>
+				<div class="popup-cell">
+					<table border="0" cellspacing="0" cellpadding="4" width="100%">
+						<tr class="middle" align="center">
+							<td>{STATUS_MSG}</td>
+							<td>{TICKETS_MSG}</td>
+						</tr><!-- begin tickets_statuses -->
+						<tr class=usual>
+							<td><a href="{admin_tickets_url}">{ticket_status}</a></td>
+							<td align="center">{tickets_number}</td>
+						</tr><!-- end tickets_statuses -->
+						<tr class="middle">
+							<td><a href="{admin_tickets_url}">{TOTAL_MSG}</a></td>
+							<td align="center">{tickets_number_sum}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="after"></div>
+		</div>
+		<!-- end tickets_stats -->
+</div>
 
-	<table border="0" cellpadding="4" cellspacing="1" width="100%">
-    <tr valign="top" class="middle">
-    	<td colspan="2">{REQUEST_DETAILS_MSG}</td>
-    </tr>
-    <tr valign="top">
-    	<td class="middle" width="30%">{SUPPORT_DEPARTMENT_FIELD}</td>
-    	<td class="usual">{department_title}</td>
-    </tr>
-    <tr valign="top">
-    	<td class="middle" width="30%">{ASSIGNED_MSG}</td>
-    	<td class="usual">{assign_to}</td>
-    </tr>
-    <tr valign="top" >
-    	<td class="middle">{TYPE_MSG}</td>
-    	<td class="usual">{type}</td>
-    </tr>
-    <tr valign="top">
-    	<td nowrap class="middle">{SUPPORT_CURRENT_STATUS_FIELD}</td>
-    	<td nowrap class="usual">{current_status}</td>
-    </tr>
-    <tr valign="top">
-    	<td class="middle">{PRIORITY_MSG}</td>
-    	<td class="usual">{priority}</td>
-    </tr>
-    <tr valign="top">
-    	<td class="middle">{POSTED_MSG}</td>
-    	<td class="usual" nowrap>{request_added}</td>
-    </tr>
-    <tr valign="top">
-    	<td nowrap class="middle">{SUPPORT_UPDATED_FIELD}</td>
-    	<td nowrap class="usual">{date_modified}</td>
-    </tr>
-    <tr valign="top">
-    	<td nowrap class="middle">
-    		{CODE_MSG}
-    	</td>
-    	<td nowrap class="usual">
-    		<a href="{user_support_url}">{vc_parameter}</a>
-    	</td>
-    </tr><!--begin site_name_block-->
-    <tr valign="top">
-    	<td nowrap class="middle">{SITE_NAME_MSG}</td>
-    	<td nowrap class="usual">{site_name}</td>
-    </tr><!--end site_name_block-->
-    <tr valign="top" class="usual">
-    	<td colspan="2"><!-- BEGIN edit_ticket -->
-				<div class="right">
+
+<div class="ticket-data">
+	<div class="head">{TICKET_DETAILS_MSG}</div>
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{SUPPORT_DEPARTMENT_FIELD}</div> 
+			<div class="value">{department_title}</div>
+			<div class="after"></div>
+		</div>
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{TYPE_MSG}</div> 
+			<div class="value">{type}</div>
+			<div class="after"></div>
+		</div>
+		<!-- begin identifier_block -->
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{IDENTIFIER_MSG}</div> 
+			<div class="value">{identifier}</div>
+			<div class="after"></div>
+		</div>
+		<!-- end identifier_block -->
+		<!-- begin environment_block -->
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{ENVIRONMENT_MSG}</div> 
+			<div class="value">{environment}</div>
+			<div class="after"></div>
+		</div>
+		<!-- end environment_block -->
+		<!-- begin product_block -->
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{ADMIN_PRODUCT_MSG}</div> 
+			<div class="value">{product_name}</div>
+			<div class="after"></div>
+		</div>
+		<!-- end product_block -->
+		<!-- begin custom_properties -->
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{property_name}</div> 
+			<div class="value">{property_value}</div>
+			<div class="after"></div>
+		</div><!-- end custom_properties -->
+
+</div>
+
+
+<div class="ticket-data">
+	<div class="head">{ADMINISTRATIVE_INFO_MSG}</div>
+    <!--begin site_name_block-->
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{SITE_NAME_MSG}</div> 
+			<div class="value">{site_name}</div>
+			<div class="after"></div>
+		</div>
+    <!--end site_name_block-->
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{PRIORITY_MSG}</div> 
+			<div class="value">{priority}</div>
+			<div class="after"></div>
+		</div>
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{SUPPORT_CURRENT_STATUS_FIELD}</div> 
+			<div class="value">{current_status}</div>
+			<div class="after"></div>
+		</div><!-- begin answered_by_block -->
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{ANSWERED_BY_MSG}</div> 
+			<div class="value">{answered_by}</div>
+			<div class="after"></div>
+		</div><!-- end answered_by_block --><!-- begin assigned_by_block -->
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{ASSIGNED_BY_MSG}</div> 
+			<div class="value">{assigned_by}</div>
+			<div class="after"></div>
+		</div><!-- end assigned_by_block --><!-- begin assigned_to_block -->
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{ASSIGNED_TO_MSG}</div> 
+			<div class="value">{assigned_to}</div>
+			<div class="after"></div>
+		</div><!-- end assigned_to_block -->
+		<!-- begin forwarded_by_block -->
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{FORWARDED_BY_MSG}</div> 
+			<div class="value">{forwarded_by}</div>
+			<div class="after"></div>
+		</div><!-- end forwarded_by_block --><!-- begin forwarded_to_block -->
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{FORWARDED_TO_MSG}</div> 
+			<div class="value">{forwarded_to}</div>
+			<div class="after"></div>
+		</div><!-- end forwarded_to_block -->
+		<!-- begin notice_sent_to_block -->
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{NOTICE_SENT_TO_MSG}</div> 
+			<div class="value">{notice_sent_to}</div>
+			<div class="after"></div>
+		</div><!-- end notice_sent_to_block -->
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{DATE_ADDED_MSG}</div> 
+			<div class="value">{request_added}</div>
+			<div class="after"></div>
+		</div>
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{DATE_UPDATED_MSG}</div> 
+			<div class="value">{date_modified}</div>
+			<div class="after"></div>
+		</div>
+		<div class="field">
+			<div class="before"></div>
+			<div class="name">{CODE_MSG}</div> 
+			<div class="value"><a href="{user_support_url}">{vc_parameter}</a></div>
+			<div class="after"></div>
+		</div>
+		<div class="field">
+				<div class="buttons">
+					<!-- BEGIN edit_ticket -->
 					<a class="bn-small" href="{admin_support_request_url}"><b>{EDIT_TICKET_MSG}</b></a>
 					<a class="bn-small" href="{admin_request_delete_url}" onClick="return confirm('{CONFIRM_DELETE_JS}');"><b>{DELETE_TICKET_MSG}</b></a><!-- END edit_ticket -->
 					<!-- BEGIN close_ticket -->
 					<a class="bn-small" href="{close_ticket_url}" onclick="return closeTicket();"><b>{CLOSE_TICKET_MSG}</b></a><!-- END close_ticket -->
 				</div>
-    	</td>
-    </tr>
-    </table>
+		</div>
+</div>
 
-	<!-- end of request data -->
-	</td>
-</tr>
-</table>
+<div class="clear"></div>
+</div>
+
 
 </div>
 </div>

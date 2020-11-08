@@ -194,6 +194,8 @@ function vaInit()
 			vaRatingParse(jsObj);
 		} else if (jsValue == "link") {
 			vaLinkParse(jsObj);
+		} else if (jsValue == "reload") {
+			vaReloadParse(jsObj); // automatic block reload after some timeout
 		} else if (jsValue == "multicheck") {
 			//vaMultiCheckParse(jsObj);
 		}
@@ -208,7 +210,7 @@ function vaPostInit()
 		var jsObj = jsObjs[j];
 		var jsValue = jsObj.getAttribute("data-js").toLowerCase();
 		var jsType = jsObj.hasAttribute("data-js-type") ? jsObj.getAttribute("data-js-type").toLowerCase() : "";
-		if (jsValue == "slideshow") {
+		if (jsValue == "slides" || jsValue == "slideshow") {
 			vaSlideShowParse(jsObj);
 		} else if (jsValue == "slider") {
 			vaSliderParse(jsObj, 1);
@@ -223,9 +225,14 @@ function vaResize()
 		var jsObj = jsObjs[j];
 		var jsValue = jsObj.getAttribute("data-js").toLowerCase();
 		var jsType = jsObj.hasAttribute("data-js-type") ? jsObj.getAttribute("data-js-type").toLowerCase() : "";
-		if (jsValue == "slideshow") {
+		if (jsValue == "slides" || jsValue == "slideshow") {
 			vaSlideShowCalc(jsObj);
 		}
+	}
+	// re-centering popup block if it exists
+	var areaObj = document.getElementById("popupArea");
+	if (areaObj) {
+		vaCenterBlock(areaObj);
 	}
 }
 
@@ -544,9 +551,13 @@ function vaSubscribeEmail(field)
 	callAjax(url, vaSubscribeResult, field);
 }
 
-function vaSubscribeResult(response, field)
+function vaSubscribeResult(data, field)
 {
-	var data = JSON.parse(response);
+	try { 
+		data = JSON.parse(data);
+	} catch(e){
+		alert("Bad response: " + data);
+	}
 	var parentObj = vaParentJS(field);
 	var msgBlock = null;
 	if (data.result == "error") {
@@ -557,9 +568,11 @@ function vaSubscribeResult(response, field)
 	if (msgBlock) {
 		msgBlock.style.display = "block";
 		msgBlock.onclick = function() { this.style.display = "none" ;};
-		var msgObj = msgBlock.querySelector("span");
+		var msgObj = msgBlock.querySelector(".msg-desc");
 		if (!msgObj) { msgObj = msgBlock.querySelector(".message"); }
+		if (!msgObj) { msgObj = msgBlock.querySelector("span"); }
 		if (msgObj) { msgObj.innerHTML = data.message; }
+		else { msgBlock.innerHTML = data.message; }
 	}
 }
 
@@ -743,6 +756,16 @@ function vaLinkParse(linkObj)
 	linkObj.addEventListener("click", function(event) { vaLink(this, event); }, false);
 }
 
+function vaReloadParse(reloadObj)
+{
+	var pbId = reloadObj.getAttribute("data-pb-id");
+	var timeout = reloadObj.hasAttribute("data-timeout") ? parseInt(reloadObj.getAttribute("data-timeout")) : 1000;
+	if (isNaN(timeout)) { overStop = 1000; }
+	if (pbId) {
+		setTimeout(function() { reloadBlock(pbId); }, timeout); 
+	}
+}
+
 function vaLink(linkObj, event)
 {
 	var parentObj = vaParent(linkObj, "data-pb-id");
@@ -847,7 +870,8 @@ function vaTreeParse(parentUl, jsType, level)
 		if (liObj.nodeType == 1 && liObj.tagName == "LI") {
 			liObj.setAttribute("data-level", level);
 			var childUl = liObj.querySelector("ul");
-			var expandObj = liObj.querySelector(".expand");
+			var expandObj = liObj.querySelector(".node-expand");
+			if (!expandObj) { expandObj = liObj.querySelector(".expand"); }
 			// add event to expand tag if it has ul child element or marked with nav-childs class
 			var className = liObj.className;
 			var regExp = /childs/gi;
@@ -1456,6 +1480,7 @@ function vaSlideShowParse(block)
 	// set for main block relative position 
 	block.style.position = "relative";
 	block.style.overflow = "hidden";
+	var blockWidth = block.offsetWidth;
 
 	// check block id
 	var pbId = block.hasAttribute("data-pb-id") ? block.getAttribute("data-pb-id") : "";
@@ -1463,23 +1488,38 @@ function vaSlideShowParse(block)
 	var sliderType = parseInt(block.getAttribute("data-slider-type"));
 	if (isNaN(sliderType)) { sliderType = 5; }
 	block.setAttribute("data-slider-type", sliderType);
-
 	// check slider speed
 	var sliderSpeed = parseInt(block.getAttribute("data-slider-speed"));
 	if (isNaN(sliderSpeed)) { sliderSpeed = 1; }
 	block.setAttribute("data-slider-speed", sliderSpeed);
+	// check transition parameters 
+	var transitionDelay = block.getAttribute("data-transition-delay");
+	if (transitionDelay.match(/ms$/)) {
+		transitionDelay = parseInt(transitionDelay.replace("ms", ""));
+	} else {
+		transitionDelay = parseInt(transitionDelay.replace("s", "")) * 1000;
+	}
+	if (isNaN(transitionDelay)) { transitionDelay = defaultDelay ; }
+	block.setAttribute("data-transition-delay", transitionDelay);
+
+	var transitionDuration = block.getAttribute("data-transition-duration");
+	transitionDuration = transitionDuration.replace(/\s/g, "");
+	block.setAttribute("data-transition-duration", transitionDuration);
 
 	// check slides and get max height 
-	var slideIndex = 0; var maxHeight = 0; var leftPos = 0; var topPos = 0; var rightPos = 0; var bottomPos = 0;
+	var slideIndex = 0; var maxHeight = 0; var maxWidth = 0; var leftPos = 0; var topPos = 0; var rightPos = 0; var bottomPos = 0;
 	var slides = block.querySelectorAll("[data-slide]"); 
+	var prevSlideWidth = 0; var zIndexStart = slides.length + 1; var slideOpacity = 1; var slideScale = 1;
 	for (var s = 0; s < slides.length; s++) {	
 		slideIndex++;
 		var slide = slides[s];
 		slide.style.position = "absolute";
 		slide.setAttribute("data-slide", slideIndex);
+		slide.setAttribute("data-nav", slideIndex);
 		var slideHeight = slide.offsetHeight;
 		var slideWidth = slide.offsetWidth;
 		if (slideHeight > maxHeight) { maxHeight = slideHeight; }
+		if (slideWidth > maxWidth) { maxWidth = slideWidth; }
 		if (sliderType == 1) { // vertical
 			slide.style.top = topPos+"px";
 			slide.style.left = "0";
@@ -1496,18 +1536,32 @@ function vaSlideShowParse(block)
 			slide.style.top = "0";
 			slide.style.right = rightPos+"px";
 			rightPos += slideWidth;
+		} else if (sliderType == 6) { // chain slider
+			slide.style.top = 0;
+			leftPos = (blockWidth - slideWidth) / 2; // for chain slider move all slides to center as start
+			slide.style.left = leftPos+"px"; 
+			slide.addEventListener("click", function (event) { vaSlideActivate(this, event); }, false);
+			var slideLinks = slide.querySelectorAll("a");
+			for (var sl = 0; sl < slideLinks.length; sl++) {
+				slideLinks[sl].addEventListener("click", function (event) { vaSlideClickCheck(this, event); }, false);
+			}
 		} else {
 			// for slideshow use maximum size for all slides so they can properly shown and resized
+			if (transitionDuration.match(/^\d+(s|ms)$/)) {
+				slide.style.transitionDuration = transitionDuration;
+			}
 			slide.style.top = "0";
 			slide.style.left = "0";
 			slide.style.bottom = "0";
 			slide.style.right = "0";
 			if (slideIndex > 1) {
 				// keep only first slide to show on start and hide all following
-				slide.style.visibility = "hidden";
+				slide.style.opacity = "0";
 			}
 		}
+		prevSlideWidth = slideWidth;
 	}
+
 	// set height for slider
 	if (!block.style.height) {
 		block.style.height = maxHeight+"px";
@@ -1524,25 +1578,6 @@ function vaSlideShowParse(block)
 	block.setAttribute("data-slides", slideIndex);
 	block.setAttribute("data-active-slide", 1);
 
-	// check transition parameters 
-	var transitionDelay = block.getAttribute("data-transition-delay");
-	if (transitionDelay.match(/ms$/)) {
-		transitionDelay = parseInt(transitionDelay.replace("ms", ""));
-	} else {
-		transitionDelay = parseInt(transitionDelay.replace("s", "")) * 1000;
-	}
-	if (isNaN(transitionDelay)) { transitionDelay = defaultDelay ; }
-	block.setAttribute("data-transition-delay", transitionDelay);
-
-	var transitionDuration = block.getAttribute("data-transition-duration");
-	if (transitionDuration.match(/ms$/)) {
-		transitionDuration = parseInt(transitionDuration.replace("ms", ""));
-	} else {
-		transitionDuration = parseInt(transitionDuration.replace("s", "")) * 1000;
-	}
-	if (isNaN(transitionDuration)) { transitionDuration = defaultDuration; }
-	block.setAttribute("data-transition-duration", transitionDuration);
-
 	if (sliderType >= 1 && sliderType <= 4) {
 		// slide moves all the times up, down, left, right
 		//vaInitSlideShowMove(pbId, sliderType); delete old code
@@ -1550,6 +1585,23 @@ function vaSlideShowParse(block)
 		block.onmouseout = function (){ this.removeAttribute("data-pause"); };
 	
 		setTimeout(function() { vaMoveSlider(block); }, 500);
+	} else if (sliderType == 6) {
+		var navPrev = document.createElement("a");
+		navPrev.className = "slide-prev";
+		navPrev.setAttribute("data-nav", "prev");
+		navPrev.addEventListener("click", function (event) { vaSlideActivate(this, event); }, false);
+		block.appendChild(navPrev);
+		var navNext = document.createElement("a");
+		navNext.className = "slide-next";
+		navNext.setAttribute("data-nav", "next");
+		navNext.addEventListener("click", function (event) { vaSlideActivate(this, event); }, false);
+		block.appendChild(navNext);
+
+		block.addEventListener("mousedown", function (event) { vaSliderMouseDown(this, event); }, false);
+		block.addEventListener("mouseup", function (event) { vaSliderMouseUp(this, event); }, false);
+		block.addEventListener("mouseout", function (event) { vaSliderMouseUp(this, event); }, false);
+		vaSlidesChainCalc(block);
+
 	} else if (slideIndex > 1) {
 		// slide changes one by one
 		// check where we need to show navigation inside or outside main slider block
@@ -1570,14 +1622,14 @@ function vaSlideShowParse(block)
 	  
 		for (var s = 1; s <= slidesTotal; s++) {
 			var slideNavObj = document.createElement("a");
-			slideNavObj.setAttribute("data-slide", s);
+			slideNavObj.setAttribute("data-nav", s);
 			if (s == 1) {
 				slideNavObj.className = "slide-nav slide-active";
 			} else {
 				slideNavObj.className = "slide-nav ";
 			}
 			slideNavObj.innerHTML = "<span>"+s+"</span>";
-			slideNavObj.onclick = function () { vaSlideActivate(block, this); return false; };
+			slideNavObj.onclick = function () { vaSlideActivate(this); return false; };
 			navObj.appendChild(slideNavObj);
 		}
 	  
@@ -1602,7 +1654,6 @@ function vaSlideShowCalc(block)
 		slideIndex++;
 		var slide = slides[s];
 		slide.style.top = "0";
-		slide.style.left = "0";
 		slide.style.removeProperty("bottom");
 		slide.style.removeProperty("right");
 		var slideHeight = slide.offsetHeight;
@@ -1620,10 +1671,13 @@ function vaSlideShowCalc(block)
 		} else if (sliderType == 4) { // horizontal
 			slide.style.right = rightPos+"px";
 			rightPos += slideWidth;
-		} else {
+		} else if (sliderType == 5) { 
 			// for slideshow don't need to change any parameters
 			slide.style.bottom = "0";
 			slide.style.right = "0";
+		} else {
+			// for chain slider
+			slide.style.top = 0;
 		}
 	}
 	// set new height for slider
@@ -1634,6 +1688,141 @@ function vaSlideShowCalc(block)
 	block.setAttribute("data-slides-bottom", bottomPos);
 	block.setAttribute("data-slides-right", rightPos);
 }
+
+function vaSlidesChainCalc(block)
+{
+	// check active slide
+	var activeSlide = parseInt(block.getAttribute("data-active-slide"));
+	var slides = block.querySelectorAll("[data-slide]"); 
+	var slidesNumber = slides.length;
+	if (isNaN(activeSlide) || activeSlide < 1 || activeSlide > slides.length) {
+		activeSlide = 1;
+		block.setAttribute("data-active-slide", 1);
+	}
+	// get slider parameters 
+	var blockWidth = block.offsetWidth;
+	var scaleOff = parseFloat(block.getAttribute("data-scale-off"));
+	if (isNaN(scaleOff) || scaleOff < 0 || scaleOff > 1) {
+		scaleOff = 0.3;
+	}
+	var slideIndent = parseFloat(block.getAttribute("data-slide-indent"));
+	if (!slideIndent || isNaN(slideIndent)) {
+		slideIndent = 1;
+	}
+	var visibleSlides = parseFloat(block.getAttribute("data-visible-slides"));
+	if (!visibleSlides || isNaN(visibleSlides)) {
+		visibleSlides = 2;
+	}
+
+	var startIndex = activeSlide - 1;
+	// move from active slide to the right
+	var prevSlideShift = 0; var zIndexStart = slides.length + 1; var slideOpacity = 1; var slideScale = 1;
+	var scaleLeftDiff = 0; var shownSlides = 0;
+	for (var s = startIndex; s < slides.length; s++) {	
+		var slideIndex = s + 1;
+		var slide = slides[s];
+		var slideWidth = slide.offsetWidth;
+
+		if (slideIndex == activeSlide) {
+			slideScale = 1;
+			scaleLeftDiff = 0;
+			leftPos = (blockWidth - slideWidth) / 2;
+			slide.className = "slide slide-active";
+		} else {	
+			shownSlides++;
+			if (shownSlides > visibleSlides) {
+				slideScale = 0;
+			} else {
+				slideScale -= scaleOff;
+			}
+			scaleLeftDiff = (slideWidth - slideWidth * slideScale) / 2;
+			leftPos += prevSlideShift - scaleLeftDiff + slideIndent;
+			slide.className = "slide slide-inactive";
+		}
+		slide.style.left = leftPos+"px";
+		slide.style.zIndex = zIndexStart;
+		slide.style.transform = "scale("+slideScale+") ";
+		slide.style.removeProperty("visibility"); // remove initial visibility state 
+		// update data for next iteration
+		prevSlideShift = slideWidth * slideScale + scaleLeftDiff;
+		zIndexStart--;
+	}
+
+	// move from active slide to the left
+	prevSlideShift = 0; zIndexStart = slides.length + 1; slideOpacity = 1; slideScale = 1; shownSlides = 0;
+	for (var s = startIndex; s >= 0; s--) {	
+		var slideIndex = s + 1;
+		var slide = slides[s];
+		var slideWidth = slide.offsetWidth;
+
+		if (slideIndex == activeSlide) {
+			slideScale = 1;
+			scaleLeftDiff = 0;
+			leftPos = (blockWidth - slideWidth) / 2;
+			slide.className = "slide slide-active";
+		} else {	
+			shownSlides++;
+			if (shownSlides > visibleSlides) {
+				slideScale = 0;
+			} else {
+				slideScale -= scaleOff;
+			}
+			scaleLeftDiff = (slideWidth - slideWidth * slideScale) / 2;
+			leftPos -= prevSlideShift - scaleLeftDiff + slideIndent;
+			slide.className = "slide slide-inactive";
+		}
+		slide.style.left = leftPos+"px";
+		slide.style.zIndex = zIndexStart;
+		slide.style.transform = "scale("+slideScale+") ";
+		//slide.style.opacity = slideOpacity;
+		//slide.style.transform = "translateX("+leftPos+"px) scale("+slideScale+") ";
+		// update data for next iteration
+		prevSlideShift = slideWidth * slideScale + scaleLeftDiff;
+		zIndexStart--;
+	}
+	// hide show prev - next navigation
+	var navPrev = block.querySelector(".slide-prev"); 
+	var navNext = block.querySelector(".slide-next"); 
+	if (navPrev) {
+		navPrev.style.opacity = (activeSlide == 1) ? "0" : "1";
+	}
+	if (navNext) {
+		navNext.style.opacity = (activeSlide == slidesNumber) ? "0" : "1";
+	}
+}
+
+function vaSliderMouseDown(block, event)
+{
+	block.setAttribute("data-mouse-x", event.clientX);
+}
+
+function vaSliderMouseUp(block, event)
+{
+	if (block.hasAttribute("data-mouse-x")) {
+		var prevX = parseInt(block.getAttribute("data-mouse-x"));
+		var nextX = event.clientX;
+		block.removeAttribute("data-mouse-x");
+		var slidesNumber = parseInt(block.getAttribute("data-slides"));
+		var activeSlide = parseInt(block.getAttribute("data-active-slide"));
+
+		if (prevX - nextX > 25) {
+			// move slides left - increase slide index
+			if (activeSlide < slidesNumber) {
+				activeSlide++;
+				block.setAttribute("data-active-slide", activeSlide);
+				vaSlidesChainCalc(block);
+			}
+		} else if (prevX - nextX < -25) {
+			// move slides right - decrease slide index
+			if (activeSlide > 1) {
+				activeSlide--;
+				block.setAttribute("data-active-slide", activeSlide);
+				vaSlidesChainCalc(block);
+			}
+		}
+	}
+}
+
 
 function vaMoveSlider(block)
 {
@@ -1711,115 +1900,91 @@ function vaMoveSlider(block)
 
 function vaSlideShow(block)
 {
-	if (block.hasAttribute("data-transition-stop")) { return; }
-
 	var activeSlide = parseInt(block.getAttribute("data-active-slide"));
 	var slidesNumber = parseInt(block.getAttribute("data-slides"));
 	var newSlide = (activeSlide >= slidesNumber) ? 1 : activeSlide+1;
 
-	var curObj = block.querySelector("[data-slide='"+activeSlide+"']");
-	var newObj = block.querySelector("[data-slide='"+newSlide+"']");
-	block.setAttribute("data-transition-step", "0");
-
-	curObj.style.opacity = "1";
-	newObj.style.opacity = "0";
-	newObj.style.visibility = "visible";
-				
-
-	var tid = setTimeout(function() { vaSlideShowChange(block, curObj, newObj); }, 20);
-	block.setAttribute("data-tid", tid);
-}
-
-function vaSlideShowChange(block, curObj, newObj)
-{
-	if (block.hasAttribute("data-transition-stop")) { 
-		// stop slide changes and hide new slide
-		newObj.style.visibility = "hidden";
-		newObj.style.opacity = "";
-		return; 
-	}
-
-	var step = parseInt(block.getAttribute("data-transition-step"));
-	var transitionDuration = parseInt(block.getAttribute("data-transition-duration"));
-	var changeTimeout = Math.ceil(transitionDuration / 100);
-
-	// increase step number up to 100
-	step = step + 1;
-	block.setAttribute("data-transition-step", step);
-
-	curObj.style.opacity = (100-step)/100; 
-	newObj.style.opacity = step/100;
-
-
-	if (step < 100) {
-		var tid = setTimeout(function() { vaSlideShowChange(block, curObj, newObj); }, changeTimeout);
-	} else {
-		curObj.style.visibility = "hidden";
-		newObj.style.visibility = "visible";
-		// remove opacity 
-		curObj.style.opacity = "";
-		newObj.style.opacity = "";
-
-		block.setAttribute("data-active-slide", newObj.getAttribute("data-slide"));
-
-		// update navigation
-		var activeSlide = curObj.getAttribute("data-slide");
-		var newSlide = newObj.getAttribute("data-slide");
-		var sliderObj = block.querySelector(".slider-nav");
-		if (!sliderObj) {
-			sliderObj = block.parentNode.querySelector(".slider-nav");
-		}
-		var curNavObj = sliderObj.querySelector("[data-slide='"+activeSlide+"']");
-		var newNavObj = sliderObj.querySelector("[data-slide='"+newSlide+"']");
-		curNavObj.className = curNavObj.className.replace(/slide-active/gi, "").trim();
-		newNavObj.className = (newNavObj.className + " slide-active").trim();
-
-		var transitionDelay = parseInt(block.getAttribute("data-transition-delay"));
-		var tid = setTimeout(function() { vaSlideShow(block); }, transitionDelay);
-		block.setAttribute("data-tid", tid);
-	}
-}
-
-function vaSlideActivate(block, slideNavObj)
-{
-	var tid = parseInt(block.getAttribute("data-tid"));
-	if (tid) { clearTimeout(tid); }
-	block.setAttribute("data-transition-stop", 1); // set attribute to stop any previous slide changes
-
-	var transitionDuration = parseInt(block.getAttribute("data-transition-duration"));
-	var changeTimeout = Math.ceil(transitionDuration / 50);
-
-	setTimeout(function() { vaSlideDisplay(block, slideNavObj); }, changeTimeout);
-}
-
-function vaSlideDisplay(block, slideNavObj)
-{
-	// hide active object
-	var activeSlide = parseInt(block.getAttribute("data-active-slide"));
-	var curObj = block.querySelector("[data-slide='"+activeSlide+"']");
-	curObj.style.opacity = "";
-	curObj.style.visibility = "hidden";
-	// activate new object
-	var newSlide = parseInt(slideNavObj.getAttribute("data-slide")); 
-	var newObj = block.querySelector("[data-slide='"+newSlide+"']");
-	newObj.style.opacity = "";
-	newObj.style.visibility = "visible";
+	block.setAttribute("data-previous-slide", activeSlide);
 	block.setAttribute("data-active-slide", newSlide);
 
-	// restart slide show
-	block.removeAttribute("data-transition-stop");
-	var transitionDelay = parseInt(block.getAttribute("data-transition-delay"));
-	var tid = setTimeout(function() { vaSlideShow(block); }, transitionDelay);
-	block.setAttribute("data-tid", tid);
+	vaSlideShowChange(block);
+}
 
+function vaSlideShowChange(block)
+{
+	var prevIndex = parseInt(block.getAttribute("data-previous-slide"));
+	var activeIndex = parseInt(block.getAttribute("data-active-slide"));
+
+	var prevObj = block.querySelector("[data-slide='"+prevIndex+"']");
+	var activeObj = block.querySelector("[data-slide='"+activeIndex+"']");
+
+	// update slides
+	prevObj.style.opacity = "0";
+	activeObj.style.opacity = "1";
+
+	// update navigation
 	var sliderObj = block.querySelector(".slider-nav");
 	if (!sliderObj) {
 		sliderObj = block.parentNode.querySelector(".slider-nav");
 	}
-	var curNavObj = sliderObj.querySelector("[data-slide='"+activeSlide+"']");
-	var newNavObj = sliderObj.querySelector("[data-slide='"+newSlide+"']");
-	curNavObj.className = curNavObj.className.replace(/slide-active/gi, "").trim();
-	newNavObj.className = (newNavObj.className + " slide-active").trim();
+	if (sliderObj) {
+		var prevNavObj = sliderObj.querySelector("[data-nav='"+prevIndex+"']");
+		var activeNavObj = sliderObj.querySelector("[data-nav='"+activeIndex+"']");
+		prevNavObj.className = prevNavObj.className.replace(/slide-active/gi, "").trim();
+		activeNavObj.className = (activeNavObj.className + " slide-active").trim();
+	}
+
+	var transitionDelay = block.getAttribute("data-transition-delay");
+	if (isNaN(transitionDelay)) { transitionDelay = defaultDelay ; }
+	var tid = setTimeout(function() { vaSlideShow(block); }, transitionDelay);
+	block.setAttribute("data-tid", tid);
+}
+
+function vaSlideActivate(slideNavObj, event)
+{
+	// get parent slider block
+	block = vaParentJS(slideNavObj);
+	// get current active slide and a new selected
+	var aciveIndex = parseInt(block.getAttribute("data-active-slide"));
+	var navIndex = slideNavObj.getAttribute("data-nav"); 
+	if (navIndex == "prev") {
+		navIndex = aciveIndex - 1;
+	} else if (navIndex == "next") {
+		navIndex = aciveIndex + 1;
+	} else {
+		navIndex = parseInt(navIndex);
+	}
+	// check slider type
+	var sliderType = parseInt(block.getAttribute("data-slider-type"));
+	if (isNaN(sliderType)) { sliderType = 5; }
+	block.setAttribute("data-slider-type", sliderType);
+	if (sliderType == 6) {
+		// chain slider
+		if (aciveIndex != navIndex) {
+			event.stopPropagation();
+			block.setAttribute("data-active-slide", navIndex);
+			vaSlidesChainCalc(block);
+		}
+	} else {
+		// slide show
+		var tid = parseInt(block.getAttribute("data-tid"));
+		if (tid) { clearTimeout(tid); }
+		block.setAttribute("data-previous-slide", aciveIndex);
+		block.setAttribute("data-active-slide", navIndex);
+  	vaSlideShowChange(block);
+	}
+}
+
+function vaSlideClickCheck(linkObj, event)
+{
+	var slideObj = vaParent(linkObj, "data-slide");
+	var block = vaParentJS(slideObj);
+	var activeSlide = parseInt(block.getAttribute("data-active-slide"));
+	var slideIndex = parseInt(slideObj.getAttribute("data-nav")); 
+	if (activeSlide != slideIndex) { 
+		// if slide inactive disable click
+		event.preventDefault();
+	}
 }
 
 function vaImagesParse(imageBlock)
@@ -2126,6 +2291,169 @@ function isMobileTablet() {
   return check;
 };
 
+function vaOpenWindow(paramsObj)
+{
+	var params = {}; 
+	if (typeof paramsObj === "object") {
+		if (paramsObj instanceof Element) {
+			var elementParams = {"data-url": "url", "data-name": "name", "data-features": "features", "data-toolbar": "toolbar", "data-location": "location", "data-status": "status", "data-menubar": "menubar", "data-scrollbars": "scrollbars", "data-resizable": "resizable", "data-width": "width", "data-height": "height", "data-top": "top", "data-left": "left"}
+			for(var elKey in elementParams) {
+				if (paramsObj.hasAttribute(elKey)) {
+					params[elementParams[elKey]] = paramsObj.getAttribute(elKey);
+				}
+			}
+			if (!params.url) {
+				params.url = paramsObj.href;
+			} 
+		}
+	} else { 
+		params.url = paramsObj;
+	}
+	// TODO - probably use window.screen.width window.screen.height to check window size and position
+	if (!params.name) { params.name = "popup"; }
+	// build features list
+	if (!params.features) { 
+		params.features = "";
+		if (!params.scrollbars) { params.scrollbars = "yes"; }
+		if (!params.resizable) { params.resizable = "yes"; }
+		if (!params.width) { params.width = "600"; }
+		if (!params.height) { params.height = "500"; }
+		var features = ["toolbar", "location", "status", "menubar", "scrollbars", "resizable", "width", "height", "left", "top"];
+		for (var f in features) {
+			var featureName = features[f];
+			if (params[featureName]) {
+				if (params.features) { params.features += ","; }
+				params.features += featureName + "=" + params[featureName];
+			}
+		}
+	}
+	var popupWin = window.open (params.url, params.name, params.features);
+	popupWin.focus();
+}
+
+function vaShowPopup(paramsObj)
+{
+	// delete popup block if it was initialized before
+	vaHidePopup();
+
+	var params = {}; var layoutObj;
+	if (typeof paramsObj === "object") {
+		if (paramsObj instanceof Element) {
+			var elementParams = {"data-body": "body", "data-title": "title", "data-message": "message", "data-desc": "desc", "data-layout": "layout", "data-event": "event", "data-code": "code", "data-shade": "shade", "data-shade-close": "shadeClose", "data-area": "area"}
+			for(var elKey in elementParams) {
+				if (paramsObj.hasAttribute(elKey)) {
+					params[elementParams[elKey]] = paramsObj.getAttribute(elKey);
+				}
+			}
+		} else {
+			params = paramsObj;
+		}
+	} else if (paramsObj) {
+		if (paramsObj.match(/^[a-z0-9\-\_]+$/) ) {
+			if (document.getElementById(paramsObj)) {
+				paramsObj = document.getElementById(paramsObj).innerHTML;
+			}
+		}
+		params["body"] = paramsObj;
+	}
+
+	// get or create a new popup layout to add body and other parameters
+	if (params.layout == "empty" || params.layout == "custom") {
+		layoutObj = document.createElement("div");
+	} else if (params.layout == "default") {
+		layoutObj = document.getElementById("layout-popup");
+	} else {
+		layoutObj = document.getElementById(params.layout);
+	}
+
+	if (!layoutObj) {
+		layoutObj = document.createElement("div");
+	}
+	// check if we can add popup body and other parameters
+	if (params.body) {
+		var popupBody = layoutObj.querySelector(".popup-body");
+		if (popupBody) {
+			popupBody.innerHTML = params.body;
+		} else {
+			layoutObj.innerHTML = params.body;
+		}
+	}
+
+	// add popup shade object 
+	if (!params.shade) { params.shade = "popup-shade"; }
+	var shadeObj = document.createElement("div");
+	shadeObj.id = "popupShade";
+	shadeObj.className = params.shade;
+	if (params.shadeClose) {
+		shadeObj.onclick = function() { vaHidePopup(); };
+	}
+	document.body.insertBefore(shadeObj, document.body.firstChild);
+
+	// create popup area where main popup block will be added
+	if (!params.area) { params.area = "popup-area"; }
+	var areaObj = document.createElement("div");
+	areaObj.id = "popupArea";
+	areaObj.className = params.area;
+	areaObj.innerHTML = layoutObj.innerHTML;
+	document.body.insertBefore(areaObj, document.body.firstChild);
+
+	// check if popup block has msg-close or popup-close class to add vaHidePopup function
+	var msgClose = areaObj.querySelector(".msg-close");
+	if (msgClose) { msgClose.onclick = function() { vaHidePopup(); }; }
+	var popupClose = areaObj.querySelector(".popup-close");
+	if (popupClose) { popupClose.onclick = function() { vaHidePopup(); }; }
+	if (!popupClose && !msgClose) {
+		// if there is no close block add it to the shade block
+		popupClose = document.createElement("div");
+		popupClose.className = "popup-close";
+		shadeObj.insertBefore(popupClose, shadeObj.firstChild);
+	}
+
+	vaCenterBlock(areaObj);
+
+	// disable scroller for main page to show properly popup
+	document.body.style.overflow = "hidden";
+
+	if (params.event) {
+		var url = "ajax_event.php?ajax=1&event=" + encodeURIComponent(params.event);
+		if (params.code) { url += "&code=" + encodeURIComponent(params.code); }
+		callAjax(url, function(){});
+	}
+}
+
+function vaHidePopup()
+{
+	var popupShade = document.getElementById("popupShade");
+	if (popupShade) {
+		popupShade.parentNode.removeChild(popupShade);
+	}
+	var popupArea = document.getElementById("popupArea");
+	if (popupArea) {
+		popupArea.parentNode.removeChild(popupArea);
+	}
+	document.body.style.removeProperty('overflow');
+}
+
+function vaCenterBlock(blockObj)
+{
+	// move popup area to the center using JavaScript 
+	// NOTE: transform style can add some blur to the text and border
+	// NOTE: flex option doesn't work good for oversized content
+	var pageSize = getPageSize()
+	var blockWidth = blockObj.offsetWidth;
+	var blockHeight = blockObj.offsetHeight
+	var blockLeft = (pageSize[0] - blockWidth)/2;
+	var blockTop = (pageSize[1] - blockHeight)/2;
+	if (blockLeft < 0) { blockLeft = 0; }
+	if (blockTop < 0) { blockTop = 0; }
+	// if page was scrolled popup window need add scrolled height to it top position if popup area use absolute position
+	if (document.body.scrollTop || document.documentElement.scrollTop) {
+		//blockTop += (document.body.scrollTop || document.documentElement.scrollTop);
+	}
+	blockObj.style.left = blockLeft + "px";
+	blockObj.style.top = blockTop + "px";
+}
+
 function vaCloseCustomPopup()
 {
 	var jsObjs = document.querySelectorAll(".bk-custom-popup");
@@ -2134,6 +2462,7 @@ function vaCloseCustomPopup()
 		jsObj.parentNode.removeChild(jsObj);
 	}
 }
+
 
 function vaGetKey(event)
 {
@@ -2160,6 +2489,7 @@ function vaKeyUp(event)
 	var key = vaGetKey(event);
 	if (key == "Escape") {
 		vaCloseCustomPopup(); // close custom popup
+		vaHidePopup(); // close HTML popup block
 		if (typeof vaDisablePopupVideo !== 'undefined' && typeof vaDisablePopupVideo === 'function') {
 			vaDisablePopupVideo(); // disaple popup video if it was opened
 		}

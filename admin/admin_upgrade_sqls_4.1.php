@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_upgrade_sqls_4.1.php                               ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -541,9 +541,9 @@
 		$sql.= $db->tosql($block_id, INTEGER).",";
 		$sql.= $db->tosql($module_id, INTEGER).",";
 		$sql.= $db->tosql(1, INTEGER).",";
-		$sql.= $db->tosql("sliders", TEXT).",";
+		$sql.= $db->tosql("slider", TEXT).",";
 		$sql.= $db->tosql("{slider_name}", TEXT).",";
-		$sql.= $db->tosql("block_sliders.php", TEXT).",";
+		$sql.= $db->tosql("block_slider.php", TEXT).",";
 		$sql.= $db->tosql(1, INTEGER).")";
 		$sqls[] = $sql;
 		
@@ -2069,7 +2069,7 @@
 		$sqls[] = $sql_types[$db_type];
 
 		$sql  = " UPDATE " . $table_prefix . "items_properties SET show_for_user=1 ";
-		$sql .= " WHERE use_on_list=1 OR use_on_details=1 OR use_on_table=1 OR use_on_grid=1 OR use_on_second=1 OR use_on_checkout=1 ";
+		$sql .= " WHERE use_on_list=1 OR use_on_details=1 OR use_on_table=1 OR use_on_grid=1 OR use_on_second=1 ";
 		$sqls[] = $sql;
 
 		run_queries($sqls, $queries_success, $queries_failed, $errors, "4.0.24");

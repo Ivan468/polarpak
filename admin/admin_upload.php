@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_upload.php                                         ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -74,7 +74,7 @@
 		while ($db->next_record()) {
 			$download_info[$db->f("setting_name")] = $db->f("setting_value");
 		}
-		$downloads_dir = get_setting_value($download_info, "downloads_admins_dir", "../");
+		$downloads_dir = get_setting_value($download_info, "downloads_admins_dir", "../downloads/");
 		if (!preg_match("/[\/\\\\]$/", $downloads_dir)) { $downloads_dir .= "/"; }
 		$downloads_mask = get_setting_value($download_info, "downloads_admins_mask", "");
 		if ($downloads_mask) {

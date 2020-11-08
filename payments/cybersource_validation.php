@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  cybersource_validation.php                               ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -84,6 +84,7 @@
 
 	if (!$error_message && ($card_type || $card_number)) {
 		$cc_number = str_replace("x", "*", $card_number);
+		$cc_number_last4 = substr($cc_number, -4);
 
 		$cc_expiry_date = 0;
 		if (preg_match("/(\d{2})\-(\d{4})/", $card_expiry_date, $matches)) {
@@ -109,9 +110,14 @@
 		if ($cc_type) {
 			$sql  = " UPDATE " . $table_prefix . "orders ";
 			$sql .= " SET cc_type=" . $db->tosql($cc_type, TEXT);
-			$sql .= " , cc_name=" . $db->tosql($cc_name, INTEGER);
+			$sql .= " , cc_name=" . $db->tosql($cc_name, TEXT);
+			$sql .= " , cc_first_name=" . $db->tosql($cc_first_name, TEXT);
+			$sql .= " , cc_last_name=" . $db->tosql($cc_last_name, TEXT);
 			if (strlen($cc_number)) {
-				$sql .= " , cc_number=" . $db->tosql($cc_number, INTEGER);
+				$sql .= " , cc_number=" . $db->tosql($cc_number, TEXT);
+			}
+			if (strlen($cc_number_last4)) {
+				$sql .= " , cc_number_last4=" . $db->tosql($cc_number_last4, TEXT);
 			}
 			if ($cc_expiry_date > 0) {
 				$sql .= " , cc_expiry_date=" . $db->tosql($cc_expiry_date, DATETIME);

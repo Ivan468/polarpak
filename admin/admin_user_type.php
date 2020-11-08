@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_user_type.php                                      ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -197,18 +197,17 @@
 
 	if (strlen($operation))
 	{
-		if ($operation == "cancel")
-		{
+		if ($operation == "cancel")	{
 			header("Location: " . $return_page);
 			exit;
-		}
-		elseif ($operation == "delete" && $type_id)
-		{
-			$r->delete_record();
-			$db->query("DELETE FROM " . $table_prefix . "user_types_settings WHERE type_id=" . $db->tosql($type_id, INTEGER));
-			$db->query("DELETE FROM " . $table_prefix . "user_types_countries WHERE type_id=" . $db->tosql($type_id, INTEGER));
-			$db->query("DELETE FROM " . $table_prefix . "user_types_sites WHERE type_id=" . $db->tosql($type_id, INTEGER));
-
+		} elseif ($operation == "delete") {
+			if ($type_id) {
+				$db->query("DELETE FROM " . $table_prefix . "global_settings WHERE setting_type=" . $db->tosql("user_profile_".$type_id, TEXT));
+				$db->query("DELETE FROM " . $table_prefix . "user_types_settings WHERE type_id=" . $db->tosql($type_id, INTEGER));
+				$db->query("DELETE FROM " . $table_prefix . "user_types_countries WHERE type_id=" . $db->tosql($type_id, INTEGER));
+				$db->query("DELETE FROM " . $table_prefix . "user_types_sites WHERE type_id=" . $db->tosql($type_id, INTEGER));
+				$r->delete_record();
+			}
 			header("Location: " . $return_page);
 			exit;
 		}

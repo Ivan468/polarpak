@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  products_list.php                                        ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -97,6 +97,7 @@
 				} else {
 					$redirect_friendly_url = "products_list.php?category_id=".urlencode($redirect_category_id);
 				}
+				header("HTTP/1.1 302 Found");
 				header("Location: " . $redirect_friendly_url);
 				exit;
 			}

@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  export_functions.php                                     ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -70,6 +70,46 @@
 						} else {
 							$f_source_value = $dbs->f("property_value");
 						}
+					}
+				} else if (preg_match("/^oi_item_properties$/", $f_source)) {
+					$order_item_id = $dbe->f("oi_order_item_id");
+					$sql  = " SELECT property_name, property_value, additional_price FROM " . $table_prefix . "orders_items_properties ";
+					$sql .= " WHERE order_item_id=" . $dbe->tosql($order_item_id, INTEGER);
+					$dbs->query($sql);
+					while ($dbs->next_record()) {
+						if ($apply_translation) {
+							$property_name= get_translation($dbs->f("property_name"));
+							$property_value = get_translation($dbs->f("property_value"));
+						} else {
+							$property_name = $dbs->f("property_name");
+							$property_value = $dbs->f("property_value");
+						}
+						$additional_price = $dbs->f("additional_price");
+						if ($f_source_value) { $f_source_value .= ";"; }
+						$f_source_value .= $property_name.": ".$property_value;
+						if ($additional_price > 0) {
+							$f_source_value .= " (".currency_format($additional_price).")";
+						}
+					}
+				} else if (preg_match("/^oi_item_links$/", $f_source)) {
+					$order_item_id = $dbe->f("oi_order_item_id");
+					$sql  = " SELECT download_path FROM " . $table_prefix . "items_downloads ";
+					$sql .= " WHERE order_item_id=" . $dbe->tosql($order_item_id, INTEGER);
+					$dbs->query($sql);
+					while ($dbs->next_record()) {
+						$download_path = $dbs->f("download_path");
+						if ($f_source_value) { $f_source_value .= ";"; }
+						$f_source_value .= $download_path;
+					}
+				} else if (preg_match("/^oi_item_serials$/", $f_source)) {
+					$order_item_id = $dbe->f("oi_order_item_id");
+					$sql  = " SELECT serial_number FROM " . $table_prefix . "orders_items_serials ";
+					$sql .= " WHERE order_item_id=" . $dbe->tosql($order_item_id, INTEGER);
+					$dbs->query($sql);
+					while ($dbs->next_record()) {
+						$serial_number = $dbs->f("serial_number");
+						if ($f_source_value) { $f_source_value .= ";"; }
+						$f_source_value .= $serial_number;
 					}
 				} else if (isset($db_columns[$f_source])) {
 					$column_type = isset($db_columns[$f_source]["data_type"]) ? $db_columns[$f_source]["data_type"] : $db_columns[$f_source][1];

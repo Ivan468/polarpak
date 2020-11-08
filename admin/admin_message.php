@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_message.php                                        ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -28,7 +28,10 @@
 	$t->set_var("admin_message_href", "admin_message.php");
 
 	$operation     = get_param("operation");
-	$language_code = get_param("language_code");
+	$language_code = get_param("lang");
+	if (!$language_code) {
+		$language_code = get_param("language_code");
+	}
 	$language_code = preg_replace("/[^0-9a-z_\-]/i", "", $language_code);
 	$section       = get_param("section");
 	$section       = preg_replace("/[^0-9a-z_\-\.]/i", "", $section);

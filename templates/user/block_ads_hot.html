@@ -1,15 +1,34 @@
-	<table width="100%" cellspacing="0" cellpadding="2"><!-- BEGIN hot_rows -->
-	<tr><!-- BEGIN hot_cols -->
-		<td align="left" valign="top" width="{hot_column}">
-			<div><a class="bigtitle {restricted_class}" href="{details_href}">{hot_item_name}</a></div>
-			<div align="justify">
-			<!-- begin image_small --><a href="{details_href}"><img src="{src}" {width} {height} alt="{alt}" align="left" /></a><!-- end image_small -->
-			{hot_description} &nbsp;<a class="button bn-more" href="{details_href}"><span><b>{READ_MORE_MSG}</b>.</span><img src="images/tr.gif" alt="{READ_MORE_MSG}" /></a>
+			<div class="ads {columns_class}">
+				<!-- BEGIN hot_rows --> 
+				<!-- BEGIN hot_cols -->
+				<div class="col {column_class}">
+
+					<div class="ad">
+						<div class="before-image">
+							<h2 class="ad-name"><a class="bigtitle ad-name {restricted_class}" href="{details_href}" title="{a_title}">{hot_item_name}</a></h2>
+						</div>
+						<!-- begin image_small -->
+						<div class="image-block">
+							<a href="{details_href}"><img class="ad-image" src="{src}" alt="{alt}" /></a>
+						</div><!-- end image_small -->
+						<div class="after-image">
+							<h2 class="ad-name"><a class="bigtitle ad-name {restricted_class}" href="{details_href}" >{hot_item_name}</a></h2>
+						</div>
+		      
+						<div class="desc">
+							{hot_description}
+						</div>
+						<div class="more-details">
+							<a class="button bn-more" href="{details_href}"><span>{READ_MORE_MSG}</span></a>
+						</div>
+					</div>
 			</div>
-		</td><!-- END hot_cols -->
-	</tr><!-- END hot_rows -->
-	</table>
+			<!-- END hot_cols -->
+			<!-- END hot_rows -->
+			<div class="clear"></div>
+		</div>
+
 
 	<!-- begin hot_navigator_block -->
-	<div align="right">{hot_navigator}</div>
+	<div class="navigator">{hot_navigator}</div>
 	<!-- end hot_navigator_block -->

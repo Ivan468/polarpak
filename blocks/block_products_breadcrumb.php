@@ -1,7 +1,6 @@
 <?php                           
 
 	include_once("./includes/products_functions.php");
-	include_once("./messages/" . $language_code . "/cart_messages.php");
 
 	$default_title = "";
 
@@ -78,7 +77,7 @@
 		}
 	}
 
-	$tree_title = PRODUCTS_TITLE;
+	$tree_title = va_message("PRODUCTS_TITLE");
 	array_unshift($bb_path, array (get_custom_friendly_url("products_list.php"), $tree_title));
 	array_unshift($bb_path, array ($site_url, HOME_PAGE_TITLE)); // add home page
 

@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  ccbill_check.php                                         ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -54,9 +54,16 @@
 	$pass_data = array();
 	$variables = array();
 	get_payment_parameters($cb_order_id, $payment_parameters, $pass_parameters, $post_parameters, $pass_data, $variables);
+	// calculate full and trimmed digest as we have no idea the correct way CCbill calculate it
+	$salt = $payment_parameters["salt"];
+	$full_denial_digest = md5($denialId."0".$salt);
+	$trimmed_denial_digest = md5(ltrim($denialId, "0")."0".$salt);
+	$full_success_digest = md5($subscription_id."1".$salt);
+	$trimmed_success_digest = md5(ltrim($subscription_id, "0")."1".$salt);
+
 	if(isset($payment_parameters["clientAccnum"]) && ($payment_parameters["clientAccnum"] == $clientAccnum)){
 		if($reasonForDeclineCode){
-			if(md5($denialId."0".$payment_parameters["salt"]) == $responseDigest){
+			if($full_denial_digest == $responseDigest || $trimmed_denial_digest == $responseDigest){
 				$order_status_id = $variables["failure_status_id"];
 				$error_message = "Error code: ".$reasonForDeclineCode.", ".$reasonForDecline;
 				$event_description = "denialId: ".$denialId;
@@ -73,7 +80,7 @@
 				echo "responseDigest is corrupted.";
 			}
 		}else{
-			if(md5($subscription_id."1".$payment_parameters["salt"]) == $responseDigest){
+			if($full_success_digest == $responseDigest || $trimmed_success_digest == $responseDigest){
 				$order_status_id = $variables["success_status_id"];
 				$event_description = "subscription_id: ".$subscription_id;
 				if(strlen($denialId)){
@@ -132,6 +139,26 @@
 					$db->query($sql);
 				}
 			}
+		} else {
+			// save event description to debug if order_id available
+			if ($cb_order_id) {
+				$event_description = var_export($_POST, true);
+
+				$r->set_value("order_id", $cb_order_id);
+				$r->set_value("status_id", 0);
+				$r->set_value("event_date", va_time());
+				$r->set_value("event_type", "payment_notification");
+				$r->set_value("event_name", "CCBill Postback Error");
+				$r->set_value("event_description", $event_description);
+
+				$sql  = " SELECT COUNT(*) FROM " . $table_prefix . "orders_events ";
+				$sql .= " WHERE order_id=" . $db->tosql($cb_order_id, INTEGER);
+				$sql .= " AND event_type='payment_notification' ";
+				$sql .= " AND event_name='CCBill Postback Error' ";
+				$postback_errors = get_db_value($sql);
+				if ($postback_errors <= 3) {
+					$r->insert_record();
+				}
+			}
 		}
 	}
-?>

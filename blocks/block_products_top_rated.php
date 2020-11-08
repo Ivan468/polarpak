@@ -37,18 +37,6 @@
 		$desc_field = "spec";
 	}
 
-	// get items ids to show
-	$items_ids = VA_Products::find_all_ids(
-		array(
-			"where" => " i.votes>=" . $db->tosql(get_setting_value($settings, "min_votes", 10), INTEGER)
-					.  " AND i.rating>=" . $db->tosql(get_setting_value($settings, "min_rating", 1), FLOAT),
-			"order" => " ORDER BY i.rating DESC, i.votes DESC "
-		),
-		VIEW_CATEGORIES_ITEMS_PERM
-	);
-	if (!$items_ids) { return; }
-
-
 	$html_template = get_setting_value($block, "html_template", "block_products.html"); 
   $t->set_file("block_body", $html_template);
 
@@ -65,11 +53,15 @@
 		$pages = 1;
 	}
 
+	// prepare params for VA_Products class to show products
+	$sql_params = array();
+	$sql_params["where"][]  = "i.votes>=" . $db->tosql(get_setting_value($settings, "min_votes", 10), INTEGER);
+	$sql_params["where"][]  = "i.rating>=" . $db->tosql(get_setting_value($settings, "min_rating", 1), FLOAT);
+	$sql_params["order"][]  = "i.rating DESC, i.votes DESC ";
+
 	$params = array(
 		"pb_id" => $pb_id,
-		"ids" => $items_ids,
-		//"sql_where" => "",
-		//"sql_order" => "",
+		"sql" => $sql_params,
 		"count_no" => $count_no,
 		"recs" => $top_rates_recs,
 		"max_recs" => $max_recs,

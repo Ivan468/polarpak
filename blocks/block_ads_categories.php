@@ -1,6 +1,6 @@
 <?php
 
-	$default_title = "{top_category_name} &nbsp; {CATEGORIES_TITLE}";
+	$default_title = va_message("ADS_TITLE");
 
 	include_once("./includes/ads_functions.php");
 
@@ -8,15 +8,21 @@
 	$friendly_extension = get_setting_value($settings, "friendly_extension", "");
 	$columns            = get_setting_value($vars, "ads_categories_cols", 1);
 	$categories_type    = get_setting_value($vars, "ads_categories_type");
+	$categories_image   = get_setting_value($vars, "ads_categories_image"); 
+	$desc_type          = get_setting_value($vars, "desc_type", ""); // TODO: add a new parameter and remove code below
+	if (!strlen($desc_type) && $categories_type != 2) {
+		$desc_type = 1;
+	}
 
 	$search_string = get_param("search_string");
 	$category_id = get_param("category_id");
 	if (!$category_id) { $category_id = 0; } 
 	$is_search     = strlen($search_string);
+	if (!is_numeric($columns)) { $columns = 1; }
   
 	$t->set_var("list_href",        "ads.php");
 	$t->set_var("details_href",     "ads_details.php");
-	$t->set_var("top_category_name", va_message("ADS_TITLE"));
+	$t->set_var("columns_class",    "cols-".$columns);
 
 	$list_page = "ads.php";
 	$list_url = new VA_URL("ads.php");
@@ -25,6 +31,7 @@
 	if (($categories_type == 2)||($categories_type == 1)) 
 	{
 		$html_template = get_setting_value($block, "html_template", "block_categories_catalog.html"); 
+		$cms_css_class = "bk-categories-catalog";
 	  $t->set_file("block_body", $html_template);
 		$t->set_var("catalog_sub",      "");
 		$t->set_var("catalog_sub_more", "");
@@ -44,7 +51,7 @@
 
 		if ($categories_type == 1) {
 			$sql  = " SELECT category_id as top_category_id, category_name as top_category_name, friendly_url AS top_friendly_url, ";
-			$sql .= " short_description, image_small ";	
+			$sql .= " short_description, full_description, image_small, image_large ";	
 			$sql .= " FROM " . $table_prefix . "ads_categories ";
 			$sql .= " WHERE category_id IN (" . $db->tosql($categories_ids, INTEGERS_LIST) . ") ";
 			$sql .= " ORDER BY category_order ";
@@ -52,6 +59,8 @@
 			// show categories as catalog
 			$allowed_sub_categories_ids = VA_Ads_Categories::find_all_ids("c.parent_category_id IN (" . $db->tosql($categories_ids, INTEGERS_LIST) . ")", VIEW_CATEGORIES_ITEMS_PERM);			
 			$sql  = " SELECT c.category_id as top_category_id,c.category_name as top_category_name, c.friendly_url AS top_friendly_url, c.image_small, ";
+			$sql .= " c.image_small, c.image_large, ";
+			$sql .= " c.short_description, c.full_description, ";
 			$sql .= " s.category_id as sub_category_id,s.category_name as sub_category_name, s.friendly_url AS sub_friendly_url ";
 			$sql .= " FROM (" . $table_prefix . "ads_categories c ";
 			$sql .= " LEFT JOIN " . $table_prefix . "ads_categories s ON c.category_id=s.parent_category_id) ";	
@@ -75,23 +84,14 @@
 				$catalog_sub_number++;
 				$top_category_id = $db->f("top_category_id");
 				$top_category_name = get_translation($db->f("top_category_name"));
+				$top_list_class =  $db->f("top_list_class"); // TODO: new field required
 				$top_friendly_url = $db->f("top_friendly_url");
 				$sub_category_id = $db->f("sub_category_id");
 				$sub_category_name = get_translation($db->f("sub_category_name"));
+				$sub_list_class =  $db->f("sub_list_class"); // TODO: new field required
 				$sub_friendly_url = $db->f("sub_friendly_url");
 				$t->set_var("catalog_top_id", $top_category_id);
 				$t->set_var("catalog_top_name", $top_category_name);
-  				if ($categories_type == 2){
-					$t->set_var("catalog_sub_id",   $sub_category_id);
-					$t->set_var("catalog_sub_name", $sub_category_name);
-				} else {
-	  				if (strlen($db->f("short_description"))) {
-						$t->set_var("short_description", get_translation($db->f("short_description")));
-						$t->parse("catalog_description", false);
-					} else {
-						$t->set_var("catalog_description", "");
-					}
-				}
 
 				$category_image = $db->f("image_small");
 				$image_default = ""; // some default image for categories
@@ -100,9 +100,25 @@
 				$image_large = $db->f("image_large");
 				$image_large_alt = get_translation($db->f("image_large_alt"));
 
-				$top_category_name = $db->f("top_category_name");
-				$is_next_record = $db->next_record();
+				$short_description = get_translation($db->f("short_description"));
+				$full_description = get_translation($db->f("full_description"));
 
+				if ($desc_type == 1 && $short_description) {
+					$t->set_var("desc_text", $short_description);
+					$t->parse("short_description", false);
+				} else if ($desc_type == 2 && $full_description) {
+					$t->set_var("desc_text", $full_description);
+					$t->parse("full_description", false);
+				}
+
+				if ($categories_type == 2){
+					$t->set_var("catalog_sub_id",   $sub_category_id);
+					$t->set_var("catalog_sub_name", ($sub_category_name));
+					$t->set_var("catalog_sub_class", htmlspecialchars($sub_list_class));
+					$t->set_var("sub_a_title", htmlspecialchars($sub_category_name));
+				}
+
+				$is_next_record = $db->next_record();
 				$is_new_top = ($top_category_id != $db->f("top_category_id"));
   
 				if ($categories_type == 2){
@@ -200,7 +216,6 @@
 					} else {
 						$t->set_var("restricted_class", "");
 					}
-					$t->parse("top_title_block", false);
 
 					if ($catalog_sub_number) {
 						// parse catalog sub categories block if they exists
@@ -234,10 +249,10 @@
 	} else { // list type 
 
 		$html_template = get_setting_value($block, "html_template", "block_categories_list.html"); 
+		$cms_css_class = "bk-categories-list";
 	  $t->set_file("block_body", $html_template);
 		$t->set_var("nodes",      "");
 
-		$categories_image = get_setting_value($vars, "ads_categories_image");
 		$current_category_path = "0";
 		if ($categories_type == 4) { // Tree-type structure
 			$sql  = " SELECT category_path ";

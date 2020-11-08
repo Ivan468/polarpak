@@ -6,7 +6,6 @@
 
 	<div data-type="cart" data-pb-id="{pb_id}" data-id="pb_{pb_id}"></div>
 <script type="text/javascript">
-//<![CDATA[
 	var removeFromCart = "{REMOVE_FROM_CART_JS}";
 	var cartQtyZero = "{CART_QTY_ZERO_JS}";
 	var alterCartQty = "{ALTER_CART_QTY_JS}";
@@ -20,7 +19,6 @@
 	var noStatesForCountry = "[{NO_STATES_FOR_COUNTRY_MSG}]";
 	var site_url = "{site_url}";// <!-- begin states_json_block -->
 	var states = {states_json};// <!-- end states_json_block -->
-//]]>
 </script>
 
 		<!-- begin empty --><div class="bk-message">{EMPTY_CART_MSG}</div><!-- end empty -->
@@ -126,7 +124,7 @@
 					</select>
 					<!-- end quantity_select -->
 					<!-- begin quantity_textbox -->
-					<input type="text" class="field quantity-textbox"  value="{quantity}" size="4" maxlength="6" data-cart-id="{cart_id}" data-product-name="{item_name}" data-quantity="{quantity}" onchange="changeCartQty(this);"  onkeypress="return checkChanges(event, this);">
+					<input type="text" class="field quantity-textbox"  value="{quantity}" size="2" maxlength="6" data-cart-id="{cart_id}" data-product-name="{item_name}" data-quantity="{quantity}" onchange="changeCartQty(this);"  onkeypress="return checkChanges(event, this);">
 					<!-- end quantity_textbox -->
 
 					<!-- begin quantity_label -->
@@ -232,20 +230,13 @@
 				</div><!-- end coupon_form -->
 				<div class="cart-buttons right">
 					<!-- begin products_button -->
-					<a class="button bn-products" href="#" onclick="productsWin('{call_center_products_href}'); return false;"><b><span>{PRODUCTS_TITLE}</span></b></a>
-					<span class="spacer">&nbsp;|&nbsp;</span><!-- end products_button -->
+					<a class="button bn-products" href="#" onclick="productsWin('{call_center_products_href}'); return false;"><b><span>{PRODUCTS_TITLE}</span></b></a><!-- end products_button -->
 					<a class="button bn-shopping" id="shopping" href="{rp_href}"><b><span>{CONTINUE_SHOPPING_MSG}</span></b></a>
-					<span class="spacer">&nbsp;|&nbsp;</span>
 					<a class="button bn-retrieve" href="{cart_retrieve_href}"><span>{RETRIEVE_CART_BUTTON}</span></a><!-- begin basket_links -->
-					<span class="spacer">&nbsp;|&nbsp;</span>
 					<a class="button bn-save" href="{cart_save_href}"><span>{SAVE_CART_BUTTON}</span></a>
-					<span class="spacer">&nbsp;|&nbsp;</span>
 					<a class="button bn-clear" href="{remove_all_href}" onclick=" return confirm('{CLEAR_CART_JS}');"><span>{CLEAR_CART_MSG}</span></a>
-					<span class="spacer">&nbsp;|&nbsp;</span>
 					<!-- begin shipping_button -->
-					<a class="button bn-shipping" href="{shipping_calculator_href}" onclick="popupShippingWin('{shipping_calculator_href}'); return false;"><span>{SHIPPING_CALCULATOR_MSG}</span></a>
-					<span class="spacer">&nbsp;|&nbsp;</span>
-					<!-- end shipping_button -->
+					<a class="button bn-shipping" href="{shipping_calculator_href}" onclick="popupShippingWin('{shipping_calculator_href}'); return false;"><span>{SHIPPING_CALCULATOR_MSG}</span></a><!-- end shipping_button -->
 					<a class="button bn-checkout" href="{checkout_href}"><b><span>{GOTO_CHECKOUT_MSG}</span></b></a><!-- end basket_links -->
 				</div>
 			</td>

@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_user_product.php                                   ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -135,8 +135,8 @@
 	$option_fields = array(
 		"allow_options",
 		"show_option_property_style",
-		"option_on_list_default", "option_on_details_default", "option_on_table_default", "option_on_grid_default", "option_on_second_default", "option_on_checkout_default",
-		"show_option_on_list", "show_option_on_details", "show_option_on_table", "show_option_on_grid", "show_option_on_list", "show_option_on_second", "show_option_on_checkout",
+		"option_on_list_default", "option_on_details_default", "option_on_table_default", "option_on_grid_default", "option_on_second_default", 
+		"show_option_on_list", "show_option_on_details", "show_option_on_table", "show_option_on_grid", "show_option_on_list", "show_option_on_second", 
 		"show_option_control_style", "show_option_start_html", "show_option_middle_html",
 		"show_option_before_control_html", "show_option_after_control_html", "show_option_end_html",
 		"show_option_onchange_code", "show_option_onclick_code", "show_option_control_code",

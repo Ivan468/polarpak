@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  install.php                                              ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -21,7 +21,7 @@
 	// version information
 	$version_name = "shop";
 	$version_type = "enterprise";
-	$version_number = "5.6";
+	$version_number = "5.8";
 
 	session_start();
 	
@@ -537,28 +537,16 @@
 					$sql = "SET IDENTITY_INSERT ".$table_prefix."sites ON";
 					$db->query($sql);
 				}
-				$sql  = " INSERT INTO " . $table_prefix . "sites (site_id, short_name, site_name) VALUES (";
+				$sql  = " INSERT INTO " . $table_prefix . "sites (site_id, short_name, site_name,site_url) VALUES (";
 				$sql .= "1, ";
 				$sql .= $db->tosql($r->get_value("site_name"), TEXT) . ", ";
 				$sql .= $db->tosql($r->get_value("site_name"), TEXT) . ") ";
+				$sql .= $db->tosql($r->get_value("site_url"), TEXT) . ") ";
 				$db->query($sql);
 				if ($db_library == "sqlsrv") {
 					$sql = "SET IDENTITY_INSERT ".$table_prefix."sites OFF";
 					$db->query($sql);
 				}
-
-				// set site url
-				$site_url = $r->get_value("site_url");
-				if (strlen($site_url) && substr($site_url, strlen($site_url) - 1) != "/") {
-					$site_url .= "/";
-					$r->set_value("site_url", $site_url);
-				}
-
-				$sql = "DELETE FROM " . $table_prefix . "global_settings WHERE setting_type='global' AND setting_name='site_url'";
-				$db->query($sql);
-				$sql  = " INSERT INTO " . $table_prefix . "global_settings (site_id, setting_type, setting_name, setting_value) VALUES ";
-				$sql .= " (1, 'global', 'site_url', " . $db->tosql($r->get_value("site_url"), TEXT) . ")";
-				$db->query($sql);
 
 				// set admin email
 				$sql = "DELETE FROM " . $table_prefix . "global_settings WHERE setting_type='global' AND setting_name='admin_email'";

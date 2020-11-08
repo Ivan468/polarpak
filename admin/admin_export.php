@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_export.php                                         ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -1201,6 +1201,21 @@
 							} else {
 								$field_value = implode(" / ", $field_value_parts);
 							}
+						} else if (preg_match("/^oi_order_item_property_/", $column_name)) {
+							$property_id = substr($column_name, 23);
+							$order_item_id = $dbe->f("oi_order_item_id");
+							$sql  = " SELECT property_value FROM " . $table_prefix . "orders_items_properties ";
+							$sql .= " WHERE order_item_id=" . $order_item_id;
+							$sql .= " AND (property_id=" . $dbe->tosql($property_id, INTEGER, true, false);
+							$sql .= " OR property_name=" . $dbe->tosql($property_id, TEXT) . ") ";
+							$dbs->query($sql);
+							if ($dbs->next_record()) {
+								if ($apply_translation) {
+									$field_value = get_translation($dbs->f("property_value"));
+								} else {
+									$field_value = $dbs->f("property_value");
+								}
+							}
 						} else if (preg_match("/^oi_item_properties$/", $column_name)) {
 							$order_item_id = $dbe->f("oi_order_item_id");
 							$field_value = "";
@@ -1216,26 +1231,33 @@
 									$property_value = $dbs->f("property_value");
 								}
 								$additional_price = $dbs->f("additional_price");
-								if ($field_value) { $field_value .= "\n"; }
+								if ($field_value) { $field_value .= ";"; }
 								$field_value .= $property_name.": ".$property_value;
 								if ($additional_price > 0) {
 									$field_value .= " (".currency_format($additional_price).")";
 								}
 							}
-						} else if (preg_match("/^oi_order_item_property_/", $column_name)) {
-							$property_id = substr($column_name, 23);
+						} else if (preg_match("/^oi_item_links$/", $column_name)) {
 							$order_item_id = $dbe->f("oi_order_item_id");
-							$sql  = " SELECT property_value FROM " . $table_prefix . "orders_items_properties ";
-							$sql .= " WHERE order_item_id=" . $order_item_id;
-							$sql .= " AND (property_id=" . $dbe->tosql($property_id, INTEGER, true, false);
-							$sql .= " OR property_name=" . $dbe->tosql($property_id, TEXT) . ") ";
+							$field_value = "";
+							$sql  = " SELECT download_path FROM " . $table_prefix . "items_downloads ";
+							$sql .= " WHERE order_item_id=" . $dbe->tosql($order_item_id, INTEGER);
 							$dbs->query($sql);
-							if ($dbs->next_record()) {
-								if ($apply_translation) {
-									$field_value = get_translation($dbs->f("property_value"));
-								} else {
-									$field_value = $dbs->f("property_value");
-								}
+							while ($dbs->next_record()) {
+								$download_path = $dbs->f("download_path");
+								if ($field_value) { $field_value .= ";"; }
+								$field_value .= $download_path;
+							}
+						} else if (preg_match("/^oi_item_serials$/", $column_name)) {
+							$order_item_id = $dbe->f("oi_order_item_id");
+							$field_value = "";
+							$sql  = " SELECT serial_number FROM " . $table_prefix . "orders_items_serials ";
+							$sql .= " WHERE order_item_id=" . $dbe->tosql($order_item_id, INTEGER);
+							$dbs->query($sql);
+							while ($dbs->next_record()) {
+								$serial_number = $dbs->f("serial_number");
+								if ($field_value) { $field_value .= ";"; }
+								$field_value .= $serial_number;
 							}
 						} else if ($column_name == "manufacturer_name") {
 							$manufacturer_id = $dbe->f("manufacturer_id");
@@ -1715,7 +1737,7 @@
 			$data_type = $column_info["data_type"];
 			$field_type = $column_info["field_type"];
 
-			if($field_type != HIDE_DB_FIELD && $field_type != RELATED_DB_FIELD) {
+			if($field_type != HIDE_DB_FIELD) {
 				if ($field_type == CUSTOM_FIELD) {
 					$column_source = $column_info["custom_value"];
 					$column_link = $column_info["edit_link"];

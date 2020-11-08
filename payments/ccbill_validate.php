@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  ccbill_validate.php                                      ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -24,7 +24,11 @@
 	}
 
 	if (!strlen($transaction_id) && !strlen($error_message) && !strlen($pending_message)) {
-		$pending_message = "'CCBill order number' was not received, waiting for approval.";
+		$pending_message = "CCBill response wasn't received, waiting for manual approval.";
+		// try to wait the CCBill response additional time
+		if (!isset($va_data["payment_data"])) { $va_data["payment_data"] = array(); }
+		$waiting_attempt = get_setting_value($va_data["payment_data"], "waiting_attempt", 0); // previous attempt number to wait payment response
+		$va_data["payment_waiting"] = ($waiting_attempt + 1) * 10; // 10, 20, 30, 40, 50 seconds for next attempt
+		$va_data["payment_data"]["waiting_attempts"] = 5; // 5 attemtps to wait and receive response from CCBill
 	}
 
-?>

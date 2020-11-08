@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_order_info.php                                     ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -97,8 +97,9 @@
 	$t->set_var("admin_href", "admin.php");
 	$t->set_var("admin_email_help_href", "admin_email_help.php");
 	$t->set_var("admin_order_property_href", "admin_order_property.php");
-	$t->set_var("days_msg", strtolower(DAYS_MSG));
-	
+	$t->set_var("days_msg", strtolower(va_message("DAYS_MSG")));
+	$t->set_var("CART_SUBPRODUCT_NAME_DESC", va_message("CART_SUBPRODUCT_NAME_DESC"));
+
 	$html_editor = get_setting_value($settings, "html_editor_email", get_setting_value($settings, "html_editor", 1));
 	$t->set_var("html_editor", $html_editor);
 	$editors_list = 'am,um,pmb';
@@ -113,6 +114,8 @@
 
 	$r->add_radio("opc_type", TEXT, $opc_types);
 	$r->add_radio("subcomponents_show_type", TEXT, $subcomponents_values);
+	$r->add_textbox("cart_subitem_name", TEXT);
+	$r->change_property("cart_subitem_name", USE_IN_INSERT, false);
 
 	// shipping settings 
 	$r->add_textbox("shipping_intro", TEXT);
@@ -456,6 +459,12 @@
 				}
 				update_settings($setting_type, $param_site_id, $new_settings);
 
+				// update some product settings
+				$product_settings = get_settings("products", $param_site_id);
+				$new_product_settings = $product_settings;
+				$new_product_settings["cart_subitem_name"] = $r->get_value("cart_subitem_name");
+				update_settings("products", $param_site_id, $new_product_settings, $product_settings);
+
 				header("Location: " . $return_page);
 				exit;
 			}
@@ -471,6 +480,10 @@
 				$partial_options = json_decode($setting_value, true);
 			}
 		}
+		// set product settings values
+		$product_settings = get_settings("products", $param_site_id);
+		$cart_subitem_name	= get_setting_value($product_settings, "cart_subitem_name");
+		$r->set_value("cart_subitem_name", $cart_subitem_name);
 	}
 
 	$arp = new VA_URL("admin_order_info.php", false);

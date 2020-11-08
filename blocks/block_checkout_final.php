@@ -1,5 +1,12 @@
 <?php
 
+	include_once("./includes/record.php");
+	include_once("./includes/products_functions.php");
+	include_once("./includes/shopping_cart.php");
+	include_once("./includes/order_items.php");
+	include_once("./includes/order_links.php");
+	include_once("./includes/parameters.php");
+
 	$default_title = "{final_title}";
 
 	$html_template = get_setting_value($block, "html_template", "block_checkout_final.html"); 
@@ -42,6 +49,10 @@
 		$payment_info = get_currency_message($payment_info, $currency);
 		$order_status  = $db->f("order_status");
 		$order_total = $db->f("order_total");
+		$payment_data = $db->f("payment_data");
+		if ($payment_data) { $payment_data = json_decode($payment_data, true); }
+		if (!is_array($payment_data)) { $payment_data = array(); }
+		$va_data["payment_data"] = $payment_data;
 		$pending_message = $db->f("pending_message");
 		if (!strlen($error_message)) {
 			$error_message = $db->f("error_message");
@@ -74,6 +85,9 @@
 		}
 	}
 
+	// special option if we need to wait a postback response from payment gateway
+	$payment_waiting = 0; // time in seconds to wait for next attempt
+
 	$is_validation = get_setting_value($order_final, "is_validation", 0);
 	if ($is_validation && $order_payment_id && !$is_placed && !strlen($error_message) && !strlen($pending_message)) {
 		$validation_php_lib = get_setting_value($order_final, "validation_php_lib", "");
@@ -104,6 +118,22 @@
 				}
 			}
 
+			$payment_waiting = get_setting_value($va_data, "payment_waiting", 0); // time in seconds to wait for next attempt	
+			if ($payment_waiting) {
+				$waiting_attempt = get_setting_value($va_data["payment_data"], "waiting_attempt", 0); // previous attempt number to wait payment response
+				$waiting_attempts = get_setting_value($va_data["payment_data"], "waiting_attempts", 30); // total number of attempts 
+				if ($waiting_attempt >= $waiting_attempts) {
+					// we reach max number of attempts so we automatically disable waiting process and set order to pending status
+					$payment_waiting = 0;
+					if (!$pending_message) { $pending_message = va_message("CHECKOUT_PENDING_MSG"); }
+				} else {               	
+					$pending_message = ""; // ignore pending status at this moment
+					$waiting_attempt++; // increase by one for current attempt number and update payment data
+					$va_data["payment_data"]["waiting_attempt"] = $waiting_attempt;
+					$va_data["payment_data"]["waiting_attempts"] = $waiting_attempts;
+				}
+			}
+
 			if ($update_order_data) {
 				$r = new VA_Record($table_prefix . "orders");
 				$r->add_where("order_id", INTEGER);
@@ -114,6 +144,7 @@
 				$r->add_textbox("transaction_id", TEXT);
 				$r->change_property("transaction_id", USE_IN_UPDATE, false);
 				$r->add_textbox("authorization_code", TEXT);
+				$r->add_textbox("payment_data", TEXT);
 				// AVS fields
 				$r->add_textbox("avs_response_code", TEXT);
 				$r->add_textbox("avs_message", TEXT);
@@ -136,6 +167,8 @@
 					$r->change_property("transaction_id", USE_IN_UPDATE, true);
 				}
 				$r->set_value("authorization_code", $variables["authorization_code"]);
+				$r->set_value("payment_data", json_encode($va_data["payment_data"]));
+
 				// set AVS data
 				$r->set_value("avs_response_code", $variables["avs_response_code"]);
 				$r->set_value("avs_message", $variables["avs_message"]);
@@ -153,7 +186,7 @@
 				$r->update_record();
 			}
 
-			if ($update_order_status) {
+			if (!$payment_waiting && $update_order_status) {
 				if (strlen($error_message)) {
 					$order_status = $failure_status_id;
 				} elseif (strlen($pending_message)) {
@@ -286,7 +319,21 @@
 	}
 
 	$is_failed = false; $is_pending = false; $is_success = false;
-	if (strlen($error_message)) {
+	if ($payment_waiting > 0) {
+		// set script to reload block
+		set_script_tag("js/ajax.js");
+		set_script_tag("js/blocks.js");
+
+		$default_title = va_constant("PAYMENT_PROCESSING_MSG");
+		$t->set_var("final_title", $final_title);
+		$t->set_var("attempt_number", $waiting_attempt);
+		$t->set_var("waiting_attempt", $waiting_attempt);
+		$t->set_var("waiting_attempts", $waiting_attempts);
+		$t->set_var("waiting_time", intval($payment_waiting)*1000);
+		$t->sparse("payment_waiting_block", false);
+		$block_parsed = true;
+		return;
+	} else if (strlen($error_message)) {
 		$is_failed = true;
 		$message_type = "failure";
 		if (!$final_title) { $final_title = va_constant("CHECKOUT_ERROR_TITLE"); }
@@ -353,10 +400,10 @@
 
 	// parse final message
 	$t->parse("final_message", false);
+	$t->sparse("final_message_block", false);
 
 	// send emails
-	if (!$is_placed) // check if order wasn't placed before
-	{
+	if (!$payment_waiting && !$is_placed) { // check if order wasn't placed before and it isn't wait for payment data
 		set_session("session_order_id", $order_id);
 
 		// get admin notify
@@ -425,7 +472,6 @@
 			show_order_items($order_id, true, "email");
 			$t->parse("basket_text", false);
 		}
-
 
 		if ($admin_notify)
 		{
@@ -613,7 +659,7 @@
 	$google_analytics = get_setting_value($settings, "google_analytics", 0);
 	$google_tracking_code = get_setting_value($settings, "google_tracking_code", "");
 	if (!$google_tracking_code) { $google_analytics = 0; }
-	if ($paid_status && $google_analytics) {
+	if (!$payment_waiting && $paid_status && $google_analytics) {
 		$t->set_var("google_order_id", $order_id);
 		$t->set_var("google_affiliation", str_replace("\"", "\\\"", htmlspecialchars($affiliate_code)));
 		$t->set_var("google_currency", $default_currency_code);
@@ -687,5 +733,3 @@
 	//End google analytics
 
 	$block_parsed = true;
-
-?>

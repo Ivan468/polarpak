@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_country.php                                        ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -36,10 +36,27 @@
 	$sort_dir = get_param("sort_dir");
 	$page = get_param("page");
 
+	$length_systems =
+		array( 
+			array("", ""),
+			array("int", va_message("INTERNATIONAL_SYSTEM_MSG")),
+			array("imp", va_message("IMPERIAL_SYSTEM_MSG")),
+		);
+
+	$weight_systems =
+		array( 
+			array("", ""),
+			array("int", va_message("INTERNATIONAL_SYSTEM_MSG")),
+			array("imp", va_message("IMPERIAL_SYSTEM_MSG")),
+		);
+
+	$cs = new VA_Record(""); // special record to save data in country_settings field
+
 	$r = new VA_Record($table_prefix . "countries");
 	$r->return_page = "admin_countries.php?sort_ord=".urlencode($sort_ord)."&sort_dir=".urlencode($sort_dir)."&page=".urlencode($page)."&sp=".urlencode($sp);
 
 	$r->add_where("country_id", INTEGER);
+	$r->add_textbox("country_settings", TEXT);
 	$r->add_checkbox("show_for_user", INTEGER);
 	$r->change_property("show_for_user", DEFAULT_VALUE, 1);
 	$r->add_checkbox("delivery_for_user", INTEGER);
@@ -68,6 +85,13 @@
 	$r->add_textbox("postal_code_regexp", TEXT);
 	$r->add_textbox("postal_code_error", TEXT);
 
+	// country system units
+	$cs->add_radio("length_system", TEXT, $length_systems);
+	$cs->add_radio("weight_system", TEXT, $weight_systems);
+
+	// save cs record parameters in country_settings field
+	$r->add_textbox("country_settings", TEXT);
+
 	// sites list
 	$operation = get_param("operation");
 	$country_id = get_param("country_id");
@@ -90,11 +114,14 @@
 		}
 	}
 	
-	$r->set_event(BEFORE_INSERT, "set_country_id");
+	$r->set_event(BEFORE_INSERT, "check_country_data");
 	$r->set_event(AFTER_INSERT, "update_country_data");
 	$r->set_event(BEFORE_UPDATE, "check_country_data");
 	$r->set_event(AFTER_UPDATE, "update_country_data");
 	$r->set_event(AFTER_DELETE, "delete_country");
+	$r->set_event(AFTER_SELECT, "select_country");
+	$r->set_event(AFTER_REQUEST, "country_after_request");
+	$r->set_event(BEFORE_SHOW, "country_before_show");
 
 	$r->process();
 
@@ -119,9 +146,10 @@
 	$tab = get_param("tab");
 	if (!$tab) { $tab = "general"; }
 	$tabs = array(
-		"general" => array("title" => ADMIN_GENERAL_MSG), 
-		"postal_code" => array("title" => ZIP_FIELD), 
-		"sites" => array("title" => ADMIN_SITES_MSG, "show" => $sitelist),
+		"general" => array("title" => va_message("ADMIN_GENERAL_MSG")), 
+		"postal_code" => array("title" => va_message("ZIP_FIELD")), 
+		"units" => array("title" => va_message("MEASUREMENT_UNITS_MSG")), 
+		"sites" => array("title" => va_message("ADMIN_SITES_MSG"), "show" => $sitelist),
 	);
 
 
@@ -134,29 +162,31 @@
 
 	$t->pparse("main");
 
-	function set_country_id()  {
-		global $db, $table_prefix, $r, $sitelist;
-
-		$sql = "SELECT MAX(country_id) FROM " . $table_prefix . "countries ";
-		$db->query($sql);
-		if($db->next_record()) {
-			$country_id= $db->f(0) + 1;
-			$r->change_property("country_id", USE_IN_INSERT, true);
-			$r->set_value("country_id", $country_id);
-		}	
-		check_country_data();
-	}
-
 	function check_country_data() {
-		global $db, $table_prefix, $r, $sitelist;
+		global $r, $cs, $db, $table_prefix, $r, $sitelist;
 		if (!$sitelist) {
 			$r->set_value("sites_all", 1);
 		}
+
+		// set country settings parameter
+		$country_settings = array();
+		foreach ($cs->parameters as $key => $data) {
+			if ($cs->get_property_value($key, USE_IN_INSERT)) {
+				$country_settings[$key] = $data[CONTROL_VALUE];
+			}
+		}
+		$r->set_value("country_settings", json_encode($country_settings));
 	}
 
-	function update_country_data() {
+	function update_country_data($params) {
 		global $r, $db, $table_prefix, $sitelist, $selected_sites;
 
+		$event = isset($params["event"]) ? $params["event"] : "";
+		if ($event == AFTER_INSERT) {
+			$country_id = $db->last_insert_id();
+			$r->set_value("country_id", $country_id);
+		}
+	
 		$country_id = $r->get_value("country_id");
 		$country_code = $r->get_value("country_code");
 		
@@ -192,5 +222,30 @@
 		$db->query("DELETE FROM " . $table_prefix . "countries_sites WHERE country_id=" . $db->tosql($country_id, INTEGER));
 	}
 
+	function select_country()
+	{
+		global $r, $cs, $db, $table_prefix;
+		$country_settings = $r->get_value("country_settings");
+		if ($country_settings) {
+			$country_settings = json_decode($country_settings, true);
+			if (is_array($country_settings)) {
+				foreach ($country_settings as $param_name => $param_value) {
+					if ($cs->parameter_exists($param_name)) {
+						$cs->set_value($param_name, $param_value);
+					}
+				}
+			}
+		}
+	}
 
-?>
+	function country_after_request()
+	{
+		global $cs;
+		$cs->get_form_parameters();	
+	}
+
+	function country_before_show()
+	{
+		global $cs;
+		$cs->set_form_parameters();
+	}

@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_order_serials.php                                  ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -184,22 +184,13 @@
 		$goods_total = $db->f("goods_total");
 		$total_discount = $db->f("total_discount");
 		$shipping_cost = $db->f("shipping_cost");
-		$tax_name = $db->f("tax_name");
-		$tax_percent = $db->f("tax_percent");
 		$order_total = round($goods_total, 2) - round($total_discount, 2) + round($shipping_cost, 2);
-		if(strlen($tax_name) || $tax_percent > 0) {
-			$tax_cost = ($order_total / 100) * $tax_percent;
-			$tax_cost = round($tax_cost, 2);
-			$order_total += $tax_cost;
-			$t->set_var("tax_cost", currency_format($tax_cost));
-		}
 
 		$t->set_vars($db->Record);
 		$t->set_var("goods_total", currency_format($goods_total));
 		$t->set_var("total_discount", currency_format($total_discount));
 		$t->set_var("shipping_cost", currency_format($shipping_cost));
 		$t->set_var("order_total", currency_format($order_total));
-		$t->set_var("tax_percent", number_format($db->f("tax_percent"), 2) . "%");
 
 		$date_formated = va_date($datetime_show_format, $order_placed_date);
 		$cc_start = va_date(array("MM", " / ", "YYYY"), $db->f("cc_start_date", DATETIME));
@@ -286,5 +277,3 @@
 	include_once("./admin_footer.php");
 
 	$t->pparse("main");
-
-?>

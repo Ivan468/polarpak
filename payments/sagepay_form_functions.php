@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  sagepay_form_functions.php                               ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -170,9 +170,15 @@
 			$crypt_url .= "&BillingPhone=" . $params["BillingPhone"];
 		}
 		if (isset($params["BillingFirstnames"]) && strlen($params["BillingFirstnames"])) {
+			if (strlen($params["BillingFirstnames"]) > 20) {
+				$params["BillingFirstnames"] = substr($params["BillingFirstnames"], 0, 20);
+			}
 			$crypt_url .= "&BillingFirstnames=" . $params["BillingFirstnames"];
 		}
 		if (isset($params["BillingSurname"]) && strlen($params["BillingSurname"])) {
+			if (strlen($params["BillingSurname"]) > 20) {
+				$params["BillingSurname"] = substr($params["BillingSurname"], 0, 20);
+			}
 			$crypt_url .= "&BillingSurname=" . $params["BillingSurname"];
 		}
 		if (isset($params["BillingCity"]) && strlen($params["BillingCity"])) {
@@ -191,9 +197,15 @@
 			$crypt_url .= "&DeliveryPostCode=" . $params["DeliveryPostCode"];
 		}
 		if (isset($params["DeliveryFirstnames"]) && strlen($params["DeliveryFirstnames"])) {
+			if (strlen($params["DeliveryFirstnames"]) > 20) {
+				$params["DeliveryFirstnames"] = substr($params["DeliveryFirstnames"], 0, 20);
+			}
 			$crypt_url .= "&DeliveryFirstnames=" . $params["DeliveryFirstnames"];
 		}
 		if (isset($params["DeliverySurname"]) && strlen($params["DeliverySurname"])) {
+			if (strlen($params["DeliverySurname"]) > 20) {
+				$params["DeliverySurname"] = substr($params["DeliverySurname"], 0, 20);
+			}
 			$crypt_url .= "&DeliverySurname=" . $params["DeliverySurname"];
 		}
 		if (isset($params["DeliveryAddress2"]) && strlen($params["DeliveryAddress2"])) {

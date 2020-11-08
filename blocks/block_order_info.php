@@ -133,9 +133,6 @@
 		}
 	} 
 	$next_step = get_param("next_step");
-	if ($operation == "refresh") {
-		$ajax = 0;
-	}
 	$remove_coupon_id = get_param("remove_coupon_id");
 	$form_coupon_code = get_param("form_coupon_code");
 	// for call center check selected user
@@ -430,6 +427,9 @@
 	$item_tax_total_column = get_setting_value($settings, "checkout_item_tax_total", 1);
 	$item_price_incl_tax_total_column = get_setting_value($settings, "checkout_item_price_incl_tax_total", 1);
 	$item_image_column = get_setting_value($settings, "checkout_item_image", 0);
+	$item_remove_column = get_setting_value($settings, "checkout_item_remove", 1);
+	$quantity_control_checkout = get_setting_value($settings, "quantity_control_checkout");
+	$cart_subitem_name = get_setting_value($settings, "cart_subitem_name");
 	
 	// image settings
 	$product_no_image = get_setting_value($settings, "product_no_image", "");
@@ -508,6 +508,15 @@
 			} else {
 				$ship_data[$param_name] = $bill_value;
 			}
+		}
+		// if country fields disabled use default settings
+		$personal_country_show = get_setting_value($order_info, $param_prefix."show_country_id");
+		$delivery_country_show = get_setting_value($order_info, $param_prefix."show_delivery_country_id");
+		$personal_state_show = get_setting_value($order_info, $param_prefix."show_state_id");
+		$delivery_state_show = get_setting_value($order_info, $param_prefix."show_delivery_state_id");
+		if ($personal_country_show != 1 && $delivery_country_show != 1) {
+			$bill_data["country_id"] = get_setting_value($settings, "country_id");
+			$ship_data["country_id"] = get_setting_value($settings, "country_id");
 		}
 
 		$state_id = $ship_data["state_id"];
@@ -719,8 +728,9 @@
 			$op_rows[$pn]["property_order"] = $db->f("property_order");
 			$op_rows[$pn]["property_code"] = $db->f("property_code");
 			$op_rows[$pn]["property_name"] = $db->f("property_name");
-			$op_rows[$pn]["property_description"] = $db->f("property_description");
-			$op_rows[$pn]["default_value"] = $db->f("default_value");
+			$op_rows[$pn]["property_description"] = get_translation($db->f("property_description"));
+			$op_rows[$pn]["property_notes"] = "";
+			$op_rows[$pn]["default_value"] = get_translation($db->f("default_value"));
 			$op_rows[$pn]["property_type"] = $db->f("property_type");
 			$op_rows[$pn]["property_class"] = $db->f("property_class");
 			$op_rows[$pn]["property_style"] = $db->f("property_style");
@@ -742,16 +752,17 @@
 	}
 
 	// VAT validation
-	$tax_free = false; $vat_parameter = ""; $vat_number = ""; $is_vat_valid = false; 
+	$tax_free = 0; $vat_parameter = ""; $vat_number = ""; $is_vat_valid = false; 
 	// add $vat_validation = true; into includes/var_definition.php to activate this validation
 	if (isset($vat_validation) && $vat_validation) {
 		// check vat_parameter
 		if (sizeof($op_rows) > 0) {
 			for ($pn = 0; $pn < sizeof($op_rows); $pn++) {
 				$property_id = $op_rows[$pn]["property_id"];
+				$property_code = $op_rows[$pn]["property_code"];
 				$property_name = $op_rows[$pn]["property_name"];
 
-				if (preg_match("/vat/i", $property_name)) {
+				if ($property_code == "vat_number" || preg_match("/vat/i", $property_name)) {
 					$vat_parameter = "op_" . $property_id;
 					break;
 				}
@@ -762,11 +773,13 @@
 			$vat_number = get_param($vat_parameter);
 			
 			if ($vat_number) {
-				$is_vat_valid = vat_check($vat_number, $country_code);
+				$is_vat_valid = vat_check($vat_number, $country_code, $vat_response);
+				// save full VAT response as JSON object in property notes field
+				$op_rows[$pn]["property_notes"] = json_encode($vat_response);
 				if ($is_vat_valid) {
 					if (!isset($vat_obligatory_countries) || !is_array($vat_obligatory_countries)
 					|| !in_array(strtoupper($country_code), $vat_obligatory_countries)) {
-						$tax_free = true; 
+						$tax_free = 1; // use numeric values 0 and 1 only as true/false will generate validation error
 					}
 				} else {
 					$sc_errors .= "Your VAT Number is invalid. Please check it and try again.<br>";
@@ -875,6 +888,7 @@
 	} else {
 		$item_price_incl_tax_total_column = false;
 	}
+
 	$sc_colspan = $total_columns - 1;
 	$t->set_var("goods_colspan", $goods_colspan);
 	$t->set_var("properties_colspan", $properties_colspan);
@@ -964,6 +978,7 @@
 			$property_name_initial = $op_rows[$pn]["property_name"];
 			$property_name = get_translation($property_name_initial);
 			$property_description = $op_rows[$pn]["property_description"];
+			$property_notes = $op_rows[$pn]["property_notes"];
 			$default_value = $op_rows[$pn]["default_value"];
 			$property_type = $op_rows[$pn]["property_type"];
 			$property_class = $op_rows[$pn]["property_class"];
@@ -1052,9 +1067,10 @@
 								$selected_points_price = 0; $property_pay_points = 0;
 							}
 							$custom_options[$property_id][] = array(
-								"type" => $property_type, "payment_id" => $op_payment_id, "order" => $property_order, "name" => $property_name_initial, 
+								"type" => $property_type, "payment_id" => $op_payment_id, "order" => $property_order, 
+								"code" => $property_code, "name" => $property_name_initial, "notes" => $property_notes, 
 								"value_id" => $property_value_id, "value" => $property_value_original, "price" => $selected_price, "tax_free" => $property_tax_free,
-								"points_price" => $selected_points_price, "pay_points" => $property_pay_points
+								"points_price" => $selected_points_price, "pay_points" => $property_pay_points,
 							);
 						}
 					} elseif ($property_code && isset($user_info[$property_code])) {
@@ -1164,7 +1180,8 @@
 								$selected_points_price = 0; $property_pay_points = 0; $property_points_price = 0;
 							}
 							$custom_options[$property_id][] = array(
-								"type" => $property_type, "payment_id" => $op_payment_id, "order" => $property_order, "name" => $property_name_initial, 
+								"type" => $property_type, "payment_id" => $op_payment_id, "order" => $property_order, 
+								"code" => $property_code, "name" => $property_name_initial, "notes" => $property_notes, 
 								"value_id" => $property_value_id, "value" => $property_value_original, "price" => $property_price, "tax_free" => $property_tax_free,
 								"points_price" => $property_points_price, "pay_points" => $property_pay_points
 							);
@@ -1233,7 +1250,8 @@
 					}
 					if (strlen($control_value)) {
 						$custom_options[$property_id][] = array(
-							"type" => $property_type, "payment_id" => $op_payment_id, "order" => $property_order, "name" => $property_name_initial, 
+							"type" => $property_type, "payment_id" => $op_payment_id, "order" => $property_order, 
+							"code" => $property_code, "name" => $property_name_initial, "notes" => $property_notes, 
 							"value_id" => "", "value" => $control_value, "price" => 0, "tax_free" => 0,
 							"points_price" => 0, "pay_points" => 0
 						);
@@ -1266,7 +1284,8 @@
 					}
 					if (strlen($control_value)) {
 						$custom_options[$property_id][] = array(
-							"type" => $property_type, "payment_id" => $op_payment_id, "order" => $property_order, "name" => $property_name_initial, 
+							"type" => $property_type, "payment_id" => $op_payment_id, "order" => $property_order, 
+							"code" => $property_code, "name" => $property_name_initial, "notes" => $property_notes, 
 							"value_id" => "", "value" => $control_value, "price" => 0, "tax_free" => 0,
 							"points_price" => 0, "pay_points" => 0
 						);
@@ -1299,7 +1318,8 @@
 					}
 					if (strlen($control_value)) {
 						$custom_options[$property_id][] = array(
-							"type" => $property_type, "payment_id" => $op_payment_id, "order" => $property_order, "name" => $property_name_initial, 
+							"type" => $property_type, "payment_id" => $op_payment_id, "order" => $property_order, 
+							"code" => $property_code, "name" => $property_name_initial, "notes" => $property_notes, 
 							"value_id" => "", "value" => $control_value, "price" => 0, "tax_free" => 0,
 							"points_price" => 0, "pay_points" => 0
 						);
@@ -1323,7 +1343,8 @@
 				}
 				if ($property_required && strlen($default_value)) {
 					$custom_options[$property_id][] = array(
-						"type" => $property_type, "payment_id" => $op_payment_id, "order" => $property_order, "name" => $property_name_initial, 
+						"type" => $property_type, "payment_id" => $op_payment_id, "order" => $property_order, 
+						"code" => $property_code, "name" => $property_name_initial, "notes" => $property_notes, 
 						"value_id" => "", "value" => $default_value, "price" => 0, "tax_free" => 0,
 						"points_price" => 0, "pay_points" => 0
 					);
@@ -1592,7 +1613,8 @@
 			$components = $item["COMPONENTS"];
 			$item_coupons = isset($item["COUPONS"]) ? $item["COUPONS"] : "";
 			if ($cc_order || VA_Products::check_permissions($item_id, VIEW_ITEMS_PERM)) {
-				$sql  = " SELECT i.item_code, i.manufacturer_code, i.item_type_id, i.supplier_id, i.user_id, i.item_name, i.short_description, i.full_description, ";
+				$sql  = " SELECT i.parent_item_id, i.item_code, i.manufacturer_code, i.item_type_id, i.supplier_id, i.user_id, ";
+				$sql .= " i.item_name, i.cart_item_name, i.short_description, i.full_description, ";
 				$sql .= " i.buying_price, i." . $price_field . ", i.is_price_edit, i.is_sales, i." . $sales_field . ", i.tax_id, i.tax_free, ";
 				$sql .= " i.is_points_price, i.points_price, i.reward_type, i.reward_amount, i.credit_reward_type, i.credit_reward_amount, ";
 				$sql .= " it.reward_type AS type_bonus_reward, it.reward_amount AS type_bonus_amount, ";
@@ -1608,6 +1630,7 @@
 				$sql .= " i.is_recurring, i.recurring_price, i.recurring_period, i.recurring_interval, ";
 				$sql .= " i.recurring_payments_total, i.recurring_start_date, i.recurring_end_date, ";
 				$sql .= " it.is_gift_voucher, it.is_user_voucher, it.is_bundle, ";
+				$sql .= " i.min_quantity, i.max_quantity, i.quantity_increment, ";
 				$sql .= " i.tiny_image, i.tiny_image_alt, i.small_image, i.small_image_alt, i.big_image, i.big_image_alt, i.super_image ";
 				$sql .= " FROM ((((" . $table_prefix . "items i ";			
 				$sql .= " LEFT JOIN " . $table_prefix . "item_types it ON i.item_type_id=it.item_type_id) ";
@@ -1621,6 +1644,7 @@
 				{
 					$total_items++;
 	
+					$parent_item_id = $db->f("parent_item_id");
 					$price = $db->f($price_field);
 					$is_price_edit = $db->f("is_price_edit");
 					if (strlen($cc_price)) {
@@ -1635,7 +1659,7 @@
 					$is_sales = $db->f("is_sales");
 					$sales_price = $db->f($sales_field);
 					$coupons_ids = ""; $coupons_discount = ""; $coupons_applied = array();
-					get_sales_price($price, $is_sales, $sales_price, $item_id, $item_type_id, $coupons_ids, $coupons_discount, $coupons_applied, "coupon");
+					get_sales_price($price, $is_sales, $sales_price, $item_id, $item_type_id, "", "", $coupons_ids, $coupons_discount, $coupons_applied, "coupon");
 					$item_code = $db->f("item_code");
 					$manufacturer_code = $db->f("manufacturer_code");
 					$buying_price = doubleval($db->f("buying_price"));
@@ -1655,8 +1679,9 @@
 						$credit_reward_amount = $db->f("type_credit_amount");
 					}
 	
-					$item_name_initial = $db->f("item_name");
-					$item_name = get_translation($item_name_initial);
+					$item_name = $db->f("item_name");
+					$cart_item_name = $db->f("cart_item_name");
+
 					$downloadable = $db->f("downloadable");
 					$download_period = $db->f("download_period");
 					$download_path = $db->f("download_path");
@@ -1678,6 +1703,10 @@
 					if ($availability_time > $max_availability_time) {
 						$max_availability_time = $availability_time;
 					}
+					$min_quantity = $db->f("min_quantity");
+					$max_quantity = $db->f("max_quantity");
+					$quantity_increment = $db->f("quantity_increment");
+
 					$shipping_rule_id = $db->f("shipping_rule_id");
 					$countries_all = $db->f("countries_all");
 	
@@ -1727,6 +1756,34 @@
 					}
 					$big_image = $db->f("big_image");	
 					$super_image = $db->f("super_image");	
+
+					// check image and parent product name which could be shown in the cart
+					if ($parent_item_id) {
+						$sql  = " SELECT i.item_type_id,i.item_name,i.".$price_field.",i.is_price_edit,i.is_sales,i.".$sales_field.",i.buying_price,";
+						$sql .= " i.tax_id,i.tax_free,i.stock_level, i.min_quantity,i.max_quantity,i.quantity_increment, ";
+						$sql .= " i.use_stock_level,i.hide_out_of_stock,i.disable_out_of_stock, ";
+						$sql .= " i.tiny_image, i.tiny_image_alt, i.small_image, i.small_image_alt, i.big_image, i.big_image_alt, i.super_image, i.super_image_alt ";
+						$sql .= " FROM " . $table_prefix . "items i ";
+						$sql .= " WHERE i.item_id=" . $db->tosql($parent_item_id, INTEGER);
+						$db->query($sql);
+						if ($db->next_record()) {
+							$parent_item_name = $db->f("item_name");
+							if (!$item_image && $image_field) {
+								$item_image = $db->f($image_field);	
+								$item_image_alt = get_translation($db->f($image_alt_field));	
+								$big_image = $db->f("big_image");	
+								$super_image = $db->f("super_image");	
+							}
+							if (!strlen($cart_item_name) && $cart_subitem_name) {	
+								$search_tags = array("{parent_name}", "{parent_item_name}", "{item_name}", "{product_name}", "{sub_name}", "{subitem_name}", "{sub_item_name}", "{subproduct_name}", "{sub_product_name}");
+								$replace_values = array($parent_item_name, $parent_item_name, $item_name, $item_name, $item_name, $item_name, $item_name, $item_name, $item_name);
+								$cart_item_name = str_replace($search_tags, $replace_values, $cart_subitem_name);
+							}
+						} else {	
+							$parent_item_id = "";
+						}
+					}
+					if (strlen($cart_item_name)) { $item_name = $cart_item_name; }
 					
 					// some price calculation
 					$real_price = $price;
@@ -1761,7 +1818,7 @@
 					$cart_item_id = $cart_id;
 					$cart_items[$cart_item_id] = array(
 						"parent_cart_id" => "", "top_order_item_id" => 0, "is_bundle" => $is_bundle,
-						"item_id" => $item_id, "id" => $item_id, "product_id" => $item_id, "parent_item_id" => 0,						
+						"item_id" => $item_id, "id" => $item_id, "product_id" => $item_id, "parent_item_id" => $parent_item_id,						
 						"selection_name" => "", "selection_order" => "", "component_name" => "",
 						"item_user_id" => $item_user_id, "item_type_id" => $item_type_id, 
 						"supplier_id" => $supplier_id, "wishlist_item_id" => $wishlist_item_id,
@@ -1782,11 +1839,12 @@
 						"is_points_price" => $is_points_price, "points_price" => $points_price, 
 						"reward_type" => $reward_type, "reward_amount" => $reward_amount, 
 						"credit_reward_type" => $credit_reward_type, "credit_reward_amount" => $credit_reward_amount, 
-						"buying_price" => $buying_price, "item_name" => $item_name_initial, "product_name" => $item_name_initial,
-						"product_title" => $item_name_initial, "item_title" => $item_name_initial, 
+						"buying_price" => $buying_price, "item_name" => $item_name, "product_name" => $item_name,
+						"product_title" => $item_name, "item_title" => $item_name, 
 						"discount_applicable" => $discount_applicable, "properties_discount" => $properties_discount, 
 						"downloadable" => $downloadable, "downloads" => "", 
 						"stock_level" => $stock_level, "availability_time" => $availability_time, 
+						"min_quantity" => $min_quantity, "max_quantity" => $max_quantity, "quantity_increment" => $quantity_increment, 
 						"short_description" => $short_description, "description" => $short_description, "full_description" => $full_description,
 						"generate_serial" => $generate_serial, "serial_period" => $serial_period, "activations_number" => $activations_number,
 						"is_gift_voucher" => $is_gift_voucher, "is_user_voucher" => $is_user_voucher,
@@ -1804,7 +1862,7 @@
 						$stock_levels[$item_id]["stock_level"] = $stock_level;
 					} else {
 						$stock_levels[$item_id] = array(
-							"item_name" => $item_name_initial, "quantity" => $quantity, "stock_level" => $stock_level, 
+							"item_name" => $item_name, "quantity" => $quantity, "stock_level" => $stock_level, 
 							"use_stock_level" => $use_stock_level, "hide_out_of_stock" => $hide_out_of_stock, "disable_out_of_stock" => $disable_out_of_stock, 
 						);
 					}
@@ -1896,7 +1954,7 @@
 									$is_sales = $db->f("is_sales");
 									$sales_price = $db->f($sales_field);
 									$coupons_ids = ""; $coupons_discount = ""; $coupons_applied = array();
-									get_sales_price($item_price, $is_sales, $sales_price, $sub_item_id, $item_type_id, $coupons_ids, $coupons_discount, $coupons_applied, "coupon");
+									get_sales_price($item_price, $is_sales, $sales_price, $sub_item_id, $item_type_id, "", "", $coupons_ids, $coupons_discount, $coupons_applied, "coupon");
 									if ($quantity_action == 2) {
 										$component_quantity = $sub_quantity;
 									} else {
@@ -2058,6 +2116,7 @@
 										"properties_html" => "", "properties_text" => "",
 										"downloadable" => $downloadable, "downloads" => "", 
 										"stock_level" => $stock_level, "availability_time" => $availability_time, 
+										"min_quantity" => "", "max_quantity" => "", "quantity_increment" => "", 
 										"short_description" => $short_description, "description" => $short_description, "full_description" => $full_description,
 										"generate_serial" => $generate_serial, "serial_period" => $serial_period, "activations_number" => $activations_number,
 										"is_gift_voucher" => $is_gift_voucher, "is_user_voucher" => $is_user_voucher,
@@ -2843,7 +2902,6 @@
 		foreach ($cart_items as $cart_item_id => $cart_item) {
 
 			$sub_item_id = $cart_item["item_id"];
-
 			$parent_cart_id = $cart_item["parent_cart_id"];
 			$wishlist_item_id = $cart_item["wishlist_item_id"];
 			$item_user_id = $cart_item["item_user_id"];
@@ -2859,6 +2917,13 @@
  			$quantity = $cart_item["quantity"];
 			$price = $cart_item["full_price"];
 			$item_total = $price * $quantity;
+			// data to generate quantity control
+ 			$min_quantity = get_setting_value($cart_item, "min_quantity");
+ 			$max_quantity = get_setting_value($cart_item, "max_quantity");
+ 			$quantity_increment = get_setting_value($cart_item, "quantity_increment");
+			if (!$quantity_increment) { $quantity_increment = 1; }
+			if (!$min_quantity) { $min_quantity = $quantity_increment; }
+
 			// get points data
 			$is_points_price = $cart_item["is_points_price"];
 			$points_price = $cart_item["points_price"];
@@ -3063,13 +3128,49 @@
 			}
 
 			$t->set_var("cart_id", $cart_item_id);
+			$t->set_var("cart_item_id", $cart_item_id);
 			$t->set_var("ordinal_number", $ordinal_number);
 			$t->set_var("item_name", $item_name);
 			$t->set_var("item_name_strip", htmlspecialchars(strip_tags($item_name)));
 			$t->set_var("short_description", $short_description);
-			$t->set_var("quantity", $quantity);
 			$t->set_var("coupons_list", $coupons_html);
 			$t->set_var("properties_values", $properties_html);
+
+			// parse quantity control
+			$t->set_var("quantity", htmlspecialchars($quantity));
+			$t->set_var("quantity_select", "");
+			$t->set_var("quantity_textbox", "");
+			$t->set_var("quantity_label", "");
+			if ($parent_cart_id) {
+				$t->sparse("quantity_label", false);
+			} else {
+				if ($quantity_control_checkout == "LISTBOX") {
+					$increment_limit = intval($quantity / $quantity_increment) + 8;
+					$show_max_quantity = $min_quantity + ($quantity_increment * $increment_limit);
+					if ($max_quantity > 0 && $show_max_quantity > $max_quantity) {
+						$show_max_quantity = $max_quantity;
+					}
+					if (($disable_out_of_stock || $hide_out_of_stock) && $show_max_quantity > $stock_level && $use_stock_level) {
+						$show_max_quantity = $stock_level;
+					}
+					// load data for listbox
+					$t->set_var("quantity_options", "");
+					for ($i = $min_quantity; $i <= $show_max_quantity; $i = $i + $quantity_increment) {
+						$quantity_selected = ($i == $quantity) ? " selected " : "";
+						$t->set_var("quantity_selected", $quantity_selected);
+						$t->set_var("quantity_value", $i);
+						$t->set_var("quantity_description", $i);
+						$t->sparse("quantity_options", true);
+						$quantity_description = $i;
+					}
+					$t->sparse("quantity_select", false);
+				} elseif ($quantity_control_checkout == "TEXTBOX") {
+					$t->sparse("quantity_textbox", false);
+				} else {
+					$t->sparse("quantity_label", false);
+				}
+			}
+
 
 			// show tax below product if such option set
 			$t->set_var("item_taxes", "");
@@ -3180,6 +3281,14 @@
 			$t->set_var("item_tax_percent",  $show_percentage . "%");
 			$t->set_var("item_tax", currency_format($show_tax));
 			$t->set_var("item_tax_total", currency_format($show_tax_total));
+			if ($parent_cart_id) {
+				$t->set_var("item_remove_cell", "");
+			} else {
+				$t->set_var("cart_item_id", $cart_item_id);
+				$t->sparse("item_remove_cell", false);
+			}
+
+
 
 			parse_cart_columns($item_name_column, $item_price_column, $item_tax_percent_column, $item_tax_column, $item_price_incl_tax_column, $item_quantity_column, $item_price_total_column, $item_tax_total_column, $item_price_incl_tax_total_column, $item_image_column, $ordinal_number_column);
 			$t->parse("items", true);
@@ -4151,6 +4260,7 @@
 				$payment_errors = str_replace("{payment_name}", $payment_name, RECURRING_NOT_ALLOWED_ERROR) . "<br/>";
 			}
 			$processing_tax_free = $db->f("processing_tax_free");
+			if ($tax_free) { $processing_tax_free = $tax_free; }
 			$fee_percent = doubleval($db->f("fee_percent"));
 			$fee_amount = doubleval($db->f("fee_amount"));
 			$processing_fee = $fee_amount + round(($payment_amount * $fee_percent) / 100, 2);
@@ -5184,7 +5294,6 @@
 			} else {
 				$is_valid = true;
 			}
-
 		} elseif ($operation == "fast_checkout") {
 			if ($sc_errors) {
 				header ("Location: basket.php?fc_errors=".urlencode($sc_errors));
@@ -5208,13 +5317,6 @@
 		} else {
 			$is_valid = false;
 		}
-
-/*
-echo "bfe:".$r->errors.":";
-echo "err:".$r->errors.":";
-echo "val:".$is_valid.":";
-echo "shp:".$shipping_errors.":";
-//*/
 
 		if ($is_valid && ($operation == "save" || $operation == "fast_order" || $operation == "fast_checkout"))
 		{
@@ -5839,9 +5941,11 @@ echo "shp:".$shipping_errors.":";
 				$op->add_textbox("property_id", INTEGER);
 				$op->add_textbox("property_order", INTEGER);
 				$op->add_textbox("property_type", INTEGER);
+				$op->add_textbox("property_code", TEXT);
 				$op->add_textbox("property_name", TEXT);
 				$op->add_textbox("property_value_id", INTEGER);
 				$op->add_textbox("property_value", TEXT);
+				$op->add_textbox("property_notes", TEXT);
 				$op->add_textbox("property_price", FLOAT);
 				$op->add_textbox("property_points_amount", FLOAT);
 				$op->add_textbox("property_weight", FLOAT);
@@ -5857,7 +5961,9 @@ echo "shp:".$shipping_errors.":";
 							continue;
 						}
 						$property_order = $value_data["order"];
+						$property_code = $value_data["code"];
 						$property_name = $value_data["name"];
+						$property_notes = $value_data["notes"];
 						$property_value_id = $value_data["value_id"];
 						$property_value = $value_data["value"];
 						$property_price = $value_data["price"];
@@ -5876,10 +5982,12 @@ echo "shp:".$shipping_errors.":";
 						$op->set_value("property_id", $property_id);
 						$op->set_value("property_order", $property_order);
 						$op->set_value("property_type", $property_type);
+						$op->set_value("property_code", $property_code);
 						$op->set_value("property_name", $property_name);
 						$op->set_value("property_value_id", $property_value_id);
 						$op->set_value("property_value", $property_value);
 						$op->set_value("property_price", $property_price);
+						$op->set_value("property_notes", $property_notes);
 						$op->set_value("property_points_amount", $property_points_price);
 						$op->set_value("property_weight", 0);
 						$op->set_value("actual_weight", 0);
@@ -7174,7 +7282,7 @@ echo "shp:".$shipping_errors.":";
 	// check what blocks we will need to parse
 	$t->set_var("active_step", htmlspecialchars($active_step));
 
-	if ($ajax) {
+	if ($ajax && ($operation == "save" || $operation == "next")) {	
 		$ajax_response = array();
 		// always update processing fees information
 		$ajax_response["processing_fees"] = $processing_fees;
@@ -7221,6 +7329,9 @@ echo "shp:".$shipping_errors.":";
 			echo json_encode($ajax_response);
 			exit;
 		} else {
+			if (!$next_step) {
+				$next_step = $steps[$active_step]["next"];
+			}
 			$next_step_name = $steps[$next_step]["next"];
 			$t->set_var("errors_class", "hidden");
 			$t->set_var("errors_list", "");

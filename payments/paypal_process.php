@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  paypal_process.php                                       ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -32,6 +32,7 @@
 		exit;
 	}
 
+	// two encrypted parameters may be used - cmd=_s-xclick and encrypted=...
 	$payment_url = "https://www.paypal.com/cgi-bin/webscr";
 	$post_parameters = ""; $payment_parameters = array(); $pass_parameters = array(); $pass_data = array(); $variables = array();
 	get_payment_parameters($order_id, $payment_parameters, $pass_parameters, $post_parameters, $pass_data, $variables, "");
@@ -88,4 +89,3 @@
 	$t->pparse("main");
 		
 	exit;
-?>

@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_common.php                                         ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -30,6 +30,10 @@
 		if(!defined($constant_name)) {
 			define($constant_name, $constant_value);
 		}
+	}
+	// include custom message once more time to override messages above
+	if (file_exists($root_folder_path ."messages/".$language_code."/custom_messages.php")) {
+		include($root_folder_path ."messages/".$language_code."/custom_messages.php");
 	}
 
 

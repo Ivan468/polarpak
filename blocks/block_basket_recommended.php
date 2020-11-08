@@ -98,6 +98,10 @@
 	if (!$recom_ids) return;
 	array_unique($recom_ids);
 
+	// prepare params for VA_Products class to show products
+	$sql_params = array();
+	$sql_params["where"][]  = " i.item_id IN (" . $db->tosql($recom_ids, INTEGERS_LIST) . ")";
+
 	$html_template = get_setting_value($block, "html_template", "block_products.html"); 
   $t->set_file("block_body", $html_template);
 	$recommended_title = str_replace("{user_name}", $user_name, PRODUCTS_RECOMMENDED_TITLE);
@@ -105,7 +109,7 @@
 
 	$params = array(
 		"pb_id" => $pb_id,
-		"ids" => $recom_ids,
+		"sql" => $sql_params,
 		"recs" => $recs_per_page,
 		"cols" => $recs_columns,
 		"qty" => $quantity_control,
@@ -123,5 +127,3 @@
 	if ($products_shown) {
 		$block_parsed = true;
 	}
-
-?>

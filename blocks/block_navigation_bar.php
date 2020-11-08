@@ -45,7 +45,7 @@
 		$ajax_data["pb_id"] = $pb_id;	
 		$ajax_data["pb_type"] = $pb_type;
 		if ($pb_type == "cart") {
-			$vars = array("block_type" => "bar");
+			$vars = array("block_type" => "sub-block", "template_type" => "built-in");
 			include("./blocks/block_cart.php");
 			$cart_pos = get_setting_value($bar_vars, "cart_pos", "left");
 			if ($cart_pos == "right") {
@@ -109,7 +109,7 @@
 	}
 	// parse languages
 	if ($language_show) {
-		$vars = array("language_selection" => "bar");
+		$vars = array("block_type" => "sub-block", "template_type" => "built-in", "language_selection" => "bar");
 		include("./blocks/block_language.php");
 		$menus["language"]["block"] = "languages_block";
 		$menus["language"]["menu_pos"] = $language_pos;
@@ -117,14 +117,14 @@
 	}
 	// parse currencies
 	if ($currency_show) {
-		$vars = array("currency_selection" => "bar");
+		$vars = array("block_type" => "sub-block", "template_type" => "built-in", "currency_selection" => "bar");
 		include("./blocks/block_currency.php");
 		$menus["currency"]["block"] = "currencies_block";
 		$menus["currency"]["menu_pos"] = $currency_pos;
 		$menus[0]["subs"]["currency"] = $currency_order;
 	}
 	if ($products_search_show) {
-		$vars = array("block_type" => "bar");
+		$vars = array("block_type" => "sub-block", "template_type" => "built-in");
 		include("./blocks/block_search.php");
 		$menus["products_search"]["block"] = "products_search_block";
 		$menus["products_search"]["menu_pos"] = $products_search_pos;
@@ -187,21 +187,21 @@
 		$menus[0]["subs"]["products"] = $products_order;
 	}
 	if ($site_search_show) {
-		$vars = array("block_type" => "bar");
+		$vars = array("block_type" => "sub-block", "template_type" => "built-in");
 		include("./blocks/block_site_search_form.php");
 		$menus["site_search"]["block"] = "site_search_block";
 		$menus["site_search"]["menu_pos"] = $site_search_pos;
 		$menus[0]["subs"]["site_search"] = $site_search_order;
 	}
 	if ($music_search_show) {
-		$vars = array("block_type" => "bar");
+		$vars = array("block_type" => "sub-block", "template_type" => "built-in");
 		include("./blocks/block_music_search_form.php");
 		$menus["music_search"]["block"] = "music_search_block";
 		$menus["music_search"]["menu_pos"] = $music_search_pos;
 		$menus[0]["subs"]["music_search"] = $music_search_order;
 	}
 	if ($cart_show) {
-		$vars = array("block_type" => "bar");
+		$vars = array("block_type" => "sub-block", "template_type" => "built-in");
 		include("./blocks/block_cart.php");
 		$menus["cart"]["block"] = "cart_block";
 		$menus["cart"]["menu_pos"] = $cart_pos;

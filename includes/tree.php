@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  tree.php                                                 ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -45,11 +45,11 @@ class VA_Tree
 			$sql .= " WHERE " . $this->db_category_id . "=";
 			while ($category_id && !isset($path_ids[$category_id]))
 			{
+				$path_ids[$category_id] = true; // save used category to prevent unlimited loop
 				$db->query($sql . $db->tosql($category_id, INTEGER));
 				if($db->next_record()) {
 					$path = $category_id . "," . $path;
 					$category_id = $db->f($this->db_parent_id);
-					$path_ids[$category_id] = true;
 				} else {
 					$category_id = "0";
 					$path = "";

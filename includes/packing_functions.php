@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  packing_functions.php                                    ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -426,7 +426,6 @@
 					$explode_values_ids = explode(",", $property_values_ids);
 					$properties_values_ids = array_merge($properties_values_ids, $explode_values_ids); 
 				}
-
 				foreach ($packing_slips as $order_shipping_id => $order_items) {
 					foreach ($order_items as $order_item_id => $order_item) {
 						if ($order_item_id == $property_order_item_id) {
@@ -438,7 +437,7 @@
 							);
 							// also save add $order_shipping_id & $order_item_id to values packs for easy access
 							foreach ($explode_values_ids as $property_value_id) {
-								if (isset($values_packs[$property_value_id])) { $values_packs[$property_value_id] = array(); }
+								if (!isset($values_packs[$property_value_id])) { $values_packs[$property_value_id] = array(); }
 								$values_packs[$property_value_id][] = array("order_shipping_id" => $order_shipping_id, "order_item_id" => $order_item_id);
 							}
 						}
@@ -461,8 +460,10 @@
 					if (preg_match("/^https?:/", $property_image)) { $property_image = ""; }
 					if ($property_image) {
 						// update original image
-						foreach ($values_packs[$item_property_id] as $value_pack) {
-							$packing_slips[$value_pack["order_shipping_id"]][$value_pack["order_item_id"]]["item_image"] = $property_image;
+						if (isset($values_packs[$item_property_id])) {
+							foreach ($values_packs[$item_property_id] as $value_pack) {
+								$packing_slips[$value_pack["order_shipping_id"]][$value_pack["order_item_id"]]["item_image"] = $property_image;
+							}
 						}
 					}
 				}
@@ -591,8 +592,8 @@
 					$item_name = strip_tags(get_translation($order_item["item_name"]));
 					$item_code = $order_item["item_code"];
 					$manufacturer_code = $order_item["manufacturer_code"];
-					$item_weight = $order_item["weight"];
-					$actual_weight = $order_item["actual_weight"];
+					$item_weight = doubleval($order_item["weight"]);
+					$actual_weight = doubleval($order_item["actual_weight"]);
 					$packing_total_weight += ($item_weight * $quantity);
 					$packing_total_actual_weight += ($actual_weight * $quantity);
 					$item_properties = $order_item["properties"];

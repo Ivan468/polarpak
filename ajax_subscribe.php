@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  ajax_subscribe.php                                       ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -37,7 +37,7 @@
 					$sql  = " INSERT INTO " . $table_prefix . "newsletters_users (site_id, email, date_added) ";
 					$sql .= " VALUES (";
 					$sql .= $db->tosql($site_id, INTEGER) . ", ";
-					$sql .= $db->tosql($user_email, TEXT) . ", ";
+					$sql .= $db->tosql($email, TEXT) . ", ";
 					$sql .= $db->tosql(va_time(), DATETIME) . ") ";
 					$db->query($sql);
 					$message_desc = SUBSCRIBED_MSG;

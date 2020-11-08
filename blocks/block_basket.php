@@ -110,6 +110,8 @@
 	$show_manufacturer_code = get_setting_value($settings, "manufacturer_code_basket", 0);
 	$product_no_image = get_setting_value($settings, "product_no_image", "");
 	$restrict_products_images = get_setting_value($settings, "restrict_products_images", "");
+	$cart_subitem_name = get_setting_value($settings, "cart_subitem_name");
+
 	$quantity_control_basket = get_setting_value($settings, "quantity_control_basket", "");
 	$quantity_control_basket = strtoupper($quantity_control_basket);
 	$price_type = get_session("session_price_type");
@@ -136,10 +138,6 @@
 	// check active columns
 	$basket_item_image = get_setting_value($settings, "basket_item_image", 0);
 	$cart_image = get_setting_value($vars, "image_type", $basket_item_image);
-	if ($is_mobile && $cart_image == 1) {
-		// use for mobile site small image instead of tiny
-		$cart_image = 2;
-	}
 	$basket_item_name = get_setting_value($settings, "basket_item_name", 1);
 	$basket_item_price = get_setting_value($settings, "basket_item_price", 1);
 	$basket_item_tax_percent = get_setting_value($settings, "basket_item_tax_percent", 0);
@@ -442,7 +440,7 @@
 			$restrict_products_images = get_setting_value($settings, "restrict_products_images", "");
 			product_image_fields($cart_image, $image_type_name, $image_field, $image_alt_field, $watermark, $product_no_image);
 
-			$sql  = " SELECT i.item_id, i.item_name, i.friendly_url, i.item_type_id, i.item_code, i.manufacturer_code, i.short_description, ";
+			$sql  = " SELECT i.item_id, i.parent_item_id, i.item_name, i.friendly_url, i.item_type_id, i.item_code, i.manufacturer_code, i.short_description, ";
 			$sql .= " i." . $price_field . ", i.is_price_edit, i.is_sales, i." . $sales_field . ", i.buying_price, ";
 			$sql .= " i.is_points_price, i.points_price, i.reward_type, i.reward_amount, i.credit_reward_type, i.credit_reward_amount, ";
 			$sql .= " it.reward_type AS type_bonus_reward, it.reward_amount AS type_bonus_amount, ";
@@ -450,9 +448,8 @@
 			$sql .= " i.tax_free, i.stock_level, i.use_stock_level, i.hide_out_of_stock, i.disable_out_of_stock, ";
 			$sql .= " i.min_quantity, i.max_quantity, i.quantity_increment, ";
 			$sql .= " i.weight, i.packages_number, i.width, i.height, i.length, i.is_shipping_free, i.shipping_cost, ";
-			$sql .= " i.is_separate_shipping, i.shipping_modules_default, i.shipping_modules_ids ";
-			if ($image_field) { $sql .= " , i." . $image_field; }
-			if ($image_alt_field) { $sql .= " , i." . $image_alt_field; }
+			$sql .= " i.is_separate_shipping, i.shipping_modules_default, i.shipping_modules_ids, ";
+			$sql .= " i.tiny_image, i.tiny_image_alt, i.small_image, i.small_image_alt, i.big_image, i.big_image_alt, i.super_image, i.super_image_alt ";
 			$sql .= " FROM (" . $table_prefix . "items i ";
 			$sql .= " LEFT JOIN " . $table_prefix . "item_types it ON i.item_type_id=it.item_type_id) ";
 			$sql .= " WHERE i.item_id=" . $db->tosql($item_id, INTEGER);
@@ -460,6 +457,8 @@
 			if ($db->next_record())
 			{
 				$total_items++;
+
+				$parent_item_id = $db->f("parent_item_id");
 				$item_type_id = $db->f("item_type_id");
 				$items_type_ids[] = $item_type_id;
 				$item_code = $db->f("item_code");
@@ -474,7 +473,7 @@
 				$sales_price = $db->f($sales_field);
 				$buying_price = $db->f("buying_price");
 				$coupons_ids = ""; $coupons_discount = ""; $coupons_applied = array();
-				get_sales_price($price, $is_sales, $sales_price, $item_id, $item_type_id, $coupons_ids, $coupons_discount, $coupons_applied);
+				get_sales_price($price, $is_sales, $sales_price, $item_id, $item_type_id, "", "", $coupons_ids, $coupons_discount, $coupons_applied);
 
 				// points data
 				$is_points_price = $db->f("is_points_price");
@@ -496,7 +495,7 @@
 				}
 
 				$item_name = get_translation($db->f("item_name"));
-				$item_name_js = str_replace("'", "\\'", htmlspecialchars($item_name));
+				$cart_item_name = get_translation($db->f("cart_item_name"));
 				$short_description = get_translation($db->f("short_description"));
 				$tax_id = $db->f("tax_id");
 				$tax_free = ($user_tax_free || $order_tax_free || $db->f("tax_free"));
@@ -509,15 +508,9 @@
 				$quantity_increment = $db->f("quantity_increment");
 
 				$item_image = ""; $item_image_alt = ""; 
-				$image_exists = false;
 				if ($image_field) {
 					$item_image = $db->f($image_field);	
 					$item_image_alt = get_translation($db->f($image_alt_field));	
-					if (!strlen($item_image)) {
-						$item_image = $product_no_image;
-					} else {
-						$image_exists = true;
-					}
 				}
 				$product_friendly_url = $db->f("friendly_url");
 				if ($friendly_urls && $product_friendly_url) {
@@ -543,6 +536,41 @@
 						} elseif ($user_discount_type == 4) {
 							$price -= round((($price - $buying_price) * $user_discount_amount) / 100, 2);
 						}
+					}
+				}
+
+				// check image and parent product name which could be shown in the cart
+				if ($parent_item_id) {
+					$sql  = " SELECT i.item_type_id,i.item_name,i.".$price_field.",i.is_price_edit,i.is_sales,i.".$sales_field.",i.buying_price,";
+					$sql .= " i.tax_id,i.tax_free,i.stock_level, i.min_quantity,i.max_quantity,i.quantity_increment, ";
+					$sql .= " i.use_stock_level,i.hide_out_of_stock,i.disable_out_of_stock, ";
+					$sql .= " i.tiny_image, i.tiny_image_alt, i.small_image, i.small_image_alt, i.big_image, i.big_image_alt, i.super_image, i.super_image_alt ";
+					$sql .= " FROM " . $table_prefix . "items i ";
+					$sql .= " WHERE i.item_id=" . $db->tosql($parent_item_id, INTEGER);
+					$db->query($sql);
+					if ($db->next_record()) {
+						$parent_item_name = $db->f("item_name");
+						if (!$item_image && $image_field) {
+							$item_image = $db->f($image_field);	
+							$item_image_alt = get_translation($db->f($image_alt_field));	
+						}
+						if (!strlen($cart_item_name) && $cart_subitem_name) {	
+							$search_tags = array("{parent_name}", "{parent_item_name}", "{item_name}", "{product_name}", "{sub_name}", "{subitem_name}", "{sub_item_name}", "{subproduct_name}", "{sub_product_name}");
+							$replace_values = array($parent_item_name, $parent_item_name, $item_name, $item_name, $item_name, $item_name, $item_name, $item_name, $item_name);
+							$cart_item_name = str_replace($search_tags, $replace_values, $cart_subitem_name);
+						}
+					} else {	
+						$parent_item_id = "";
+					}
+				}
+				if (strlen($cart_item_name)) { $item_name = $cart_item_name; }
+
+				$image_exists = false;
+				if ($image_field) {
+					if (!strlen($item_image)) {
+						$item_image = $product_no_image;
+					} else {
+						$image_exists = true;
 					}
 				}
 

@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_product.php                                        ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -1031,7 +1031,7 @@
 									"required" => $db->f("required"),
 									"use_on_list" => $db->f("use_on_list"), "use_on_details" => $db->f("use_on_details"), 
 									"use_on_table" => $db->f("use_on_table"), "use_on_grid" => $db->f("use_on_grid"), 
-									"use_on_checkout" => $db->f("use_on_checkout"), "use_on_second" => $db->f("use_on_second"),
+									"use_on_second" => $db->f("use_on_second"),
 									"start_html" => $db->f("start_html"), "middle_html" => $db->f("middle_html"), "end_html" => $db->f("end_html"),
 									"control_code" => $db->f("control_code"), "onchange_code" => $db->f("onchange_code"), "onclick_code" => $db->f("onclick_code"),
 									"property_type_id" => $db->f("property_type_id"), "sub_item_id" => $db->f("sub_item_id"), 
@@ -1076,7 +1076,6 @@
 							$ip->add_textbox("use_on_details", INTEGER);
 							$ip->add_textbox("use_on_table", INTEGER);
 							$ip->add_textbox("use_on_grid", INTEGER);
-							$ip->add_textbox("use_on_checkout", INTEGER);
 							$ip->add_textbox("start_html", TEXT);
 							$ip->add_textbox("middle_html", TEXT);
 							$ip->add_textbox("end_html", TEXT);
@@ -1173,7 +1172,6 @@
 								$ip->set_value("use_on_details", $item_properties[$i]["use_on_details"]);
 								$ip->set_value("use_on_table", $item_properties[$i]["use_on_table"]);
 								$ip->set_value("use_on_grid", $item_properties[$i]["use_on_grid"]);
-								$ip->set_value("use_on_checkout", $item_properties[$i]["use_on_checkout"]);
 								$ip->set_value("start_html", $item_properties[$i]["start_html"]);
 								$ip->set_value("middle_html", $item_properties[$i]["middle_html"]);
 								$ip->set_value("end_html", $item_properties[$i]["end_html"]);

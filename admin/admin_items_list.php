@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_items_list.php                                     ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -278,7 +278,7 @@
 	}
 	//END product_privileges changes
 
-	$sql  = " SELECT category_id,category_name,admin_list_class ";
+	$sql  = " SELECT category_id,category_name,admin_list_class,is_showing ";
 	$sql .= " FROM " . $table_prefix . "categories WHERE parent_category_id = " . $db->tosql($category_id, INTEGER);
 	$sql .= " ORDER BY category_order ";
 	$db->query($sql);
@@ -303,7 +303,14 @@
 			$row_category_id = $db->f("category_id");
 			$row_category_name = $db->f("category_name");
 			$row_category_class = $db->f("admin_list_class");
+			$is_showing = $db->f("is_showing");
 			$row_category_name = get_translation($row_category_name);
+
+			if (!$is_showing) {
+				$row_category_class = trim($row_category_class." disabled");
+			}
+			$row_class = ($category_index % 2 == 0) ? "row1" : "row2";
+			$row_category_class = trim($row_category_class." ".$row_class);
 
 			$t->set_var("category_index", $category_index);
 			$t->set_var("category_id", $row_category_id);
@@ -325,8 +332,6 @@
 				$t->set_var("category_products_priv", "");
 			}
 
-			$row_style = ($category_index % 2 == 0) ? "row1" : "row2";
-			$t->set_var("row_style", $row_style);
 			if ($remove_categories) {
 				$t->parse("category_checkbox", false);
 			} else {

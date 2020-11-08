@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_table_orders.php                                   ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -88,10 +88,12 @@
 			"title" => "{ORDER_STATUS_MSG} ({ID_MSG})", "data_type" => INTEGER, "field_type" => 3, "required" => false, 
 			"control" => LISTBOX, 
 			"values_sql" => "SELECT status_id, status_name FROM ".$table_prefix."order_statuses ",
+			"aliases" => array("{STATUS_ID_MSG}"),
 		),
 		"order_status_name" => array(
 			"title" => "{ORDER_STATUS_MSG} ({NAME_MSG})", "data_type" => TEXT, "field_type" => 5, "required" => false, 
 			"control" => TEXTBOX, "table" => $table_prefix."order_statuses",
+			"aliases" => array("{STATUS_NAME_MSG}"),
 		),
 		"total_buying" => array("TOTAL_BUYING_MSG", FLOAT, 2, true),
 		"total_buying_tax" => array("TOTAL_BUYING_TAX_MSG", FLOAT, 2, true, 0), 
@@ -136,21 +138,24 @@
 		"last_name" => array("LAST_NAME_FIELD", TEXT, 2, false),
 		"company_id" => array("COMPANY_ID_MSG", INTEGER, 3, false),
 		"company_name" => array("COMPANY_NAME_FIELD", TEXT, 2, false),
-		"email" => array("EMAIL_FIELD", TEXT, 2, false, ''),
+		"email" => array(
+			"title" => "EMAIL_FIELD", "data_type" => TEXT, "field_type" => USUAL_DB_FIELD, "required" => false, 
+			"control" => TEXTBOX, "sql_null" => false,
+		),
 		"address1" => array(
 			"title" => "{STREET_FIRST_FIELD}", "data_type" => TEXT, "field_type" => USUAL_DB_FIELD, "required" => false, 
 			"control" => TEXTBOX, "table" => $table_prefix."countries",
-			"aliases" => array("{ADDRESS_MSG} 1", "{ADDRESS_MSG}"),
+			"aliases" => array("{ADDRESS_MSG} 1", "{ADDRESS_MSG}", "{STREET_ADDRESS_FIRST_LINE_MSG}"),
 		),
 		"address2" => array(
 			"title" => "{STREET_SECOND_FIELD}", "data_type" => TEXT, "field_type" => USUAL_DB_FIELD, "required" => false, 
 			"control" => TEXTBOX, "table" => $table_prefix."countries",
-			"aliases" => array("{ADDRESS_MSG} 2"),
+			"aliases" => array("{ADDRESS_MSG} 2", "{STREET_ADDRESS_SECOND_LINE_MSG}"),
 		),
 		"address3" => array(
 			"title" => "{STREET_THIRD_FIELD}", "data_type" => TEXT, "field_type" => USUAL_DB_FIELD, "required" => false, 
 			"control" => TEXTBOX, "table" => $table_prefix."countries",
-			"aliases" => array("{ADDRESS_MSG} 2"),
+			"aliases" => array("{ADDRESS_MSG} 3"),
 		),
 		"city" => array("CITY_FIELD", TEXT, 2, false),
 		"province" => array("PROVINCE_FIELD", TEXT, 2, false),
@@ -185,17 +190,17 @@
 		"delivery_address1" => array(
 			"title" => "{DELIVERY_MSG} {STREET_FIRST_FIELD}", "data_type" => TEXT, "field_type" => USUAL_DB_FIELD, "required" => false, 
 			"control" => TEXTBOX, "table" => $table_prefix."countries",
-			"aliases" => array("{DELIVERY_MSG} {ADDRESS_MSG} 1", "{DELIVERY_MSG} {ADDRESS_MSG}"),
+			"aliases" => array("{DELIVERY_MSG} {ADDRESS_MSG} 1", "{DELIVERY_MSG} {ADDRESS_MSG}", "{DELIVERY_ADDRESS_FIRST_MSG}"),
 		),
 		"delivery_address2" => array(
 			"title" => "{DELIVERY_MSG} {STREET_SECOND_FIELD}", "data_type" => TEXT, "field_type" => USUAL_DB_FIELD, "required" => false, 
 			"control" => TEXTBOX, "table" => $table_prefix."countries",
-			"aliases" => array("{DELIVERY_MSG} {ADDRESS_MSG} 2"),
+			"aliases" => array("{DELIVERY_MSG} {ADDRESS_MSG} 2", "{DELIVERY_ADDRESS_SEC_MSG}"),
 		),
 		"delivery_address3" => array(
 			"title" => "{DELIVERY_MSG} {STREET_THIRD_FIELD}", "data_type" => TEXT, "field_type" => USUAL_DB_FIELD, "required" => false, 
 			"control" => TEXTBOX, "table" => $table_prefix."countries",
-			"aliases" => array("{DELIVERY_MSG} {ADDRESS_MSG} 2"),
+			"aliases" => array("{DELIVERY_MSG} {ADDRESS_MSG} 3"),
 		),
 		"delivery_city" => array("DELIVERY_CITY_MSG", TEXT, 2, false),
 		"delivery_province" => array("DELIVERY_PROVINCE_MSG", TEXT, 2, false),
@@ -220,12 +225,33 @@
 		"delivery_cell_phone" => array("DELIVERY_CELL_PHONE_MSG", TEXT, 2, false),
 		"delivery_fax" => array("DELIVERY_FAX_MSG", TEXT, 2, false),
 
-		"cc_name" => array("CC_NAME_FIELD", TEXT, 2, false),
-		"cc_first_name" => array("FIRST_NAME_FIELD", TEXT, 2, false),
-		"cc_last_name" => array("LAST_NAME_FIELD", TEXT, 2, false),
+		"delivery_name" => array(va_message("DELIVERY_MSG")." ".va_message("FULL_NAME_FIELD"), TEXT, 2, false),
+		"delivery_first_name" => array(va_message("DELIVERY_MSG")." ".va_message("FIRST_NAME_FIELD"), TEXT, 2, false),
+		"delivery_middle_name" => array(va_message("DELIVERY_MSG")." ".va_message("MIDDLE_NAME_FIELD"), TEXT, 2, false),
+		"delivery_last_name" => array(va_message("DELIVERY_MSG")." ".va_message("LAST_NAME_FIELD"), TEXT, 2, false),
+
+		"cc_name" => array(
+			"title" => "{CC_NAME_FIELD}", "data_type" => TEXT, "field_type" => USUAL_DB_FIELD, "required" => false, 
+			"control" => TEXTBOX, 
+			"aliases" => array("{ADMIN_PAYMENT_MSG} {FULL_NAME_FIELD}"),
+		),
+		"cc_first_name" => array(
+			"title" => "{ADMIN_PAYMENT_MSG} {FIRST_NAME_FIELD}", "data_type" => TEXT, "field_type" => USUAL_DB_FIELD, "required" => false, 
+			"control" => TEXTBOX, 
+		),
+		"cc_last_name" => array(
+			"title" => "{ADMIN_PAYMENT_MSG} {LAST_NAME_FIELD}", "data_type" => TEXT, "field_type" => USUAL_DB_FIELD, "required" => false, 
+			"control" => TEXTBOX, 
+		),
 		"cc_number" => array("CC_NUMBER_FIELD", TEXT, 2, false),
-		"cc_start_date" => array("CC_START_DATE_FIELD", DATETIME, 2, false),
-		"cc_expiry_date" => array("EXPIRY_DATE_MSG", DATETIME, 2, false),
+		"cc_start_date" => array(
+			"title" => "{CC_START_DATE_FIELD}", "data_type" => DATETIME, "field_type" => USUAL_DB_FIELD, "required" => false, 
+			"date_format" => "MMYY", 
+		),
+		"cc_expiry_date" => array(
+			"title" => "{CC_EXPIRY_DATE_FIELD}", "data_type" => DATETIME, "field_type" => USUAL_DB_FIELD, "required" => false, 
+			"date_format" => "MMYY", 
+		),
 		"cc_type" => array("CARD_TYPE_ID", INTEGER, 2, false),
 		"cc_issue_number" => array("CC_ISSUE_NUMBER_FIELD", INTEGER, 2, false),
 		"cc_security_code" => array("CC_SECURITY_CODE_FIELD", TEXT, 2, false),
@@ -238,19 +264,34 @@
 		"is_call_center" => array("IS_CALLCENTER_MSG", INTEGER, 2, false),
 		"is_recurring" => array("IS_RECURRING_MSG", INTEGER, 2, false),
 	);
-	$sql  = " SELECT property_id, property_name FROM " . $table_prefix . "orders_properties ";
-	$sql .= " GROUP BY property_id, property_name ";
-	$sql .= " ORDER BY order_id ";
+
+	$sql  = " SELECT property_id, property_order, property_code, property_name, property_type, control_type, tax_free ";
+	$sql .= " FROM " . $table_prefix . "order_custom_properties ";
+	$sql .= " WHERE property_code IS NOT NULL AND property_code<>'' ";
+	$sql .= " GROUP BY property_code ";
+	$sql .= " ORDER BY property_code ";
 	$db->query($sql);
 	while ($db->next_record()) {
 		$property_id = $db->f("property_id");
+		$property_order = $db->f("property_order");
+		$property_code = $db->f("property_code");
 		$property_name = $db->f("property_name");
-		$db_columns["order_property_" . $property_id] = array(get_translation($property_name), TEXT, 2, false);
+		$property_type = $db->f("property_type");
+		$control_type = $db->f("control_type");
+		$tax_free = $db->f("tax_free");
+		$column_name = "order_property_" . $property_code;
+		$db_columns[$column_name] = array(
+			"title" => get_translation($property_name), "data_type" => TEXT, "field_type" => USUAL_DB_FIELD, "required" => false, 
+			"control" => TEXTBOX, "related_table" => $table_prefix."orders_properties", 
+			"property_id" => $property_id, "property_order" => $property_order, "property_code" => $property_code, 
+			"property_name" => $property_name, "property_type" => $property_type, "control_type" => $control_type,
+			"tax_free" => $tax_free,
+		);
 	}
 
 	$related_table = "orders_items";
 	$related_table_pk = "order_item_id";
-	$related_table_name = $table_prefix . "orders_items ";
+	$related_table_name = $table_prefix . "orders_items";
 	$related_table_alias = "oi";
 	$related_table_title = va_message("ORDER_ITEMS_MSG");
 
@@ -260,11 +301,28 @@
 		"item_code" => array("title" => "PROD_CODE_MSG", "data_type" => TEXT, "field_type" => USUAL_DB_FIELD, "control" => TEXTBOX, "preview" => true, "required" => false,),
 		"manufacturer_code" => array("title" => "MANUFACTURER_CODE_MSG", "data_type" => TEXT, "field_type" => USUAL_DB_FIELD,  "control" => TEXTBOX, "preview" => true, "required" => false,),
 		"item_name" => array("title" => "PROD_NAME_MSG", "data_type" => TEXT, "field_type" => USUAL_DB_FIELD, "control" => TEXTBOX, "preview" => true, "required" => true,),
-		"item_properties" => array("title" => "PRODUCT_OPTIONS_MSG", "data_type" => TEXT, "field_type" => USUAL_DB_FIELD, "required" => false,),
+		"item_properties" => array(
+			"title" => "PRODUCT_OPTIONS_MSG", "data_type" => TEXT, "field_type" => RELATED_DB_FIELD, 
+			"related_table" => $table_prefix."orders_items_properties", "required" => false,
+		),
+		"item_links" => array(
+			"title" => "DOWNLOAD_LINKS_MSG", "data_type" => TEXT, "field_type" => RELATED_DB_FIELD, 
+			"related_table" => $table_prefix."items_downloads", "required" => false,
+		),
+		"item_serials" => array(
+			"title" => "ADMIN_SERIAL_NUMBERS_MSG", "data_type" => TEXT, "field_type" => RELATED_DB_FIELD, 
+			"related_table" => $table_prefix."orders_items_serials", "required" => false,
+		),
 	);
 	$related_columns["buying_price"] = array("title" => "PROD_BUYING_PRICE_MSG", "data_type" => NUMBER, "field_type" => USUAL_DB_FIELD, "control" => TEXTBOX, "preview" => true,  "required" => false,);
-	$related_columns["real_price"] = array("title" => "BASE_PRICE_MSG", "data_type" => NUMBER, "field_type" => USUAL_DB_FIELD, "control" => TEXTBOX, "preview" => true,  "required" => false,);
-	$related_columns["price"] = array("title" => "SELLING_PRICE_MSG", "data_type" => NUMBER, "field_type" => USUAL_DB_FIELD, "control" => TEXTBOX, "preview" => true,	 "required" => true,);
+	$related_columns["real_price"] = array(
+		"title" => "BASE_PRICE_MSG", "data_type" => NUMBER, "field_type" => USUAL_DB_FIELD, "control" => TEXTBOX, "preview" => true,  "required" => false,
+		"aliases" => array("Product Real Price"),
+	);
+	$related_columns["price"] = array(
+		"title" => "SELLING_PRICE_MSG", "data_type" => NUMBER, "field_type" => USUAL_DB_FIELD, "control" => TEXTBOX, "preview" => true,	 "required" => true,
+		"aliases" => array("{PRODUCT_MSG} {SELLING_PRICE_MSG}"),
+	);
 	$related_columns["points_price"] = array("title" => "POINTS_AMOUNT_MSG", "data_type" => NUMBER, "field_type" => USUAL_DB_FIELD, "required" => false,);
 	$related_columns["tax_percent"] = array("title" => "{PRODUCT_MSG}: {TAX_PERCENT_MSG}", "data_type" => NUMBER, "field_type" => USUAL_DB_FIELD, "required" => false,);
 	$related_columns["weight"] = array("title" => "PRODUCT_WEIGHT_MSG", "data_type" => NUMBER, "field_type" => USUAL_DB_FIELD, "control" => TEXTBOX, "preview" => true,  "required" => false,);

@@ -1,9 +1,9 @@
 	<ul data-js="tree" data-js-type="{js_type}" class="tree" data-pb-id="{pb_id}" data-over-stop="{js_over_stop}">
 		<!-- BEGIN nodes -->
 		<li class="{node_class}" id="node-{pb_id}-{node_id}" data-id="{node_id}">
-			<i class="fa expand"></i>
-			<!-- begin node_image --><a href="{node_url}"><img class="node-image" src="{src}" alt="{alt}" /></a><!-- end node_image -->
-			<a class="{restricted_class}" href="{node_url}" title="{a_title}">{node_title}</a>
+			<i class="node-expand"></i>
+			<!-- begin node_image --><a class="node-link nl-image" href="{node_url}"><img class="node-image" src="{src}" alt="{alt}" /></a><!-- end node_image -->
+			<a class="node-link nl-text {restricted_class}" href="{node_url}" title="{a_title}">{node_title}</a>
 			<!-- BEGIN subnodes_block --><ul>{subnodes}</ul><!-- END subnodes_block --> 
 		</li>
 		<!-- END nodes -->

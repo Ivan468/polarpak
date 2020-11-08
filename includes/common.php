@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  common.php                                               ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -20,8 +20,8 @@
 	// version information
 	define("VA_PRODUCT","shop");
 	define("VA_TYPE","enterprise");
-	define("VA_RELEASE","5.6");
-	define("VA_BUILD", "3-Feb-2020");
+	define("VA_RELEASE","5.8");
+	define("VA_BUILD", "05-Nov-2020");
 
 	// global arrays to use in different blocks and functions
 	$va_data = array(); $va_messages = array(); $js_settings = array();
@@ -86,6 +86,8 @@
 		include_once($root_folder_path ."includes/custom_functions.php");
 	}
 
+	// load currency before main config as we may need currency to retrieve the cart for auto-login
+	$currency = get_currency();
 	// get user and site configuration 
 	$settings = va_config();
 	// updates stats about email campaigns clicks
@@ -105,6 +107,3 @@
 	$server_port = isset($_SERVER["SERVER_PORT"]) ? $_SERVER["SERVER_PORT"] : "";
 	$server_ssl = isset($_SERVER["SSL"]) ? $_SERVER["SSL"] : "";
 	$is_ssl = ($server_https == "ON" || $server_port == 443 || $server_ssl == 1);
-
-	// make currency available from any page
-	$currency = get_currency();

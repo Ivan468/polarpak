@@ -1,16 +1,20 @@
 	<div class="footer-head">{footer_head}</div>
 
-	<!-- begin menu_block -->
-	<div class="{block_menu_class}">
-		<ul data-js="nav" class="{top_menu_class}"><!-- BEGIN menus -->
-			<li class="{menu_class}"><!-- BEGIN menu_image -->
-				<a href="{menu_href}" {menu_target}><img src="{src}" alt="{alt}" title="{alt}" /></a><!-- END menu_image --><!-- BEGIN menu_text -->
-				<a href="{menu_href}" {menu_target}><span>{menu_title}</span></a><!-- END menu_text --><!-- BEGIN submenus_block --> 
+	<!-- begin block_menu_footer -->
+	<div class="{block_class}">
+		<ul data-js="nav" class="{nav_class}"><!-- BEGIN menus -->
+			<li class="{menu_class}">
+				<!-- BEGIN menu_image -->
+				<a class="nav-link nl-image" href="{menu_href}" {menu_target}><img class="nav-image" src="{src}" alt="{alt}" /></a><!-- END menu_image --><!-- BEGIN menu_text_link -->
+				<a class="nav-link nl-text" href="{menu_href}" {menu_target}><span class="nav-text">{menu_title}</span></a><!-- END menu_text_link --><!-- BEGIN menu_image -->
+				<span class="nav-data nd-image"><img class="nav-image" src="{src}" alt="{alt}" title="{alt}" /></span><!-- END menu_image --><!-- BEGIN menu_text -->
+				<span class="nav-data nd-text"><span class="nav-text">{menu_title}</span></span><!-- END menu_text --><!-- BEGIN submenus_block --> 
 				<ul class="sub-menu">{submenus}</ul><!-- END submenus_block --> 
 			</li><!-- END menus -->
 		</ul>
-	</div><!-- end menu_block -->
+		<div class="clear"></div>
+	</div><!-- end block_menu_footer -->
 
 	<div class="footer-foot">{footer_foot}</div>
-	<div class="footer-logo"><a title="PHP Shopping Cart by ViArt" href="https://www.viart.com/"><img alt="ViArt Shopping Cart" title="ViArt - PHP Shopping Cart" src="images/button-powered.png" /></a></div>
+	<div class="footer-logo"><a title="PHP Shopping Cart by Viart" href="https://www.viart.com/"><img alt="Viart Shopping Cart" title="Viart - PHP Shopping Cart" src="images/button-powered.png" /></a></div>
 	<div class="clear"></div>

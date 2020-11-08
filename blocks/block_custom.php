@@ -4,12 +4,13 @@
 
 	$block_number = $vars["block_key"];
 	
-	$var_css_class = get_setting_value($vars, "cb_css_class", ""); // old parameter used in previous verison [DELETE]
 	$user_type = get_setting_value($vars, "cb_user_type", "");
 	$admin_type = get_setting_value($vars, "cb_admin_type", "");
 	$params = get_setting_value($vars, "cb_params", "");
-	$block_type = get_setting_value($vars, "block_type", "");
 	$popup_type = get_setting_value($vars, "popup_type", "");
+	$block_type = get_setting_value($vars, "block_type", "");
+	$template_type = get_setting_value($vars, "template_type", "");
+	$tag_name = get_setting_value($vars, "tag_name", "");
 
 	$user_check = true;
 	if (strlen($user_type)) {
@@ -109,12 +110,11 @@
 			  $t->set_file("custom_body", $file_path);
 			  $t->parse("custom_body", false);
 			  $custom_body = $t->get_var("custom_body");
-
 			} else {
 				$custom_body = join("", file($file_path));
 			}
 		} else {
-			$custom_body = get_translation($db->f("block_desc"));
+			$custom_body = $db->f("block_desc");
 		}
 		$custom_body = get_translation($custom_body);
 		// get currency message could run db query so call them last
@@ -129,10 +129,19 @@
 		return;
 	}
 
-	if ($block_type != "header") {
-		$html_template = get_setting_value($block, "html_template", "block_custom.html"); 
-		$t->set_file("block_body", $html_template);
+	if ($block_type != "header" && $template_type != "built-in") {
+		if ($template_type == "default") {
+			$html_template = "block_custom.html"; 
+		} else {
+			$html_template = get_setting_value($block, "html_template", "block_custom.html"); 
+		}
+		if ($block_type == "sub-block") {
+		  $t->set_file($vars["tag_name"], $html_template);
+		} else {
+		  $t->set_file("block_body", $html_template);
+		}
 	}
+
 	if ($popup_type) {
 		$t->sparse("close_icon", false);
 		// override default block class bk-custom-block
@@ -141,9 +150,18 @@
 		$t->set_var("close_icon", "");
 	}
 
-	$t->set_block("custom_title", $custom_title);
-	$t->parse("custom_title", false);
-	$t->set_block("custom_body", $custom_body);
-	$t->parse("custom_body", false);
+	if ($block_type == "sub-block") {
+		// when some block include other sub blocks need to set a different blocks so don't override parent block data
+		$t->set_block("sub_custom_title", $custom_title);
+		$t->set_block("sub_custom_body", $custom_body);
+		$t->parse_to("sub_custom_title", "custom_title", false);
+		$t->parse_to("sub_custom_body", "custom_body", false);
+	} else {
+		$t->set_block("custom_title", $custom_title);
+		$t->set_block("custom_body", $custom_body);
+		parse_sub_blocks("custom_body");
+		$t->parse("custom_title", false);
+		$t->parse("custom_body", false);
+	}
 
 	$block_parsed = true;

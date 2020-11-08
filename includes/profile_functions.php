@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  profile_functions.php                                    ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -106,6 +106,7 @@ function phone_code_checks($phone_codes)
 			$country_id = $r->parameter_exists($country_control) ? $r->get_value($country_control) : get_setting_value($settings, "country_id");
 			$country_code = "";
 			$country_phone_code = "";
+			$country_pcode_check = "";
 			if (isset($va_countries[$country_id])) {
 				$country_code = $va_countries[$country_id]["country_code"];
 				$country_phone_code = $va_countries[$country_id]["phone_code"];

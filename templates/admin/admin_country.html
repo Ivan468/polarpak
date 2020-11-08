@@ -63,6 +63,14 @@ var list_fields_names = new Array('sites');
 	<td><input class="field" type="text" size="10" name="country_code_alpha3" value="{country_code_alpha3}" maxlength="4"></td>
 </tr>
 <tr class="usual">
+	<td>{COUNTRY_NAME_MSG} *</td>
+	<td><input class="field" type="text" size="40" name="country_name" value="{country_name}"></td>
+</tr>
+<tr class="usual">
+	<td>{STATE_FIELD_NAME_MSG}</td>
+	<td><input class="field" type="text" size="40" name="state_field_name" value="{state_field_name}"></td>
+</tr>
+<tr class="usual">
 	<td>{PHONE_CODE_MSG}</td>
 	<td><input class="field" type="text" size="10" name="phone_code" value="{phone_code}" maxlength="16"></td>
 </tr>
@@ -73,14 +81,6 @@ var list_fields_names = new Array('sites');
 			<option {currency_code_selected} value="{currency_code_value}">{currency_code_description}<!-- end currency_code -->
 		</select>
 	</td>
-</tr>
-<tr class="usual">
-	<td>{COUNTRY_NAME_MSG} *</td>
-	<td><input class="field" type="text" size="40" name="country_name" value="{country_name}"></td>
-</tr>
-<tr class="usual">
-	<td>{STATE_FIELD_NAME_MSG}</td>
-	<td><input class="field" type="text" size="40" name="state_field_name" value="{state_field_name}"></td>
 </tr>
 <tr class="middle">
 	<td>&nbsp;</td>
@@ -115,9 +115,51 @@ var list_fields_names = new Array('sites');
 	</td>
 </tr>
 </table>
-
 </div>
 
+<div id="units_data" class="tab-data {units_class}">
+<table cellspacing="1" cellpadding="4" border="0" width="100%">
+<tr class="middle">
+	<td colspan="2">{COUNTRY_UNITS_DESC}</td>
+</tr>
+<tr class="usual">
+	<td>
+		{LENGTH_SYSTEM_MSG}
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">{COUNTRY_LENGTH_SYSTEM_DESC}</div>
+		</div>
+	</td>
+	<td>
+		<select name="length_system"><!-- begin length_system -->
+			<option {length_system_selected} value="{length_system_value}">{length_system_description}<!-- end length_system -->
+		</select>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{WEIGHT_SYSTEM_MSG}
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">{COUNTRY_WEIGHT_SYSTEM_DESC}</div>
+		</div>
+	</td>
+	<td>
+		<select name="weight_system"><!-- begin weight_system -->
+			<option {weight_system_selected} value="{weight_system_value}">{weight_system_description}<!-- end weight_system -->
+		</select>
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{save_button}" onclick="document.record.operation.value='save'"></span><!-- BEGIN delete -->
+		<span class="button"><input class="submit" type="submit" value="{DELETE_BUTTON}" onclick="document.record.operation.value='delete';return confirm('{CONFIRM_DELETE_JS}');"></span><!-- END delete -->
+		<span class="button"><input class="submit" type="submit" value="{CANCEL_BUTTON}" onclick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
 <div id="sites_data" class="tab-data {sites_class}">
 
 <table cellspacing="1" cellpadding="4" border="0" width="100%">

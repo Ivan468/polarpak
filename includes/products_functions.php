@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  products_functions.php                                   ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -440,21 +440,44 @@
 		static function get_category_data($category_id) {
 			global $va_data, $db, $table_prefix;
 			$category_data = array();
-			if (!isset($va_data["products_categories"])) { $va_data["products_categories"] = array(); }
-			if (isset($va_data["products_categories"][$category_id])) {
-				$category_data = $va_data["products_categories"][$category_id];
+			if (!isset($va_data["products"])) { $va_data["products"] = array(); }
+			if (!isset($va_data["products"]["categories"])) { $va_data["products"]["categories"] = array(); }
+			if (isset($va_data["products"]["categories"][$category_id])) {
+				$category_data = $va_data["products"]["categories"][$category_id];
 			} else {
 				$params = array("select" => "c.*", "where" => "c.category_id=".$db->tosql($category_id, INTEGER));
 				$sql = VA_Categories::sql($params, VIEW_CATEGORIES_PERM);
 				$db->query($sql); 
 				if ($db->next_record()) {
 					$category_data = $db->Record;
-					$va_data["products_categories"][$category_id] = $category_data;
+				} else {
+					$category_data = false;
 				}
+				$va_data["products"]["categories"][$category_id] = $category_data;
 			}
 			return $category_data;
 		}
 
+		static function get_path($category_id, $return_type = 1) {
+			// 1 - return ids delimited by commas as string, 2 - return array of ids
+			$path = array(); 
+			while ($category_id && !isset($path[$category_id])) {
+				$category_data = VA_Categories::get_category_data($category_id);
+				if (is_array($category_data)) {
+					$path[$category_id] = $category_id;
+					$category_id = $category_data["parent_category_id"];
+				} else {
+					$category_id = 0;
+				}
+			} 
+			$path[0] = 0;
+			$path = array_reverse(array_keys($path));
+			if ($return_type == 2) {
+				return $path;
+			} else {
+				return implode(",", $path);
+			}
+		}
 	}
 	
 	class VA_Products {		
@@ -476,10 +499,10 @@
 
 		static function sql($params, $access_level, $is_showing = true, $is_count = false) {
 			global $table_prefix, $db, $site_id, $language_code;
-
 			$use_sites = (is_array($params) && isset($params["no_sites"])) ? false : true;
 			$use_acls  = (is_array($params) && isset($params["no_acls"])) ? false : true;
 			$access_out_stock = (is_array($params) && isset($params["access_out_stock"])) ? $params["access_out_stock"] : false;
+			$no_subs = (is_array($params) && isset($params["no_subs"])) ? $params["no_subs"] : true;
 
 			$access_level = (int) $access_level;
 			if (!$access_level) $access_level = VIEW_ITEMS_PERM;
@@ -508,6 +531,10 @@
 				$params["where"][] = " ((i.hide_out_of_stock=1 AND i.stock_level > 0) OR i.hide_out_of_stock=0 OR i.hide_out_of_stock IS NULL)";
 			}
 			$params["where"][] = " (i.language_code IS NULL OR i.language_code='' OR i.language_code=" . $db->tosql($language_code, TEXT) . ")";
+			// get parent products only
+			if ($no_subs) {
+				$params["where"][] = " (i.parent_item_id=0 OR i.parent_item_id IS NULL) "; 
+			}
 
 			if ($use_sites && isset($site_id)) {
 				if (isset($site_id)) {
@@ -627,8 +654,11 @@
 
 		static function check_permissions($item_id, $access_level = VIEW_ITEMS_PERM, $is_showing = true, $access_out_stock = false) {
 			global $db;
+
+			$params = array();
 			$params["where"] = " i.item_id=" . $db->tosql($item_id, INTEGER);
 			$params["access_out_stock"] = $access_out_stock;
+			$params["no_subs"] = false; // check subproduct as well
 
 			$db->query(VA_Products::_sql($params, $access_level, $is_showing));
 			return $db->next_record();
@@ -1016,82 +1046,90 @@
 			set_script_tag("js/blocks.js");
 			set_script_tag("js/images.js");
 
+			$item_ids = array(); 
+			$ids_sort = array(); // array with correct sorting for ids
+			$items_sort = array(); // final array with correct sorting
+			$item_index = 0;
+			$total_records = 0;
 			$sql = get_setting_value($params, "sql");
-			$count_sql = get_setting_value($params, "count_sql");
-			if (!$sql) {
-				$items_ids = get_setting_value($params, "ids");
-				$sql_where = get_setting_value($params, "sql_where");
-				$sql_join = get_setting_value($params, "sql_join");
-				$sql_order = get_setting_value($params, "sql_order", "i.item_id"); // use default order field as it's required for SQL Server offset
-				$sql_group = get_setting_value($params, "sql_group");
-				$count_no = get_setting_value($params, "count_no");
+			$count = get_setting_value($params, "count", 1);
+			if (is_array($sql)) {
+				if ($count) {
+					$count_sql = $sql;
+					if (isset($count_sql["order"])) { unset($count_sql["order"]); }
+					$sub_sql = VA_Products::sql($count_sql, VIEW_CATEGORIES_ITEMS_PERM);
+					$count_sql = " SELECT COUNT(*) FROM (".$sub_sql.") count_sql ";
+					// calculate records
+					$total_records = get_db_value($count_sql);
+					if ($max_recs && $total_records > $max_recs) { $total_records = $max_recs; }
 
-				// generate fields list to SELECT
-				$select  = " i.item_id, i.item_type_id, i.item_name, i.a_title, i.friendly_url, ";
-				$select .= " i.special_offer, i.short_description, i.full_description, i.features, ";
-				$select .= " i.buying_price, i." . $price_field . ", i.".$properties_field.", i." . $sales_field . ", i.is_sales, i.is_price_edit, ";
-				$select .= " i.tax_id, i.tax_free, i.manufacturer_code, m.manufacturer_name, m.affiliate_code, ";
-				$select .= " i.is_points_price, i.points_price, i.reward_type, i.reward_amount, i.credit_reward_type, i.credit_reward_amount, ";
-				$select .= " it.reward_type AS type_bonus_reward, it.reward_amount AS type_bonus_amount, ";
-				$select .= " it.credit_reward_type AS type_credit_reward, it.credit_reward_amount AS type_credit_amount, ";
-				$select .= " i.stock_level, i.use_stock_level, i.disable_out_of_stock, i.hide_out_of_stock, i.hide_add_list, ";
-				$select .= " i.issue_date, i.date_added, i.date_modified, i.votes, i.points, ";
-				$select .= " i.tiny_image, i.tiny_image_alt, i.small_image, i.small_image_alt, i.big_image, i.big_image_alt, super_image ";
-				// build count and select JOIN
-				$count_join = "";
-				$select_join = array(
-					" LEFT JOIN " . $table_prefix . "item_types it ON i.item_type_id=it.item_type_id ",
-					" LEFT JOIN " . $table_prefix . "manufacturers m ON i.manufacturer_id=m.manufacturer_id ",
-				);
-				if ($sql_join) {
-					$select_join[] = $sql_join;
-					$count_join = array($sql_join);
-				}
-				if (!$sql_where && (is_array($items_ids) && count($items_ids))) {
-					$sql_where = array(
-						"i.item_id IN (" . $db->tosql($items_ids, INTEGERS_LIST) . ") ",
-					);
-				}
-				if (!$sql_group && ($db->DBType == "mysql" || $db->DBType == "postgre")) {
-					$sql_group = "i.item_id";
-				}
-				$sql_params = array("select" => $select, "join" => $select_join, "where" => $sql_where, "group" => $sql_group, "order" => $sql_order, "access_field" => true);
-				$sql = VA_Products::sql($sql_params, VIEW_CATEGORIES_ITEMS_PERM, true, false);
-				if(!$count_no) {
-					if ($sql_group) {
-						$sql_params = array("select" => $sql_group, "join" => $count_join, "where" => $sql_where, "group" => $sql_group);
-						$sub_sql = VA_Products::sql($sql_params, VIEW_CATEGORIES_ITEMS_PERM, true, true);
-						$count_sql = " SELECT COUNT(*) FROM (".$sub_sql.") count_sql ";
-					} else {
-						$sql_params = array("select" => "COUNT(*)", "join" => $count_join, "where" => $sql_where);
-						$count_sql = VA_Products::sql($sql_params, VIEW_CATEGORIES_ITEMS_PERM, true, true);
+					if ($page_param) {
+						$n = new VA_Navigator($settings["templates_dir"], "navigator.html", $current_page);
+						$page = $n->set_navigator("navigator", $page_param, CENTERED, $pages_number, $recs, $total_records, false, $pass_parameters, array(), "#products_".$pb_id);
 					}
 				}
+				$sql = VA_Products::sql($sql, VIEW_CATEGORIES_ITEMS_PERM);
+				$db->RecordsPerPage = $recs;
+				if ($page_param) {
+					$db->PageNumber = $page;	
+				} else if ($page_number) {
+					$db->PageNumber = $page_number;	
+				}
+				$db->query($sql);
+				while ($db->next_record()) {
+					$item_index++;
+					$item_id = $db->f("item_id");
+					$item_ids[] = $item_id;
+					$ids_sort[$item_id] = $item_index;
+				}
+			} else {
+				$item_ids = get_setting_value($params, "ids");
+				if (!is_array($item_ids) && strlen($item_ids)) { 
+					$item_ids = explode(",", $item_ids); 
+				}
+				$ids_sort = array_flip($item_ids);
 			}
-			if (!$sql) { return; }
 
-			// calculate records
-			$total_records = 0;
-			if ($count_sql) { $total_records = get_db_value($count_sql); }
-			if ($max_recs && $total_records > $max_recs) { $total_records = $max_recs; }
-	
-			if ($page_param) {
-				$n = new VA_Navigator($settings["templates_dir"], "navigator.html", $current_page);
-				$page = $n->set_navigator("navigator", $page_param, CENTERED, $pages_number, $recs, $total_records, false, $pass_parameters, array(), "#products_".$pb_id);
+			// get product data with all necessary fields 
+			$select  = " i.item_id, i.item_type_id, i.item_name, i.a_title, i.friendly_url, ";
+			$select .= " i.special_offer, i.short_description, i.full_description, i.highlights, ";
+			$select .= " i.buying_price, i." . $price_field . ", i.".$properties_field.", i." . $sales_field . ", i.is_sales, i.is_price_edit, ";
+			$select .= " i.tax_id, i.tax_free, i.manufacturer_code, m.manufacturer_name, m.affiliate_code, i.buy_link, ";
+			$select .= " i.is_points_price, i.points_price, i.reward_type, i.reward_amount, i.credit_reward_type, i.credit_reward_amount, ";
+			$select .= " it.reward_type AS type_bonus_reward, it.reward_amount AS type_bonus_amount, ";
+			$select .= " it.credit_reward_type AS type_credit_reward, it.credit_reward_amount AS type_credit_amount, ";
+			$select .= " i.stock_level, i.use_stock_level, i.disable_out_of_stock, i.hide_out_of_stock, i.hide_add_list, ";
+			$select .= " i.min_quantity, i.max_quantity, i.quantity_increment, ";
+			$select .= " i.issue_date, i.date_added, i.date_modified, i.votes, i.points, ";
+			$select .= " i.tiny_image, i.tiny_image_alt, i.small_image, i.small_image_alt, i.big_image, i.big_image_alt, super_image ";
+			// build count and select JOIN
+			$sql_join = array(
+				" LEFT JOIN " . $table_prefix . "item_types it ON i.item_type_id=it.item_type_id ",
+				" LEFT JOIN " . $table_prefix . "manufacturers m ON i.manufacturer_id=m.manufacturer_id ",
+			);
+			$sql_where = array(
+				"i.item_id IN (" . $db->tosql($item_ids, INTEGERS_LIST) . ") ",
+			);
+			$sql_params = array("select" => $select, "join" => $sql_join, "where" => $sql_where, "access_field" => true);
+			$sql = VA_Products::sql($sql_params, VIEW_CATEGORIES_ITEMS_PERM);
+			// get product list
+			$items = array();
+			$db->query($sql);
+			while ($db->next_record()) {
+				$item_id = $db->f("item_id");
+				$issue_date = $db->f("issue_date", DATETIME);
+				$items[$item_id] = $db->Record;
+				$items[$item_id]["issue_date"] = $issue_date;
+				$items_sort[$item_id] = $ids_sort[$item_id]; // as there is a very rare possiblity that some item could be disabled after first query we rebuild sorting array
 			}
+			// sort products by their initial order when we get ids with ORDER BY condition
+			array_multisort($items_sort, $items);
 	
-			// run SQL query and parse rows and cols
+			// parse rows and cols for products
 			$block_index = 0;
 			$items_indexes = array();
-			$db->RecordsPerPage = $recs;
-			if ($page_param) {
-				$db->PageNumber = $page;	
-			} else if ($page_number) {
-				$db->PageNumber = $page_number;	
-			}
-			$db->query($sql);
-			if ($db->next_record()) {
-				do {
+			if (count($items)) {
+				foreach ($items as $item_id => $item_data) {
 					// indexes
 					$block_index++;
 					$va_data["products_index"]++;
@@ -1099,66 +1137,63 @@
 					$index = $va_data["products_index"];
 
 					// product data from DB
-					$item_id = $db->f("item_id");
-					$item_type_id = $db->f("item_type_id");
-					$item_name = get_translation($db->f("item_name"));
+					$item_id = $item_data["item_id"];
+					$item_type_id = $item_data["item_type_id"];
+					$item_name = get_translation($item_data["item_name"]);
 					$product_params["form_id"] = $index;
 					$product_params["item_name"] = strip_tags($item_name);
-					$a_title = get_translation($db->f("a_title"));
-					$friendly_url = $db->f("friendly_url");
-					$special_offer = get_translation($db->f("special_offer"));
-					$short_description = get_translation($db->f("short_description"));
-					$highlights = get_translation($db->f("features"));
-					$small_image = $db->f("small_image");
-					$small_image_alt = get_translation($db->f("small_image_alt"));
-					$buy_link = $db->f("buy_link");
-					$affiliate_code = $db->f("affiliate_code");
-					$manufacturer_code = $db->f("manufacturer_code");
-					$manufacturer_name = $db->f("manufacturer_name");
-					$is_price_edit = $db->f("is_price_edit");
+					$a_title = get_translation($item_data["a_title"]);
+					$friendly_url = $item_data["friendly_url"];
+					$special_offer = get_translation($item_data["special_offer"]);
+					$short_description = get_translation($item_data["short_description"]);
+					$full_description = get_translation($item_data["full_description"]);
+					$special_offer = get_translation($item_data["special_offer"]);
+					$highlights = get_translation($item_data["highlights"]);
+					$small_image = $item_data["small_image"];
+					$small_image_alt = get_translation($item_data["small_image_alt"]);
+					$buy_link = $item_data["buy_link"];
+					$affiliate_code = $item_data["affiliate_code"];
+					$manufacturer_code = $item_data["manufacturer_code"];
+					$manufacturer_name = $item_data["manufacturer_name"];
+					$is_price_edit = $item_data["is_price_edit"];
 
 
 					$issue_date_ts = 0;
-					$issue_date = $db->f("issue_date", DATETIME);
+					$issue_date = $item_data["issue_date"];
 					if (is_array($issue_date)) {
 						$issue_date_ts = va_timestamp($issue_date);
 					}
-					$stock_level = $db->f("stock_level");
-					$use_stock_level = $db->f("use_stock_level");
-					$disable_out_of_stock = $db->f("disable_out_of_stock");
-					$hide_out_of_stock = $db->f("hide_out_of_stock");
-					$hide_add_list = $db->f("hide_add_list");
+					$stock_level = $item_data["stock_level"];
+					$use_stock_level = $item_data["use_stock_level"];
+					$disable_out_of_stock = $item_data["disable_out_of_stock"];
+					$hide_out_of_stock = $item_data["hide_out_of_stock"];
+					$hide_add_list = $item_data["hide_add_list"];
 		    
-  				$min_quantity = $db->f("min_quantity");
-					$max_quantity = $db->f("max_quantity");
-					$quantity_increment = $db->f("quantity_increment");
+					$min_quantity = $item_data["min_quantity"];
+					$max_quantity = $item_data["max_quantity"];
+					$quantity_increment = $item_data["quantity_increment"];
 					$quantity_limit = ($use_stock_level && ($disable_out_of_stock || $hide_out_of_stock));
 
-  				$short_description = get_translation($db->f("short_description"));
-  				$full_description = get_translation($db->f("full_description"));
-  				$special_offer = get_translation($db->f("special_offer"));
-  				$highlights = get_translation($db->f("highlights"));
-  				$features = get_translation($db->f("features"));
 
 					// product rating calculation
-					$votes = $db->f("votes");
-					$points = $db->f("points");
+					$votes = $item_data["votes"];
+					$points = $item_data["points"];
 					$rating_avg = $votes ? round($points / $votes, 2) : 0;
 
 					// points data
-					$is_points_price = $db->f("is_points_price");
-					$points_price = $db->f("points_price");
-					$reward_type = $db->f("reward_type");
-					$reward_amount = $db->f("reward_amount");
-					$credit_reward_type = $db->f("credit_reward_type");
-					$credit_reward_amount = $db->f("credit_reward_amount");
+					$is_points_price = $item_data["is_points_price"];
+					$points_price = $item_data["points_price"];
+					$reward_type = $item_data["reward_type"];
+					$reward_amount = $item_data["reward_amount"];
+					$credit_reward_type = $item_data["credit_reward_type"];
+					$credit_reward_amount = $item_data["credit_reward_amount"];
 					if (!strlen($reward_type)) {
-						$reward_type = $db->f("type_bonus_reward");
-						$reward_amount = $db->f("type_bonus_amount");
+						$reward_type = $item_data["type_bonus_reward"];
+						$reward_amount = $item_data["type_bonus_amount"];
 					}
 					if (!strlen($credit_reward_type)) {
-						$credit_reward_type = $db->f("type_credit_reward");
-						$credit_reward_amount = $db->f("type_credit_amount");
+						$credit_reward_type = $item_data["type_credit_reward"];
+						$credit_reward_amount = $item_data["type_credit_amount"];
 					}
 					if (!strlen($is_points_price)) {
 						$is_points_price = $points_prices;
@@ -1171,7 +1206,7 @@
 					}
 				
 					if ($new_product_enable) {
-						$new_product_date = $db->f($new_product_field);			
+						$new_product_date = $item_data[$new_product_field];
 						$is_new_product   = is_new_product($new_product_date);
 					} else {
 						$is_new_product = false;
@@ -1182,10 +1217,11 @@
 						$t->set_var("product_new_class", "");
 					}
 					
-					$user_access_level = intval($db->f("user_access_level"));
-					$type_access_level = intval($db->f("type_access_level"));
-					$admin_access_level = intval($db->f("admin_access_level"));
-					$sb_access_level = intval($db->f("sb_access_level"));
+					$user_access_level = intval($item_data["user_access_level"]);
+					$type_access_level = intval(get_setting_value($item_data, "type_access_level", 0)); // when user is not sign in this field is absent
+					$admin_access_level = intval(get_setting_value($item_data, "admin_access_level", 0)); // field available only for logged in admins
+					$sb_access_level = intval(get_setting_value($item_data, "sb_access_level", 0));
+
 					$access_level = ($user_access_level|$type_access_level|$admin_access_level|$sb_access_level);
 					$item_add_button = $add_button;
 					if ($access_level&VIEW_ITEMS_PERM) {
@@ -1246,11 +1282,6 @@
 						$t->set_var("desc_text", $highlights);
 						$t->parse("highlights", false);
 					}
-					if (in_array("features", $desc_types)) {
-						$desc_block = true;
-						$t->set_var("desc_text", $features);
-						$t->parse("features", false);
-					}
 					if (in_array("spec", $desc_types)) {
 						$desc_block = true;
 						$t->set_var("desc_text", $special_offer);
@@ -1277,13 +1308,13 @@
 					$t->set_var("tax_sales", "");
 	  
 					if ($display_products != 2 || strlen($user_id)) {
-						$price = $db->f($price_field);
-						$sales_price = $db->f($sales_field);
-						$is_sales = $db->f("is_sales");
-						$buying_price = $db->f("buying_price");
-						$properties_price = $db->f($properties_field);
-						$tax_id = $db->f("tax_id");
-						$tax_free = $db->f("tax_free");
+						$price = $item_data[$price_field];
+						$sales_price = $item_data[$sales_field];
+						$is_sales = $item_data["is_sales"];
+						$buying_price = $item_data["buying_price"];
+						$properties_price = $item_data[$properties_field];
+						$tax_id = $item_data["tax_id"];
+						$tax_free = $item_data["tax_free"];
 						if ($user_tax_free) { $tax_free = $user_tax_free; }
 							
 						$discount_applicable = 1;
@@ -1391,9 +1422,9 @@
 					
 						// show buttons				
 						$internal_buy_link = "";
-						$external_buy_link = $db->f("buy_link");
+						$external_buy_link = $item_data["buy_link"];
 						if (strlen($external_buy_link)) {
-							$external_buy_link .= $db->f("affiliate_code");
+							$external_buy_link .= $item_data["affiliate_code"];
 						} elseif ($quantity_control == "LISTBOX" || $quantity_control == "TEXTBOX" || $is_price_edit) {
 							$t->set_var("wishlist_href", "javascript:document.products_" . $pb_id. ".submit();");
 						} else {
@@ -1450,7 +1481,7 @@
 						}
 
 						set_product_params($product_params);
-						$json_data = isset($data["json"]) ? $data["json"] : array(); // for compatability with older version
+						$json_data = array(); // for compatability with older version
 						$json_data["currency"] = $currency;
 						$json_data = array_merge($json_data, $product_params);
 						$t->set_var("product_data", htmlspecialchars(json_encode($json_data)));
@@ -1465,8 +1496,8 @@
           // set product image if it was selected
 					$t->set_var("product_image", "");
 					if ($image_field) {
-						$product_image = $db->f($image_field);
-						$product_image_alt = get_translation($db->f($image_field_alt));
+						$product_image = $item_data[$image_field];
+						$product_image_alt = get_translation($item_data[$image_field_alt]);
 						if (!strlen($product_image)) {
 							$image_exists = false;
 							$product_image = $product_no_image;

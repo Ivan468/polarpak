@@ -1,14 +1,16 @@
 	<div class="logo"><a href="{site_url}"><img src="{logo_src}" {logo_size} alt="{logo_alt}" title="{logo_alt}" /></a></div>
 
 	<!-- begin block_menu_header -->
-	<div class="header-menu {header_menu_class}">
+	<div class="header-menu {block_class}">
 		<div class="nav-expand" data-js="expand" data-tag="ul"><span>{MENU_MSG}</span><i></i></div>
-		<ul data-js="nav" class="{parent_menu_class}"><!-- BEGIN menus -->
-			<li class="{menu_class}">
+		<ul data-js="nav" data-js-type="click" class="{nav_class}"><!-- BEGIN menus -->
+			<li class="{nav_item_class}">
 				<i class="fa expand"></i>
 				<!-- BEGIN menu_image -->
-				<a class="nav-image" href="{menu_href}" {menu_target}><img src="{src}" alt="{alt}" title="{alt}" /></a><!-- END menu_image --><!-- BEGIN menu_text -->
-				<a class="nav-text" href="{menu_href}" {menu_target}><span>{menu_title}</span></a><!-- END menu_text --><!-- BEGIN submenus_block --> 
+				<a class="nav-link nl-image" href="{menu_href}" {menu_target}><img class="nav-image" src="{src}" alt="{alt}" /></a><!-- END menu_image --><!-- BEGIN menu_text_link -->
+				<a class="nav-link nl-text" href="{menu_href}" {menu_target}><span class="nav-text">{menu_title}</span></a><!-- END menu_text_link --><!-- BEGIN menu_image -->
+				<span class="nav-data nd-image"><img class="nav-image" src="{src}" alt="{alt}" title="{alt}" /></span><!-- END menu_image --><!-- BEGIN menu_text -->
+				<span class="nav-data nd-text"><span class="nav-text">{menu_title}</span></span><!-- END menu_text --><!-- BEGIN submenus_block --> 
 				<ul>{submenus}</ul><!-- END submenus_block --> 
 			</li><!-- END menus -->
 		</ul>

@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_global_settings.php                                ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -124,7 +124,84 @@
 			array(1, va_message("SMS_NOTIFY_ALLOWED_MSG")),
 			array(2, va_message("SMS_NOTE_ALLOWED_LIST_MSG")),
 			);
-			
+
+	$welcome_popup_options =
+		array( 
+			array("never", va_message("DONT_SHOW_MSG")),
+			array("once", va_message("SHOW_ONLY_ONCE_MSG")),
+			array("every", va_message("SHOW_EVERY_TIME_MSG")),
+			);
+
+	$welcome_layouts =
+		array( 
+			array("default", va_message("DEFAULT_MSG")),
+			array("none", va_message("NONE_MSG")),
+			);
+
+	$length_units =
+		array( 
+			array("mm", va_message("LENGTH_MILIMETRE_MSG")),
+			array("cm", va_message("LENGTH_CENTIMETRE_MSG")),
+			array("m", va_message("LENGTH_METRE_MSG")),
+			array("in", va_message("LENGTH_INCH_MSG")),
+			array("ft", va_message("LENGTH_FOOT_MSG")),
+			array("yd", va_message("LENGTH_YARD_MSG")),
+		);
+
+	$int_length_units =
+		array( 
+			array("mm", va_message("LENGTH_MILIMETRE_MSG")),
+			array("cm", va_message("LENGTH_CENTIMETRE_MSG")),
+			array("m", va_message("LENGTH_METRE_MSG")),
+		);
+
+	$imp_length_units =
+		array( 
+			array("in", va_message("LENGTH_INCH_MSG")),
+			array("ft", va_message("LENGTH_FOOT_MSG")),
+			array("yd", va_message("LENGTH_YARD_MSG")),
+		);
+
+	$length_systems =
+		array( 
+			array("int", va_message("INTERNATIONAL_SYSTEM_MSG")),
+			array("imp", va_message("IMPERIAL_SYSTEM_MSG")),
+		);
+
+	$precision_types =
+		array( 
+			array("integer", va_message("NEAREST_INTEGER_MSG")),
+			array("decimal", va_message("DECIMAL_MSG")),
+			array("fractional", va_message("FRACTIONAL_MSG")),
+		);
+
+	$weight_units =
+		array( 
+			array("g", va_message("WEIGHT_GRAM_MSG")),
+			array("kg", va_message("WEIGHT_KILOGRAM_MSG")),
+			array("oz", va_message("WEIGHT_OUNCE_MSG")),
+			array("lb", va_message("WEIGHT_POUND_MSG")),
+		);
+
+	$weight_systems =
+		array( 
+			array("int", va_message("INTERNATIONAL_SYSTEM_MSG")),
+			array("imp", va_message("IMPERIAL_SYSTEM_MSG")),
+		);
+
+	$int_weight_units =
+		array( 
+			array("g", va_message("WEIGHT_GRAM_MSG")),
+			array("kg", va_message("WEIGHT_KILOGRAM_MSG")),
+		);
+
+	$imp_weight_units =
+		array( 
+			array("oz", va_message("WEIGHT_OUNCE_MSG")),
+			array("lb", va_message("WEIGHT_POUND_MSG")),
+		);
+
+
 	$param_site_id = get_session("session_site_id");
 	$sql  = " SELECT lt.layout_id, lt.layout_name FROM " . $table_prefix . "layouts AS lt"; 
 	$sql .= " LEFT JOIN " . $table_prefix . "layouts_sites AS st ON st.layout_id = lt.layout_id ";		
@@ -224,6 +301,51 @@
 	$r->add_checkbox("secure_admin_login", INTEGER);
 	$r->add_checkbox("secure_redirect", INTEGER);
 
+	// length units fields
+	$r->add_radio("length_unit", TEXT, $length_units);
+	$r->add_radio("length_system", TEXT, $length_systems);
+
+	$r->add_checkboxlist("int_length_units", TEXT, $int_length_units);
+	$r->change_property("int_length_units", USE_IN_INSERT, true);
+	$r->add_radio("int_length_precision", TEXT, $precision_types);
+	$r->add_textbox("int_length_decimals", INTEGER, va_message("INTERNATIONAL_LENGTH_MSG")." (".va_message("NUMBER_OF_DECIMALS_MSG").")");
+	$r->change_property("int_length_decimals", MIN_VALUE, 0);
+	$r->change_property("int_length_decimals", MAX_VALUE, 10);
+	$r->add_textbox("int_length_denominator", INTEGER, va_message("INTERNATIONAL_LENGTH_MSG")." (".va_message("FRACTIONAL_DENOMINATOR_MSG").")");
+	$r->change_property("int_length_denominator", MIN_VALUE, 0);
+
+	$r->add_checkboxlist("imp_length_units", TEXT, $imp_length_units);
+	$r->change_property("imp_length_units", USE_IN_INSERT, true);
+	$r->add_radio("imp_length_precision", TEXT, $precision_types);
+	$r->add_textbox("imp_length_decimals", INTEGER, va_message("IMPERIAL_LENGTH_MSG")." (".va_message("NUMBER_OF_DECIMALS_MSG").")");
+	$r->change_property("imp_length_decimals", MIN_VALUE, 0);
+	$r->change_property("imp_length_decimals", MAX_VALUE, 10);
+	$r->add_textbox("imp_length_denominator", INTEGER, va_message("IMPERIAL_LENGTH_MSG")." (".va_message("FRACTIONAL_DENOMINATOR_MSG").")");
+	$r->change_property("imp_length_denominator", MIN_VALUE, 0);
+
+	// weight units fields
+	$r->add_radio("weight_unit", TEXT, $weight_units);
+	$r->add_radio("weight_system", TEXT, $weight_systems);
+
+	$r->add_checkboxlist("int_weight_units", TEXT, $int_weight_units);
+	$r->change_property("int_weight_units", USE_IN_INSERT, true);
+	$r->add_radio("int_weight_precision", TEXT, $precision_types);
+	$r->add_textbox("int_weight_decimals", INTEGER, va_message("INTERNATIONAL_WEIGHT_MSG")." (".va_message("NUMBER_OF_DECIMALS_MSG").")");
+	$r->change_property("int_weight_decimals", MIN_VALUE, 0);
+	$r->change_property("int_weight_decimals", MAX_VALUE, 10);
+	$r->add_textbox("int_weight_denominator", INTEGER, va_message("INTERNATIONAL_WEIGHT_MSG")." (".va_message("FRACTIONAL_DENOMINATOR_MSG").")");
+	$r->change_property("int_weight_denominator", MIN_VALUE, 0);
+
+	$r->add_checkboxlist("imp_weight_units", TEXT, $imp_weight_units);
+	$r->change_property("imp_weight_units", USE_IN_INSERT, true);
+	$r->add_radio("imp_weight_precision", TEXT, $precision_types);
+	$r->add_textbox("imp_weight_decimals", INTEGER, va_message("IMPERIAL_WEIGHT_MSG")." (".va_message("NUMBER_OF_DECIMALS_MSG").")");
+	$r->change_property("imp_weight_decimals", MIN_VALUE, 0);
+	$r->change_property("imp_weight_decimals", MAX_VALUE, 10);
+	$r->add_textbox("imp_weight_denominator", INTEGER, va_message("IMPERIAL_WEIGHT_MSG")." (".va_message("FRACTIONAL_DENOMINATOR_MSG").")");
+	$r->change_property("imp_weight_denominator", MIN_VALUE, 0);
+
+
 	$r->add_checkbox("friendly_urls", INTEGER, va_message("ACTIVATE_FRIENDLY_URLS_MSG"));
 	$r->change_property("friendly_urls", BEFORE_VALIDATE, "check_friendly_htaccess");
 	$r->add_checkbox("friendly_url_redirect", INTEGER);
@@ -300,6 +422,13 @@
 	$r->add_checkbox("cookie_other_disable", TEXT);
 	$r->add_textbox("cookie_other_name", TEXT);
 	$r->add_textbox("cookie_other_message", TEXT);
+
+	// welcome settings
+	$r->add_radio("welcome_popup", TEXT, $welcome_popup_options);
+	$r->add_radio("welcome_layout", TEXT, $welcome_layouts);
+	$r->add_textbox("welcome_delay", INTEGER);
+	$r->add_textbox("welcome_code", TEXT);
+	$r->add_textbox("welcome_block", TEXT);
 
 
 	// Offline settings
@@ -380,13 +509,11 @@
 		$admin_url .= "/";
 		$r->set_value("admin_url", $admin_url);
 	}
-
 	$secure_url = $r->get_value("secure_url");
 	if (strlen($secure_url) && substr($secure_url, strlen($secure_url) - 1) != "/") {
 		$secure_url .= "/";
 		$r->set_value("secure_url", $secure_url);
 	}
-
 	$google_tracking_code = $r->get_value("google_tracking_code");
 	if (preg_match("/^[\"'](.*)[\"']$/", $google_tracking_code, $match)) {
 		$r->set_value("google_tracking_code", $match[1]);
@@ -397,7 +524,6 @@
 	if (!$tab) { $tab = "general"; }
 	$return_page = get_param("rp");
 	if (!strlen($return_page)) $return_page = "admin.php";
-	
 
 	$message_build_xml = ""; // save here message about new file build
 	if ($operation == "build_xml"){
@@ -462,7 +588,11 @@
 			$new_settings = array();
 			foreach ($r->parameters as $key => $value) {
 				if ($r->get_property_value($key, USE_IN_INSERT)) {
-					$new_settings[$key] = $value[CONTROL_VALUE];
+					if ($r->get_property_value($key, CONTROL_TYPE) == CHECKBOXLIST) {
+						$new_settings[$key] = json_encode($value[CONTROL_VALUE]);
+					} else {
+						$new_settings[$key] = $value[CONTROL_VALUE];
+					}
 				}
 			}
 			update_settings($setting_type, $param_site_id, $new_settings);
@@ -471,7 +601,7 @@
 
 			// update site map settings
 			$site_map_settings = array();
-			foreach ($r->parameters as $key => $value) {
+			foreach ($sm->parameters as $key => $value) {
 				$site_map_settings[$key] = $value[CONTROL_VALUE];
 			}
 			update_settings("site_map", $param_site_id, $site_map_settings);
@@ -542,6 +672,10 @@
 		// get global settings
 		$r->empty_values();
 		$sm->empty_values();
+		$r->parameters["int_length_units"][CONTROL_VALUE] = array();
+		$r->parameters["imp_length_units"][CONTROL_VALUE] = array();
+		$r->parameters["int_weight_units"][CONTROL_VALUE] = array();
+		$r->parameters["imp_weight_units"][CONTROL_VALUE] = array();
 
 		$sql  = "SELECT setting_name, setting_value FROM " . $table_prefix . "global_settings ";
 		$sql .= "WHERE setting_type='global' ";
@@ -552,9 +686,17 @@
 			$setting_name = $db->f("setting_name");
 			$setting_value = $db->f("setting_value");
 			if ($r->parameter_exists($setting_name)) {
-				$r->set_value($setting_name, $setting_value);
+				if ($r->get_property_value($setting_name, CONTROL_TYPE) == CHECKBOXLIST) {
+					$setting_values = json_decode($setting_value, true);
+					foreach ($setting_values as $setting_value) {
+						$r->set_value($setting_name, $setting_value);
+					}
+				} else {
+					$r->set_value($setting_name, $setting_value);
+				}
 			}
 		}
+
 		$sql  = " SELECT site_name, site_url, admin_url FROM " . $table_prefix . "sites ";
 		$sql .= " WHERE site_id=" . $db->tosql($param_site_id, INTEGER);
 		$db->query($sql);
@@ -581,6 +723,36 @@
 				$sm->set_value($setting_name, $setting_value);
 			}
 		}
+	}
+
+	// check if we need to hide some controls
+	$int_length_precision = $r->get_value("int_length_precision");
+	if ($int_length_precision != "decimal") {
+		$r->change_property("int_length_decimals", CONTROL_HIDE, true);
+	}
+	if ($int_length_precision != "fractional") {
+		$r->change_property("int_length_denominator", CONTROL_HIDE, true);
+	}
+	$imp_length_precision = $r->get_value("imp_length_precision");
+	if ($imp_length_precision != "decimal") {
+		$r->change_property("imp_length_decimals", CONTROL_HIDE, true);
+	}
+	if ($imp_length_precision != "fractional") {
+		$r->change_property("imp_length_denominator", CONTROL_HIDE, true);
+	}
+	$int_weight_precision = $r->get_value("int_weight_precision");
+	if ($int_weight_precision != "decimal") {
+		$r->change_property("int_weight_decimals", CONTROL_HIDE, true);
+	}
+	if ($int_weight_precision != "fractional") {
+		$r->change_property("int_weight_denominator", CONTROL_HIDE, true);
+	}
+	$imp_weight_precision = $r->get_value("imp_weight_precision");
+	if ($imp_weight_precision != "decimal") {
+		$r->change_property("imp_weight_decimals", CONTROL_HIDE, true);
+	}
+	if ($imp_weight_precision != "fractional") {
+		$r->change_property("imp_weight_denominator", CONTROL_HIDE, true);
 	}
 	
 	foreach ($articles_categories as $row_cat_id => $row_cat_name) {
@@ -683,6 +855,7 @@
 	$tabs = array(
 		"general" => array("title" => va_message("ADMIN_GENERAL_MSG")), 
 		"images" => array("title" => va_message("IMAGES_MSG")), 
+		"units" => array("title" => va_message("UNITS_MSG")), 
 		"friendly" => array("title" => va_message("FRIENDLY_URLS_MSG")), 
 		"head" => array("title" => "Head HTML"), 
 		"footer" => array("title" => va_message("FOOTER_MSG")), 
@@ -693,6 +866,7 @@
 		"texteditor" => array("title" => va_message("TEXT_EDITOR_MSG")),
 		"tracking" => array("title" => va_message("TRACKING_SETTINGS_MSG")),
 		"cookies" => array("title" => va_message("COOKIE_BAR_MSG")),
+		"welcome" => array("title" => va_message("WELCOME_POPUP_MSG")),
 	);
 
 	parse_tabs($tabs, $tab);

@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  cart_add.php                                             ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -124,7 +124,14 @@
 	if (!$blocks_parsed) {
 		$templates_dir = get_setting_value($settings, "templates_dir", "./templates/user");
 		$t = new VA_Template($templates_dir);
-		if ($cart == "CLR") {
+		if ($sc_errors) {
+			$t->set_file("popup", "popup_error.html");
+			$t->set_var("sc_errors", $sc_errors);
+			$t->set_var("error_desc", $sc_errors);
+			$t->parse("popup", false);
+			$popup_error = $t->get_var("popup");
+			$response["errors"] = $popup_error;
+		} else if ($cart == "CLR") {
 			$t->set_file("popup", "popup_message.html");
 			$t->set_var("sc_message", va_message("EMPTY_CART_MSG"));
 			$t->set_var("message_desc", va_message("EMPTY_CART_MSG"));
@@ -132,13 +139,9 @@
 			$popup_message = $t->get_var("popup");
 			$response["success"] = 1;
 			$response["message"] = $popup_message;
-		} else if ($sc_errors) {
-			$t->set_file("popup", "popup_error.html");
-			$t->set_var("sc_errors", $sc_errors);
-			$t->set_var("error_desc", $sc_errors);
-			$t->parse("popup", false);
-			$popup_error = $t->get_var("popup");
-			$response["errors"] = $popup_error;
+		} else if ($cart == "RM") {
+			$response["success"] = 1; 
+			$response["message"] = ""; // don't show any messages
 		} else if ($sc_message) {
 			$popup_message = "";
 			if (!strlen($cart_added_popup)) {

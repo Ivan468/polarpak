@@ -38,6 +38,8 @@
 	}
 
 	$article_id = get_param("article_id");
+	$filter = get_param("filter");
+	$page = get_param("page");
 	
 	if (!VA_Articles::check_exists($article_id)) {
 		$t->set_var("item", "");
@@ -51,6 +53,10 @@
 		header ("Location: " . get_custom_friendly_url("user_login.php") . "?type_error=2");
 		exit;
 	}
+
+	$pass_parameters = array(
+		"article_id" => $article_id, "category_id" => $current_category_id, "filter" => $filter, 
+	);
 
 	$articles_reviews_href = "articles_reviews.php";
 
@@ -198,6 +204,7 @@
 
 	$t->set_var("current_category_id", htmlspecialchars($current_category_id));
 	$t->set_var("article_id", htmlspecialchars($article_id));
+	$t->set_var("page", htmlspecialchars($page));
 
 	if($is_article && ($allowed_view == 1 || ($allowed_view == 2 && strlen($user_id))))
 	{
@@ -258,7 +265,7 @@
 			$record_number = 0;
 			$records_per_page = $reviews_per_page ? $reviews_per_page : 10;
 			$pages_number = 5;
-			$page_number = $n->set_navigator("navigator", "page", SIMPLE, $pages_number, $records_per_page, $total_records, false);
+			$page_number = $n->set_navigator("navigator", "page", SIMPLE, $pages_number, $records_per_page, $total_records, false, $pass_parameters);
   
 			$sql = " SELECT * FROM " . $table_prefix . "articles_reviews ";
 			$order_by = " ORDER BY date_added DESC";  

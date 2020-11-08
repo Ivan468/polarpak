@@ -2,14 +2,13 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  page_layout.php                                          ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
 */
-
 
 	// initialize template class
 	$t = new VA_Template($settings["templates_dir"]);
@@ -41,15 +40,15 @@
 	$style_name = get_setting_value($settings, "style_name", "");
 	$scheme_class = get_setting_value($settings, "scheme_name", "");
 	if (strlen($style_name)) {
-		$css_file  = $absolute_url."styles/".$style_name;
+		$css_file  = $site_url."styles/".$style_name;
 		if (!preg_match("/\.css$/", $style_name)) { $css_file .= ".css"; }
 	}
 	$t->set_var("CHARSET", va_message("CHARSET"));
 	$t->set_var("meta_language", $language_code);
 	$t->set_var("site_name", htmlspecialchars($site_name));
 	$t->set_var("site_url", $site_url);
-	$t->set_var("secure_url", $secure_url);
-	$t->set_var("absolute_url", $absolute_url);
+	$t->set_var("secure_url", $site_url);
+	$t->set_var("absolute_url", $site_url);
 	$t->set_var("page_url", htmlspecialchars($page_url));
 	$t->set_var("page_url_encode", urlencode($page_url));
 	$t->set_var("canonical_url", htmlspecialchars($canonical_url));
@@ -139,7 +138,7 @@
 
 	// set head tags
 	if (!$is_frame_layout) {
-		set_head_tag("base", array("href"=>$absolute_url), "href", 1);
+		set_head_tag("base", array("href"=>$site_url), "href", 1);
 		if ($css_file) {
 			set_link_tag($css_file, "stylesheet", "text/css");
 		}
@@ -311,7 +310,7 @@
 		$vars = $block["vars"];
 		$vars["block_key"] = $block["block_key"];
 		$vars["tag_name"] = $frames[$frame_id]["tag_name"];
-		$block_css_class = ""; $var_css_class = ""; $extra_css_class = ""; // clear before include block
+		$block_css_class = ""; $extra_css_class = ""; // clear before include block
 		$default_title = ""; // always clear default title before parse
 		$block_parsed = false;
 		// set global block vars
@@ -334,10 +333,11 @@
 		$db->DebugScript = "";
 		if ($block_parsed) {
 			// check class for block
-			if ($page_block_class || $var_css_class) {
-				$cms_css_class = trim($page_block_class." ".$var_css_class);
-			} else if ($block_css_class) {
-				$cms_css_class = $block_css_class;
+			if ($page_block_class) {
+				$cms_css_class = trim($page_block_class); // override default block class to page specific class
+			} 
+			if ($block_css_class) {
+				$cms_css_class .= " ".$block_css_class;
 			}
 			if ($extra_css_class) { $cms_css_class .= " ".$extra_css_class; }
 			if (!$layout_type) { $layout_type = "bk"; }
@@ -444,9 +444,10 @@
 	// set page class and some meta data
 	parse_value($meta_title);
 	parse_value($page_class);
+	$meta_title = strip_tags($meta_title); // strip any html tags 
 	if ($site_class) { $page_class .= " ".$site_class; } // add site class
 	$t->set_var("page_class", htmlspecialchars($page_class));
-	$t->set_var("meta_title", get_translation($meta_title));
+	$t->set_var("meta_title", htmlspecialchars($meta_title));
 	if (!$is_frame_layout) {
 		if ($meta_keywords) {
 			set_head_tag("meta", array("name"=>"keywords","content"=>$meta_keywords), "name", 1);
@@ -463,7 +464,7 @@
 		}
 		if (isset($canonical_url) && strlen($canonical_url)) {
 			if(!preg_match("/^https?\:/", $canonical_url)) {
-				$canonical_url = $absolute_url.$canonical_url;
+				$canonical_url = $site_url.$canonical_url;
 			}
 			set_link_tag(htmlspecialchars($canonical_url), "canonical", "");
 		}
@@ -485,10 +486,48 @@
 	va_cookie_bar();
 	// call init script in the end of HTML page to run it immediately
 	set_script_tag("js/init.js", false, "hidden_blocks");
+
+	// check welcome popup settings 
+	$welcome_popup = get_setting_value($settings, "welcome_popup");
+	if ($welcome_popup == "once" || $welcome_popup == "every") {
+		// check session
+		$check_popups = get_session("popups");
+		if (!is_array($check_popups)) { $check_popups = array(); }
+		if ($welcome_popup == "once") {
+			// check cookies
+			$va_track = json_decode(get_cookie("_va_track"), true);
+			$cookie_popups = get_setting_value($va_track, "popups");
+			if (is_array($cookie_popups)) { 
+				$check_popups = array_merge($check_popups, $cookie_popups); 
+			}
+		}
+		$welcome_code = get_setting_value($settings, "welcome_code", "welcome");
+		if (!in_array($welcome_code, $check_popups)) {
+			$session_start_ts = get_session("session_start_ts");
+			$welcome_layout = get_setting_value($settings, "welcome_layout");
+			if ($welcome_layout == "default") {
+				$t->set_file("hidden_block", "layout_popup.html");
+				$t->parse_to("hidden_block", "hidden_blocks", true);
+			}
+			$welcome_delay = intval(get_setting_value($settings, "welcome_delay")) + $session_start_ts - time();
+			$welcome_block = get_setting_value($settings, "welcome_block");
+			$welcome_params = array("body" => $welcome_block, "layout" => $welcome_layout, "event" => "welcome-popup", "code" => $welcome_code);
+			if ($welcome_delay > 0) {
+				$welcome_script = "<script>setTimeout(function() { vaShowPopup(".json_encode($welcome_params)."); }, ".($welcome_delay*1000).");</script>";
+			} else {
+				$welcome_script = "<script>vaShowPopup(".json_encode($welcome_params).");</script>";
+				// save shown popup in the session immediately to disable it showing next time
+				$check_popups[] = $welcome_code;
+				set_session("popups", $check_popups);
+			}
+			$t->set_block("custom_html", $welcome_script);
+			$t->parse_to("custom_html", "hidden_blocks", true);
+		}
+	}
+
 	// parse page content
 	if ($is_frame_layout) {
 		$t->parse("main");
 	} else {
 		$t->pparse("main");
 	}
-

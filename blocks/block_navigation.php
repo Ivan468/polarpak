@@ -5,6 +5,7 @@
 	$block_key  = $vars["block_key"];
 	$block_type = get_setting_value($vars, "block_type", "");
 	$tag_name = get_setting_value($vars, "tag_name", "");
+	$template_type = get_setting_value($vars, "template_type", "");
 	$friendly_urls = get_setting_value($settings, "friendly_urls", 0);
 	$friendly_extension = get_setting_value($settings, "friendly_extension", "");
 	$js_type = get_setting_value($vars, "js_type", "");
@@ -14,24 +15,28 @@
 	if ($js_type) { $data_js = "nav"; }
 	if (!$menu_site_id) { $menu_site_id = $site_id; } // check if menu_site_id parameter was set
 	
-  $t->set_var("data_js_nav", "");
-	$html_template = get_setting_value($block, "html_template", "block_navigation.html"); 
-	if ($block_type != "built-in") {
-		if ($tag_name == "header_menu") {
-		  $t->set_file($tag_name, $html_template);
+	if ($block_type != "bar" && $block_type != "header" && $template_type != "built-in") {
+		if ($template_type == "default") {
+			$html_template = "block_navigation.html"; 
 		} else {
-	  	$t->set_file("block_body", $html_template);
+			$html_template = get_setting_value($block, "html_template", "block_navigation.html"); 
+		}
+		if ($block_type == "sub-block") {
+		  $t->set_file($vars["tag_name"], $html_template);
+		} else {
+		  $t->set_file("block_body", $html_template);
 		}
 	}
+
   $t->set_var("data_js_nav", $data_js);
   $t->set_var("js_nav", $data_js);
   $t->set_var("data_js_type", $js_type);
   $t->set_var("js_type", $js_type);
 	$t->set_var("item_block", "");
 
-	$menu_id = ""; $menu_title = ""; $block_css_class = ""; $parent_menu_class = ""; $show_categories = true;
+	$menu_id = ""; $menu_title = ""; $block_css_class = ""; $nav_class = ""; $show_categories = true;
 	if ($block_key == "header") {
-		$sql  = " SELECT m.menu_id, m.menu_code, m.block_class, m.menu_class FROM (" . $table_prefix . "menus m";
+		$sql  = " SELECT m.menu_id, m.menu_code, m.menu_title, m.block_class, m.menu_class FROM (" . $table_prefix . "menus m";
 		$sql .= " LEFT JOIN " . $table_prefix . "menus_sites ms ON m.menu_id=ms.menu_id) ";
 		$sql .= " WHERE m.menu_type=2 "; // get only header menu
 		$sql .= " AND (m.sites_all=1 OR ms.site_id=" . $db->tosql($menu_site_id, INTEGER) . ")";
@@ -45,15 +50,18 @@
 		$parent_menu_code = strtolower(trim($db->f("menu_code")));
 		if ($parent_menu_code == "no-categories" || $parent_menu_code == "disable-categories") { $show_categories = false; }
 		$parent_menu_title = get_translation($db->f("menu_title"));
-		$parent_menu_class = get_translation($db->f("menu_class"));
+		$nav_class = get_translation($db->f("menu_class"));
 	} else {
 		$block_parsed = false; 
 		return;
 	}
-	if (!$parent_menu_class) { $parent_menu_class = "basic-menu"; }
+	if (!$nav_class) { $nav_class = "nav"; }
 
 	$t->set_var("parent_menu_title", $parent_menu_title);
-	$t->set_var("parent_menu_class", $parent_menu_class);
+	$t->set_var("nav_class", $nav_class); // main navigation tag class
+	$t->set_var("top_menu_class", $nav_class);
+	$t->set_var("parent_menu_class", $nav_class);
+	$t->set_var("block_class", $block_css_class);
 	if ($tag_name) {
 		$t->set_var($tag_name."_class", $block_css_class);
 	}
@@ -61,15 +69,6 @@
 		$t->set_var("block_menu_".$block_key."_class", $block_css_class);
 	}
 	
-	$html_template = get_setting_value($block, "html_template", "block_navigation.html"); 
-	if ($block_type != "built-in") {
-		if ($tag_name == "header_menu") {
-		  $t->set_file($tag_name, $html_template);
-		} else {
-	  	$t->set_file("block_body", $html_template);
-		}
-	}
-	$t->set_var("item_block", "");
 
 	$menus = array();	$categories_menu_id = 0; $manufacturers_menu_id = 0; $sub_menus = array();
 	$sql  = " SELECT * FROM " . $table_prefix . "menus_items ";

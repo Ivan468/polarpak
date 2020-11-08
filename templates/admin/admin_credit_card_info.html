@@ -62,67 +62,176 @@
 	<td align="center" width="16%" class="small">{REQUIRED_MSG}</td>
 </tr>
 <tr class="usual">
-	<td>{CC_NAME_FIELD}</td>
-	<td align="center"><input type="checkbox" name="show_cc_name" {show_cc_name} value="1"></td>
-	<td align="center"><input type="checkbox" name="cc_name_required" {cc_name_required} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_show_cc_name" {call_center_show_cc_name} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_cc_name_required" {call_center_cc_name_required} value="1"></td>
+	<td>{FULL_NAME_FIELD} ({CC_NAME_DESC})</td>
+	<td align="center"><input type="checkbox" name="show_payment_full_name" {show_payment_full_name} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_full_name_required" {payment_full_name_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_full_name" {call_center_show_payment_full_name} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_full_name_required" {call_center_payment_full_name_required} value="1"></td>
 </tr>
 <tr class="usual">
-	<td>{CC_FIRST_NAME_FIELD}</td>
-	<td align="center"><input type="checkbox" name="show_cc_first_name" {show_cc_first_name} value="1"></td>
-	<td align="center"><input type="checkbox" name="cc_first_name_required" {cc_first_name_required} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_show_cc_first_name" {call_center_show_cc_first_name} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_cc_first_name_required" {call_center_cc_first_name_required} value="1"></td>
+	<td>{FIRST_NAME_FIELD} ({CC_NAME_DESC})</td>
+	<td align="center"><input type="checkbox" name="show_payment_first_name" {show_payment_first_name} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_first_name_required" {payment_first_name_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_first_name" {call_center_show_payment_first_name} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_first_name_required" {call_center_payment_first_name_required} value="1"></td>
 </tr>
 <tr class="usual">
-	<td>{LAST_NAME_FIELD}</td>
-	<td align="center"><input type="checkbox" name="show_cc_last_name" {show_cc_last_name} value="1"></td>
-	<td align="center"><input type="checkbox" name="cc_last_name_required" {cc_last_name_required} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_show_cc_last_name" {call_center_show_cc_last_name} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_cc_last_name_required" {call_center_cc_last_name_required} value="1"></td>
+	<td>{MIDDLE_NAME_FIELD}</td>
+	<td align="center"><input type="checkbox" name="show_payment_middle_name" {show_payment_middle_name} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_middle_name_required" {payment_middle_name_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_middle_name" {call_center_show_payment_middle_name} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_middle_name_required" {call_center_payment_middle_name_required} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{LAST_NAME_FIELD} ({CC_NAME_DESC})</td>
+	<td align="center"><input type="checkbox" name="show_payment_last_name" {show_payment_last_name} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_last_name_required" {payment_last_name_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_last_name" {call_center_show_payment_last_name} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_last_name_required" {call_center_payment_last_name_required} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{COMPANY_NAME_FIELD}</td>
+	<td align="center"><input type="checkbox" name="show_payment_company_name" {show_payment_company_name} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_company_name_required" {payment_company_name_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_company_name" {call_center_show_payment_company_name} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_company_name_required" {call_center_payment_company_name_required} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{EMAIL_FIELD}</td>
+	<td align="center"><input type="checkbox" name="show_payment_email" {show_payment_email} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_email_required" {payment_email_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_email" {call_center_show_payment_email} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_email_required" {call_center_payment_email_required} value="1"></td>
+</tr>
+
+<tr class="usual">
+	<td>{STREET_FIRST_FIELD}</td>
+	<td align="center"><input type="checkbox" name="show_payment_address1" {show_payment_address1} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_address1_required" {payment_address1_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_address1" {call_center_show_payment_address1} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_address1_required" {call_center_payment_address1_required} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{STREET_SECOND_FIELD}</td>
+	<td align="center"><input type="checkbox" name="show_payment_address2" {show_payment_address2} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_address2_required" {payment_address2_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_address2" {call_center_show_payment_address2} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_address2_required" {call_center_payment_address2_required} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{STREET_THIRD_FIELD}</td>
+	<td align="center"><input type="checkbox" name="show_payment_address3" {show_payment_address3} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_address3_required" {payment_address3_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_address3" {call_center_show_payment_address3} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_address3_required" {call_center_payment_address3_required} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{CITY_FIELD}</td>
+	<td align="center"><input type="checkbox" name="show_payment_city" {show_payment_city} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_city_required" {payment_city_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_city" {call_center_show_payment_city} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_city_required" {call_center_payment_city_required} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{PROVINCE_FIELD}</td>
+	<td align="center"><input type="checkbox" name="show_payment_province" {show_payment_province} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_province_required" {payment_province_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_province" {call_center_show_payment_province} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_province_required" {call_center_payment_province_required} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{COUNTRY_FIELD}</td>
+	<td align="center"><input type="checkbox" name="show_payment_country_id" {show_payment_country_id} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_country_id_required" {payment_country_id_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_country_id" {call_center_show_payment_country_id} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_country_id_required" {call_center_payment_country_id_required} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{STATE_FIELD}</td>
+	<td align="center"><input type="checkbox" name="show_payment_state_id" {show_payment_state_id} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_state_id_required" {payment_state_id_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_state_id" {call_center_show_payment_state_id} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_state_id_required" {call_center_payment_state_id_required} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{ZIP_FIELD}</td>
+	<td align="center"><input type="checkbox" name="show_payment_postal_code" {show_payment_postal_code} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_postal_code_required" {payment_postal_code_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_postal_code" {call_center_show_payment_postal_code} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_postal_code_required" {call_center_payment_postal_code_required} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{PHONE_FIELD}</td>
+	<td align="center"><input type="checkbox" name="show_payment_phone" {show_payment_phone} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_phone_required" {payment_phone_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_phone" {call_center_show_payment_phone} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_phone_required" {call_center_payment_phone_required} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{DAYTIME_PHONE_FIELD}</td>
+	<td align="center"><input type="checkbox" name="show_payment_daytime_phone" {show_payment_daytime_phone} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_daytime_phone_required" {payment_daytime_phone_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_daytime_phone" {call_center_show_payment_daytime_phone} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_daytime_phone_required" {call_center_payment_daytime_phone_required} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{EVENING_PHONE_FIELD}</td>
+	<td align="center"><input type="checkbox" name="show_payment_evening_phone" {show_payment_evening_phone} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_evening_phone_required" {payment_evening_phone_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_evening_phone" {call_center_show_payment_evening_phone} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_evening_phone_required" {call_center_payment_evening_phone_required} value="1"></td>
+</tr>
+<tr class="usual">
+	<td>{CELL_PHONE_FIELD}</td>
+	<td align="center"><input type="checkbox" name="show_payment_cell_phone" {show_payment_cell_phone} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_cell_phone_required" {payment_cell_phone_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_cell_phone" {call_center_show_payment_cell_phone} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_cell_phone_required" {call_center_payment_cell_phone_required} value="1"></td>
+</tr>
+<tr class="middle">
+	<td colspan="5">&nbsp;</td>
 </tr>
 <tr class="usual">
 	<td>{CC_NUMBER_FIELD}</td>
-	<td align="center"><input type="checkbox" name="show_cc_number" {show_cc_number} value="1"></td>
-	<td align="center"><input type="checkbox" name="cc_number_required" {cc_number_required} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_show_cc_number" {call_center_show_cc_number} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_cc_number_required" {call_center_cc_number_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="show_payment_card_number" {show_payment_card_number} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_card_number_required" {payment_card_number_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_card_number" {call_center_show_payment_card_number} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_card_number_required" {call_center_payment_card_number_required} value="1"></td>
 </tr>
 <tr class="usual">
 	<td>{CC_START_DATE_FIELD}</td>
-	<td align="center"><input type="checkbox" name="show_cc_start_date" {show_cc_start_date} value="1"></td>
-	<td align="center"><input type="checkbox" name="cc_start_date_required" {cc_start_date_required} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_show_cc_start_date" {call_center_show_cc_start_date} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_cc_start_date_required" {call_center_cc_start_date_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="show_payment_card_start_date" {show_payment_card_start_date} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_card_start_date_required" {payment_card_start_date_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_card_start_date" {call_center_show_payment_card_start_date} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_card_start_date_required" {call_center_payment_card_start_date_required} value="1"></td>
 </tr>
 <tr class="usual">
 	<td>{EXPIRY_DATE_MSG}</td>
-	<td align="center"><input type="checkbox" name="show_cc_expiry_date" {show_cc_expiry_date} value="1"></td>
-	<td align="center"><input type="checkbox" name="cc_expiry_date_required" {cc_expiry_date_required} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_show_cc_expiry_date" {call_center_show_cc_expiry_date} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_cc_expiry_date_required" {call_center_cc_expiry_date_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="show_payment_card_expiry_date" {show_payment_card_expiry_date} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_card_expiry_date_required" {payment_card_expiry_date_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_card_expiry_date" {call_center_show_payment_card_expiry_date} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_card_expiry_date_required" {call_center_payment_card_expiry_date_required} value="1"></td>
 </tr>
 <tr class="usual">
 	<td>{CC_TYPE_FIELD}</td>
-	<td align="center"><input type="checkbox" name="show_cc_type" {show_cc_type} value="1"></td>
-	<td align="center"><input type="checkbox" name="cc_type_required" {cc_type_required} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_show_cc_type" {call_center_show_cc_type} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_cc_type_required" {call_center_cc_type_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="show_payment_card_type_id" {show_payment_card_type_id} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_card_type_id_required" {payment_card_type_id_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_card_type_id" {call_center_show_payment_card_type_id} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_card_type_id_required" {call_center_payment_card_type_id_required} value="1"></td>
 </tr>
 <tr class="usual">
 	<td>{CC_ISSUE_NUMBER_FIELD}</td>
-	<td align="center"><input type="checkbox" name="show_cc_issue_number" {show_cc_issue_number} value="1"></td>
-	<td align="center"><input type="checkbox" name="cc_issue_number_required" {cc_issue_number_required} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_show_cc_issue_number" {call_center_show_cc_issue_number} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_cc_issue_number_required" {call_center_cc_issue_number_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="show_payment_card_issue_number" {show_payment_card_issue_number} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_card_issue_number_required" {payment_card_issue_number_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_card_issue_number" {call_center_show_payment_card_issue_number} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_card_issue_number_required" {call_center_payment_card_issue_number_required} value="1"></td>
 </tr>
 <tr class="usual">
 	<td>{CC_SECURITY_CODE_FIELD}</td>
-	<td align="center"><input type="checkbox" name="show_cc_security_code" {show_cc_security_code} value="1"></td>
-	<td align="center"><input type="checkbox" name="cc_security_code_required" {cc_security_code_required} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_show_cc_security_code" {call_center_show_cc_security_code} value="1"></td>
-	<td align="center"><input type="checkbox" name="call_center_cc_security_code_required" {call_center_cc_security_code_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="show_payment_card_security_code" {show_payment_card_security_code} value="1"></td>
+	<td align="center"><input type="checkbox" name="payment_card_security_code_required" {payment_card_security_code_required} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_show_payment_card_security_code" {call_center_show_payment_card_security_code} value="1"></td>
+	<td align="center"><input type="checkbox" name="call_center_payment_card_security_code_required" {call_center_payment_card_security_code_required} value="1"></td>
 </tr>
 <tr class="middle">
 	<td colspan="5">Credit Card {SETTINGS_MSG}</td>

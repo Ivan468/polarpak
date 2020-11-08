@@ -2,7 +2,7 @@
 
 	include_once("./includes/articles_functions.php");
 
-	$default_title = "{top_category_name} &nbsp; {CATEGORIES_TITLE}";
+	$default_title = "{top_category_name}";
 
 	// check if top_id is a parent of category_id parameter 
 	$top_id = $block["block_key"];
@@ -253,7 +253,6 @@
 					} else {
 						$t->set_var("restricted_class", "");
 					}
-					$t->parse("top_title_block", false);
 						
 					if ($catalog_sub_number) {
 						// parse catalog sub categories block if they exists

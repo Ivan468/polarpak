@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  messages.php                                             ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -117,6 +117,7 @@ $messages = array(
 	"DATABASE_ERROR_MSG" => "Database error has occurred",
 	"BLACK_IP_MSG" => "This action is not permitted from your host.",
 	"BANNED_CONTENT_MSG" => "Sorry, the provided content contains illegal statement.",
+	"ERROR_MSG" => "Error",
 	"ERRORS_MSG" => "Errors",
 	"REGISTERED_ACCESS_MSG" => "Only registered users could access this option.",
 	"SELECT_FROM_LIST_MSG" => "Choisissez parmi la liste",
@@ -316,6 +317,54 @@ $messages = array(
 	"ARTICLE_MSG" => "Article",
 	"OTHER_MSG" => "Autre",
 	"MEASUREMENT_UNITS_MSG" => "Measurement Units",
+	"UNITS_MSG" => "Units",
+	"UNIT_MSG" => "Unit",
+	"COUNTRY_UNITS_DESC" => "Country units",
+	"LENGTH_UNIT_MSG" => "Length Unit",
+	"LENGTH_UNIT_DESC" => "The default unit in which length data are set and shown in the system",
+	"LENGTH_SYSTEM_MSG" => "Length System",
+	"DEFAULT_LENGTH_SYSTEM_DESC" => "System to show length data for user by default",
+	"COUNTRY_LENGTH_SYSTEM_DESC" => "System to show length data for user country. <br>If system wasn't selected then default system will be used instead.",
+	"INTERNATIONAL_SYSTEM_MSG" => "International System",
+	"IMPERIAL_SYSTEM_MSG" => "Imperial System",
+	"INTERNATIONAL_LENGTH_MSG" => "International Length",
+	"INTERNATIONAL_LENGTH_DESC" => "Length unit settings which will be used for international system",
+	"IMPERIAL_LENGTH_MSG" => "Imperial Length",
+	"IMPERIAL_LENGTH_DESC" => "Length unit setting which will be used for imperial system",
+	"PRECISION_MSG" => "Precision",
+	"NEAREST_INTEGER_MSG" => "Nearest Integer",
+	"DECIMAL_MSG" => "Decimal",
+	"FRACTIONAL_MSG" => "Fractional",
+	"FRACTIONAL_DENOMINATOR_MSG" => "Fractional Denominator",
+	"LENGTH_MILIMETRE_MSG" => "millimetre",
+	"LENGTH_CENTIMETRE_MSG" => "centimetre",
+	"LENGTH_METRE_MSG" => "metre",
+	"LENGTH_INCH_MSG" => "inch",
+	"LENGTH_FOOT_MSG" => "foot",
+	"LENGTH_YARD_MSG" => "yard",
+	"LENGTH_MILIMETRE_ABBR" => "mm",
+	"LENGTH_CENTIMETRE_ABBR" => "cm",
+	"LENGTH_METRE_ABBR" => "m",
+	"LENGTH_INCH_ABBR" => "in",
+	"LENGTH_FOOT_ABBR" => "ft",
+	"LENGTH_YARD_ABBR" => "yd",
+	"WEIGHT_UNIT_MSG" => "Weight Unit",
+	"WEIGHT_UNIT_DESC" => "The default unit in which weight data are set and shown in the system",
+	"WEIGHT_SYSTEM_MSG" => "Weight System",
+	"DEFAULT_WEIGHT_SYSTEM_DESC" => "System to show weight data for user by default",
+	"COUNTRY_WEIGHT_SYSTEM_DESC" => "System to show weight data for user country. <br>If system wasn't selected then default system will be used instead.",
+	"INTERNATIONAL_WEIGHT_MSG" => "International Weight",
+	"INTERNATIONAL_WEIGHT_DESC" => "Weight unit settings which will be used for international system",
+	"IMPERIAL_WEIGHT_MSG" => "Imperial Weight",
+	"IMPERIAL_WEIGHT_DESC" => "Weight unit settings which will be used for imperial system",
+	"WEIGHT_GRAM_MSG" => "gram",
+	"WEIGHT_KILOGRAM_MSG" => "kilogram",
+	"WEIGHT_OUNCE_MSG" => "ounce",
+	"WEIGHT_POUND_MSG" => "pound",
+	"WEIGHT_GRAM_ABBR" => "g",
+	"WEIGHT_KILOGRAM_ABBR" => "kg",
+	"WEIGHT_OUNCE_ABBR" => "oz",
+	"WEIGHT_POUND_ABBR" => "lb",
 	"WIDTH_MSG" => "Width",
 	"HEIGHT_MSG" => "Height",
 	"LENGTH_MSG" => "Length",
@@ -787,6 +836,7 @@ $messages = array(
 	"AFFILIATE_CODE_HELP_MSG" => "Please use the following URL {affiliate_url} to create a link affiliated with our site",
 	"PAYPAL_ACCOUNT_FIELD" => "Compte PayPal",
 	"TAX_ID_FIELD" => "Numéro TVA",
+	"VAT_NUMBER_FIELD" => "VAT Number",
 	"MSN_ACCOUNT_FIELD" => "MSN Account",
 	"ICQ_NUMBER_FIELD" => "ICQ Number",
 	"USER_SITE_URL_FIELD" => "User's Site URL",
@@ -855,6 +905,7 @@ $messages = array(
 
 	// no records messages
 	"NO_RECORDS_MSG" => "Désolé, aucun enregistrement ne correspond à votre recherche",
+	"NO_MATCHING_RECORDS_MSG" => "No matching records found for your search criteria '<b>{search_string}</b>'",
 	"NO_EVENTS_MSG" => "Désolé, aucun évenement ne correspond à votre demande",
 	"NO_NEWS_MSG" => "aucun nouvel article",
 	"NO_POLLS_MSG" => "Pas de sondage trouvé",

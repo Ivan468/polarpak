@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_newsletter_functions.php                           ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -106,8 +106,8 @@
 			$sql  = " INSERT INTO " . $table_prefix . "newsletters_emails (newsletter_id, site_id, email_type, user_id, user_email, user_name) ";
 			$sql .= " SELECT " . $db->tosql($newsletter_id, INTEGER) . ", u.site_id, 2, u.user_id, u.email, u.name ";
 			$sql .= " FROM " . $table_prefix . "users u ";
-			$sql .= " GROUP BY u.email, u.site_id ";
 			$sql .= $where;
+			$sql .= " GROUP BY u.email, u.site_id ";
 			$db->query($sql);
 		}
 

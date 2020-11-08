@@ -3,10 +3,10 @@
 	if (!strlen($external_url) || !strlen($country_code)) {
 		return;
 	}
-	global $is_admin_path, $is_sub_folder, $r;
+	global $is_admin_path, $is_sub_folder, $r, $shipping_errors;
 	$root_folder_path = ((isset($is_admin_path) && $is_admin_path) || (isset($is_sub_folder) && $is_sub_folder)) ? "../" : "./";
 	include_once($root_folder_path . "shipping/fedex_v10_functions.php");
-	
+
 	$domestic = (strtolower($country_code) == "us");
 	
 	if ($domestic && !strlen($postal_code)) { return; }
@@ -17,9 +17,48 @@
 		$ratetype = "PAYOR_ACCOUNT";
 	}
 
+
+	// check if we need to show errors
+	$show_errors = false;
+	$show_errors_param = strtolower(get_setting_value($module_params, "ShowErrors", "y"));
+	if ($show_errors_param == "true" || $show_errors_param == "yes" || $show_errors_param == "y") {
+		$show_errors = true;
+	}
+
+	// check if we need to show notes 
+	$show_notes = false;
+	$show_notes_param = strtolower(get_setting_value($module_params, "ShowNotes"));
+	if ($show_notes_param == "true" || $show_notes_param == "yes" || $show_notes_param == "y") {
+		$show_notes = true;
+	}
+
+	// check if we need to show warnings
+	$show_warnings = false;
+	$show_warnings_param = strtolower(get_setting_value($module_params, "ShowWarnings"));
+	if ($show_warnings_param == "true" || $show_warnings_param == "yes" || $show_warnings_param == "y") {
+		$show_warnings = true;
+	}
+
+
+	// check if we need to show debug information
+	$debug = false;
+	$debug_param = strtolower(get_setting_value($module_params, "Debug"));
+	if ($debug_param == "true" || $debug_param == "yes" || $debug_param == "y") {
+		$debug = true;
+	}
+
 	$xml_request = fedex_prepare_rate_request($module_params);
 	$ch = @curl_init();
 	if ($ch){
+
+		if ($debug) {
+			$dom = new DOMDocument("1.0");
+			$dom->preserveWhiteSpace = false;
+			$dom->formatOutput = true;
+			$dom->loadXML($xml_request);
+			echo "<pre>".htmlspecialchars($dom->saveXML())."</pre><hr>";
+		}               	
+
 		$header = array();
 		$header[] = "POST /web-services HTTP/1.1";
 		$header[] = "Host: ws.fedex.com";
@@ -43,6 +82,14 @@
 		$fedex_response = curl_exec($ch);
 		curl_close($ch);
 
+		if ($debug) {
+			$dom = new DOMDocument("1.0");
+			$dom->preserveWhiteSpace = false;
+			$dom->formatOutput = true;
+			$dom->loadXML($fedex_response);
+			echo "<pre>".htmlspecialchars($dom->saveXML())."</pre><hr>";
+		}               	
+
 		// check XML body
 		if (preg_match("/<SOAP-ENV:BODY[^>]*>(.+)<\/SOAP-ENV:BODY>/is", $fedex_response, $match)) {
 			$soap_body = $match[1];
@@ -57,9 +104,15 @@
 		
 		$fedex_error .= $error_code . " -  " . $error_severity . " : " . $error_message . "<br>\n";
 		if (strtoupper($error_severity) != "ERROR" && strtoupper($error_severity) != "FAILURE"){
-			if(strtoupper($error_severity) == "NOTE" || strtoupper($error_severity) == "WARNING"){
-				$r->errors .= $fedex_error;
+			if(strtoupper($error_severity) == "NOTE" && $show_notes){
+				$shipping_errors .= $fedex_error;
+				return;
 			}		
+			if(strtoupper($error_severity) == "WARNING" && $show_warnings){
+				$shipping_errors .= $fedex_error;
+				return;
+			}		
+
 			$methods = $tree["RATEREPLY"][0]["RATEREPLYDETAILS"];
 			for ($i=0; $i < count($methods); $i++){
 
@@ -90,7 +143,10 @@
 			}
 			
 		} else {
-			$r->errors .= $fedex_error;
+			if ($show_errors) {
+				$shipping_errors .= $fedex_error;
+			}
+			return;
 		}
 	} else {
 		return;

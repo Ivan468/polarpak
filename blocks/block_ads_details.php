@@ -73,7 +73,7 @@
 		$type_name = get_translation($db->f("type_name"));
 		$item_title_initial = $db->f("item_title");
 		$item_title = get_translation($item_title_initial);
-		if (!strlen($meta_title)) { $meta_title = $item_title; }
+		$auto_meta_title = $item_title; 
 
 		$friendly_url = $db->f("friendly_url");
 		$short_description = get_translation($db->f("short_description"));
@@ -150,12 +150,11 @@
 	
 		if (!$full_description) { $full_description = $short_description; }
 
-		if (!strlen($meta_description)) {
-			if (strlen($short_description)) {
-				$meta_description = $short_description;
-			} else if (strlen($full_description)) {
-				$meta_description = $full_description;
-			}
+		$auto_meta_description = "";
+		if (strlen($short_description)) {
+			$auto_meta_description = $short_description;
+		} elseif (strlen($full_description)) {
+			$auto_meta_description = $full_description;
 		}
 
 		$properties = show_ads_properties($item_id);

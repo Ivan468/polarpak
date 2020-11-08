@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_category_edit.php                                  ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -93,8 +93,10 @@
 	$r->add_textbox("full_description", TEXT);
 	$r->add_checkbox("show_sub_products", INTEGER);
 	$r->add_checkbox("allowed_post_subcategories", INTEGER);
-	$r->add_textbox("image", TEXT);
-	$r->add_textbox("image_alt", TEXT);
+	$r->add_textbox("image_tiny", TEXT);
+	$r->add_textbox("image_tiny_alt", TEXT);
+	$r->add_textbox("image_small", TEXT);
+	$r->add_textbox("image_small_alt", TEXT);
 	$r->add_textbox("image_large", TEXT);
 	$r->add_textbox("image_large_alt", TEXT);
 	// products fields
@@ -274,6 +276,7 @@
 	
 	$tabs = array(
 		"general"       => array("title" => EDIT_CATEGORY_MSG),
+		"images"        => array("title" => IMAGES_MSG),
 		"meta"          => array("title" => META_DATA_MSG),
 		"item_types"    => array("title" => PRODUCTS_TYPES_MSG),
 		"categories_tabs" => array("title" => CUSTOM_TABS_MSG), 
@@ -296,9 +299,9 @@
 	function after_validate_category() {
 		global $r, $ctab_eg, $cc_eg, $access_table, $table_prefix, $tab;
 		
-		$tree = new VA_Tree("category_id", "category_name", "parent_category_id", $table_prefix . "categories", "");
 		set_friendly_url();
-		$r->set_value("category_path", $tree->get_path($r->get_value("parent_category_id")));
+		$category_path = VA_Categories::get_path($r->get_value("parent_category_id")).",";
+		$r->set_value("category_path", $category_path);
 		
 		$r->set_value("admin_id_added_by", get_session("session_admin_id"));
 		$r->set_value("admin_id_modified_by", get_session("session_admin_id"));

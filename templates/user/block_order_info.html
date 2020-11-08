@@ -106,6 +106,7 @@ window.addEventListener("load", vaOPC, false);
 	<th class="tax-total" align="right">{tax_total_col_name}</th><!-- end item_tax_total_header -->
 	<!-- BEGIN item_price_incl_tax_total_header -->
 	<th class="price-incl-tax-total" align="right">{total_incl_col_name}</th><!-- END item_price_incl_tax_total_header -->
+	<th class="remove-col"></th>
 </tr>
 <!-- begin items -->
 <tr class="usualbg" valign="top">
@@ -123,9 +124,10 @@ window.addEventListener("load", vaOPC, false);
 	<td class="product-name">
 		{item_name}
 		<!-- begin item_code_block -->
-		<br />{PROD_CODE_MSG}: <b>{item_code}</b><!-- end item_code_block -->	
+		<div class="product-code"><span class="caption">{PROD_CODE_MSG}</span><span class="code">{item_code}</span></div><!-- end item_code_block -->	
 		<!-- begin manufacturer_code_block -->
-		<br />{MANUFACTURER_CODE_MSG}: <b>{manufacturer_code}</b><!-- end manufacturer_code_block -->	
+		<div class="manf-code"><span class="caption">{MANUFACTURER_CODE_MSG}</span><span class="code">{manufacturer_code}</span></div><!-- end manufacturer_code_block -->	
+
 		<font class="smallText">{properties_values}</font>
 			<!-- begin item_coupons -->
 			<div class="smallText">{coupon_title} ({discount_amount})</div><!-- end item_coupons -->
@@ -160,13 +162,30 @@ window.addEventListener("load", vaOPC, false);
 	<!-- begin item_price_incl_tax_column -->
 	<td class="price-incl-tax" align="right">{price_incl_tax}</td><!-- end item_price_incl_tax_column -->
 	<!-- begin item_quantity_column -->
-	<td class="product-qty" align="center">{quantity}</td><!-- end item_quantity_column -->
+	<td class="product-qty" align="center">
+		<!-- begin quantity_select -->
+		<select class="quantity-select" onchange="updateOrderItem(this);" data-cart-item-id="{cart_item_id}"  data-cart="QTY" data-product-name="{item_name}" data-quantity="{quantity}"><!-- begin quantity_options -->
+			<option {quantity_selected} value="{quantity_value}">{quantity_description}</option><!-- end quantity_options -->
+		</select>
+		<!-- end quantity_select -->
+		<!-- begin quantity_textbox -->
+		<input type="text" class="field quantity-textbox"  value="{quantity}" size="2" maxlength="6" data-cart-item-id="{cart_item_id}" data-cart="QTY" data-product-name="{item_name}" data-quantity="{quantity}" onchange="updateOrderItem(this);"  >
+		<!-- end quantity_textbox -->
+		<!-- begin quantity_label -->
+		<div class="quantity-label">{quantity}</div>
+		<!-- end quantity_label -->
+	</td><!-- end item_quantity_column -->
 	<!-- begin item_price_excl_tax_total_column -->
 	<td class="price-excl-tax-total" align="right">{price_excl_tax_total}</td><!-- end item_price_excl_tax_total_column -->
 	<!-- begin item_tax_total_column -->
 	<td class="tax-total" align="right">{item_tax_total}</td><!-- end item_tax_total_column -->
 	<!-- begin item_price_incl_tax_total_column -->
 	<td class="price-incl-tax-total" align="right">{price_incl_tax_total}</td><!-- end item_price_incl_tax_total_column -->
+	<td class="remove-col">
+		<!-- BEGIN item_remove_cell -->
+		<div class="product-remove" data-cart-item-id="{cart_item_id}" data-cart="RM" onclick="updateOrderItem(this);"><span>{REMOVE_BUTTON}</span></div>
+		<!-- END item_remove_cell -->
+	</th>
 </tr><!-- end items -->
 <tr class="middlebg">
 	<!-- begin goods_name_column -->
@@ -197,6 +216,7 @@ window.addEventListener("load", vaOPC, false);
 	<td align="right"><span id="goods_tax_total">{goods_tax_total}</span></td><!-- END goods_tax_total_column -->
 	<!-- BEGIN goods_total_incl_tax_column -->
 	<td align="right"><span id="goods_total_incl_tax">{goods_total_incl_tax}</span></td><!-- END goods_total_incl_tax_column -->
+	<td class="remove-col"></td>
 </tr>
 <!-- begin coupons -->
 <tr class="usualbg" valign="top">
@@ -210,6 +230,7 @@ window.addEventListener("load", vaOPC, false);
 	<td align="right"><span id="coupon_tax_{coupon_id}">{coupon_tax}</span></td><!-- end coupon_tax_column -->
 	<!-- begin coupon_amount_incl_tax_column -->
 	<td align="right"><span id="coupon_amount_incl_tax_{coupon_id}">{coupon_amount_incl_tax}</span></td><!-- end coupon_amount_incl_tax_column -->
+	<td class="remove-col"></td>
 </tr><!-- end coupons --><!-- begin discount -->
 <tr class="middlebg">
 	<!-- BEGIN total_discount_name_column -->
@@ -220,6 +241,7 @@ window.addEventListener("load", vaOPC, false);
 	<td align="right"><b><span id="total_discount_tax">{total_discount_tax}</span></b></td><!-- END total_discount_tax_column -->
 	<!-- BEGIN total_discount_amount_incl_tax_column -->
 	<td align="right"><b><span id="total_discount_incl_tax">{total_discount_incl_tax}</span></b></td><!-- END total_discount_amount_incl_tax_column -->
+	<td class="remove-col"></td>
 </tr>
 <tr class="middlebg">
 	<!-- BEGIN discounted_name_column -->
@@ -230,6 +252,7 @@ window.addEventListener("load", vaOPC, false);
 	<td align="right"><b><span id="discounted_tax_amount">{discounted_tax_amount}</span></b></td><!-- END discounted_tax_column -->
 	<!-- BEGIN discounted_amount_incl_tax_column -->
 	<td align="right"><b><span id="discounted_amount_incl_tax">{discounted_amount_incl_tax}</span></b></td><!-- END discounted_amount_incl_tax_column -->
+	<td class="remove-col"></td>
 </tr><!-- end discount -->
 <!-- begin cart_properties -->
 <tr id="op_block_{property_id}" class="property {property_class}" style="{property_style}" valign="top">
@@ -259,6 +282,7 @@ window.addEventListener("load", vaOPC, false);
 	<td class="price price-tax"><span id="op_tax_{property_id}">{op_tax}</span></td><!-- END property_tax_column -->
 	<!-- BEGIN property_price_incl_tax_column -->
 	<td class="price price-incl-tax"><span id="op_price_incl_tax_{property_id}">{op_price_incl_tax}</span></td><!-- END property_price_incl_tax_column -->
+	<td class="remove-col"></td>
 </tr><!-- end cart_properties -->
 <!-- begin taxes -->
 <tr class="usualbg">
@@ -266,10 +290,12 @@ window.addEventListener("load", vaOPC, false);
 	<td align="right">
 		<span id="tax_{tax_id}">{tax_cost}</span>
 	</td>
+	<td class="remove-col"></td>
 </tr><!-- end taxes -->
 <!-- begin vouchers_block -->
 <tr class="middlebg">
 	<td colspan="{total_columns}">{USED_VOUCHERS_MSG}</td>
+	<td class="remove-col"></td>
 </tr>
 <!-- begin used_vouchers -->
 <tr class="usualbg">
@@ -277,6 +303,7 @@ window.addEventListener("load", vaOPC, false);
 	<td align="right">
 		<span id="voucher_amount_{voucher_id}">{voucher_amount}</span>
 	</td>
+	<td class="remove-col"></td>
 </tr><!-- end used_vouchers -->
 <!-- end vouchers_block -->
 <!-- begin total_points_block -->
@@ -290,6 +317,7 @@ window.addEventListener("load", vaOPC, false);
 		</table>
 	</td>
 	<td align="right"><span id="total_points_amount">{total_points_amount}</span></td>
+	<td class="remove-col"></td>
 </tr>
 <!-- end total_points_block -->
 </table>
@@ -848,7 +876,7 @@ window.addEventListener("load", vaOPC, false);
 					<div class="shipping-method shipping-select">
 						<select id="shipping_type_id_{index}" name="shipping_type_id_{index}" onchange="changeShippingList()">
 							<option selected value="">{SELECT_SHIPPING_METHOD_MSG}</option><!-- begin shipping_option -->
-							<option {shipping_type_selected} data-module-id="{shipping_module_id}" value="{shipping_type_id}">{shipping_type_desc}&nbsp;({shipping_cost_desc})&nbsp;</option><!-- end shipping_option -->
+							<option {shipping_type_selected} data-module-id="{shipping_module_id}" value="{shipping_type_id}">{shipping_type_desc}&nbsp;<span class="shipping-cost">({shipping_cost_desc})</span>&nbsp;</option><!-- end shipping_option -->
 						</select>
 					</div>
 					<!-- end shipping_list -->
@@ -935,7 +963,6 @@ window.addEventListener("load", vaOPC, false);
 		<div class="field fd-payment-amount">
 			<div class="name">
 				{AMOUNT_TO_PAY_MSG}
-				<input class="hidden" name="payment_amount" value="{payment_amount}" />
 			</div>
 			<div class="control">
 				<span class="fd-value">{payment_amount_desc}</span>

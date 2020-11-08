@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_page.php                                           ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -63,7 +63,7 @@
 	$r->add_textbox("page_code", TEXT, PAGE_CODE_MSG);
 	$r->change_property("page_code", REQUIRED, true);
 	$r->change_property("page_code", UNIQUE, true);
-	$r->change_property("page_code", MAX_LENGTH, 16);
+	$r->change_property("page_code", MAX_LENGTH, 64);
 	$r->add_textbox("page_title", TEXT, META_TITLE_MSG);
 	$r->change_property("page_title", REQUIRED, true);
 	$r->add_textbox("friendly_url", TEXT, FRIENDLY_URL_MSG);

@@ -29,12 +29,13 @@ var list_fields_names = new Array('sites');
 <div class="Form clearBoth">
 <div class="FormContent">
 
-<form action="{admin_support_department_href}" name="record" onSubmit="selectListFieldsAll();" method="POST">
 <form action="{admin_support_department_href}" name="record" method="POST" onsubmit="selectListFieldsAll();submit_editor(Array('editor_new_am','editor_new_um', 'editor_user_reply_am', 'editor_user_reply_um', 'editor_manager_reply_am', 'editor_manager_reply_mm', 'editor_manager_reply_um',  'editor_assign_am', 'editor_assign_mm', 'editor_assign_tm', 'editor_assign_um'));">
 <input type="hidden" name="operation" value="save">
 <input type="hidden" name="dep_id" value="{dep_id}">
 <input type="hidden" name="tab" value="{tab}">
 <input type="hidden" name="sites" value="">
+<input type="hidden" name="override_field" value="">
+<input type="hidden" name="override_link" value="">
 
 <div id="general_data" class="tab-data {general_class}">
 
@@ -373,8 +374,21 @@ var list_fields_names = new Array('sites');
 	</td>
 </tr>
 <tr class="usual">
+	<td>{OVERRIDE_RULES_MSG}</td>
 	<td>
-		<b>To</b>
+		<input type="hidden" name="over_new_admin_mail" value="{over_new_admin_mail}">
+		<span class="rules-link" data-field="over_new_admin_mail" onclick="vaRulePopup(this);">{over_new_admin_mail_message}</span>
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">
+				{OVERRIDE_RULES_DESC}
+			</div>
+		</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		<b>{EMAIL_TO_MSG}</b>
 		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
 	</td>
 	<td>
@@ -455,6 +469,19 @@ var list_fields_names = new Array('sites');
 		<input type="checkbox" name="new_user_hp_disable" id="new_user_hp_disable" {new_user_hp_disable} value="1">
 		{DISABLE_HELPDESK_NOTIFICATION_DESC}
 		</label>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{OVERRIDE_RULES_MSG}</td>
+	<td>
+		<input type="hidden" name="over_new_user_mail" value="{over_new_user_mail}">
+		<span class="rules-link" data-field="over_new_user_mail" onclick="vaRulePopup(this);">{over_new_user_mail_message}</span>
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">
+				{OVERRIDE_RULES_DESC}
+			</div>
+		</div>
 	</td>
 </tr>
 <tr class="usual">
@@ -555,7 +582,7 @@ var list_fields_names = new Array('sites');
 </tr>
 <tr class="usual">
 	<td>
-		<b>To</b>
+		<b>{EMAIL_TO_MSG}</b>
 		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
 	</td>
 	<td>
@@ -736,7 +763,7 @@ var list_fields_names = new Array('sites');
 </tr>
 <tr class="usual">
 	<td>
-		<b>To</b>
+		<b>{EMAIL_TO_MSG}</b>
 		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
 	</td>
 	<td>
@@ -998,7 +1025,7 @@ var list_fields_names = new Array('sites');
 </tr>
 <tr class="usual">
 	<td>
-		<b>To</b>
+		<b>{EMAIL_TO_MSG}</b>
 		<div class="small">(<a href="javascript:openWindow('{admin_email_help_href}')">{CLICK_HERE_MSG}</a> {LEARN_MORE_EMAIL_FIELDS_NOTE})</div>
 	</td>
 	<td>
@@ -1320,6 +1347,166 @@ var list_fields_names = new Array('sites');
 
 </div>
 </div>
+
+<div class="rule-popup-template" style="display: none;">
+	<div class="rule-popup">
+
+		<div class="popup-close"></div>
+		<div class="bn-small bn-new-rule" onclick="vaRuleEdit(this);">{ADD_NEW_MSG}</div>
+
+		<div class="rule-list">
+		</div>
+
+		<div class="rule-edit">
+
+			<form name="rule_edit">
+			<input type="hidden" name="rule_id">
+			<input type="hidden" name="param_number">
+				<div class="fields-section">
+					{RULE_PARAMETERS_MSG}
+				</div>
+				<div class="field fd-status">
+					<div class="name">{STATUS_MSG}</div> 
+					<div class="control">
+						<label><input type="radio" name="rule_status" value="1">{ACTIVE_MSG}</label>
+						<label><input type="radio" name="rule_status" value="0">{DISABLED_MSG}</label>
+					</div>
+					<div class="after"></div>
+				</div>
+				<div class="field fd-order">
+					<div class="name">{RULE_ORDER_MSG}</div> 
+					<div class="control"><input type="text" name="rule_order" size="10">
+					</div>
+					<div class="after"></div>
+				</div>
+				<div class="field fd-name">
+					<div class="name">{RULE_NAME_MSG}</div> 
+					<div class="control"><input type="text" name="rule_name" size="40"></div>
+					<div class="after"></div>
+				</div>
+				<div class="field fd-parameters">
+					<div class="name">
+						<a class="rule-params" onclick="vaOpenWindow('{admin_support_params_href}');"><span>{PARAMETERS_MSG}</span> <i class="ico-help popup-link"></i></a>
+						<div class="bn-tiny bn-new-param" onclick="vaRuleNewParameter(this);">{NEW_PARAMETER_MSG}</div>
+					</div> 
+					<div class="control">
+						<div class="list-row row-head">
+							<div class="param-name">{NAME_MSG}</div><div class="param-value">{VALUE_MSG}</div>
+						</div>
+						<div class="parameter-list">
+
+						</div>
+
+					</div>
+					<div class="after"></div>
+				</div>
+
+				<div class="fields-section">
+					{OVERRIDE_VALUES_MSG}
+				</div>
+				<div class="field fd-to">
+					<div class="name">{EMAIL_TO_MSG}</div> 
+					<div class="control"><input type="text" name="mail_to" size="40"></div>
+				</div>
+				<div class="field fd-from">
+					<div class="name">{EMAIL_FROM_MSG}</div> 
+					<div class="control"><input type="text" name="mail_from" size="40"></div>
+				</div>
+				<div class="field fd-cc">
+					<div class="name">{EMAIL_CC_MSG}</div> 
+					<div class="control"><input type="text" name="mail_cc" size="40"></div>
+				</div>
+				<div class="field fd-bcc">
+					<div class="name">{EMAIL_BCC_MSG}</div> 
+					<div class="control"><input type="text" name="mail_bcc" size="40"></div>
+				</div>
+				<div class="field fd-reply-to">
+					<div class="name">{EMAIL_REPLY_TO_MSG}</div> 
+					<div class="control"><input type="text" name="mail_reply_to" size="40"></div>
+				</div>
+				<div class="field fd-return-path">
+					<div class="name">{EMAIL_RETURN_PATH_MSG}</div> 
+					<div class="control"><input type="text" name="mail_return_path" size="40"></div>
+				</div>
+				<div class="field fd-subject">
+					<div class="name">{EMAIL_SUBJECT_MSG}</div> 
+					<div class="control"><input type="text" name="mail_subject" size="40"></div>
+				</div>
+				<div class="field fd-type">
+					<div class="name">{EMAIL_MESSAGE_TYPE_MSG}</div> 
+					<div class="control">
+						<select name="mail_type">
+							<option value=""></option>
+							<option value="1">{HTML_MSG}</option>
+							<option value="0">{PLAIN_TEXT_MSG}</option>
+						</select>
+					</div>
+					<div class="after"></div>
+				</div>
+				<div class="field fd-message">
+					<div class="name">{MESSAGE_MSG}</div> 
+					<div class="control">
+						<textarea name="mail_message" cols="40" rows="4"></textarea>
+					</div>
+					<div class="after"></div>
+				</div>
+				<div class="field fd-submit">
+					<div class="before"></div>
+					<div class="name">
+					</div>
+					<div class="control">
+						<input class="submit" type="button" value="{SAVE_BUTTON}" onclick="vaRuleSave(this);" />
+						<input class="submit" type="button" value="{CANCEL_BUTTON}" onclick="vaRuleCancel(this);" />
+						<input class="submit" type="button" value="{DELETE_BUTTON}" onclick="vaRuleDelete(this);" />
+					</div>
+					<div class="after"></div>
+				</div>
+			</form>
+		</div>
+
+<div class="list-head-template" style="display: none;">
+	<div class="list-head">
+		<div class="list-order">#</div>
+		<div class="list-name">{NAME_MSG}</div>
+		<div class="list-edit"></div>
+		<div class="list-delete"></div>
+	</div>
+</div>
+<div class="list-rule-row-template" style="display: none;">
+	<div class="list-row rule-row [rule_class]" data-id="[rule_id]">
+		<div class="list-order">[rule_order]</div>
+		<div class="list-name">[rule_name]</div>
+		<div class="list-edit" onclick="vaRuleEdit(this, [rule_id]);" title="{EDIT_BUTTON}"><i class="ico-edit"></i></div>
+		<div class="list-delete">
+			<i class="ico-trash" onclick="vaRuleDeleteConfirm(this);" title="{DELETE_BUTTON}"></i>
+			<i class="ico-yes" onclick="vaRuleDelete(this, [rule_id]);" title="{YES_MSG}"></i>
+			<i class="ico-no" onclick="vaRuleDeleteCancel(this);" title="{NO_MSG}"></i>
+		</div>
+	</div>
+</div>
+<div class="list-no-rules-template" style="display: none;">
+	<div class="list-no-rules">
+		{NO_RULES_MSG}
+	</div>
+</div>
+<div class="parameter-template" style="display: none;">
+	<div class="list-row parameter-row">
+		<div class="param-name">
+			<input type="text" name="param_name" value="{param_name}" size="10">
+			<input type="hidden" name="value_number" value="{value_number}">
+		</div>
+		<div class="param-value">
+			<div class="bn-small bn-new-value" onclick="vaRuleNewValue(this);" title="{NEW_VALUE_MSG}"></div>
+		</div>
+	</div>
+</div>
+<div class="value-template" style="display: none;">
+	<input type="text" name="param_value" value="{param_value}" size="10">
+</div>
+
+	</div>
+</div>
+
 
 {admin_footer}
 </body>

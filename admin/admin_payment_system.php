@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_payment_system.php                                 ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -41,7 +41,7 @@
 	} else {
 		$t->set_var("site_url", "");					
 	}
-	$t->set_var("CONFIRM_DELETE_JS", str_replace("{record_name}", PAYMENT_SYSTEMS_MSG, CONFIRM_DELETE_MSG));
+	$t->set_var("CONFIRM_DELETE_JS", str_replace("{record_name}", va_message("PAYMENT_SYSTEM_MSG"), va_message("CONFIRM_DELETE_MSG")));
 
 	// set up html form parameters
 	$r = new VA_Record($table_prefix . "payment_systems");
@@ -52,21 +52,21 @@
 	$r->add_checkbox("is_call_center", INTEGER);
 	$r->add_checkbox("allowed_user_edit", INTEGER);
 
-	$r->add_textbox("payment_order", INTEGER, ADMIN_ORDER_MSG);
+	$r->add_textbox("payment_order", INTEGER, va_message("ADMIN_ORDER_MSG"));
 	$r->change_property("payment_order", REQUIRED, true);
-	$r->add_textbox("payment_name", TEXT, PAYMENT_SYSTEM_NAME_MSG);
+	$r->add_textbox("payment_name", TEXT, va_message("PAYMENT_NAME_MSG"));
 	$r->change_property("payment_name", REQUIRED, true);
-	$r->add_textbox("user_payment_name", TEXT, PAYMENT_NAME_COLUMN);
+	$r->add_textbox("user_payment_name", TEXT, va_message("USER_PAYMENT_NAME_MSG"));
 	$r->add_textbox("order_total_min", NUMBER);
 	$r->add_textbox("order_total_max", NUMBER);
-	$r->add_textbox("processing_time", INTEGER, PROCESSING_TIME_MSG);
+	$r->add_textbox("processing_time", INTEGER, va_message("PROCESSING_TIME_MSG"));
 
 	// fast checkout fields
-	$r->add_checkbox("fast_checkout_active", INTEGER, FAST_CHECKOUT_ACTIVE_MSG);
-	$r->add_textbox("fast_checkout_image", TEXT, FAST_CHECKOUT_IMAGE_MSG);
-	$r->add_textbox("fast_checkout_width", INTEGER, FAST_CHECKOUT_WIDTH_MSG);
-	$r->add_textbox("fast_checkout_height", INTEGER, FAST_CHECKOUT_HEIGHT_MSG);
-	$r->add_textbox("fast_checkout_alt", TEXT, FAST_CHECKOUT_ALT_MSG);
+	$r->add_checkbox("fast_checkout_active", INTEGER, va_message("FAST_CHECKOUT_ACTIVE_MSG"));
+	$r->add_textbox("fast_checkout_image", TEXT, va_message("FAST_CHECKOUT_IMAGE_MSG"));
+	$r->add_textbox("fast_checkout_width", INTEGER, va_message("FAST_CHECKOUT_WIDTH_MSG"));
+	$r->add_textbox("fast_checkout_height", INTEGER, va_message("FAST_CHECKOUT_HEIGHT_MSG"));
+	$r->add_textbox("fast_checkout_alt", TEXT, va_message("FAST_CHECKOUT_ALT_MSG"));
 
 	//image settings
 	$r->add_textbox("image_small", TEXT);
@@ -75,30 +75,30 @@
 	$r->add_textbox("image_large_alt", TEXT);
 
 	// processing fee fields
-	$r->add_checkbox("processing_tax_free", INTEGER, TAX_FREE_MSG);
-	$r->add_textbox("fee_percent", NUMBER, PERCENTAGE_PER_ORDER_AMOUNT_MSG);
-	$r->add_textbox("fee_amount", NUMBER, AMOUNT_PER_ORDER_MSG);
-	$r->add_textbox("fee_min_amount", NUMBER, MIN_ORDER_COST_MSG);
-	$r->add_textbox("fee_max_amount", NUMBER, MAX_ORDER_COST_MSG);
+	$r->add_checkbox("processing_tax_free", INTEGER, va_message("TAX_FREE_MSG"));
+	$r->add_textbox("fee_percent", NUMBER, va_message("PERCENTAGE_PER_ORDER_AMOUNT_MSG"));
+	$r->add_textbox("fee_amount", NUMBER, va_message("AMOUNT_PER_ORDER_MSG"));
+	$r->add_textbox("fee_min_amount", NUMBER, va_message("MIN_ORDER_COST_MSG"));
+	$r->add_textbox("fee_max_amount", NUMBER, va_message("MAX_ORDER_COST_MSG"));
 
 	$recurring_methods = array(
-		array(0, RECURRING_NOT_ALLOWED_MSG), array(1, RECURRING_AUTO_CREATE_MSG), array(2, RECURRING_AUTO_BILL_MSG)
+		array(0, va_message("RECURRING_NOT_ALLOWED_MSG")), array(1, va_message("RECURRING_AUTO_CREATE_MSG")), array(2, va_message("RECURRING_AUTO_BILL_MSG"))
 	);
-	$r->add_radio("recurring_method", INTEGER, $recurring_methods, RECURRING_METHOD_MSG);
+	$r->add_radio("recurring_method", INTEGER, $recurring_methods, va_message("RECURRING_METHOD_MSG"));
 
-	$r->add_textbox("payment_info", TEXT, PAYMENT_INFO_MSG);
-	$r->add_textbox("payment_notes", TEXT, PAYMENT_NOTES_MSG);
+	$r->add_textbox("payment_info", TEXT, va_message("PAYMENT_INFO_MSG"));
+	$r->add_textbox("payment_notes", TEXT, va_message("PAYMENT_NOTES_MSG"));
 	$payment_types = array(
-		array("DIRECT", PAYMENT_DIRECT), array("REMOTE", PAYMENT_REMOTE), 
+		array("DIRECT", va_message("PAYMENT_DIRECT_MSG")), array("REMOTE", va_message("PAYMENT_REMOTE_MSG")), 
 	);
-	$r->add_radio("payment_type", TEXT, $payment_types, PAYMENT_TYPE_MSG);
-	$r->add_textbox("payment_code", TEXT, PAYMENT_CODE_MSG);
-	$r->add_textbox("payment_php_lib", TEXT, PAYMENT_LIBRARY_MSG);
-	$r->add_textbox("validation_php_lib", TEXT, VALIDATION_LIBRARY_MSG);
-	$r->add_textbox("payment_url", TEXT, PAYMENT_URL_MSG);
+	$r->add_radio("payment_type", TEXT, $payment_types, va_message("PAYMENT_TYPE_MSG"));
+	$r->add_textbox("payment_code", TEXT, va_message("PAYMENT_CODE_MSG"));
+	$r->add_textbox("payment_php_lib", TEXT, va_message("PAYMENT_LIBRARY_MSG"));
+	$r->add_textbox("validation_php_lib", TEXT, va_message("VALIDATION_LIBRARY_MSG"));
+	$r->add_textbox("payment_url", TEXT, va_message("PAYMENT_URL_MSG"));
 	$r->change_property("payment_url", USE_SQL_NULL, false);
 	$methods = array(array("GET", "GET"), array("POST", "POST"));
-	$r->add_radio("submit_method", TEXT, $methods, FORM_SUBMIT_METHOD_MSG);
+	$r->add_radio("submit_method", TEXT, $methods, va_message("FORM_SUBMIT_METHOD_MSG"));
 
 
 	// advanced parameters
@@ -106,17 +106,17 @@
 	$order_statuses = get_db_values($sql, array(array("", "")));
 
 	$failure_actions = array(
-		array(0, GO_TO_FINAL_STEP_MSG),
-		array(1, REDIRECT_BACK_PAYMENT_PAGE_MSG)
+		array(0, va_message("GO_TO_FINAL_STEP_MSG")),
+		array(1, va_message("REDIRECT_BACK_PAYMENT_PAGE_MSG"))
 	);
 
 	$r->add_checkbox("is_advanced", INTEGER);
-	$r->add_textbox("advanced_url", TEXT, ADVANCED_URL_MSG);
-	$r->add_textbox("advanced_php_lib", TEXT, ADVANCED_PHP_LIBRARY_MSG);
-	$r->add_select("success_status_id", INTEGER, $order_statuses, SUCCESS_STATUS_MSG);
-	$r->add_select("pending_status_id", INTEGER, $order_statuses, PENDING_STATUS_MSG);
-	$r->add_select("failure_status_id", INTEGER, $order_statuses, FAILURE_STATUS_MSG);
-	$r->add_radio("failure_action", INTEGER, $failure_actions, ON_FAILURE_ACTION_MSG);
+	$r->add_textbox("advanced_url", TEXT, va_message("ADVANCED_URL_MSG"));
+	$r->add_textbox("advanced_php_lib", TEXT, va_message("ADVANCED_PHP_LIBRARY_MSG"));
+	$r->add_select("success_status_id", INTEGER, $order_statuses, va_message("SUCCESS_STATUS_MSG"));
+	$r->add_select("pending_status_id", INTEGER, $order_statuses, va_message("PENDING_STATUS_MSG"));
+	$r->add_select("failure_status_id", INTEGER, $order_statuses, va_message("FAILURE_STATUS_MSG"));
+	$r->add_radio("failure_action", INTEGER, $failure_actions, va_message("ON_FAILURE_ACTION_MSG"));
 	$r->add_textbox("capture_php_lib", TEXT);
 	$r->add_textbox("refund_php_lib", TEXT);
 	$r->add_textbox("void_php_lib", TEXT);
@@ -158,22 +158,22 @@
 	$rp->add_where("parameter_id", INTEGER);
 	$rp->add_hidden("payment_id", INTEGER);
 	$rp->change_property("payment_id", USE_IN_INSERT, true);
-	$rp->add_textbox("parameter_name", TEXT, PARAMETER_NAME_MSG);
+	$rp->add_textbox("parameter_name", TEXT, va_message("PARAMETER_NAME_MSG"));
 	$rp->change_property("parameter_name", REQUIRED, true);
 
 	$parameter_types = array(
 		array("", ""),
-		array("CONSTANT", ADMIN_CONSTANT_MSG),
-		array("VARIABLE", ADMIN_VARIABLE_MSG)
+		array("CONSTANT", va_message("ADMIN_CONSTANT_MSG")),
+		array("VARIABLE", va_message("ADMIN_VARIABLE_MSG"))
 	);
 
 
-	$rp->add_select("parameter_type", TEXT, $parameter_types, PARAMETER_TYPE_MSG);
+	$rp->add_select("parameter_type", TEXT, $parameter_types, va_message("PARAMETER_TYPE_MSG"));
 	$rp->change_property("parameter_type", REQUIRED, true);
 	$rp->change_property("parameter_type", USE_SQL_NULL, false);
 
-	$rp->add_textbox("parameter_source", TEXT, PARAMETER_SOURCE_MSG);
-	$rp->add_checkbox("not_passed", INTEGER, NOT_PASSED_MSG);
+	$rp->add_textbox("parameter_source", TEXT, va_message("PARAMETER_SOURCE_MSG"));
+	$rp->add_checkbox("not_passed", INTEGER, va_message("NOT_PASSED_MSG"));
 
 	$payment_id = get_param("payment_id");
 
@@ -577,25 +577,25 @@
 	}
 
 	if (strlen($payment_id))	{
-		$t->set_var("save_button", UPDATE_BUTTON);
+		$t->set_var("save_button", va_message("UPDATE_BUTTON"));
 		$t->parse("delete", false);
 	} else {
-		$t->set_var("save_button", ADD_BUTTON);
+		$t->set_var("save_button", va_message("ADD_BUTTON"));
 		$t->set_var("delete", "");
 	}
 
 	// set styles for tabs
 	$tabs = array(
-		"general" => array("title" => ADMIN_GENERAL_MSG), 
-		"images" => array("title" => IMAGES_MSG), 
-		"fee" => array("title" => FEE_SETTINGS_MSG), 
-		"fast_checkout" => array("title" => FAST_CHECKOUT_MSG), 
-		"activity" => array("title" => ACTIVITY_TIME_MSG), 
-		"user_types" => array("title" => USERS_TYPES_MSG), 
-		"sites" => array("title" => ADMIN_SITES_MSG, "show" => $sitelist),
-		"item_types" => array("title" => PRODUCT_TYPES_MSG),
-		"countries" => array("title" => COUNTRIES_MSG),
-		"currencies" => array("title" => CURRENCIES_MSG),
+		"general" => array("title" => va_message("ADMIN_GENERAL_MSG")), 
+		"images" => array("title" => va_message("IMAGES_MSG")), 
+		"fee" => array("title" => va_message("FEE_SETTINGS_MSG")), 
+		"fast_checkout" => array("title" => va_message("FAST_CHECKOUT_MSG")), 
+		"activity" => array("title" => va_message("ACTIVITY_TIME_MSG")), 
+		"user_types" => array("title" => va_message("USERS_TYPES_MSG")), 
+		"sites" => array("title" => va_message("ADMIN_SITES_MSG"), "show" => $sitelist),
+		"item_types" => array("title" => va_message("PRODUCT_TYPES_MSG")),
+		"countries" => array("title" => va_message("COUNTRIES_MSG")),
+		"currencies" => array("title" => va_message("CURRENCIES_MSG")),
 	);
 
 	parse_admin_tabs($tabs, $tab);
@@ -614,5 +614,3 @@
 	$t->set_var("admin_select_href", "admin_select.php");
 
 	$t->pparse("main");
-
-?>

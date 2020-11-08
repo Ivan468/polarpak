@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  common_functions.php                                     ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -49,6 +49,7 @@
 			"lweight", "hweight", "page", "sw", "sf", "forum_id", "thread_id",
 			"sort", "sort_ord", "sort_dir", "filter", "country", "state", "zip",
 			"pn_pr", "pn_ar", "pn_ad", "pn_th", "pn_pr_sp", 
+			"support_id", "vc",
 		);
 
 		for ($si = 0; $si < sizeof($available_params); $si++) {
@@ -221,30 +222,7 @@
 		return get_var("REMOTE_ADDR");
 	}
 
-	function user_country(&$country_id, &$country_code) 
-	{
-		global $db, $table_prefix;
-		$db_rsi = $db->set_rsi("s");
 
-		$user_id = get_session("session_user_id");
-		if ($user_id) {
-			$user_info = get_session("session_user_info");
-			$country_id = get_setting_value($user_info, "country_id");
-			$country_code = get_setting_value($user_info, "country_code");
-		}
-		if (!$country_id) {
-			$country_code = get_setting_value($_SERVER, "GEOIP_COUNTRY_CODE");  // check country code from GeoIP service
-			if ($country_code) {
-				$sql  = " SELECT country_id FROM ".$table_prefix."countries ";
-				$sql .= " WHERE country_code=" . $db->tosql($country_code, TEXT);
-				$db->query($sql);
-				if ($db->next_record()) {
-					$country_id = $db->f("country_id");
-				}
-			}
-		}
-		$db->set_rsi($db_rsi);
-	}
 
 
 	function prepare_regexp($regexp)
@@ -310,6 +288,293 @@
 			} 
 		}
 		return $value;
+	}
+
+	function parse_tags(&$message)
+	{
+		global $settings, $currency;
+		// check price tags
+		if (preg_match_all("/\[(price|cost)([^\]]*)\]([^\[]+)\[\/(price|cost)\]/Uis", $message, $matches)) {
+			for ($m = 0; $m < sizeof($matches[0]); $m++) {
+				$value_params = trim($matches[2][$m]);
+				$currency_code = $currency["code"];
+				// check if for active currency there is predefined value exists
+				if (preg_match("/".$currency_code."=['\"]([^'\"]+)['\"]/i", $value_params, $param_match) || preg_match("/".$currency_code."=([^'\"\s]+)/i", $value_params, $param_match)) {
+					$price_value = trim($param_match[1]);
+					$formatted_price = $price_value;
+				} else {
+					$price_value = doubleval(trim($matches[3][$m]));
+					$formatted_price = currency_format($price_value);
+				}
+				$message = str_replace($matches[0][$m], $formatted_price, $message);
+			}
+		}
+
+		// check length tags 
+		if (preg_match_all("/\[(width|length|height)([^\]]*)\]([^\[]+)\[\/(width|length|height)\]/Uis", $message, $matches)) {
+			$user_settings = user_settings();
+			$length_system = get_setting_value($user_settings, "length_system", get_setting_value($settings, "length_system", "int"));
+			//$length_unit = get_setting_value($settings, "length_unit", "mm");
+			if ($length_system == "imp") {
+				$length_units = get_setting_value($settings, "imp_length_units", array("in"));
+				$length_precision = get_setting_value($settings, "imp_length_precision", "integer");
+				$length_decimals = get_setting_value($settings, "imp_length_decimals", 2);
+				$length_denominator = get_setting_value($settings, "imp_length_denominator", 64);
+			} else {
+				$length_units = get_setting_value($settings, "int_length_units", array("mm"));
+				$length_precision = get_setting_value($settings, "int_length_precision", "integer");
+				$length_decimals = get_setting_value($settings, "int_length_decimals", 2);
+				$length_denominator = get_setting_value($settings, "int_length_denominator", 64);
+			}
+			if (!is_array($length_units) && strlen($length_units)) {
+				if (preg_match("/^\[.+\]$/", $length_units)) {
+					$length_units = json_decode($length_units, true);	
+				}
+			}
+  
+			for ($m = 0; $m < sizeof($matches[0]); $m++) {
+				$value_units = $length_units;
+				$value_precision = $length_precision;
+				$value_decimals = $length_decimals; 
+				$value_denominator = $length_denominator;
+  
+				$value_params = trim($matches[2][$m]);
+				if ($length_system == "imp" || $length_system == "imperial") {
+					$tag_regex = "(imp|imperial)";
+				} else {
+					$tag_regex = "(int|international|metric)";
+				}
+				if (preg_match("/".$tag_regex."=['\"]([^'\"]+)['\"]/i", $value_params, $param_match) || preg_match("/".$tag_regex."=([^'\"\s]+)/i", $value_params, $param_match)) {
+					$param_units = array();
+					$system_params = preg_split("/[\s,;]/", $param_match[2]);
+					foreach ($system_params as $param_value) {
+						if (preg_match("/decimal|decimals|fractional|fraction|integer/i", $param_value)) {
+							$value_precision = $param_value;
+						} else if (preg_match("/^(mi|km|m|yd|ft|dm|in|cm|mm)$/i", $param_value)) {
+							$param_units[] = $param_value;
+						} else if (preg_match("/^\d+$/i", $param_value)) {
+							// save for both for 
+							$value_decimals = $param_value;
+							$value_denominator = $param_value;
+						}
+					}
+					if (count($param_units)) {
+						$value_units = $param_units;
+					}
+				}
+  
+				$length_mm = unit_value(trim($matches[3][$m]), "mm");
+				$length_format = array("units" => $value_units, "precision" => $value_precision, "decimals" => $value_decimals, "denominator" => $value_denominator);
+				$formatted_length = unit_format($length_mm, $length_format);
+				$message = str_replace($matches[0][$m], $formatted_length, $message);
+			}
+		} 
+
+		// check weight tags 
+		if (preg_match_all("/\[(weight|mass)([^\]]*)\]([^\[]+)\[\/(weight|mass)\]/Uis", $message, $matches)) {
+			$user_settings = user_settings();
+			$weight_system = get_setting_value($user_settings, "weight_system", get_setting_value($settings, "weight_system", "int"));
+			//$weight_unit = get_setting_value($settings, "weight_unit", "mm");
+			if ($weight_system == "imp") {
+				$weight_units = get_setting_value($settings, "imp_weight_units", array("lb"));
+				$weight_precision = get_setting_value($settings, "imp_weight_precision", "decimal");
+				$weight_decimals = get_setting_value($settings, "imp_weight_decimals", 3);
+				$weight_denominator = get_setting_value($settings, "imp_weight_denominator", 64);
+			} else {
+				$weight_units = get_setting_value($settings, "int_weight_units", array("kg"));
+				$weight_precision = get_setting_value($settings, "int_weight_precision", "decimal");
+				$weight_decimals = get_setting_value($settings, "int_weight_decimals", 3);
+				$weight_denominator = get_setting_value($settings, "int_weight_denominator", 64);
+			}
+			if (!is_array($weight_units) && strlen($weight_units)) {
+				if (preg_match("/^\[.+\]$/", $weight_units)) {
+					$weight_units = json_decode($weight_units, true);	
+				}
+			}
+  
+			for ($m = 0; $m < sizeof($matches[0]); $m++) {
+				$value_units = $weight_units;
+				$value_precision = $weight_precision;
+				$value_decimals = $weight_decimals; 
+				$value_denominator = $weight_denominator;
+  
+				$value_params = trim($matches[2][$m]);
+				if ($weight_system == "imp" || $weight_system == "imperial") {
+					$tag_regex = "(imp|imperial)";
+				} else {
+					$tag_regex = "(int|international|metric)";
+				}
+				if (preg_match("/".$tag_regex."=['\"]([^'\"]+)['\"]/i", $value_params, $param_match) || preg_match("/".$tag_regex."=([^'\"\s]+)/i", $value_params, $param_match)) {
+					$param_units = array();
+					$system_params = preg_split("/[\s,;]/", $param_match[2]);
+					foreach ($system_params as $param_value) {
+						if (preg_match("/decimal|decimals|fractional|fraction|integer/i", $param_value)) {
+							$value_precision = $param_value;
+						} else if (preg_match("/^(g|kg|lb|oz)$/i", $param_value)) {
+							$param_units[] = $param_value;
+						} else if (preg_match("/^\d+$/i", $param_value)) {
+							// save for both for 
+							$value_decimals = $param_value;
+							$value_denominator = $param_value;
+						}
+					}
+					if (count($param_units)) {
+						$value_units = $param_units;
+					}
+				}
+  
+				$weight_grams = unit_value(trim($matches[3][$m]), "g");
+				$weight_format = array("units" => $value_units, "precision" => $value_precision, "decimals" => $value_decimals, "denominator" => $value_denominator);
+				$formatted_weight = unit_format($weight_grams, $weight_format);
+				$message = str_replace($matches[0][$m], $formatted_weight, $message);
+			}
+		} 
+	}
+
+	function parse_sub_blocks($parent_block_name = "block_body")
+	{
+		global $t, $db, $table_prefix, $settings, $currency, $language_code;
+		global $site_id, $layout_site_id, $menu_site_id, $pb_id; 
+
+		// get all blocks and vars
+		if (!$parent_block_name) { $parent_block_name = "block_body"; }
+		$block_vars = $t->get_block($parent_block_name);
+		// check ajax call for sub menu block
+		$ajax = get_param("ajax");
+		$pb_type = get_param("pb_type");
+		if ($ajax && $pb_type) {
+			$block_name = ""; $tag_name = ""; $template_type = ""; 
+			$block_parsed = false; $script_name = "";
+  
+			if ($pb_type == "cart") {
+				$script_name = "block_cart.php";
+				$block_name = "block_cart";
+				$html_id = "cart_".$pb_id;
+				$pb_type = "cart";
+			} else if ($pb_type == "login") {
+				$script_name = "block_login.php";
+				$block_name = "block_login";
+				$html_id = "login_".$pb_id;
+				$pb_type = "login";
+			}
+			if ($block_name && in_array($block_name, $block_vars)) {
+				if ($t->block_exists($block_name, $parent_block_name)) {
+					$template_type = "built-in";
+				} else {
+					$template_type = "default";
+					$tag_name = $block_name;
+				}
+				$block_parsed = false;
+				$vars = array("block_type" => "sub-block", "template_type" => $template_type, "block_name" => $block_name, "tag_name" => $tag_name);
+				if (file_exists("./blocks_custom/".$script_name)) {
+					include("./blocks_custom/".$script_name);
+				} else {
+					include("./blocks/".$script_name);
+				}
+				// parse menu block if it was parsed
+				if ($block_parsed) {
+					$t->parse($block_name, false);
+				}
+				$ajax_data = array(
+					"pb_id" => $pb_id,	
+					"html_id" => $html_id,
+					"pb_type" => $pb_type,
+					"block" => $t->get_var($block_name),
+				);	
+				echo json_encode($ajax_data);	
+				exit; // don't parse the main block for sub block ajax call
+			}
+		}
+		// check sub blocks we need to parse
+		foreach ($block_vars as $block_var) {
+			$block_name = ""; $tag_name = ""; $template_type = ""; $block_keys = array();
+			$block_parsed = false; $built_in = false; $script_name = "";
+			if ($block_var == "block_cart") {
+				$script_name = "block_cart.php";
+				$block_name = $block_var; 
+				$block_keys[] = $block_var;
+			} else if ($block_var == "block_login") {
+				$script_name = "block_login.php";
+				$block_name = $block_var; 
+				$block_keys[] = $block_var;
+			} else if ($block_var == "block_currency") {
+				$script_name = "block_currency.php";
+				$block_name = $block_var; 
+				$block_keys[] = $block_var;
+			} else if ($block_var == "block_language") {
+				$script_name = "block_language.php";
+				$block_name = $block_var; 
+				$block_keys[] = $block_var;
+			} else if ($block_var == "block_search") {
+				$script_name = "block_search.php";
+				$block_name = $block_var; 
+				$block_keys[] = $block_var;
+			} else if ($block_var == "block_site_search") {
+				$script_name = "block_site_search_form.php";
+				$block_name = $block_var; 
+				$block_keys[] = $block_var;
+			} else if (preg_match("/^block_custom_(\d+)$/", $block_var, $matches)) {
+				$script_name = "block_custom.php";
+				$block_name = $matches[0]; 
+				$block_keys[] = $matches[1];
+			} else if (preg_match("/^block_menu_(\w+)$/", $block_var, $matches) || preg_match("/^block_navigation_(\w+)$/", $block_var, $matches) || preg_match("/^(header)_menu$/", $block_var, $matches)) {
+				if (!isset($va_data["navigation"])) { $va_data["navigation"] = array(); }
+				$script_name = "block_navigation.php";
+				$block_name = $matches[0]; 
+				$block_key = $matches[1];
+				if (!$menu_site_id) { $menu_site_id = $site_id; } // check if menu_site_id parameter was set
+				$sql  = " SELECT m.menu_id, m.menu_code, m.menu_title, m.block_class, m.menu_class ";
+				$sql .= " FROM (" . $table_prefix . "menus m";
+				$sql .= " LEFT JOIN " . $table_prefix . "menus_sites ms ON m.menu_id=ms.menu_id) ";
+				$sql .= " WHERE "; 
+				if ($block_key == "header") {
+					$sql .= " m.menu_type=2 "; 
+				} else if ($block_key == "footer") {
+					$sql .= " m.menu_type=4 "; 
+				} else if ($block_key == "bar") {
+					$sql .= " m.menu_type=1 "; 
+				} else if (is_numeric($block_key)) {
+					$sql .= " m.menu_id = " . $db->tosql($block_key, INTEGER);
+				} else {
+					$sql .= " m.menu_code = " . $db->tosql($block_key, TEXT);
+				}
+				$sql .= " AND (m.sites_all=1 OR ms.site_id=" . $db->tosql($menu_site_id, INTEGER) . ")";
+				$db->query($sql);
+				while ($db->next_record()) {
+					$menu_id = $db->f("menu_id");
+					$block_keys[] = $menu_id;
+					$va_data["navigation"][$menu_id] = $db->Record;
+				}
+			}
+			if ($block_name) {
+				$t->set_var($block_name, ""); // clear tag or block before parse
+				if ($t->block_exists($block_name, $parent_block_name)) {
+					$built_in = true; 
+					$template_type = "built-in";
+				} else {
+					$tag_name = $block_name;
+					$template_type = "default";
+				}
+				foreach ($block_keys as $block_key) {
+					$block_parsed = false;
+					$vars = array("block_type" => "sub-block", "template_type" => $template_type, "block_key" => $block_key, "block_name" => $block_name, "tag_name" => $tag_name);
+					if (file_exists("./blocks_custom/".$script_name)) {
+						include("./blocks_custom/".$script_name);
+					} else {
+						include("./blocks/".$script_name);
+					}
+					// parse menu block if it was parsed
+					if ($block_parsed) {
+						if ($built_in) {
+							$t->parse($vars["block_name"], true);
+						} else {
+							$t->parse($vars["tag_name"], true);
+						}
+					}
+				}
+			} 
+		}
+	// end sub blocks check 
 	}
 
 	function get_db_values($sql, $values_before, $shown_symbols = 0)
@@ -448,29 +713,47 @@
 		}
 	}
 
-	function user_settings($user_id)
+	function user_settings()
 	{
 		global $db, $va_data, $table_prefix;
+		$db_rsi = $db->set_rsi("s");
 
-		if(isset($va_data["user_settings"])) { 
-			$user_settings = $va_data["user_settings"];
+		$user_settings = array();
+		$user_id = get_session("session_user_id");
+		if ($user_id) {
+			$user_info = get_session("session_user_info");
+			$user_settings = get_setting_value($user_info, "settings");
 		} else {
-			$db_rsi = $db->set_rsi("s");
-			$user_settings = array();
-			$sql  = " SELECT * ";
-			$sql .= " FROM " . $table_prefix . "users u ";
-			$sql .= " WHERE user_id=" . $db->tosql($user_id, INTEGER);
-			$db->query($sql);
-			if ($db->next_record()) {
-				$user_settings = $db->f("user_settings");
-				if ($user_settings) {
-					$user_settings = json_decode($user_settings, true);
+			$user_settings = get_session("user_settings");
+			if (!is_array($user_settings)) {
+				$user_settings = array();
+				// for guest users we try get information based on country IP
+				$country_code = get_setting_value($_SERVER, "GEOIP_COUNTRY_CODE");  // check country code from GeoIP service
+				if ($country_code) {
+					$sql  = " SELECT country_id, currency_code, country_settings FROM ".$table_prefix."countries ";
+					$sql .= " WHERE country_code=" . $db->tosql($country_code, TEXT);
+					$db->query($sql);
+					if ($db->next_record()) {
+						$country_id = $db->f("country_id");
+						$country_settings = $db->f("country_settings");
+						$currency_code = $db->f("currency_code");
+						$country_settings = json_decode($country_settings, true);
+						if (is_array($country_settings)) {
+							$user_settings = $country_settings;
+						}
+						$user_settings["country_id"] = $country_id;
+						$user_settings["country_code"] = $country_code;
+						$user_settings["currency_code"] = $currency_code;
+					}
 				}
+				set_session("user_settings", $user_settings);
 			}
-			$db->set_rsi($db_rsi);
 		}
+
+		$db->set_rsi($db_rsi);
 		return $user_settings;
 	}
+
 
 	function get_meta_desc($meta_description)
 	{
@@ -901,7 +1184,7 @@
 			$t->set_var("menus", "");  // clear menus
 
 			// init variable to match active menu
-			$site_url = get_setting_value("site_url", $settings, "");
+			$site_url = get_setting_value($settings, "site_url", "");
 			$parsed_url = parse_url($site_url);
 			$site_path = isset($parsed_url["path"]) ? $parsed_url["path"] : "/";
 			$request_uri_base = basename(get_request_uri());
@@ -948,11 +1231,6 @@
         
 					if ($menu_url == "index.php") {
 						$menu_url = $site_url;
-					} if (preg_match("/^\//", $menu_url)) {
-						$menu_url = preg_replace("/^".preg_quote($site_path, "/")."/i", "", $menu_url);
-						$menu_url = $site_url . get_custom_friendly_url($menu_url);
-					} else if (!preg_match("/^http\:\/\//", $menu_url) && !preg_match("/^https\:\/\//", $menu_url) && !preg_match("/^javascript\:/", $menu_url)) {
-						$menu_url = $site_url . $menu_friendly_url;
 					}
 					$menus[$menu_id]["active"] = ($menu_active || $url_matched); // child could activate parent menu before
 					$menus[$menu_id]["menu_url"] = $menu_url;
@@ -969,6 +1247,9 @@
 		
 		$subs = (isset($menus[$parent_id]) && isset($menus[$parent_id]["subs"])) ? $menus[$parent_id]["subs"] : array();
 		asort($subs); // sort menu items first to show them in correct order
+
+		$menu_image_link = $t->block_exists("menu_image_link", "menus");
+		$menu_text_link = $t->block_exists("menu_text_link", "menus");
 		
 		$menu_index = 0; $menu_count = count($subs);
 		foreach ($subs as $show_menu_id => $menu_order)
@@ -990,6 +1271,8 @@
 				continue;
 			} else if ($menu_block) {
 				$t->set_var("menu_class", $menu_class);
+				$t->set_var("menu_item_class", $menu_class);
+				$t->set_var("nav_item_class", $menu_class);
 				$t->parse_to($menu_block, "menus", true);
 				continue;
 			}
@@ -1021,21 +1304,32 @@
 			} else {
 				$t->set_var("menu_target", "");
 			}
-			$t->set_var("menu_class", $menu_class);
 			$t->set_var("menu_title", $menu_title);
+			$t->set_var("menu_class", $menu_class);
+			$t->set_var("menu_item_class", $menu_class);
+			$t->set_var("nav_item_class", $menu_class);
 
+			$t->set_var("menu_image", "");
+			$t->set_var("menu_image_link", "");
 			if ($menu_image) {
 				$t->set_var("alt", htmlspecialchars($menu_title));
 				$t->set_var("src", htmlspecialchars($menu_image));
-				$t->sparse("menu_image", false);
-			} else {
-				$t->set_var("menu_image", "");
+				if ($menu_image_link && $menu_url != "#") {
+					$t->sparse("menu_image_link", false);
+				} else {
+					$t->sparse("menu_image", false);
+				}
 			}
 
+			$t->set_var("menu_text", "");
+			$t->set_var("menu_text_link", "");
 			if (strlen($menu_title)) {
-				$t->sparse("menu_text", false);
+				if ($menu_text_link && $menu_url != "#") {
+					$t->sparse("menu_text_link", false);
+				} else {
+					$t->sparse("menu_text", false);
+				}
 			}
-
 			
 			if ($has_nested) {
 				$t->set_var("submenus", $t->get_var("submenus_" . ($level + 1)));
@@ -1809,6 +2103,166 @@
 		return $formatted_price;
 	}
 
+function unit_value($unit, $unit_type)
+{
+	global $settings;
+	// replace all commas to digit symbol to correctly parse float numbers
+	$unit = str_replace(",", ".", $unit);
+	$unit = preg_replace("/\x{200B}/u", "", $unit); // replace Zero Length symbol with space - 200B (octal code 8203)
+	
+	if ($unit_type == "g") {
+		// weight unit parameters
+		// if there is no any possible unit letters add default unit 
+		if (!preg_match("/[a-z]/i", $unit)) {
+			$weight_unit = get_setting_value($settings, "weight_unit", "g");
+			$unit .= $weight_unit;
+		}
+		// use meter pattern at the end as other patterns has m char part in their abbreviation
+		$unit_patterns = array(
+			"/pounds\.|pound\.|pounds|pound|lbs\.|lb\.|lbs|lb/i", 
+			"/ounces\.|ounce\.|ounces|ounce|oz\.|oz'/i", 
+			"/kilogramme|kilogramm|kilogramskilogrammes|kg\.|kg/i",
+			"/grammes|gramme|grams|gram|g\.|g/i",
+		);
+		$unit_replacements = array("*453.59237,", "*28.349523125,", "*1000,", "*1,");
+		$unit_mutipliers = array("lb" => 453.59237, "oz" => 28.349523125, "kg" => 1000, "g" => 1);
+
+	} else {
+		// legth unit parameters
+		// if there is no any possible unit letters add default unit 
+		if (!preg_match("/[a-z]/i", $unit)) {
+			$length_unit = get_setting_value($settings, "length_unit", "mm");
+			$unit .= $length_unit;
+		}
+		// use meter pattern at the end as other patterns has m char part in their abbreviation
+		$unit_patterns = array(
+			"/inches\.|inch\.|inches|inch|in\.|in|\"/i", 
+			"/feet\.|foot\.|feet|foot|ft\.|ft|'/i", 
+			"/yards\.|yds\.|yd\.|yards|yard|yds|yd/i", 
+			"/millimetre|millimeter|millimetres|millimeter|mm\.|mm/i",
+			"/centimetre|centimeter|centimetres|centimeters|cm\.|cm/i",
+			"/decimetre|decimeter|decimetres|decimeters|dm\.|dm/i",
+			"/kilometres|kilometers|kilometre|kilometer|km\.|km/i",
+			"/miles\.|miles|mile\.|mile|mi\.|mi/i", 
+			"/metre|meter|metres|meters|m\.|m/i",
+		);
+		$unit_replacements = array("*25.1,", "*304.8,", "*914.4,", "*1,", "*10,", "*100,", "*1000000,", "*1609344,", "*1000,");
+		$unit_mutipliers = array("yd" => 914.4, "ft" => 304.8, "in" => 25.1, "m" => 1000, "dm" => 100, "cm" => 10, "mm" => 1);
+	}
+	$unit = preg_replace ($unit_patterns, $unit_replacements, $unit);
+	$unit = rtrim($unit, ","); // remove last comma
+	$unit_parts = explode(",", $unit);
+	// start conversion calculation
+	$unit_value = 0;
+	foreach ($unit_parts as $unit_part) {
+		$unit_part = trim($unit_part); 
+		// 2044 - Fraction Slash (octal code - 8260) (chars - 226 129 132)
+		if (preg_match("/^([\d\.\s\/\x{2044}]+)\*([\d\.]+)$/u", $unit_part, $matches)) {
+			$unit_numeric = trim($matches[1]);
+			$unit_mutiplier = doubleval($matches[2]);
+			if (preg_match("/^[\d\.]+$/", $unit_numeric)) {
+				$unit_value += doubleval($unit_numeric) * $unit_mutiplier;
+			} else if (preg_match("/^(\d+)[\/\x{2044}](\d+)$/u", $unit_numeric, $matches)) {
+				$numerator = doubleval($matches[1]);
+				$denominator = doubleval($matches[2]);
+				$unit_value += ($numerator / $denominator) * $unit_mutiplier;
+			} else if (preg_match("/^([\d\.]+)[\s\x{200B}]+(\d+)[\/\x{2044}](\d+)/u", $unit_numeric, $matches)) {
+				$numerator = doubleval($matches[2]);
+				$denominator = doubleval($matches[3]);
+				$unit_value += doubleval($matches[1]) * $unit_mutiplier + ($numerator / $denominator) * $unit_mutiplier;
+			}
+		}
+	}
+	return $unit_value;
+}
+
+function unit_format($unit_base, $unit_format)
+{
+	$units = get_setting_value($unit_format, "units", get_setting_value($unit_format, "unit"));
+	if (!is_array($units)) { $units = explode(",", $units); }
+	if (preg_match("/^(lb|oz|kg|g)$/i", $units[0])) {
+		$unit_mutipliers = array("lb" => 453.59237, "oz" => 28.349523125, "kg" => 1000, "g" => 1);
+	} else {
+		$unit_mutipliers = array("mi" => 1609344, "km" => 1000000, "m" => 1000, "yd" => 914.4, "ft" => 304.8, "dm" => 100, "in" => 25.1, "cm" => 10, "mm" => 1);
+	}
+	if (count($units)) {
+		$units = array_flip($units);
+		foreach ($units as $unit_key => $unit_multiplier) {
+			if (isset($unit_mutipliers[$unit_key])) {
+				$units[$unit_key] = $unit_mutipliers[$unit_key];
+			} else {
+				unset($units[$unit_key]);
+			}
+		}
+		arsort($units); // sort units to start from bigger units
+		$units = array_keys($units);
+	}
+	// set default unit if it wasn't set
+	if (!count($units)) { $units = array("mm"); }
+
+	$precision = get_setting_value($unit_format, "precision", "integer");
+	$decimals = intval(get_setting_value($unit_format, "decimals", 2));
+	$denominator = intval(get_setting_value($unit_format, "denominator", 64));
+	$unit_messages = array(
+		"in" => "LENGTH_INCH_ABBR", "ft" => "LENGTH_FOOT_ABBR", "yd" => "LENGTH_YARD_ABBR", "mm" => "LENGTH_MILIMETRE_ABBR", "cm" => "LENGTH_CENTIMETRE_ABBR", "dm" => "LENGTH_DECIMETRE_ABBR", "km" => "LENGTH_KILOMETRE_ABBR", "mi" => "LENGTH_MILE_ABBR", "m" => "LENGTH_METRE_ABBR",
+		"g" => "WEIGHT_GRAM_ABBR", "kg" => "WEIGHT_KILOGRAM_ABBR", "oz" => "WEIGHT_OUNCE_ABBR", "lb" => "WEIGHT_POUND_ABBR",
+	);
+
+	$formatted_value = "";
+	$max_index = count($units) - 1;
+	foreach ($units as $unit_index => $unit_code) {
+		$unit_formatted = "";
+		$unit_value = doubleval($unit_base) / $unit_mutipliers[$unit_code];
+		if ($unit_index < $max_index) {
+			$unit_value = intval($unit_value); 
+			$unit_used = $unit_value * $unit_mutipliers[$unit_code];
+			$unit_base -= $unit_used;
+			if ($unit_value > 0)  { $unit_formatted = $unit_value; }
+		} else {
+			if ($precision == "integer") {
+				$unit_value = intval($unit_value);
+				if ($unit_value > 0) { $unit_formatted = $unit_value; }
+			} else if ($precision == "decimals" || $precision == "decimal") {
+				$unit_value = round($unit_value, $decimals);
+				if ($unit_value > 0) { $unit_formatted = $unit_value; }
+			} else if ($precision == "fractional" || $precision == "fraction") {
+				$unit_int_value = intval($unit_value);	
+				$unit_dec_value = doubleval($unit_value - $unit_int_value);
+				$unit_numerator = round($unit_dec_value * $denominator);
+				$unit_denominator = $denominator;
+				if ($unit_numerator > 0) {
+					$divisor = intval($denominator / 2);
+					while ($divisor >= 2) {
+						if ($unit_numerator % $divisor == 0 && $unit_denominator % $divisor == 0) {
+							$unit_numerator = $unit_numerator / $divisor;
+							$unit_denominator = $unit_denominator / $divisor;
+							$divisor = 1;
+						} else {
+							$divisor--;
+						}
+					}
+				}
+				if ($unit_int_value > 0) { $unit_formatted = $unit_int_value; }
+				if ($unit_numerator > 0 && $unit_denominator > 0) {
+					if ($unit_formatted) { $unit_formatted .= " "; }
+					// &#x2044; - special fractional symbol could be used
+					$unit_formatted .= $unit_numerator."/".$unit_denominator; 
+				}
+			}
+			if (!$unit_formatted && !$formatted_value) {
+				$unit_formatted = "0"; // add zero value to the final unit 
+			}
+		}
+		if (strlen($unit_formatted)) {
+			if ($formatted_value) { $formatted_value .= " "; }
+			$unit_abbr = va_message($unit_messages[$unit_code]);
+			$formatted_value .= $unit_formatted." ".$unit_abbr;
+		}
+	}
+
+	return $formatted_value;
+}
+
 	function set_curl_options(&$ch, $curl_options)
 	{
 		if (isset($curl_options["CURLOPT_PROXY"]) && strlen($curl_options["CURLOPT_PROXY"])) {
@@ -1968,10 +2422,13 @@
 		$sql .= " u.tax_free AS user_tax_free, ut.tax_free AS group_tax_free, ";
 		$sql .= " u.order_min_goods_cost AS user_min_goods, u.order_max_goods_cost AS user_max_goods, ";
 		$sql .= " ut.order_min_goods_cost AS group_min_goods, ut.order_max_goods_cost AS group_max_goods, ";
-		$sql .= " ut.price_type, c.currency_code, c.country_code ";
-		$sql .= " FROM (((" . $table_prefix . "users u ";
+		$sql .= " ut.price_type, ";
+		$sql .= " c.currency_code, c.country_settings, ";
+		$sql .= " dc.currency_code as delivery_currency_code, dc.country_settings AS delivery_country_settings ";
+		$sql .= " FROM ((((" . $table_prefix . "users u ";
 		$sql .= " LEFT JOIN " . $table_prefix . "user_types ut ON u.user_type_id=ut.type_id) ";
 		$sql .= " LEFT JOIN " . $table_prefix . "countries c ON u.country_id=c.country_id) ";
+		$sql .= " LEFT JOIN " . $table_prefix . "countries dc ON u.delivery_country_id=dc.country_id) ";
 		$sql .= " LEFT JOIN " . $table_prefix . "user_types_sites AS uts ON uts.type_id=ut.type_id)";
 		$sql .= " WHERE (ut.sites_all=1 OR uts.site_id=". $db->tosql($site_id, INTEGER, true, false) . ") AND ";
 		if ($user_id) {
@@ -2071,8 +2528,13 @@
 				$nickname = $user_data["nickname"];
 				if (!strlen($nickname)) { $nickname = $login; }
 				$email = $user_data["email"];
+				$user_settings = json_decode($user_data["user_settings"], true);
+				if (!is_array($user_settings)) { $user_settings = array(); }
+
+				// check country related settings
 				$country_id = $user_data["country_id"];
 				$country_code = $user_data["country_code"];
+				$country_settings = $user_data["country_settings"];
 				$delivery_country_id = $user_data["delivery_country_id"];
 				$delivery_country_code = $user_data["delivery_country_code"];
 				if (!$delivery_country_id) {
@@ -2082,8 +2544,42 @@
 				if (!$country_id) {
 					$country_id = $delivery_country_id;
 					$country_code = $delivery_country_code;
+					$country_settings = $user_data["delivery_country_settings"];
 				}
+				if (!$country_id) {
+					// if for some reason user doesn't have any country associated with his account try to get country data from IP
+					$country_code = get_setting_value($_SERVER, "GEOIP_COUNTRY_CODE");  // check country code from GeoIP service
+					if ($country_code) {
+						$sql  = " SELECT country_id, currency_code, country_settings FROM ".$table_prefix."countries ";
+						$sql .= " WHERE country_code=" . $db->tosql($country_code, TEXT);
+						$db->query($sql);
+						if ($db->next_record()) {
+							$country_id = $db->f("country_id");
+							$country_settings = $db->f("country_settings");
+						} else {
+							$country_code = "";
+						}
+					}
+				}
+
+				$country_settings = json_decode($country_settings, true);
+				if (!is_array($country_settings)) { $country_settings = array(); }
+				// check currency 
 				$currency_code = $user_data["currency_code"];
+				if (!$currency_code) {
+					$currency_code = $user_data["delivery_currency_code"];
+				}
+				$country_settings["currency_code"] = $currency_code;
+				// if there is no parameter in user settings check country settings
+				$user_params = array("currency_code", "length_system", "weight_system", "volume_system");
+				foreach ($user_params as $user_param)  {
+					$param_value = get_setting_value($user_settings, $user_param, get_setting_value($country_settings, $user_param));
+					$user_settings[$user_param] = $param_value;
+				}
+				// add to user settings country and currency data
+				$user_settings["country_id"] = $country_id;
+				$user_settings["country_code"] = $country_code;
+
 				$user_discount_type = $user_data["user_discount_type"];
 				$user_discount_amount = $user_data["user_discount_amount"];
 				$group_discount_type = $user_data["group_discount_type"];
@@ -2121,13 +2617,13 @@
 				$user_name = trim($user_name);
 				set_session("session_user_name", $user_name);
 				set_session("session_user_email", $email);
-				$discount_type = ""; $discount_amount = "";
+				$discount_type = 0; $discount_amount = 0;
 				if ($user_discount_type > 0) {
-					$discount_type = $user_discount_type;
-					$discount_amount = $user_discount_amount;
-				} elseif ($group_discount_type)  {
-					$discount_type = $group_discount_type;
-					$discount_amount = $group_discount_amount;
+					$discount_type = intval($user_discount_type);
+					$discount_amount = doubleval($user_discount_amount);
+				} elseif ($group_discount_type > 0)  {
+					$discount_type = intval($group_discount_type);
+					$discount_amount = doubleval($group_discount_amount);
 				}
 				set_session("session_discount_type", $discount_type);
 				set_session("session_discount_amount", $discount_amount);
@@ -2297,6 +2793,7 @@
 					"credit_reward_type" => $credit_reward_type, "credit_reward_amount" => $credit_reward_amount, 
 					"total_points" => $total_points, "credit_balance" => $credit_balance,
 					"order_min_goods_cost" => $order_min_goods_cost, "order_max_goods_cost" => $order_max_goods_cost,
+					"settings" => $user_settings,
 				);
 				set_session("session_user_info", $user_info);
 
@@ -4041,7 +4538,7 @@ function va_config($auto_user_login = true)
 
 		set_session("session_start", 1);
 		set_session("session_start_initial", 1); // flag that session just started
-		set_session("session_start_ts", va_timestamp()); // save time when session was started
+		set_session("session_start_ts", time()); // save time when session was started
 		set_session("session_referer", $referer);
 		set_session("session_initial_ip", $user_ip);
 		$va_track["dlv"] = time(); // date of last visit

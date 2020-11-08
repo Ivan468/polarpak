@@ -6,14 +6,36 @@
 	$default_title = SMALL_CART_TITLE;
 	$ajax = get_param("ajax");
 
+	$tag_name = get_setting_value($vars, "tag_name", "");
 	$block_type = get_setting_value($vars, "block_type", "");
-	if ($block_type != "bar" && $block_type != "header") {
-		$html_template = get_setting_value($block, "html_template", "block_cart.html"); 
-	  $t->set_file("block_body", $html_template);
+	$template_type = get_setting_value($vars, "template_type", "");
+
+	$html_id = "pb_".$pb_id;
+	if ($block_type != "bar" && $block_type != "header" && $template_type != "built-in") {
+		if ($template_type == "default") {
+			$html_template = "block_cart.html"; 
+		} else {
+			$html_template = get_setting_value($block, "html_template", "block_cart.html"); 
+		}
+		if ($block_type == "sub-block") {
+			$html_id = "cart_".$pb_id;
+		  $t->set_file($vars["tag_name"], $html_template);
+		} else {
+			$html_id = "pb_".$pb_id;
+		  $t->set_file("block_body", $html_template);
+		}
 	}
+	if ($block_type == "sub-block") {
+		$html_id = "cart_".$pb_id;
+	} else {
+		$html_id = "pb_".$pb_id;
+	}
+
+	$t->set_var("html_id", $html_id);
 	$t->set_var("cart_href", get_custom_friendly_url("basket.php"));
 	$t->set_var("basket_href", get_custom_friendly_url("basket.php"));
 	$t->set_var("checkout_href", get_custom_friendly_url("checkout.php"));
+
 
 	// necessary scripts to work with cart
 	if (!$ajax) {
@@ -274,4 +296,3 @@
 
 	$block_parsed = true;
 
-?>

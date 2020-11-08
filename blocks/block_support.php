@@ -207,7 +207,8 @@
 
 	$support_deps_values = array(array("", ""));
 	$active_dep_id = ""; $number_of_deps = 0; $deps_data = array(); $deps_ids = array(); 
-	$sql  = " SELECT d.dep_id, d.is_default, d.dep_order, d.dep_name, d.intro_text, d.new_admin_mail, d.new_user_mail, d.dep_settings ";
+	$sql  = " SELECT d.dep_id, d.is_default, d.dep_order, d.dep_name, d.intro_text, ";
+	$sql .= " d.new_admin_mail, d.over_new_admin_mail, d.new_user_mail, d.over_new_user_mail, d.dep_settings ";
 	$sql .= " FROM (" . $table_prefix . "support_departments d ";
 	$sql .= " LEFT JOIN " . $table_prefix . "support_departments_sites ds  ON (ds.dep_id=d.dep_id AND d.sites_all=0))";	
 	$sql .= " WHERE d.show_for_user=1 ";
@@ -225,6 +226,7 @@
 			$dep_name = get_translation($db->f("dep_name"));
 			$intro_text = get_translation($db->f("intro_text"));
 			$dep_settings	= json_decode($db->f("dep_settings"), true);
+
 			if (!$operation && $is_default) {
 				$active_dep_id = $dep_id;
 			}
@@ -753,6 +755,7 @@
 				$ticket_dep_id = $r->get_value("dep_id");
 				$ticket_type_id = $r->get_value("support_type_id");
 				$ticket_product_id = $r->get_value("support_product_id");
+				$mail_notices = array(); // save here all notifications which will be sent
 
 				update_support_properties($pp, $r, $support_id);
 
@@ -782,16 +785,18 @@
 					}
 				}
 
-				// check if outgoing_email could be found 
+				// get default outgoing_email for email notification to use in the From field if it wasn't set 
 				$outgoing_email = get_outgoing_email($ticket_dep_id, $ticket_type_id, $ticket_product_id);
-
+				
 				// check global admin and user notification 
 				$admin_notification = get_setting_value($support_settings, "new_admin_notification", 0);
 				$user_notification = get_setting_value($support_settings, "new_user_notification", 0);
 
-				// check department notification settings
+				// check department notification settings and possible override settings
 				$new_admin_mail = json_decode($deps_data[$ticket_dep_id]["new_admin_mail"], true);
 				$new_user_mail = json_decode($deps_data[$ticket_dep_id]["new_user_mail"], true);
+				$over_new_admin_mail = json_decode($deps_data[$ticket_dep_id]["over_new_admin_mail"], true);
+				$over_new_user_mail = json_decode($deps_data[$ticket_dep_id]["over_new_user_mail"], true);
 
 				$admin_dep_notification = get_setting_value($new_admin_mail, "new_admin_notification", 0);
 				$admin_hp_disable = get_setting_value($new_admin_mail, "new_admin_hp_disable", 0);
@@ -850,6 +855,42 @@
 					"environment" => $r->get_value("environment"),
 				);
 
+				// prepare parameters to check override settings 
+				$ticket_params = array(
+					"site_name" => $site_name,
+					"site_url" => $site_url,
+
+					"user_id" => $user_id,
+					"user_name" => $user_name,
+					"user_email" => $user_email,
+
+					"ticket_id" => $support_id,
+					"support_id" => $support_id,
+					"dep_id" => $ticket_dep_id,
+					"department_id" => $ticket_dep_id,
+					"type_id" => $ticket_type_id,
+					"product_id" => $ticket_product_id,
+					"status_id" => $r->get_value("support_status_id"),
+					"identifier" => $r->get_value("identifier"),
+					"environment" => $r->get_value("environment"),
+
+					"department" => $support_department,
+					"dep_name" => $support_department,
+					"product" => $support_product,
+					"product_name" => $support_product,
+					"type" => $support_type,
+					"type_name" => $support_type,
+					"status" => $status_name,
+					"status_name" => $status_name,
+					"priority" => "Normal",
+
+					"summary" => $summary,
+					"description" => $description,
+					"message_text" => $description,
+					"ip" => $r->get_value("remote_address"),
+					"remote_address" => $r->get_value("remote_address"),
+				);
+
 
 				if ($admin_notification || $user_notification || $admin_dep_notification || $user_dep_notification) {
 					// start custom fields check
@@ -875,6 +916,7 @@
 							$property_value = $db->f("property_value");
 							$property_price = $db->f("property_price");
 							$control_type = $db->f("control_type");
+							$value_id = $property_value;
 							// check value description
 							if (($control_type == "CHECKBOXLIST" ||  $control_type == "RADIOBUTTON" || $control_type == "LISTBOX") && is_numeric($property_value)) {
 								$sql  = " SELECT property_value FROM " . $table_prefix . "support_custom_values ";
@@ -890,6 +932,16 @@
 								$support_properties[$property_id] = array(
 									"name" => $property_name, "value" => $property_value,
 								);
+							}
+							// add custom field to the parameters list to check override settings
+							if (isset($ticket_params["field_".$property_id])) {
+								$ticket_params["value_id_".$property_id][] = array($value_id);
+								$ticket_params["field_".$property_id][] = array($property_value);
+								$ticket_params["property_".$property_id][] = array($property_value);
+							} else {
+								$ticket_params["value_id_".$property_id] = array($value_id);
+								$ticket_params["field_".$property_id] = array($property_value);
+								$ticket_params["property_".$property_id] = array($property_value);
 							}
 						} while ($db->next_record());
 					}
@@ -913,39 +965,47 @@
 					$admin_message = get_setting_value($support_settings, "new_admin_message", $description);
 		    
 					$email_headers = array();
-					if ($outgoing_email) {
-						$email_headers["from"] = $outgoing_email;	
-					} else {
-						$email_headers["from"] = get_setting_value($support_settings, "new_admin_from", $settings["admin_email"]);	
-					}
+					$email_headers["from"] = get_setting_value($support_settings, "new_admin_from", $outgoing_email);
 					$email_headers["cc"] = get_setting_value($support_settings, "new_admin_cc");
 					$email_headers["bcc"] = get_setting_value($support_settings, "new_admin_bcc");
 					$email_headers["reply_to"] = get_setting_value($support_settings, "new_admin_reply_to");
 					$email_headers["return_path"] = get_setting_value($support_settings, "new_admin_return_path");
 					$email_headers["mail_type"] = get_setting_value($support_settings, "new_admin_message_type");
 		    
-					va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $mail_to;
+						$mail_notices["global_new_admin_mail"] = $email_headers; 
+					}
 				} // end global admin notification
 
 				// send department email notification to admin
 				if ($admin_dep_notification) {
+					$override_fields = array(
+						"mail_to" => "new_admin_to", "mail_from" => "new_admin_from", "mail_cc" => "new_admin_cc", "mail_bcc" => "new_admin_bcc", "mail_reply_to" => "new_admin_reply_to", 
+						"mail_return_path" => "new_admin_reply_to", "mail_subject" => "new_admin_subject", "mail_type" => "new_admin_message_type", "mail_message" => "new_admin_message"
+					);
+					override_email_fields($new_admin_mail, $over_new_admin_mail, $override_fields, $ticket_params);
+
 					$mail_to = get_setting_value($new_admin_mail, "new_admin_to", $settings["admin_email"]);
 					$admin_subject = get_setting_value($new_admin_mail, "new_admin_subject", $summary);
 					$admin_message = get_setting_value($new_admin_mail, "new_admin_message", $description);
 		    
 					$email_headers = array();
-					if ($outgoing_email) {
-						$email_headers["from"] = $outgoing_email;	
-					} else {
-						$email_headers["from"] = get_setting_value($new_admin_mail, "new_admin_from", $settings["admin_email"]);	
-					}
+					$email_headers["from"] = get_setting_value($new_admin_mail, "new_admin_from", $outgoing_email);	
 					$email_headers["cc"] = get_setting_value($new_admin_mail, "new_admin_cc");
 					$email_headers["bcc"] = get_setting_value($new_admin_mail, "new_admin_bcc");
 					$email_headers["reply_to"] = get_setting_value($new_admin_mail, "new_admin_reply_to");
 					$email_headers["return_path"] = get_setting_value($new_admin_mail, "new_admin_return_path");
 					$email_headers["mail_type"] = get_setting_value($new_admin_mail, "new_admin_message_type");
 		    
-					va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($mail_to, $admin_subject, $admin_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $mail_to;
+						$mail_notices["dep_new_admin_mail"] = $email_headers; 
+					}
 				} // end department admin notification
 
 				// send global email notification to user if it's active and user email available
@@ -954,40 +1014,64 @@
 					$user_message = get_setting_value($support_settings, "new_user_message", $description);
 		    
 					$email_headers = array();
-					if ($outgoing_email) {
-						$email_headers["from"] = $outgoing_email;	
-					} else {
-						$email_headers["from"] = get_setting_value($support_settings, "new_user_from", $settings["admin_email"]);	
-					}
+					$email_headers["from"] = get_setting_value($support_settings, "new_user_from", $outgoing_email);	
 					$email_headers["cc"] = get_setting_value($support_settings, "new_user_cc");
 					$email_headers["bcc"] = get_setting_value($support_settings, "new_user_bcc");
 					$email_headers["reply_to"] = get_setting_value($support_settings, "new_user_reply_to");
 					$email_headers["return_path"] = get_setting_value($support_settings, "new_user_return_path");
 					$email_headers["mail_type"] = get_setting_value($support_settings, "new_user_message_type");
 		    
-					va_mail($user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $user_email;
+						$mail_notices["global_new_user_mail"] = $email_headers; 
+					}
 				} // end global user notification
 
 
 				// send department email notification to user if it's active and user email is available
 				if ($user_dep_notification && $user_email) {
+					$override_fields = array(
+						"mail_to" => "new_user_to", "mail_from" => "new_user_from", "mail_cc" => "new_user_cc", "mail_bcc" => "new_user_bcc", "mail_reply_to" => "new_user_reply_to", 
+						"mail_return_path" => "new_user_return_path", "mail_subject" => "new_user_subject", "mail_type" => "new_user_message_type", "mail_message" => "new_user_message"
+					);
+					override_email_fields($new_admin_mail, $over_new_user_mail, $override_fields, $ticket_params);
+
 					$user_subject = get_setting_value($new_user_mail, "new_user_subject", $summary);
 					$user_message = get_setting_value($new_user_mail, "new_user_message", $description);
 		    
 					$email_headers = array();
-					if ($outgoing_email) {
-						$email_headers["from"] = $outgoing_email;	
-					} else {
-						$email_headers["from"] = get_setting_value($new_user_mail, "new_user_from", $settings["admin_email"]);	
-					}
+					$email_headers["from"] = get_setting_value($new_user_mail, "new_user_from", $outgoing_email);	
 					$email_headers["cc"] = get_setting_value($new_user_mail, "new_user_cc");
 					$email_headers["bcc"] = get_setting_value($new_user_mail, "new_user_bcc");
 					$email_headers["reply_to"] = get_setting_value($new_user_mail, "new_user_reply_to");
 					$email_headers["return_path"] = get_setting_value($new_user_mail, "new_user_return_path");
 					$email_headers["mail_type"] = get_setting_value($new_user_mail, "new_user_message_type");
 		    
-					va_mail($user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+					$mail_sent = va_mail($user_email, $user_subject, $user_message, $email_headers, $attachments, $mail_tags);
+
+					if ($mail_sent) { 
+						$email_headers["to"] = $user_email;
+						$mail_notices["dep_new_user_mail"] = $email_headers; 
+					}
 				} // end department user notification
+
+				// update mail notices which were sent 
+				if (is_array($mail_notices) && count($mail_notices)) {
+					// remove empty mail headers
+					foreach ($mail_notices as $mail_code => $mail_headers) {
+						foreach ($mail_headers as $header_key => $header_value) {
+							if (!strlen($header_value)) {
+								unset($mail_notices[$mail_code][$header_key]);
+							}
+						}						
+					}
+					$sql  = " UPDATE ".$table_prefix."support ";
+					$sql .= " SET mail_notices=".$db->tosql(json_encode($mail_notices), TEXT);
+					$sql .= " WHERE support_id=" . $db->tosql($support_id, INTEGER);
+					$db->query($sql);
+				}
 
 				// clear form and set default values
 				$r->empty_values();

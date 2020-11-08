@@ -661,12 +661,13 @@
 			if ($order_group_columns) { 
 				$group_by = $order_group_columns; 
 			} else {
-				$group_by = " i.item_id, i.is_sales, i.sales_price, i.properties_price, i.price ";
+				$group_by = " ic.item_order, i.item_id, i.is_sales, i.sales_price, i.properties_price, i.price ";
 			}
 			$sql_params["select"] = " i.item_id ";
 			$sql_params["group"] = $group_by;
 			$sql_params["order"] = $sql_order_by;
 		}
+
 
 		// added keywords_rank field for search
 		if ($keywords_search && $is_search && (strlen($search_string) || strlen($sq))) {
@@ -892,7 +893,7 @@
 				$max_quantity = $db->f("max_quantity");
 				$quantity_increment = $db->f("quantity_increment");
 				$coupons_ids = ""; $coupons_discount = ""; $coupons_applied = array();
-				get_sales_price($price, $is_sales, $sales_price, $item_id, $item_type_id, $coupons_ids, $coupons_discount, $coupons_applied);
+				get_sales_price($price, $is_sales, $sales_price, $item_id, $item_type_id, "", "", $coupons_ids, $coupons_discount, $coupons_applied);
 				
 				// special prices
 				$discount_applicable = 1;

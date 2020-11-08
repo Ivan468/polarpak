@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  admin_fm_newfile.php                                     ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -12,6 +12,7 @@
 
 	include_once("./admin_config.php");
 	include_once($root_folder_path . "includes/common.php");
+	include_once($root_folder_path . "includes/file_functions.php");
 	include_once($root_folder_path . "includes/admin_fm_functions.php");
 	include_once($root_folder_path . "includes/record.php");
 	include_once($root_folder_path . "includes/sorter.php");

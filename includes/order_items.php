@@ -2,9 +2,9 @@
 /*
   ****************************************************************************
   ***                                                                      ***
-  ***      Viart Shop 5.6                                                  ***
+  ***      Viart Shop 5.8                                                  ***
   ***      File:  order_items.php                                          ***
-  ***      Built: Wed Feb 12 01:09:03 2020                                 ***
+  ***      Built: Fri Nov  6 06:13:11 2020                                 ***
   ***      http://www.viart.com                                            ***
   ***                                                                      ***
   ****************************************************************************
@@ -1557,7 +1557,7 @@
 		$orders_properties = array();
 
 		// check order properties
-		$sql  = " SELECT op.property_id, op.property_type, op.property_name, op.property_value, ";
+		$sql  = " SELECT op.property_id, op.property_type, op.property_code, op.property_name, op.property_notes, op.property_value, ";
 		$sql .= "  op.property_price, op.property_points_amount, op.tax_free ";
 		$sql .= " FROM " . $table_prefix . "orders_properties op ";
 		$sql .= " WHERE op.order_id=" . $db->tosql($order_id, INTEGER);
@@ -1569,8 +1569,10 @@
 		while ($db->next_record()) {
 			$property_id   = $db->f("property_id");
 			$property_type = $db->f("property_type");
+			$property_code = $db->f("property_code");
 			$property_name = get_translation($db->f("property_name"));
 			$property_value = get_translation($db->f("property_value"));
+			$property_notes = $db->f("property_notes");
 			$property_price = $db->f("property_price");
 			$property_points_amount = $db->f("property_points_amount");
 			$property_tax_free = $db->f("tax_free");
@@ -1582,16 +1584,21 @@
 				$orders_properties[$property_id]["points_amount"] += $property_points_amount;
 			} else {
 				$orders_properties[$property_id] = array(
-					"type" => $property_type, "name" => $property_name, "value" => $property_value,
-					"price" => $property_price, "points_amount" => $property_points_amount, "tax_free" => $property_tax_free,
+					"type" => $property_type, "code" => $property_code, "name" => $property_name, "notes" => $property_notes, 
+					"value" => $property_value, "price" => $property_price, "points_amount" => $property_points_amount, "tax_free" => $property_tax_free,
 				);
 			}
 		}
 
 		foreach ($orders_properties as $property_id => $property_values) {
 			$property_type = $property_values["type"];
+			$property_code = $property_values["code"];
 			$property_name = $property_values["name"];
 			$property_value = $property_values["value"];
+			$property_notes = $property_values["notes"];
+			if ($property_code == "vat_number") {
+				$property_notes = html_format_array($property_notes, "vat_response");
+			}
 			$property_price = $property_values["price"];
 			$property_points_amount = $property_values["points_amount"];
 			$property_tax_id = 0;
@@ -1630,6 +1637,12 @@
 					$property_price_text = currency_format($property_price, $order_currency, $property_tax);
 				} else {
 					$property_price_text = "";
+				}
+				if ($property_notes) {
+					$t->set_var("property_notes", $property_notes);
+					$t->sparse("property_notes_block", false);
+				} else {
+					$t->set_var("property_notes_block", "");
 				}
 				$t->set_var("property_price", $property_price_text);
 				if ($property_points_amount > 0 && $show_points_price) {
@@ -2310,6 +2323,9 @@
 			include($root_folder_path."messages/".$order_language_code."/messages.php");
 			include($root_folder_path."messages/".$order_language_code."/cart_messages.php");
 			include($root_folder_path."messages/".$order_language_code."/download_messages.php");
+			if (file_exists($root_folder_path."messages/".$order_language_code."/custom_messages.php")) {
+				include_once($root_folder_path."messages/".$order_language_code."/custom_messages.php");
+			}
 		}
 
 		// get new status data
@@ -2942,8 +2958,7 @@
 				// pdf invoice notification
 				$pdf_invoice = "";
 				if (($mail_notify && $mail_pdf_invoice) || ($admin_notify && $admin_pdf_invoice)) {
-					$root_folder_path = (isset($is_admin_path)) && $is_admin_path ? "../" : "";
-					include_once($root_folder_path."includes/invoice_functions.php");
+					include_once(dirname(__FILE__)."/invoice_functions.php");
 					$pdf_invoice = pdf_invoice($order_id);
 				}
 
@@ -4273,6 +4288,9 @@
 			include($root_folder_path."messages/".$language_code."/messages.php");
 			include($root_folder_path."messages/".$language_code."/cart_messages.php");
 			include($root_folder_path."messages/".$language_code."/download_messages.php");
+			if (file_exists($root_folder_path."messages/".$language_code."/custom_messages.php")) {
+				include_once($root_folder_path."messages/".$language_code."/custom_messages.php");
+			}
 		}
 
 		return $is_update;
@@ -6607,12 +6625,6 @@
 		$sql .= " shipping_tax_percent, shipping_fixed_amount ";
 		$sql .= " FROM " . $table_prefix . "orders_taxes ";
 		$sql .= " WHERE order_id=" . $db->tosql($order_id, INTEGER);
-		if ($db_type == "mysql") {
-			$sql .= " GROUP BY tax_id ";
-		} else {
-			$sql .= " GROUP BY order_tax_id, tax_id, tax_type, show_type, tax_name, tax_percent, fixed_amount, order_fixed_amount, ";
-			$sql .= " shipping_tax_percent, shipping_fixed_amount ";
-		}
 		$db->query($sql);
 		while ($db->next_record()) {
 			$tax_id = $db->f("tax_id");
@@ -6660,7 +6672,7 @@
 				if (strlen($tax_name) || $tax_percent > 0) {
 					$tax_rates[0] = array(
 						"tax_id" => 0, "tax_type" => 1, "show_type" => 0, 
-						"tax_name" => $tax_name, "tax_percent" => $tax_percent, "fixed_amount" => "", 
+						"tax_name" => $tax_name, "tax_percent" => $tax_percent, "fixed_amount" => "", "order_fixed_amount" => "", 
 						"shipping_tax_percent" => "", "shipping_fixed_amount" => "", "types" => array(),
 					);
 				}
@@ -7097,5 +7109,44 @@
 	// new-spec end 
 
 
+	function html_format_array($data, $type = "")
+	{
+		$html_data = ""; $type_messages = array(); $ignore_names = array();
+		if (!is_array($data)) {
+			$json_data = json_decode($data, true);
+			if (is_array($json_data)) { $data = $json_data; }
+		}
+		if ($type == "vat_response") {
+			$type_messages = array(
+				"country_code" => va_message("COUNTRY_CODE_MSG"),
+				"vat_number" => va_message("VAT_NUMBER_FIELD"),
+				"name" => va_message("COMPANY_NAME_FIELD"),
+				"address" => va_message("ADDRESS_MSG"),
+				"error" => va_message("ERROR_MSG"),
+				"message" => va_message("MESSAGE_MSG"),
+				"warning" => va_message("WARNING_MSG"),
+			);
+			$ignore_names = array("valid" => 1);
+		}
 
-?>
+		if (is_array($data)) {
+			foreach ($data as $data_name => $data_value) {
+				$data_name = get_translation($data_name);
+				if (isset($type_messages[$data_name])) {
+					$data_name = $type_messages[$data_name];
+				}
+				$data_value = get_translation($data_value);
+				if ($data_value && !isset($ignore_names[$data_name])) {
+					$html_data .= "<div class=\"note\">";
+					$html_data .= "<div class=\"name\">$data_name</div>";
+					$html_data .= "<div class=\"desc\">".nl2br($data_value)."</div>";
+					$html_data .= "</div>";
+				}
+			}
+			$html_data .= "<div class=\"clear\"></div>";
+		} else {
+			$html_data = $data;
+		}
+		return $html_data;
+	}
+

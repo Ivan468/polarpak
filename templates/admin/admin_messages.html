@@ -21,11 +21,6 @@
 			&nbsp;<a href="{admin_messages_href}{language_href}">{language_image}</a><!-- end languages_images -->
 	</div>
 
-	<br>
-	<div>
-			<b>{language_messages}:</b><!-- BEGIN sections -->
-			<div style="padding: 2px 0px;"><a href="{admin_messages_href}{section_href}">{language_filename}{is_readonly}</a></div><!-- END sections -->
-	</div>
 
 	<!-- begin search_results --><br><div class="search-results">{found_message}</div><!-- end search_results -->
 	<br>
@@ -42,6 +37,34 @@
 </form>
 </div>
 
+<div class="Block">
+<div class="BlockTitle">{language_messages}</div>
+<div class="BlockContent">
+<table width="100%" border="0" cellspacing="1" cellpadding="4">
+<tr class="middle">
+	<td>
+		{FILENAME_MSG}
+	</td>
+	<td>		
+	</td>
+	<td>		
+	</td>
+</tr><!-- BEGIN sections -->
+<tr class="usual">
+	<td>
+		<a href="{section_url}">{language_filename}{is_readonly}</a>
+	</td>
+	<td align="center">
+		<a href="{section_url}">{VIEW_MSG} / {EDIT_MSG}</a>
+	</td>
+	<td align="center">
+		<a href="{export_url}">{EXPORT_MSG}</a>
+	</td>
+</tr><!-- END sections -->
+</table>
+</div>
+
+<br>
 <!-- BEGIN message_block -->
 <div class="Block">
 <div class="BlockTitle">{language_file}</div>

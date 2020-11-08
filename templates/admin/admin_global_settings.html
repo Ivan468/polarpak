@@ -34,7 +34,47 @@
 		} else {
 			helpObj.innerHTML = "images/example.jpg";;
 		}
+	}
 
+	function changePrecision(obj) {
+		var controlName = obj.name;
+		var controlValue = obj.value;
+		var decimalName = ""; var denominatorName = "";
+		if (controlName == "int_length_precision") {
+			decimalName = "int_length_decimals";
+			denominatorName = "int_length_denominator";
+		} else if (controlName == "imp_length_precision") {
+			decimalName = "imp_length_decimals";
+			denominatorName = "imp_length_denominator";
+		} else if (controlName == "int_weight_precision") {
+			decimalName = "int_weight_decimals";
+			denominatorName = "int_weight_denominator";
+		} else if (controlName == "imp_weight_precision") {
+			decimalName = "imp_weight_decimals";
+			denominatorName = "imp_weight_denominator";
+		}
+		if (decimalName) {
+			var decimalControl = document.record.elements[decimalName];
+			var decimalCol = vaParent(decimalControl, "tr");
+			if (decimalCol) {
+				if (controlValue == "decimal") {
+					decimalCol.className = decimalCol.className.replace(/hide-block/gi, "").trim();
+				} else {
+					decimalCol.className += " hide-block";
+				}
+			}
+		}
+		if (denominatorName) {	
+			var denominatorControl = document.record.elements[denominatorName];
+			var denominatorCol = vaParent(denominatorControl, "tr");
+			if (denominatorCol) {
+				if (controlValue == "fractional") {
+					denominatorCol.className = denominatorCol.className.replace(/hide-block/gi, "").trim();
+				} else {
+					denominatorCol.className += " hide-block";
+				}
+			}
+		}
 	}
 
 	window.addEventListener("load", imageUrlHelp, false);
@@ -306,6 +346,236 @@
 		&nbsp;&nbsp;
 		{HEIGHT_IN_PIXELS_MSG}&nbsp;
 		<input class="field" type="text" name="user_image_height" value="{user_image_height}" size="12" maxlength="12">
+	</td>
+</tr>
+<tr class="middle">
+	<td>&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
+</div>
+
+<div id="units_data" class="tab-data {units_class}">
+<table width="100%" border="0" cellspacing="1" cellpadding="6">
+<tr class="middle">
+	<td colspan="2">{LENGTH_UNIT_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>
+		{LENGTH_UNIT_MSG}
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">{LENGTH_UNIT_DESC}</div>
+		</div>
+	</td>
+	<td><!-- begin length_unit -->
+		<label><input type="radio" name="length_unit" id="length_unit{length_unit_value}" {length_unit_checked} {length_unit_disabled} value="{length_unit_value}">{length_unit_description}</label><!-- end length_unit -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{LENGTH_SYSTEM_MSG}
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">{DEFAULT_LENGTH_SYSTEM_DESC}</div>
+		</div>
+	</td>
+	<td><!-- begin length_system -->
+		<label><input type="radio" name="length_system" id="length_system{length_system_value}" {length_system_checked} {length_system_disabled} value="{length_system_value}">{length_system_description}</label><!-- end length_system -->
+	</td>
+</tr>
+<tr class="division">
+	<td colspan="2">
+		{INTERNATIONAL_LENGTH_MSG}
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">{INTERNATIONAL_LENGTH_DESC}</div>
+		</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{UNIT_MSG}
+	</td>
+	<td>
+		<!-- begin int_length_units -->
+		<label><input type="checkbox" {int_length_units_checked} name="int_length_units_{int_length_units_index}" value="{int_length_units_value}" />{int_length_units_description}</label><!-- end int_length_units -->
+		<input type="hidden" name="int_length_units" value="{int_length_units_size}" />
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{PRECISION_MSG}
+	</td>
+	<td><!-- begin int_length_precision -->
+		<label><input type="radio" onchange="changePrecision(this);" name="int_length_precision" id="int_length_precision{int_length_precision_value}" {int_length_precision_checked} {int_length_precision_disabled} value="{int_length_precision_value}">{int_length_precision_description}</label><!-- end int_length_precision -->
+	</td>
+</tr>
+<tr class="usual {int_length_decimals_class}">
+	<td>{NUMBER_OF_DECIMALS_MSG}</td>
+	<td>
+		<input class="field" type="text" size="10" name="int_length_decimals" value="{int_length_decimals}" >
+		({EG_MSG}: 0 - 100, 1 - 100.1, 2 - 100.12)
+	</td>
+</tr>
+<tr class="usual {int_length_denominator_class}">
+	<td>{FRACTIONAL_DENOMINATOR_MSG}</td>
+	<td>
+		<input class="field" type="text" size="10" name="int_length_denominator" value="{int_length_denominator}" >
+		({EG_MSG}: 0 - 100, 8 - 100 1&#x2044;8, 32 - 100 1&#x2044;32)
+	</td>
+</tr>
+<tr class="division">
+	<td colspan="2">
+		{IMPERIAL_LENGTH_MSG}
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">{IMPERIAL_LENGTH_DESC}</div>
+		</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{UNIT_MSG}
+	</td>
+	<td>
+		<!-- begin imp_length_units -->
+		<label><input type="checkbox" {imp_length_units_checked} name="imp_length_units_{imp_length_units_index}" value="{imp_length_units_value}" />{imp_length_units_description}</label><!-- end imp_length_units -->
+		<input type="hidden" name="imp_length_units" value="{imp_length_units_size}" />
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{PRECISION_MSG}
+	</td>
+	<td><!-- begin imp_length_precision -->
+		<label><input type="radio" onchange="changePrecision(this);" name="imp_length_precision" id="imp_length_precision{imp_length_precision_value}" {imp_length_precision_checked} {imp_length_precision_disabled} value="{imp_length_precision_value}">{imp_length_precision_description}</label><!-- end imp_length_precision -->
+	</td>
+</tr>
+<tr class="usual {imp_length_decimals_class}">
+	<td>{NUMBER_OF_DECIMALS_MSG}</td>
+	<td>
+		<input class="field" type="text" size="10" name="imp_length_decimals" value="{imp_length_decimals}" >
+		({EG_MSG}: 0 - 100, 1 - 100.1, 2 - 100.12)
+	</td>
+</tr>
+<tr class="usual {imp_length_denominator_class}">
+	<td>{FRACTIONAL_DENOMINATOR_MSG}</td>
+	<td>
+			<input class="field" type="text" size="10" name="imp_length_denominator" value="{imp_length_denominator}" >
+		({EG_MSG}: 0 - 100, 8 - 100 1&#x2044;8, 32 - 100 1&#x2044;32)
+	</td>
+</tr>
+<tr class="middle">
+	<td colspan="2">{WEIGHT_UNIT_MSG}</td>
+</tr>
+<tr class="usual">
+	<td>
+		{WEIGHT_UNIT_MSG}
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">{WEIGHT_UNIT_DESC}</div>
+		</div>
+	</td>
+	<td><!-- begin weight_unit -->
+		<label><input type="radio" name="weight_unit" id="weight_unit{weight_unit_value}" {weight_unit_checked} {weight_unit_disabled} value="{weight_unit_value}">{weight_unit_description}</label><!-- end weight_unit -->
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{WEIGHT_SYSTEM_MSG}
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">{DEFAULT_WEIGHT_SYSTEM_DESC}</div>
+		</div>
+	</td>
+	<td><!-- begin weight_system -->
+		<label><input type="radio" name="weight_system" id="weight_system{weight_system_value}" {weight_system_checked} {weight_system_disabled} value="{weight_system_value}">{weight_system_description}</label><!-- end weight_system -->
+	</td>
+</tr>
+<tr class="division">
+	<td colspan="2">
+		{INTERNATIONAL_WEIGHT_MSG}
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">{INTERNATIONAL_WEIGHT_DESC}</div>
+		</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{UNIT_MSG}
+	</td>
+	<td>
+		<!-- begin int_weight_units -->
+		<label><input type="checkbox" {int_weight_units_checked} name="int_weight_units_{int_weight_units_index}" value="{int_weight_units_value}" />{int_weight_units_description}</label><!-- end int_weight_units -->
+		<input type="hidden" name="int_weight_units" value="{int_weight_units_size}" />
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{PRECISION_MSG}
+	</td>
+	<td><!-- begin int_weight_precision -->
+		<label><input type="radio" onchange="changePrecision(this);" name="int_weight_precision" id="int_weight_precision{int_weight_precision_value}" {int_weight_precision_checked} {int_weight_precision_disabled} value="{int_weight_precision_value}">{int_weight_precision_description}</label><!-- end int_weight_precision -->
+	</td>
+</tr>
+<tr class="usual {int_weight_decimals_class}">
+	<td>{NUMBER_OF_DECIMALS_MSG}</td>
+	<td>
+		<input class="field" type="text" size="10" name="int_weight_decimals" value="{int_weight_decimals}" >
+		({EG_MSG}: 0 - 100, 1 - 100.1, 2 - 100.12)
+	</td>
+</tr>
+<tr class="usual {int_weight_denominator_class}">
+	<td>{FRACTIONAL_DENOMINATOR_MSG}</td>
+	<td>
+		<input class="field" type="text" size="10" name="int_weight_denominator" value="{int_weight_denominator}" >
+		({EG_MSG}: 0 - 100, 8 - 100 1&#x2044;8, 32 - 100 1&#x2044;32)
+	</td>
+</tr>
+<tr class="division">
+	<td colspan="2">
+		{IMPERIAL_WEIGHT_MSG}
+		<i data-js="expand" data-class="help-popup" class="ico-help popup-link"></i>
+		<div class="help-popup">
+			<div class="popup-body">{IMPERIAL_WEIGHT_DESC}</div>
+		</div>
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{UNIT_MSG}
+	</td>
+	<td>
+		<!-- begin imp_weight_units -->
+		<label><input type="checkbox" {imp_weight_units_checked} name="imp_weight_units_{imp_weight_units_index}" value="{imp_weight_units_value}" />{imp_weight_units_description}</label><!-- end imp_weight_units -->
+		<input type="hidden" name="imp_weight_units" value="{imp_weight_units_size}" />
+	</td>
+</tr>
+<tr class="usual">
+	<td>
+		{PRECISION_MSG}
+	</td>
+	<td><!-- begin imp_weight_precision -->
+		<label><input type="radio" onchange="changePrecision(this);" name="imp_weight_precision" id="imp_weight_precision{imp_weight_precision_value}" {imp_weight_precision_checked} {imp_weight_precision_disabled} value="{imp_weight_precision_value}">{imp_weight_precision_description}</label><!-- end imp_weight_precision -->
+	</td>
+</tr>
+<tr class="usual {imp_weight_decimals_class}">
+	<td>{NUMBER_OF_DECIMALS_MSG}</td>
+	<td>
+		<input class="field" type="text" size="10" name="imp_weight_decimals" value="{imp_weight_decimals}" >
+		({EG_MSG}: 0 - 100, 1 - 100.1, 2 - 100.12)
+	</td>
+</tr>
+<tr class="usual {imp_weight_denominator_class}">
+	<td>{FRACTIONAL_DENOMINATOR_MSG}</td>
+	<td>
+			<input class="field" type="text" size="10" name="imp_weight_denominator" value="{imp_weight_denominator}" >
+		({EG_MSG}: 0 - 100, 8 - 100 1&#x2044;8, 32 - 100 1&#x2044;32)
 	</td>
 </tr>
 <tr class="middle">
@@ -1063,10 +1333,61 @@
 </table>
 </div>
 
-</div>
+<div id="welcome_data" class="tab-data {welcome_class}">
+<table border="0" cellpadding="6" cellspacing="1" width="100%">
+<tr class="middle">
+	<td colspan="2">{WELCOME_POPUP_MSG}</td>
+</tr>
+<tr class="usual">
+	<td colspan="2">{WELCOME_POPUP_DESC}</td>
+</tr>
+<tr class="usual">
+	<td>{WELCOME_POPUP_MSG}</td>
+	<td><!-- begin welcome_popup -->
+		<label><input type="radio" name="welcome_popup" {welcome_popup_checked} value="{welcome_popup_value}">{welcome_popup_description}</label><br><!-- end welcome_popup -->
+	</td>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{BLOCK_LAYOUT_MSG}</td>
+	<td><!-- begin welcome_layout -->
+		<label><input type="radio" name="welcome_layout" {welcome_layout_checked} value="{welcome_layout_value}">{welcome_layout_description}</label><!-- end welcome_layout -->
+	</td>
+	</td>
+</tr>
+<tr class="usual">
+	<td>{SHOW_POPUP_DELAY_MSG}</td>
+	<td>
+		<input class="field" type="text" size="10" name="welcome_delay" value="{welcome_delay}"> 
+		({SHOW_POPUP_DELAY_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{WELCOME_CODE_MSG}</td>
+	<td>
+		<input class="field" type="text" size="20" name="welcome_code" value="{welcome_code}"> 
+		({WELCOME_CODE_DESC})
+	</td>
+</tr>
+<tr class="usual">
+	<td>{BLOCK_CONTENT_MSG}</td>
+	<td>
+		<textarea class="fd-full" name="welcome_block" cols="80" rows="20">{welcome_block}</textarea>
+	</td>
+</tr>
+<tr class="middle">
+	<td width="20%">&nbsp;</td>
+	<td>
+		<span class="button"><input class="submit" type="submit" value="{UPDATE_BUTTON}" onCLick="document.record.operation.value='save'"></span>
+		<span class="button"><input class="submit" type="reset" value="{RESET_BUTTON}" onCLick="document.record.operation.value='cancel'"></span>
+	</td>
+</tr>
+</table>
 </div>
 
 
+</div>
+</div>
 
 </form>
 
@@ -1179,7 +1500,6 @@
 	//add special listener(s) to appropriate va version only
 	document.getElementById("articlesButton") && BLZ.utils.addListener(document.getElementById("articlesButton"), 'click', BLZ.globalSettingsHelper.selectAllArticles);
 
-	
 </script>
 </body>
 </html>
