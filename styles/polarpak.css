@@ -4034,12 +4034,10 @@ div.orderPopup {
 }
 .support-online .head {
   background-color: #ccccee;
-  b2order: 2px solid blue;
   color: blue;
 }
 .support-offline .head {
   background-color: #eee;
-  bo2rder: 2px solid #999;
   color: #999;
 }
 .chat-offline {
