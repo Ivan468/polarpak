@@ -4737,40 +4737,40 @@ i.spin:before {
   padding: 0px;
 }
 
-.cat-containers:before {
+.find-a-product-block .cat-containers:before {
   content: "\f1b3";
   
 }
-.cat-foodservice-ppe:before {
+.find-a-product-block .cat-foodservice-ppe:before {
   content: "\f085";
 }
 
-.cat-tableware:before {
-  content: "\f2e7";
+.find-a-product-block .cat-tableware:before {
+  content: "\f0f5";
 }
 
-.cat-drinkware:before {
+.find-a-product-block .cat-drinkware:before {
   content: "\f0f4";
 }
-.cat-take-out:before {
+.find-a-product-block .cat-take-out:before {
   content: "\f1b9";
 }
 
-.cat-catering:before {
+.find-a-product-block .cat-catering:before {
   content: "\f291";
 }
-.cat-promotional:before {
+.find-a-product-block .cat-promotional:before {
   content: "\f005";
 }
-.cat-eco-friendly:before {
+.find-a-product-block .cat-eco-friendly:before {
   content: "\f06c";
 }
 
-.cat-touch-products:before {
-  content: "\f3ff";
+.find-a-product-block .cat-touch-products:before {
+  content: "\f145";
 }
-.cat-single-serve:before {
-  content: "\f085";
+.find-a-product-block .cat-single-serve:before {
+  content: "\f111";
 }
 
 .find-a-product-block .lk-category-name {
@@ -4810,4 +4810,16 @@ i.spin:before {
 .find-a-product-block .category:hover::before {
   background: #d2202f;
   cursor: pointer;
+}
+/*  bk-categories-catalog */
+
+.bk-categories-catalog .col {
+  width: 33%;
+  height: 248px;
+  margin-top: 10px;
+}
+
+.bk-categories-catalog .categories  {
+  display: flex;
+    flex-wrap: wrap;
 }
