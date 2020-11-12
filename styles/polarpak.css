@@ -4072,6 +4072,11 @@ div.orderPopup {
 }
 .slides-slideshow .slide img {
   max-width: 100%;
+  text-align: center;
+}
+
+.slides-slideshow .slide  {
+  text-align: center;
 }
 .banners img {
   max-width: none;
@@ -4831,11 +4836,11 @@ i.spin:before {
   visibility: hidden;
   top: 258px;
   position: absolute;
-  transition: 0.6s cubic-bezier(.19, 1, .22, 1);
-  -webkit-transition: 0.6s cubic-bezier(.19, 1, .22, 1);
-  -moz-transition: 0.6s cubic-bezier(.19, 1, .22, 1);
-  -ms-transition: 0.6s cubic-bezier(.19, 1, .22, 1);
-  -o-transition: 0.6s cubic-bezier(.19, 1, .22, 1);
+  transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  -webkit-transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  -moz-transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  -ms-transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  -o-transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1);
   columns: 2;
   padding: 5%;
   list-style: none;
@@ -4848,29 +4853,29 @@ i.spin:before {
   height: 248px;
   box-sizing: border-box;
   padding-left: 15%;
-    padding-right: 15%;
+  padding-right: 15%;
 }
 
 .select-a-market .category:hover .category-subs {
-    visibility: visible;
-    z-index: 57;
-    position: absolute;
-    padding: 5%;
-    background: #d2202f;
-    background-size: 100%;
-    opacity: 0.9;
-    bottom: 0;
-    width: 100%;
-    height: 258px;
-    top: 11px;
-    left: 0;
-    display: inline-block;
-    box-sizing: border-box;
-    columns: 2;
-    list-style: none;
-    line-height: 24px;
-    padding-left: 15%;
-    padding-right: 15%;
+  visibility: visible;
+  z-index: 57;
+  position: absolute;
+  padding: 5%;
+  background: #d2202f;
+  background-size: 100%;
+  opacity: 0.9;
+  bottom: 0;
+  width: 100%;
+  height: 258px;
+  top: 11px;
+  left: 0;
+  display: inline-block;
+  box-sizing: border-box;
+  columns: 2;
+  list-style: none;
+  line-height: 24px;
+  padding-left: 15%;
+  padding-right: 15%;
 }
 
 .select-a-market .category-subs a {
@@ -4883,7 +4888,8 @@ i.spin:before {
   /* text-decoration: none;
   font: 700 12px/18px sans-serif; */
 }
-.select-a-market .category-image, .select-a-market .category {
+.select-a-market .category-image,
+.select-a-market .category {
   padding: 0;
   top: -22px;
 }
@@ -4901,4 +4907,36 @@ i.spin:before {
   position: relative;
   top: 96%;
   z-index: 45;
+}
+/* three block */
+
+.bk-categories-catalog .categories {
+  display: table-cell;
+  column-width: 172px;
+  column-count: 4;
+ 
+  padding: 5%;
+  vertical-align: middle;
+  height: 489px;
+}
+
+.bk-categories-catalog .body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(210, 32, 47, 0.95);
+}
+
+.bk-categories-catalog .categories a {
+  display: block;
+  color: #fff;
+  transition: color 0.2s;
+  text-decoration: none;
+  font-size: 18px;
+  font-family: "Raleway", sans-serif;
+  padding: 5px 0;
+}
+
+.bk-categories-catalog .categories a:hover {
+  color: #fffb01;
 }
