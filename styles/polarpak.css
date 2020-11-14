@@ -4786,6 +4786,10 @@ i.spin:before {
   display: block;
 }
 
+.find-a-product-block .head {
+  display: none;
+ }
+
 .find-a-product-block .category:before {
   height: 80px;
   width: 80px;
@@ -4894,6 +4898,19 @@ i.spin:before {
   top: -22px;
 }
 
+.select-a-market .head,  .bk-categories-catalog .head{
+  font-size: 32px;
+  text-align: center;
+  color: white;
+  background: #17468f;
+  font-weight: normal;
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
 .select-a-market .lk-category-name {
   background: #17468f;
   padding: 10px;
@@ -4911,19 +4928,34 @@ i.spin:before {
 /* three block */
 
 .bk-categories-catalog .categories {
-  display: table-cell;
-  column-width: 172px;
-  column-count: 4;
- 
-  padding: 5%;
-  vertical-align: middle;
-  height: 489px;
+
+  column-gap: 6em;
+-webkit-columns: 175px 4;
+-moz-columns: 175px 4;
+columns: 175px 4;
+height: 341px;
+  /* display: table-cell; */
+  /* column-count: 4; */
+  /* padding: 5%; */
+  /* vertical-align: middle;
+  height: 489px; */
+
+  /* 
+  display: grid;
+grid-auto-flow: dense;
+grid-template-rows: 1fr 1fr;
+grid-template-columns: 1fr 1fr 1fr 1fr;
+place-content: center;
+align-items: center; */
+
+
 }
 
 .bk-categories-catalog .body {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 46px;
   background: rgba(210, 32, 47, 0.95);
 }
 
