@@ -1173,7 +1173,7 @@ div.orderPopup {background: #FFFFFF; border: 1px solid #D5D4E9; padding: 2px; di
 
 .slides-chain { display: flex; align-items: center; justify-content: center;  }
 .slides-chain img { user-select: none; }
-.slides-chain .slide { transition: 2s transform, 2s opacity, 2s background, 2s left; background: #fff;}
+.slides-chain .slide { transition: 2s transform, 2s opacity, 2s background, 2s left; background: #fff; -webkit-transition: 2s transform, 2s opacity, 2s background, 2s left; -moz-transition: 2s transform, 2s opacity, 2s background, 2s left; -ms-transition: 2s transform, 2s opacity, 2s background, 2s left; -o-transition: 2s transform, 2s opacity, 2s background, 2s left; }
 .slides-chain .slide { width: 300px; }
 .slides-chain .slide.slide-inactive > * { opacity: 0.3; transition: 2s opacity; }
 .slides-chain .slide.slide-inactive > .slide-text { opacity: 0; }
