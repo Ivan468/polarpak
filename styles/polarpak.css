@@ -4070,6 +4070,10 @@ div.orderPopup {
   cursor: pointer;
 }
 
+.fm-middle .bk-slider {
+  margin-top: 0px;
+}
+
 .bk-sliders.content-only {
   border: none;
   background: none;
@@ -4937,13 +4941,16 @@ ul.footer_social_links > li {
   }
   .col:first-child:nth-last-child(n),
   .col:first-child:nth-last-child(n) ~ .col {
-    width: 87%;
+    width: 100%;
   }
 
   .find-a-product-block .body .categories .col {
     width: auto;
     margin-bottom: 8px;
   }
+  .select-a-market .body {
+    padding: 0px;
+}
 
   .bk-navigation-bar .nav-expand {
     display: block;
@@ -5065,10 +5072,39 @@ ul.footer_social_links > li {
     display: flex;
     /* height: 82px; */
     z-index: 252;
-    position: static;
+    position: sticky;
     justify-content: center;
     box-shadow: 0px -1px 5px 5px #ccc;
     background: white;
     top: 0;
-}
+  }
+
+  div.header-menu div.nav-expand span {
+    display: none;
+  }
+
+  .bk-header .nav-expand {
+    background: none;
+  }
+
+  .nav-header.expand-open {
+    display: block;
+    top: 85px;
+    width: 100%;
+    right: 0px;
+    position: absolute;
+  }
+
+  .bk-header .nav-expand.expand-open {
+    border-bottom: none;
+  }
+
+  .bk-header {
+    display: flex;
+  }
+
+  .bk-header .nav-expand i {
+    background-color: none;
+    color: #000;
+  }
 }

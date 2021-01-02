@@ -8,10 +8,10 @@
 	$db_type       = "mysql"; // mysql | postgre | sqlsrv | access | db2
 	$db_name       = "pak";
 	$db_host       = "localhost";
-	$db_port       = "";
+	$db_port       = "3306";
 	$db_user       = "root";
 	$db_password   = "bima2011";
-	$db_persistent = false;
+	$db_persistent = true;
 
 	$table_prefix  = "va_";
 
